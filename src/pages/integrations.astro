@@ -1,0 +1,82 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import Base from "@/layouts/Base.astro";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import CallToAction from "@/partials/CallToAction.astro";
+import PageHeader from "@/partials/PageHeader.astro";
+
+const pageIndex = await getListPage("integrations", "-index");
+if (pageIndex.data.draft) return Astro.redirect("/404");
+
+const { section_title, integrations_list } = pageIndex.data;
+---
+
+<Base {...pageIndex.data}>
+  <PageHeader
+    title={pageIndex.data.title}
+    description={pageIndex.data.description}
+  />
+
+  <section class="section-sm bg-light">
+    <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
+      <h2
+        data-aos="fade-up-sm"
+        data-aos-delay="150"
+        class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
+        set:html={markdownify(section_title)}
+      />
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {
+          integrations_list.map((integration, i) => (
+            <div
+              data-aos="fade-up-sm"
+              data-aos-delay={150 + i * 50}
+              class="group bg-body rounded-2xl p-6 flex flex-col items-center text-center card-shadow duration-300 relative"
+            >
+              <div class="mb-4 w-15 h-15 overflow-hidden">
+                <div class="w-15 h-30 transition duration-500 ease-out group-hover:-translate-y-15 flex flex-col">
+                  <div class="w-15 h-15 flex items-center justify-center">
+                    <ImageMod
+                      src={integration.image}
+                      alt={integration.title}
+                      width={60}
+                      height={60}
+                      class="w-15 h-15"
+                    />
+                  </div>
+                  <div
+                    class="w-15 h-15 flex items-center justify-center"
+                    aria-hidden="true"
+                  >
+                    <ImageMod
+                      src={integration.image}
+                      alt=""
+                      width={60}
+                      height={60}
+                      class="w-15 h-15"
+                    />
+                  </div>
+                </div>
+              </div>
+              <h3 class="h6 mb-2" set:html={markdownify(integration.title)} />
+              <p
+                class="text-text-dark/70 text-sm mb-4 text-balance"
+                set:html={markdownify(integration.description)}
+              />
+              {integration.link && (
+                <a
+                  href={integration.link}
+                  class="before:inset-0 before:absolute"
+                />
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CallToAction />
+</Base>

@@ -1,0 +1,186 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import Cursor from "@/helpers/Cursor";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import Button from "@/shortcodes/Button";
+
+const pageIndex = await getListPage("homepage", "-index");
+const {
+  title,
+  content,
+  image,
+  button_solid,
+  button_underline,
+  tag_lines,
+  cursor_1,
+  cursor_2,
+} = pageIndex.data.banner;
+---
+
+<section class="section bg-light pt-30 lg:pt-43 bg-4col-grid overflow-x-hidden">
+  <div class="container">
+    <div
+      class="flex flex-col lg:flex-row gap-10 xl:gap-20 justify-center items-center"
+    >
+      <div class="lg:w-[50%] xl:w-[45%] text-center lg:text-left">
+        <h1
+          data-aos="fade-up-sm"
+          data-aos-delay="100"
+          class="max-lg:w-[70%] mx-auto lg:text-7xl xl:text-[100px] lg:leading-20 xl:leading-25 font-semibold"
+          set:html={markdownify(title)}
+        />
+        <p
+          data-aos="fade-up-sm"
+          data-aos-delay="200"
+          class="pt-8 pb-10 text-lg text-balance"
+          set:html={markdownify(content)}
+        />
+
+        <div data-aos="fade-up-sm" data-aos-delay="250">
+          <Button
+            enable={button_solid.enable}
+            link={button_solid.link}
+            label={button_solid.label}
+            style="dark"
+            icon="FaArrowPointer"
+          />
+          <Button
+            enable={button_underline.enable}
+            link={button_underline.link}
+            label={button_underline.label}
+            style="underline"
+          />
+        </div>
+
+        <ul
+          data-aos="fade-up-sm"
+          data-aos-delay="350"
+          class="flex gap-4 flex-wrap mt-12 text-sm font-bold text-dark max-lg:justify-center"
+        >
+          {
+            tag_lines?.map((text) => (
+              <li>
+                <svg
+                  class="inline -mt-px"
+                  width="9"
+                  height="9"
+                  viewBox="0 0 9 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.99985 4.50881C6.58594 4.65439 4.65427 6.58612 4.5087 9H4.49107C4.3455 6.58612 2.41384 4.65439 0 4.50881V4.49119C2.41384 4.34561 4.3455 2.41395 4.49107 0H4.5087C4.65427 2.41395 6.58594 4.34561 8.99985 4.49119V4.50881Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                {text}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="lg:w-[50%] xl:w-[45%]">
+        <figure class="relative">
+          <!-- round  -->
+          <svg
+            class="absolute top-0 -right-30 z-0 opacity-6"
+            width="354"
+            height="354"
+            viewBox="0 0 454 454"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <circle
+              cx="227"
+              cy="227"
+              r="177"
+              stroke="var(--color-primary)"
+              stroke-width="100"></circle>
+          </svg>
+
+          <!-- robot  -->
+          <ImageMod
+            src="/images/homepage/robot.png"
+            alt=""
+            width={144}
+            height={202}
+            class="absolute -top-10 -right-10 z-20 robot-bob"
+            aria-hidden="true"
+          />
+
+          <!-- dots  -->
+          <svg
+            class="absolute bottom-0 -left-4 opacity-60 dots-seq"
+            width="10"
+            height="68"
+            viewBox="0 0 15 78"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <circle
+              cx="7.09092"
+              cy="7.09091"
+              r="7.09091"
+              transform="rotate(90 7.09092 7.09091)"
+              fill="var(--color-primary)"></circle>
+            <circle
+              cx="7.09092"
+              cy="39"
+              r="7.09091"
+              transform="rotate(90 7.09092 39)"
+              fill="var(--color-primary)"></circle>
+            <circle
+              cx="7.09092"
+              cy="70.9091"
+              r="7.09091"
+              transform="rotate(90 7.09092 70.9091)"
+              fill="var(--color-primary)"></circle>
+          </svg>
+
+          <div data-aos="zoom-out-sm" data-aos-delay="100">
+            <ImageMod
+              src={image}
+              alt="Home Banner"
+              width={811}
+              height={464}
+              class="w-202.75 h-116 mx-auto lg:mx-0 relative z-10 object-contain pt-12 drop-shadow-xl"
+              aria-label="Home Banner"
+            />
+          </div>
+
+          {
+            cursor_1 && (
+              <div class="absolute top-0 left-10 z-20">
+                <Cursor
+                  client:load
+                  text={cursor_1}
+                  color="#ECBAD5"
+                  arrowPosition="bottom-right"
+                  delay={0}
+                />
+              </div>
+            )
+          }
+
+          {
+            cursor_2 && (
+              <div class="absolute -bottom-10 right-20 z-20">
+                <Cursor
+                  client:load
+                  text={cursor_2}
+                  color="#CBBBEA"
+                  arrowPosition="top-left"
+                  delay={1.5}
+                />
+              </div>
+            )
+          }
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>

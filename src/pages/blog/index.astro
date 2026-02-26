@@ -1,0 +1,233 @@
+---
+import CardPrimary from "@/components/CardPrimary.astro";
+import Base from "@/layouts/Base.astro";
+import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import { getTaxonomy } from "@/lib/taxonomyParser.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+import { markdownify, slugify, humanize } from "@/lib/utils/textConverter";
+import CallToAction from "@/partials/CallToAction.astro";
+import PageHeader from "@/partials/PageHeader.astro";
+
+const BLOG_FOLDER = "blog";
+
+const postIndex = await getListPage(BLOG_FOLDER, "-index");
+if (postIndex.data.draft) return Astro.redirect("/404");
+
+const { title, description, featured_posts, actual_posts } = postIndex.data;
+const posts = await getSinglePage(BLOG_FOLDER);
+const featuredPosts = posts.filter(
+  (post) => post.data.featured && !post.data.draft
+);
+
+const featuredFive = featuredPosts.slice(0, 5);
+const featuredFirst = featuredFive[0];
+const featuredCol2 = featuredFive.slice(1, 3);
+const featuredCol3 = featuredFive.slice(3, 5);
+const categories = await getTaxonomy(BLOG_FOLDER, "categories");
+const categoryGroups = [
+  ...new Set(categories.map((category) => category.toLocaleLowerCase())),
+];
+const publishedPosts = posts.filter((post) => !post.data.draft);
+const sortedPosts = sortByDate(publishedPosts);
+---
+
+<Base {...postIndex.data}>
+  <PageHeader title={title} description={description} />
+
+  <!-- Featured section  -->
+  {
+    featured_posts && featured_posts.enable && featuredFive.length > 0 && (
+      <section class="section-sm bg-light">
+        <div class="container">
+          <h2
+            data-aos="fade-up-sm"
+            data-aos-delay="150"
+            class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
+            set:html={markdownify(featured_posts.title)}
+          />
+
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {featuredFirst && (
+              <div data-aos="fade-up-sm" data-aos-delay="150">
+                <CardPrimary
+                  data={featuredFirst.data}
+                  id={`/blog/${featuredFirst.id}`}
+                />
+              </div>
+            )}
+
+            {featuredCol2.length > 0 && (
+              <div class="flex flex-col gap-6">
+                {featuredCol2.map((post) => (
+                  <div data-aos="fade-up-sm" data-aos-delay="150">
+                    <CardPrimary
+                      data={post.data}
+                      id={`/blog/${post.id}`}
+                      showImage={false}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {featuredCol3.length > 0 && (
+              <div class="w-full flex flex-col gap-6 sm:grid sm:grid-cols-2 lg:flex lg:flex-col md:col-span-2 lg:col-span-1">
+                {featuredCol3.map((post) => (
+                  <div data-aos="fade-up-sm" data-aos-delay="150">
+                    <CardPrimary
+                      data={post.data}
+                      id={post.id}
+                      showImage={false}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- All blog with shuffle animation  -->
+  <section
+    class="section bg-dark section-divider"
+    style="--section-divider-color: var(--color-dark)"
+  >
+    <div class="container">
+      {
+        actual_posts && actual_posts.enable && (
+          <>
+            <h2
+              data-aos="fade-up-sm"
+              data-aos-delay="150"
+              class="mb-12 text-center xl:w-[60%] mx-auto text-balance text-white"
+              set:html={markdownify(actual_posts.title)}
+            />
+
+            <ul
+              data-aos="fade-up-sm"
+              data-aos-delay="250"
+              class="flex justify-center items-center flex-wrap shuffle-filter"
+            >
+              <li class="selected" data-target="all">
+                <button
+                  type="button"
+                  class={`btn btn-primary btn-sm border-2 hover:-translate-y-0.75 transition-transform m-3 inline-block capitalize py-3 rounded-full`}
+                >
+                  All Together
+                </button>
+              </li>
+              {categoryGroups.map((group) => (
+                <li data-target={group}>
+                  <button
+                    type="button"
+                    class={`btn btn-outline btn-sm border-2 bg-body hover:-translate-y-0.75 transition-transform m-3 inline-block capitalize py-3 rounded-full`}
+                  >
+                    {humanize(group)}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <ul class="shuffle-container relative flex flex-wrap mt-6">
+              <li
+                class="shuffle-sizer w-full md:w-1/2 lg:w-1/3 p-3"
+                aria-hidden="true"
+              />
+              {sortedPosts.map((post) => {
+                const postCategories = Array.isArray(post.data.categories)
+                  ? post.data.categories
+                  : [];
+                const postGroups = [
+                  ...new Set(
+                    postCategories.map((category: string) =>
+                      slugify(category).toLocaleLowerCase()
+                    )
+                  ),
+                  "all",
+                ];
+
+                return (
+                  <li
+                    class="shuffle-item w-full md:w-1/2 lg:w-1/3 p-3"
+                    data-groups={JSON.stringify(postGroups)}
+                  >
+                    <CardPrimary
+                      data={post.data}
+                      id={`/blog/${post.id}`}
+                      hasDarkArrow
+                    />
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )
+      }
+    </div>
+  </section>
+  <CallToAction />
+</Base>
+
+<script>
+  import Shuffle from "shufflejs";
+
+  document.addEventListener("astro:page-load", () => {
+    const element = document.querySelector(
+      ".shuffle-container"
+    ) as HTMLElement | null;
+    if (!element) return;
+
+    let shuffleInstance = new Shuffle(element, {
+      itemSelector: ".shuffle-item",
+      sizer: element.querySelector(".shuffle-sizer") as HTMLElement,
+    });
+
+    const filter = document.querySelector(".shuffle-filter");
+    if (!filter) return;
+
+    const baseBtnClasses =
+      "btn btn-sm hover:-translate-y-0.75 active:scale-95 transition-transform duration-200 inline-block m-2 capitalize py-2.5 rounded-full text-text-dark";
+    const activeBtnClasses = `${baseBtnClasses} btn-primary text-white`;
+    const inactiveBtnClasses = `${baseBtnClasses} btn-outline bg-body`;
+
+    const filtterLists = Array.from(filter.children) as HTMLElement[];
+
+    const setButtonVariant = (listItem: HTMLElement, isSelected: boolean) => {
+      const button = listItem.querySelector(
+        "button"
+      ) as HTMLButtonElement | null;
+      if (!button) return;
+      button.className = isSelected ? activeBtnClasses : inactiveBtnClasses;
+    };
+
+    // Apply correct styles on load ("All Together" is selected by default)
+    filtterLists.forEach((listItem) => {
+      setButtonVariant(listItem, listItem.classList.contains("selected"));
+    });
+
+    filtterLists.forEach((listItem) => {
+      const button = listItem.querySelector(
+        "button"
+      ) as HTMLButtonElement | null;
+      button?.addEventListener("click", function () {
+        filtterLists.forEach((li) => {
+          li.classList.remove("selected");
+          setButtonVariant(li, false);
+        });
+
+        const activeLi = (this as HTMLElement).closest(
+          "li"
+        ) as HTMLElement | null;
+        if (activeLi) {
+          activeLi.classList.add("selected");
+          setButtonVariant(activeLi, true);
+        }
+
+        const keyword = activeLi?.getAttribute("data-target") || "all";
+        shuffleInstance.filter(keyword);
+      });
+    });
+  });
+</script>

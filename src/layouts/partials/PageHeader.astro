@@ -1,0 +1,138 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import dateFormat from "@/lib/utils/dateFormat";
+import { humanize, markdownify } from "@/lib/utils/textConverter";
+
+const {
+  title = "",
+  description,
+  blogData,
+  caseData,
+  careerData,
+}: {
+  title?: string;
+  description?: string;
+  blogData?: { author: { name: string; image: string }; date: string };
+  caseData?: {
+    author: { name: string; image: string; designation: string };
+    date: string;
+  };
+  careerData?: { department: string; vacancy: string; deadline: string };
+} = Astro.props;
+---
+
+<section
+  class="bg-light pt-30 lg:pt-40 pb-18 lg:pb-22 bg-4col-grid overflow-x-hidden border-b border-border/80"
+>
+  <div class="container text-center">
+    <h1
+      data-aos="fade-up-sm"
+      data-aos-delay="150"
+      class={`xl:w-[80%] text-balance mx-auto ${(blogData || caseData) && "h2"}`}
+      set:text={humanize(title)}
+    />
+    {
+      description && (
+        <p
+          data-aos="fade-up-sm"
+          data-aos-delay="200"
+          class="w-[80%] lg:w-[60%] xl:w-[45%] text-balance text-center mx-auto mt-2"
+          set:html={markdownify(description)}
+        />
+      )
+    }
+
+    {
+      blogData && (
+        <div
+          data-aos="fade-up-sm"
+          data-aos-delay="200"
+          class="mt-8 flex flex-wrap items-center gap-3 md:gap-4 justify-center"
+        >
+          {blogData.author?.image && (
+            <ImageMod
+              src={blogData.author.image}
+              alt={blogData.author.name}
+              class="w-12 h-12 rounded-full object-cover"
+              height={48}
+              width={48}
+            />
+          )}
+          <p class="flex flex-col gap-1 text-left border-r border-border pr-3 md:pr-4">
+            <span class="text-xs">Written By</span>
+            <span class="text-text-dark">{blogData.author?.name}</span>
+          </p>
+          {blogData.date && (
+            <p class="flex flex-col gap-1 text-left">
+              <span class="text-xs">Last updated</span>
+              <time class="text-text-dark" datetime={dateFormat(blogData.date)}>
+                {dateFormat(blogData.date)}
+              </time>
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      caseData && (
+        <div
+          data-aos="fade-up-sm"
+          data-aos-delay="200"
+          class="mt-8 flex flex-wrap items-center gap-3 md:gap-4 justify-center"
+        >
+          {caseData.author?.image && (
+            <ImageMod
+              src={caseData.author.image}
+              alt={caseData.author.name}
+              class="w-12 h-12 rounded-full object-cover"
+              height={48}
+              width={48}
+            />
+          )}
+          <p class="flex flex-col gap-1 text-left border-r border-border pr-3 md:pr-4">
+            <span class="text-text-dark">{caseData.author?.name}</span>
+            <span class="text-xs">{caseData.author?.designation}</span>
+          </p>
+          {caseData.date && (
+            <p class="flex flex-col gap-1 text-left">
+              <span class="text-xs">Last updated</span>
+              <time class="text-text-dark" datetime={dateFormat(caseData.date)}>
+                {dateFormat(caseData.date)}
+              </time>
+            </p>
+          )}
+        </div>
+      )
+    }
+
+    {
+      careerData && (
+        <div
+          data-aos="fade-up-sm"
+          data-aos-delay="200"
+          class="mt-8 flex flex-wrap items-center gap-6 justify-center text-text-dark text-left"
+        >
+          {careerData.department && (
+            <span class="text-sm flex flex-col gap-2 border-r border-border pr-3">
+              Department
+              <h6>{careerData.department}</h6>
+            </span>
+          )}
+          {careerData.vacancy && (
+            <span class="text-sm flex flex-col gap-2 border-r border-border pr-3">
+              Vacancies
+              <h6>{careerData.vacancy}</h6>
+            </span>
+          )}
+          {careerData.deadline && (
+            <span class="text-sm flex flex-col gap-2">
+              Deadline
+              <h6>{dateFormat(careerData.deadline)}</h6>
+            </span>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>

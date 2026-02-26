@@ -1,0 +1,218 @@
+---
+import Logo from "@/components/Logo.astro";
+import config from "@/config/config.json";
+import menu from "@/config/menu.json";
+
+export interface ChildNavigationLink {
+  name: string;
+  url: string;
+}
+
+export interface NavigationLink {
+  name: string;
+  url: string;
+  hasChildren?: boolean;
+  children?: ChildNavigationLink[];
+}
+
+const { main }: { main: NavigationLink[] } = menu;
+const { navigation_button } = config;
+const { pathname } = Astro.url;
+---
+
+<header class={`header z-30 non_sticky`}>
+  <nav class="navbar">
+    {/* logo */}
+    <div class="order-0 flex items-center">
+      <Logo />
+    </div>
+    {/* navbar toggler */}
+    <input id="nav-toggle" type="checkbox" class="hidden" />
+    <label
+      for="nav-toggle"
+      class="order-3 cursor-pointer flex items-center lg:hidden text-text-white lg:order-1"
+    >
+      <svg id="show-button" class="h-6 fill-current block" viewBox="0 0 20 20">
+        <title>Menu Open</title>
+        <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
+      </svg>
+      <svg id="hide-button" class="h-6 fill-current hidden" viewBox="0 0 20 20">
+        <title>Menu Close</title>
+        <polygon
+          points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
+          transform="rotate(45 10 10)"></polygon>
+      </svg>
+    </label>
+    {/* /navbar toggler */}
+
+    <ul
+      data-lenis-prevent
+      id="nav-menu"
+      class="navbar-nav order-3 hidden w-full pb-6 lg:order-1 lg:flex lg:w-auto lg:space-x-2 lg:pb-0 xl:space-x-5"
+    >
+      {
+        main.map((menu) => (
+          <>
+            {menu.hasChildren ? (
+              <li
+                data-lenis-prevent
+                class="nav-item nav-dropdown group relative"
+              >
+                <span
+                  class={`nav-link bg-transparent! inline-flex items-center cursor-pointer ${
+                    menu.children?.map(({ url }) => url).includes(pathname) ||
+                    menu.children
+                      ?.map(({ url }) => `${url}/`)
+                      .includes(pathname)
+                      ? ""
+                      : ""
+                  }`}
+                >
+                  {menu.name}
+                  <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </span>
+                <ul class="nav-dropdown-list">
+                  {menu.children?.map((child) => (
+                    <li class="nav-dropdown-item">
+                      <a
+                        href={child.url}
+                        aria-label={child.name}
+                        class={`nav-dropdown-link block ${
+                          (pathname === `${child.url}/` ||
+                            pathname === child.url) &&
+                          "active"
+                        }`}
+                      >
+                        {child.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ) : (
+              <li class="nav-item">
+                <a
+                  data-lenis-prevent
+                  href={menu.url}
+                  class={`nav-link block ${
+                    (pathname === `${menu.url}/` || pathname === menu.url) &&
+                    "active"
+                  }`}
+                >
+                  {menu.name}
+                </a>
+              </li>
+            )}
+          </>
+        ))
+      }
+      {
+        navigation_button.enable && (
+          <li class="mt-4 inline-block lg:hidden ml-4">
+            <a
+              class="btn btn-outline btn-sm rounded-none bg-body text-text-dark border border-border"
+              href={navigation_button.link}
+            >
+              {navigation_button.label}
+            </a>
+          </li>
+        )
+      }
+    </ul>
+    <div class="order-1 ml-auto flex items-center md:order-2 lg:ml-0">
+      {
+        navigation_button.enable && (
+          <a
+            class="btn btn-sm btn-outline rounded-none bg-body text-text-dark hidden lg:inline-block border-border"
+            href={navigation_button.link}
+            target={
+              navigation_button.link.startsWith("http") ? "_blank" : "_self"
+            }
+          >
+            {navigation_button.label}
+          </a>
+        )
+      }
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Handle header animation based on scroll
+  const initHeaderScroll = () => {
+    const header = document.querySelector(".header") as HTMLElement;
+
+    if (!header) return;
+
+    const scrollHandler = () => {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll > 50) {
+        // downscroll
+        header.classList.add("sticky_top");
+        header.classList.remove("non_sticky");
+      } else {
+        // upscroll
+        header.classList.remove("sticky_top");
+        header.classList.add("non_sticky");
+      }
+    };
+
+    window.addEventListener("scroll", scrollHandler);
+
+    return () => {
+      window.removeEventListener("scroll", scrollHandler);
+    };
+  };
+
+  // Handle dropdown menus
+  const initDropdownMenus = () => {
+    const navDropdowns = document.querySelectorAll(".nav-dropdown");
+
+    navDropdowns.forEach((dropdown) => {
+      const trigger = dropdown.querySelector(".nav-link");
+      const menu = dropdown.querySelector(".nav-dropdown-list");
+
+      if (!trigger || !menu) return;
+
+      trigger.addEventListener("click", () => {
+        menu.classList.toggle("grid");
+      });
+    });
+  };
+
+  // Turn off nav-toggle on link click (for mobile)
+  const initMobileMenuClose = () => {
+    const navToggle = document.getElementById("nav-toggle") as HTMLInputElement;
+    const navMenu = document.getElementById("nav-menu") as HTMLUListElement;
+
+    if (!navToggle || !navMenu) return;
+
+    const navLinks = navMenu.querySelectorAll("a");
+
+    const handleClick = () => {
+      if (navToggle.checked) {
+        navToggle.checked = false;
+      }
+    };
+
+    navLinks.forEach((link) => link.addEventListener("click", handleClick));
+  };
+
+  // Initialize all header functionality
+  const initHeader = () => {
+    initHeaderScroll();
+    initDropdownMenus();
+    initMobileMenuClose();
+  };
+
+  // Run on initial load
+  initHeader();
+
+  // Re-run on route change (Astro navigation)
+  document.addEventListener("astro:after-swap", () => {
+    initHeader();
+  });
+</script>

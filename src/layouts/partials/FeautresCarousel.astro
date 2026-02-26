@@ -1,0 +1,160 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import DynamicIcon from "@/helpers/DynamicIcon";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import { Swiper, SwiperSlide, SwiperWrapper } from "astro-swiper";
+import type { SwiperOptions } from "swiper/types";
+
+const sectionData = await getListPage(
+  "featuresCarouselSection",
+  "features-carousel"
+);
+if (!sectionData.data.enable) return null;
+
+const { title, subtitle, list } = sectionData.data;
+
+const swiperOptions: SwiperOptions = {
+  slidesPerView: 1,
+  loop: true,
+  centeredSlides: false,
+  spaceBetween: 24,
+  autoplay: {
+    delay: 2000,
+    disableOnInteraction: false,
+  },
+};
+---
+
+<section class="section pt-0">
+  <div class="container">
+    <div
+      class="flex flex-col gap-6 lg:flex-row lg:justify-between max-lg:text-center items-center mb-12"
+    >
+      <h2
+        class="text-balance"
+        set:html={markdownify(title)}
+        data-aos="fade-up-sm"
+        data-aos-delay="150"
+      />
+      <p
+        class="text-balance lg:ml-auto lg:text-right text-lg"
+        set:html={markdownify(subtitle)}
+        data-aos="fade-up-sm"
+        data-aos-delay="200"
+      />
+    </div>
+
+    <div class="section-content">
+      <div
+        class="overflow-hidden flex flex-col xl:flex-row gap-10 justify-between"
+        data-aos="fade-up-sm"
+        data-aos-delay="150"
+      >
+        <!-- LEFT  -->
+        <div class="lg:w-[50%] mx-auto xl:w-[35%] flex flex-col justify-center">
+          {
+            list.length &&
+              list.map((item, index) => {
+                return (
+                  <div
+                    class="feature-pagination-item first:rounded-ss-2xl first:rounded-se-2xl last:rounded-bl-2xl last:rounded-br-2xl bg-light border border-border not-last:border-b-0 p-6 flex items-start gap-5 cursor-pointer transition-colors duration-300"
+                    data-index={index}
+                  >
+                    {/* Icon */}
+                    <div class="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <DynamicIcon
+                        icon={item.icon}
+                        className="text-primary feature-pagination-icon-active text-2xl"
+                      />
+                    </div>
+                    {/* Content */}
+                    <div class="flex flex-col">
+                      <h4 class="font-primary h5 leading-snug -mt-1.5">
+                        {item.title}
+                      </h4>
+                      <p class="mt-2 text-text-light">{item.subtitle}</p>
+                    </div>
+                    {/* arrow */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="rgb(22, 21, 37)"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="size-6 ml-auto"
+                    >
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </div>
+                );
+              })
+          }
+        </div>
+        <!-- RIGHT -->
+        <div
+          class="xl:w-[60%] flex items-center relative justify-center xl:justify-end"
+        >
+          <div class="brands-gradient absolute -z-10 size-full"></div>
+
+          <div class="w-full max-w-[875px]">
+            <Swiper options={swiperOptions} class="is-feature-swiper w-full">
+              <SwiperWrapper>
+                {
+                  list.length &&
+                    list.map((item) => (
+                      <SwiperSlide class="flex items-center justify-center">
+                        <ImageMod
+                          src={item.image}
+                          alt={item.title}
+                          width={875}
+                          height={597}
+                          class="w-full h-auto max-h-[597px] object-contain rounded-2xl"
+                        />
+                      </SwiperSlide>
+                    ))
+                }
+              </SwiperWrapper>
+            </Swiper>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const featureItems = document.querySelectorAll(".feature-pagination-item");
+    const swiperEl = document.querySelector(".is-feature-swiper");
+    const swiper = swiperEl && (swiperEl as any).astroSwiper;
+
+    if (!swiper) return;
+
+    const setActiveItem = (activeIndex: number) => {
+      featureItems.forEach((item) => item.classList.remove("active"));
+      const currentItem = document.querySelector(
+        `[data-index="${activeIndex}"]`
+      );
+      currentItem?.classList.add("active");
+    };
+
+    // initial
+    setActiveItem(swiper.realIndex ?? 0);
+
+    swiper.on("slideChange", () => {
+      setActiveItem(swiper.realIndex ?? 0);
+    });
+
+    // Add click handlers to feature items
+    featureItems.forEach((item, index) => {
+      item.addEventListener("click", () => {
+        swiper.slideToLoop(index);
+      });
+    });
+  });
+</script>

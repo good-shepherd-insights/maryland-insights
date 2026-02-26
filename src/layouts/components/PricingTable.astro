@@ -1,0 +1,89 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  features: CollectionEntry<"pricing">["data"]["comparison_section"]["comparison_table"]["features"];
+  planNames: CollectionEntry<"pricing">["data"]["comparison_section"]["plan_names"];
+};
+
+const { features, planNames } = Astro.props;
+
+const displayedPlans = planNames;
+---
+
+<div data-aos="fade-up-sm" data-aos-delay="250" class="hidden md:block">
+  <div class="rounded-2xl border border-border overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-left table-fixed">
+        <thead class="bg-light">
+          <tr>
+            <th
+              class="w-[40%] text-text-dark p-5 border-b border-r border-border"
+            >
+              Features
+            </th>
+            <!-- Equal width for others -->
+            {
+              displayedPlans.map((plan, index) => (
+                <th
+                  class={`p-5 border-b border-border text-center ${index !== displayedPlans.length - 1 ? "border-r border-border" : ""}`}
+                >
+                  <p class="flex justify-between gap-2">
+                    <span>{plan.label}</span>
+                    <data
+                      class="font-bold text-text-dark text-lg"
+                      value={plan.price}
+                    >
+                      {plan.price}
+                    </data>
+                  </p>
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+
+        <tbody>
+          {
+            features.map((feature) => (
+              <tr class="even:bg-light group">
+                <td class="w-[40%] p-5 border-b border-r border-border group-last:border-b-0">
+                  <h6 class="text-lg font-semibold">{feature.name}</h6>
+                  <p class="mt-1 text-sm">{feature.description}</p>
+                </td>
+
+                {feature.values.map((value, index) => {
+                  const isLast = index === feature.values.length - 1;
+
+                  return (
+                    <td
+                      class={`p-5 border-b border-border text-center group-last:border-b-0 ${!isLast ? "border-r border-border" : ""}`}
+                    >
+                      {value === "active" ? (
+                        <img
+                          class="mx-auto"
+                          src="/images/icons/active.svg"
+                          alt=""
+                          aria-hidden="true"
+                        />
+                      ) : value === "cross" ? (
+                        <img
+                          class="mx-auto"
+                          src="/images/icons/cross.svg"
+                          alt=""
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        value
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

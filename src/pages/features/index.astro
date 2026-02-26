@@ -1,0 +1,125 @@
+---
+import CardPrimary from "@/components/CardPrimary.astro";
+import ImageMod from "@/components/ImageMod.astro";
+import DynamicIcon from "@/helpers/DynamicIcon";
+import Base from "@/layouts/Base.astro";
+import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import CallToAction from "@/partials/CallToAction.astro";
+import PageHeader from "@/partials/PageHeader.astro";
+
+const pageIndex = await getListPage("features", "-index");
+if (pageIndex.data.draft) return Astro.redirect("/404");
+const { title, description, section_title, use_cases } = pageIndex.data;
+
+const features = await getSinglePage("features");
+---
+
+<Base {...pageIndex.data}>
+  <PageHeader title={title} description={description} />
+
+  <section class="section-sm bg-light">
+    <div class="container">
+      {
+        section_title && (
+          <h2
+            data-aos="fade-up-sm"
+            data-aos-delay="150"
+            class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
+            set:html={markdownify(section_title)}
+          />
+        )
+      }
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-10">
+        {
+          features?.map((feature) => (
+            <div class="h-auto! flex">
+              <div class="w-full" data-aos="fade-up-sm" data-aos-delay="250">
+                <CardPrimary
+                  data={feature.data}
+                  id={`/features/${feature.id}`}
+                />
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    use_cases?.enable && (
+      <section
+        class="section bg-dark section-divider"
+        style="--section-divider-color: var(--color-dark)"
+      >
+        <div class="container">
+          <div class="flex flex-col gap-6 lg:flex-row lg:justify-between max-lg:text-center items-center mb-12">
+            <h2
+              data-aos="fade-up-sm"
+              data-aos-delay="150"
+              class="text-balance text-white"
+              set:html={markdownify(use_cases.title)}
+            />
+            <p
+              data-aos="fade-up-sm"
+              data-aos-delay="150"
+              class="text-balance lg:ml-auto lg:text-right text-lg text-white"
+              set:html={markdownify(use_cases.description)}
+            />
+          </div>
+
+          <div class="space-y-20">
+            {use_cases.cases?.map((item, i) => (
+              <div
+                class={`flex justify-between items-center gap-10 flex-col-reverse lg:flex-row ${i % 2 !== 0 ? "lg:flex-row-reverse" : ""}`}
+                data-aos="zoom-in-sm"
+                data-aos-delay="150"
+              >
+                <div class="lg:w-[50%]">
+                  {/* Icon */}
+                  <div class="size-16 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mb-10">
+                    <DynamicIcon
+                      icon={item.icon}
+                      className="text-primary feature-pagination-icon-active text-3xl"
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <h4
+                    class="font-primary h5 leading-snug -mt-1.5 mb-2 text-white"
+                    set:html={markdownify(item.title)}
+                  />
+                  <p
+                    class="mt-2 text-text-light text-balance"
+                    set:html={markdownify(item.description)}
+                  />
+
+                  {item.button.enable && (
+                    <a
+                      href={item.button.link}
+                      class="inline-block mt-6 btn btn-outline bg-body border-body text-text-dark"
+                    >
+                      {item.button.label}
+                    </a>
+                  )}
+                </div>
+                <div class="bg-white/80 p-5 rounded-3xl lg:w-[50%]">
+                  <ImageMod
+                    src={item.image}
+                    alt={item.title}
+                    width={875}
+                    height={597}
+                    class="w-full h-auto max-h-[597px] object-contain rounded-2xl"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+  <CallToAction />
+</Base>

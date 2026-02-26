@@ -1,0 +1,110 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import {
+  Swiper,
+  SwiperPagination,
+  SwiperSlide,
+  SwiperWrapper,
+} from "astro-swiper";
+import { FaAngleRight } from "react-icons/fa6";
+import type { SwiperOptions } from "swiper/types";
+
+const pageIndex = await getListPage("homepage", "-index");
+if (!pageIndex.data.agents_swiper.enable) return null;
+const { title, agents } = pageIndex.data.agents_swiper;
+
+const swiperOptions: SwiperOptions = {
+  spaceBetween: 24,
+  loop: true,
+  autoplay: {
+    delay: 2500,
+    disableOnInteraction: false,
+  },
+  pagination: {
+    el: ".choose-slider-pagination",
+    type: "bullets",
+    clickable: true,
+    dynamicBullets: false,
+  },
+  breakpoints: {
+    768: {
+      slidesPerView: 2,
+    },
+    992: {
+      slidesPerView: 3,
+    },
+    1200: {
+      slidesPerView: 4,
+    },
+  },
+};
+---
+
+<section
+  class="section bg-dark section-divider"
+  style="--section-divider-color: var(--color-dark)"
+>
+  <div class="container">
+    <h2
+      data-aos="fade-up-sm"
+      data-aos-delay="100"
+      class="text-center text-white text-balance"
+      set:html={markdownify(title)}
+    />
+
+    <div
+      class="xl:w-[80%] mx-auto mt-12"
+      data-aos="fade-up-sm"
+      data-aos-delay="200"
+    >
+      <Swiper options={swiperOptions}>
+        <SwiperWrapper class={"mb-12 items-stretch"}>
+          {
+            agents?.map((agent) => (
+              <SwiperSlide class="h-auto! flex">
+                <div class="rounded-2xl bg-body px-7 py-10 flex flex-col h-full w-full">
+                  <ImageMod
+                    height={50}
+                    width={50}
+                    class="rounded-full"
+                    src={agent.icon}
+                    alt={agent.label}
+                    format="webp"
+                  />
+
+                  <h3
+                    set:text={markdownify(agent.label)}
+                    class="mt-10 mb-6 h5"
+                  />
+                  <p
+                    set:text={markdownify(agent.description)}
+                    class="text-sm"
+                  />
+
+                  {agent.button.enable && (
+                    <div class="mt-auto">
+                      <a
+                        href={agent.button.link}
+                        target="_blank"
+                        rel="noopener"
+                        class="flex items-center group text-text-dark text-sm font-medium mt-6"
+                      >
+                        {agent.button.label}
+                        <FaAngleRight className="ml-2 transition-transform duration-300 group-hover:translate-x-2" />
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </SwiperSlide>
+            ))
+          }
+        </SwiperWrapper>
+        <SwiperPagination
+          class="choose-slider-pagination flex items-center justify-center"
+        />
+      </Swiper>
+    </div>
+  </div>
+</section>

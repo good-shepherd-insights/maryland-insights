@@ -1,0 +1,119 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import {
+  Swiper,
+  SwiperPagination,
+  SwiperSlide,
+  SwiperWrapper,
+} from "astro-swiper";
+import type { SwiperOptions } from "swiper/types";
+
+const sectionData = await getListPage("testimonialSection", "testimonial");
+if (!sectionData.data.enable) return null;
+
+const swiperOptions: SwiperOptions = {
+  spaceBetween: 24,
+  loop: true,
+  autoplay: {
+    delay: 2500,
+    disableOnInteraction: false,
+  },
+  pagination: {
+    el: ".testimonial-slider-pagination",
+    type: "bullets",
+    clickable: true,
+    dynamicBullets: false,
+  },
+  breakpoints: {
+    768: {
+      slidesPerView: 2,
+    },
+    992: {
+      slidesPerView: 3,
+    },
+  },
+};
+---
+
+<section
+  class="section section-divider bg-dark"
+  style="--section-divider-color: var(--color-dark)"
+>
+  <div class="container">
+    <h2
+      data-aos="fade-up-sm"
+      data-aos-delay="150"
+      set:html={markdownify(sectionData.data.title)}
+      class="mb-12 text-white xl:w-[60%] mx-auto text-balance text-center"
+    />
+    <Swiper
+      options={swiperOptions}
+      class="testimonial-slider xl:w-[80%] mx-auto h-auto"
+    >
+      <SwiperWrapper class={"mb-12 items-stretch"}>
+        {
+          sectionData.data.testimonials.map(
+            (item: {
+              avatar: string;
+              content: string;
+              name: string;
+              designation: string;
+            }) => (
+              <SwiperSlide class="h-auto! flex">
+                <div
+                  class="rounded-2xl bg-body/5 px-7 py-10 flex flex-col h-full w-full"
+                  data-aos="zoom-out-sm"
+                  data-aos-delay="250"
+                >
+                  <svg
+                    width="50"
+                    height="38"
+                    viewBox="0 0 50 38"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M28.8732 -1.84696e-06L28.8732 17.2075L34.1421 17.2075C38.1331 17.2075 41.8393 19.8378 42.1553 23.8883C42.271 25.3709 42.2257 26.8364 41.8511 27.9679C40.6439 32.832 36.4185 33.3396 36.4185 33.3396L36.4185 38C36.4185 38 50 36.176 50 21.584L50 0L28.8732 -1.84696e-06ZM3.32207e-06 -4.37114e-06L1.81773e-06 17.2075L5.26888 17.2075C9.25985 17.2075 12.966 19.8378 13.282 23.8883C13.3977 25.3709 13.3524 26.8364 12.9779 27.9679C11.7706 32.832 7.54528 33.3396 7.54528 33.3396L7.54528 38C7.54528 38 21.1268 36.176 21.1268 21.584L21.1268 -2.52418e-06L3.32207e-06 -4.37114e-06Z"
+                      fill="white"
+                    />
+                  </svg>
+
+                  <blockquote
+                    class="mt-8 text-text-light"
+                    set:html={markdownify(item.content)}
+                  />
+                  <div class="mt-auto pt-11 flex items-center">
+                    <div class="text-text-dark">
+                      <ImageMod
+                        height={50}
+                        width={50}
+                        class="rounded-full"
+                        src={item.avatar}
+                        alt={item.name}
+                        format="webp"
+                      />
+                    </div>
+                    <div class="ml-4 pl-4 border-l border-border/30 self-stretch flex flex-col justify-center">
+                      <h3 set:text={item.name} class="h6 text-white" />
+                      <p
+                        set:text={item.designation}
+                        class="text-text-light text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </SwiperSlide>
+            )
+          )
+        }
+      </SwiperWrapper>
+      <SwiperPagination
+        class="testimonial-slider-pagination flex items-center justify-center"
+      />
+    </Swiper>
+  </div>
+</section>

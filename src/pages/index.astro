@@ -1,0 +1,27 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getListPage } from "@/lib/contentParser.astro";
+import CallToAction from "@/partials/CallToAction.astro";
+import ChooseSwiper from "@/partials/ChooseSwiper.astro";
+import Facts from "@/partials/Facts.astro";
+import Features from "@/partials/Features.astro";
+import FeautresCarousel from "@/partials/FeautresCarousel.astro";
+import HomeBanner from "@/partials/HomeBanner.astro";
+import PricingGrid from "@/partials/PricingGrid.astro";
+import Testimonial from "@/partials/Testimonial.astro";
+import TrustedBrands from "@/partials/TrustedBrands.astro";
+
+const pageIndex = await getListPage("homepage", "-index");
+---
+
+<Base>
+  <HomeBanner />
+  <ChooseSwiper />
+  <TrustedBrands />
+  <Facts data={pageIndex.data.facts_section} enableAnimation={false} />
+  <Features />
+  <PricingGrid haveDivider />
+  <FeautresCarousel />
+  <Testimonial />
+  <CallToAction />
+</Base>

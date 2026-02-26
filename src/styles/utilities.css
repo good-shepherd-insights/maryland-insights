@@ -1,0 +1,71 @@
+@utility bg-gradient {
+  @apply bg-linear-to-b from-[rgba(249,249,249,1)] from-[0.53%] to-white to-[83.28%];
+}
+
+/* form style */
+@utility form-input {
+  @apply w-full rounded-lg border-transparent bg-light/60 px-6 py-3 text-text-dark placeholder:text-text-light focus:border-primary focus:ring-transparent text-sm;
+}
+
+@utility form-label {
+  @apply mb-4 block font-primary text-sm font-semibold text-text-dark;
+}
+
+@utility card-shadow {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-border) 55%, transparent),
+    0 0 32px 0 color-mix(in srgb, var(--color-dark) 12%, transparent);
+}
+
+/* Gradient Color Text */
+@utility gradient-text {
+  --text-gradient: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff, transparent 0%),
+    color-mix(in srgb, var(--color-text-light), transparent 3%),
+    color-mix(in srgb, var(--color-text-light), transparent 15%)
+  );
+  background: var(--text-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  letter-spacing: -0.05em;
+
+  display: inline-block;
+  position: relative;
+}
+
+/* Section top divider (overlays previous section) */
+@utility section-divider {
+  @apply relative py-20 xl:py-24;
+  /* Override per-section if needed:
+     style="--section-divider-color: var(--color-dark)" */
+  --section-divider-color: var(--color-body);
+  /* Smaller on mobile, full size on desktop */
+  --section-divider-height: clamp(18px, 3.2vw, 41px);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 100%;
+    height: var(--section-divider-height);
+    transform: translateY(calc(-1 * var(--section-divider-height)));
+    background-color: var(--section-divider-color);
+    pointer-events: none;
+    z-index: 10;
+
+    /* Use the SVG as a mask so the fill comes from --section-divider-color */
+    -webkit-mask-image: url("/images/icons/section-top.svg");
+    mask-image: url("/images/icons/section-top.svg");
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-position: top center;
+    mask-position: top center;
+  }
+}

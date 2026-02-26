@@ -1,0 +1,162 @@
+---
+import CardPrimary from "@/components/CardPrimary.astro";
+import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import { Swiper, SwiperSlide, SwiperWrapper } from "astro-swiper";
+import type { SwiperOptions } from "swiper/types";
+
+const pageIndex = await getListPage("homepage", "-index");
+if (!pageIndex.data.featured_features_section.enable) return null;
+const { title } = pageIndex.data.featured_features_section;
+
+const features = await getSinglePage("features");
+
+const swiperOptions: SwiperOptions = {
+  spaceBetween: 32,
+  loop: true,
+  autoplay: {
+    delay: 2500,
+    disableOnInteraction: false,
+  },
+  navigation: {
+    prevEl: ".features-slider-prev",
+    nextEl: ".features-slider-next",
+  },
+  breakpoints: {
+    768: {
+      slidesPerView: 2,
+    },
+    1024: {
+      slidesPerView: 3,
+    },
+  },
+};
+---
+
+<section class="section bg-light">
+  <div class="container">
+    <div
+      class="flex flex-col gap-6 lg:flex-row lg:justify-between max-lg:text-center items-center mb-12"
+    >
+      <h2
+        data-aos="fade-up-sm"
+        data-aos-delay="150"
+        class="text-balance xl:w-[50%]"
+        set:html={markdownify(title)}
+      />
+
+      <div
+        class="flex items-center gap-3"
+        data-aos="fade-up-sm"
+        data-aos-delay="150"
+      >
+        <button
+          type="button"
+          class="features-slider-prev group transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+          aria-label="Previous features"
+        >
+          <svg
+            class="text-white transition-transform duration-300 ease-out"
+            width="68"
+            height="68"
+            viewBox="0 0 68 68"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="34"
+              cy="34"
+              r="34"
+              transform="matrix(-1 0 0 1 68 0)"
+              fill="currentColor"></circle>
+            <g
+              clip-path="url(#clip0_2045_6889)"
+              class="transition-transform duration-300 ease-out group-hover:-translate-x-1 group-active:-translate-x-0.5"
+            >
+              <path
+                d="M45 34H23"
+                stroke="#999999"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+              <path
+                d="M32 25L23 34L32 43"
+                stroke="#999999"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </g>
+            <defs>
+              <clipPath id="clip0_2045_6889">
+                <rect
+                  width="32"
+                  height="32"
+                  fill="white"
+                  transform="matrix(-1 0 0 1 50 18)"></rect>
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="features-slider-next group transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+          aria-label="Next features"
+        >
+          <svg
+            class="text-text-dark transition-transform duration-300 ease-out"
+            width="68"
+            height="68"
+            viewBox="0 0 68 68"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="34" cy="34" r="34" fill="currentColor"></circle>
+            <g
+              clip-path="url(#clip0_2045_6895)"
+              class="transition-transform duration-300 ease-out group-hover:translate-x-1 group-active:translate-x-0.5"
+            >
+              <path
+                d="M23 34H45"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+              <path
+                d="M36 25L45 34L36 43"
+                stroke="white"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </g>
+            <defs>
+              <clipPath id="clip0_2045_6895">
+                <rect
+                  width="32"
+                  height="32"
+                  fill="white"
+                  transform="translate(18 18)"></rect>
+              </clipPath>
+            </defs>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <Swiper options={swiperOptions} class="features-slider">
+      <SwiperWrapper class={"items-stretch"}>
+        {
+          features?.map((feature) => (
+            <SwiperSlide class="h-auto! flex">
+              <div class="w-full" data-aos="fade-up-sm" data-aos-delay="250">
+                <CardPrimary
+                  data={feature.data}
+                  id={`/features/${feature.id}`}
+                />
+              </div>
+            </SwiperSlide>
+          ))
+        }
+      </SwiperWrapper>
+    </Swiper>
+  </div>
+</section>

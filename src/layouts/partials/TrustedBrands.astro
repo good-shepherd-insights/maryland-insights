@@ -1,0 +1,52 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+
+const sectionData = await getListPage("trustedBrandsSection", "trusted-brands");
+if (!sectionData.data.enable) return null;
+const { title, list } = sectionData.data;
+---
+
+<section class="overflow-hidden bg-light py-10 lg:py-14">
+  <div class="container">
+    <div class="flex flex-col lg:flex-row items-center gap-10">
+      <h3
+        data-aos="fade-up-sm"
+        data-aos-delay="100"
+        class="h6 lg:w-75 font-primary text-text-dark/70"
+        set:html={markdownify(title)}
+      />
+      <div
+        data-aos="fade-left-sm"
+        data-aos-delay="200"
+        class={"inf-slider overflow-hidden fade-overlay-carousel lg:w-[calc(100%-500px)] ml-auto"}
+        data-inf-scroll-speed="80"
+        data-inf-direction="normal"
+        data-inf-slide-pause-on-hover="true"
+      >
+        <div class="inf-slide-track">
+          {
+            list?.map((brand) => (
+              <div class="inf-slide ml-5 px-8 text-text-light">
+                <ImageMod
+                  width={162}
+                  height={32}
+                  src={brand.logo}
+                  alt={brand.brand}
+                  class="object-contain max-h-8 h-full"
+                />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initInfiniteSliders } from "@/lib/utils/infSlider";
+
+  document.addEventListener("astro:page-load", () => initInfiniteSliders());
+</script>

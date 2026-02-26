@@ -1,0 +1,61 @@
+.header {
+  @apply transition-all duration-500;
+}
+
+.header.non_sticky {
+  @apply top-6 inset-x-0 fixed mx-8;
+}
+
+.header.sticky_top {
+  @apply top-4 inset-x-0 fixed mx-8;
+}
+
+.header.non_sticky > .navbar {
+  @apply bg-light/50 backdrop-blur-xs border border-border;
+}
+
+.header.sticky_top > .navbar {
+  @apply shadow-xl shadow-black/5 bg-light/50 backdrop-blur-lg border border-border;
+}
+
+/* navbar items */
+.navbar {
+  @apply container xl:max-w-380! mx-auto relative flex flex-wrap items-center justify-between transition-all duration-500 px-8 py-3;
+}
+
+.navbar-brand {
+  @apply text-primary text-xl font-semibold;
+  image {
+    @apply max-h-full max-w-full;
+  }
+}
+
+.navbar-nav {
+  @apply max-lg:overflow-auto max-lg:max-h-[80dvh] text-left max-lg:bg-light max-lg:border max-lg:border-b-4 max-lg:border-border max-lg:rounded-xl max-lg:mt-5 max-lg:p-3;
+}
+
+.nav-link {
+  @apply text-text-dark hover:text-primary lg:text-sm block font-medium transition max-lg:px-5 px-2 py-3 max-lg:hover:bg-primary/5 rounded-lg;
+}
+.nav-link.active {
+  @apply text-primary;
+}
+
+.nav-dropdown {
+  @apply mr-0;
+}
+
+.nav-dropdown-list {
+  @apply z-10 min-w-max bg-body p-2 lg:p-6 shadow border border-b-4 border-border rounded-xl max-lg:mx-5 hidden lg:group-hover:grid lg:invisible lg:absolute lg:right-0 lg:translate-x-1/2 lg:grid lg:grid-cols-3 gap-2 lg:gap-3 lg:opacity-0 lg:group-hover:visible lg:group-hover:opacity-100 transform-gpu lg:rotate-x-45 lg:origin-top lg:group-hover:rotate-x-0 lg:transition-all lg:duration-500;
+}
+
+.nav-dropdown-item {
+  @apply m-0;
+}
+
+.nav-dropdown-link {
+  @apply block py-2 font-medium text-text-dark transition hover:bg-light px-5 rounded-lg min-w-max;
+}
+.nav-dropdown-link.active {
+  @apply bg-light;
+}

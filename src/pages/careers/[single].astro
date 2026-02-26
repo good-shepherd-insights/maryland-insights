@@ -1,0 +1,252 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import Share from "@/components/Share.astro";
+import Base from "@/layouts/Base.astro";
+import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import CallToAction from "@/partials/CallToAction.astro";
+import PageHeader from "@/partials/PageHeader.astro";
+import { render } from "astro:content";
+
+export async function getStaticPaths() {
+  const careers = await getSinglePage("careers");
+
+  const paths = careers.map((career) => ({
+    params: {
+      single: career.id,
+    },
+    props: { career },
+  }));
+  return paths;
+}
+
+const { career } = Astro.props;
+const { title, employment_type, experience_level, salary_range, location } =
+  career.data;
+
+const stats = [
+  {
+    label: "Employment Type",
+    value: employment_type,
+    icon: "/images/icons/clock.svg",
+  },
+  {
+    label: "Experience Level",
+    value: experience_level,
+    icon: "/images/icons/experience.svg",
+  },
+  {
+    label: "Salary Range",
+    value: salary_range,
+    icon: "/images/icons/wallet.svg",
+  },
+  { label: "Location", value: location, icon: "/images/icons/location.svg" },
+];
+
+const { Content, headings } = await render(career);
+
+const validHeadings = headings.filter((heading) => heading.depth === 2 || 3);
+
+const careerData = {
+  department: career.data.department,
+  vacancy: career.data.vacancy,
+  deadline: career.data.deadline,
+};
+
+const pageIndex = await getListPage("contact", "-index");
+const { contact_form } = pageIndex.data;
+---
+
+<Base {...career.data}>
+  <PageHeader title={title} careerData={careerData} />
+  {
+    stats && stats.length > 0 && (
+      <section class="bg-light">
+        <div class="container lg:w-7/12 mx-auto">
+          <ul class="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-border border border-border border-t-0">
+            {stats.map((stat) => (
+              <li class="group p-6 text-center bg-light">
+                <div data-aos="zoom-out-sm" data-aos-delay="200">
+                  <div class="mx-auto mb-4 w-10 h-10 overflow-hidden">
+                    <div class="w-10 h-20 transition duration-500 ease-out group-hover:-translate-y-10 flex flex-col">
+                      <div class="w-10 h-10 flex items-center justify-center">
+                        <ImageMod
+                          src={stat.icon}
+                          alt={stat.label}
+                          width={40}
+                          height={40}
+                        />
+                      </div>
+                      <div
+                        class="w-10 h-10 flex items-center justify-center"
+                        aria-hidden="true"
+                      >
+                        <ImageMod
+                          src={stat.icon}
+                          alt=""
+                          aria-hidden="true"
+                          width={40}
+                          height={40}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-sm text-text-dark/70 mb-1">{stat.label}</p>
+                  <h3 class="h6 mb-2">{stat.value}</h3>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section-sm bg-light">
+    <div
+      class="container flex flex-col lg:flex-row justify-center gap-5 items-start"
+    >
+      {
+        validHeadings.length > 0 && (
+          <aside
+            data-aos="fade-right-sm"
+            data-aos-delay="200"
+            class="bg-body rounded-2xl p-4 shrink-0 max-w-62 lg:sticky top-30 hidden lg:block"
+          >
+            <nav>
+              <small class="font-semibold text-text-dark font-primary text-sm">
+                Table of Contents
+              </small>
+              <ul>
+                {validHeadings.map((heading) => (
+                  <li>
+                    <a
+                      href={`#${heading.slug}`}
+                      class="block py-2 px-2 text-xs hover:bg-light rounded"
+                    >
+                      {heading.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        )
+      }
+      <article
+        data-aos="fade-up-sm"
+        data-aos-delay="200"
+        class="w-full lg:w-7/12 bg-body rounded-2xl px-6 sm:px-8 xl:px-10 py-4"
+      >
+        <div class="content">
+          <Content />
+        </div>
+      </article>
+
+      <aside
+        data-aos="fade-left-sm"
+        data-aos-delay="200"
+        class="w-full lg:w-auto shrink-0 lg:max-w-62 lg:sticky top-30"
+      >
+        <div class="bg-body rounded-2xl p-4">
+          <small class="font-semibold text-text-dark font-primary text-lg">
+            Apply for this position
+          </small>
+
+          <form
+            action={contact_form.form_action}
+            name="apply-for-position"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            enctype="multipart/form-data"
+            class="mt-4 pl-2"
+          >
+            <input type="hidden" name="form-name" value="apply-for-position" />
+            <p class="hidden">
+              <label>
+                Don’t fill this out if you’re human: <input name="bot-field" />
+              </label>
+            </p>
+
+            <input type="hidden" name="position" value={title} />
+            <input type="hidden" name="career_slug" value={career.id} />
+
+            <div class="mb-4">
+              <label for="apply-name" class="form-label">Full name</label>
+              <input
+                id="apply-name"
+                name="name"
+                type="text"
+                class="form-input"
+                placeholder="Your name"
+                required
+              />
+            </div>
+
+            <div class="mb-4">
+              <label for="apply-email" class="form-label">Email</label>
+              <input
+                id="apply-email"
+                name="email"
+                type="email"
+                class="form-input"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+            <div class="mb-5">
+              <label for="apply-cv" class="form-label">CV</label>
+              <div class="relative">
+                <input
+                  id="apply-cv"
+                  name="cv"
+                  type="file"
+                  class="form-input pr-10"
+                  accept=".pdf,.doc,.docx"
+                  required
+                />
+                <svg
+                  class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-text-dark/70"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 1 1-2.83-2.83l8.49-8.48"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-sm btn-dark w-full rounded-full"
+            >
+              Submit application
+            </button>
+          </form>
+        </div>
+
+        <!-- Social Share  -->
+        <div class="bg-body rounded-2xl p-4 mt-5">
+          <small class="font-semibold text-text-dark font-primary text-sm">
+            Share
+          </small>
+          <Share
+            slug={career.id}
+            className="space-x-5 mt-2 text-xl pl-2"
+            title={career.data.title}
+            description={career.data.description}
+          />
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <CallToAction />
+</Base>

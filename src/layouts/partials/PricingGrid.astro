@@ -1,0 +1,258 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import { getListPage } from "@/lib/contentParser.astro";
+
+const sectionData = await getListPage("pricingSection", "pricing");
+if (!sectionData.data.enable) return null;
+const { title, plans, plans_labels } = sectionData.data;
+const { haveDivider = false, background } = Astro.props;
+---
+
+<section
+  class={`section-sm ${haveDivider && "section-divider"} ${background}`}
+  style="--section-divider-color: var(--color-body)"
+>
+  <div class="container">
+    <!-- PRICING HEADER -->
+    <div class="flex flex-col items-center gap-8 lg:gap-12">
+      <h2
+        class="mb-3 text-center text-balance lg:w-[80%] xl:w-[50%]"
+        data-aos="fade-up-sm"
+        data-aos-delay="100"
+        set:html={markdownify(title)}
+      />
+
+      <!-- TOGGLER -->
+      <div class="text-center mb-12" data-aos="fade-up-sm" data-aos-delay="100">
+        <div class="flex items-center gap-4">
+          <span class="text-base text-text-dark font-medium"
+            >{plans_labels[0]}</span
+          >
+          <label
+            class="inline-flex items-center cursor-pointer"
+            for="pricing-switch"
+          >
+            <input
+              type="checkbox"
+              value=""
+              id="pricing-switch"
+              aria-label="pricing switch"
+              class="sr-only peer pricing-check"
+            />
+            <div
+              class="transition-all duration-1000 relative w-12 h-6 bg-body border border-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-5.5 rtl:peer-checked:after:-translate-x-5 peer-checked:after:border-secondary after:content-[''] after:absolute after:top-0.5 after:start-0.75 after:bg-primary after:border-primary after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all after:duration-500 after:ease-in-out peer-checked:bg-primary/20"
+            >
+            </div>
+          </label>
+          <span class="text-base text-text-dark font-medium"
+            >{plans_labels[1]}</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICING CARDS -->
+    <div class="grid md:grid-cols-2 xl:grid-cols-4 justify-center gap-6">
+      {
+        plans &&
+          plans.length &&
+          plans.map((plan, index) => {
+            return (
+              <div
+                data-aos="fade-up-sm"
+                data-aos-delay={index * 100}
+                class={`p-8 flex flex-col justify-between relative ${plan.isPopular ? "bg-dark text-white" : `${background ? "bg-body" : "bg-light"} text-text-dark rounded-xl`}`}
+              >
+                {plan.isPopular && (
+                  <>
+                    <svg
+                      class="absolute left-0 top-px -translate-y-full w-full h-5 text-dark"
+                      viewBox="0 0 385 19"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M248.975 0C259.685 0 268.428 8.41891 268.949 19H0C0.521052 8.41891 9.26425 0 19.9746 0C28.8343 0 36.3474 5.76112 38.9746 13.7412C41.6018 5.76112 49.1149 0 57.9746 0C67.4101 0 75.3183 6.5342 77.4238 15.3242C79.3357 6.56136 87.1384 0 96.4746 0C105.728 0 113.476 6.44493 115.475 15.0908C117.473 6.44493 125.221 0 134.475 0C143.728 0 151.476 6.44493 153.475 15.0908C155.473 6.44493 163.221 0 172.475 0C181.811 0 189.612 6.56146 191.524 15.3242C193.63 6.53408 201.539 0 210.975 0C219.834 0 227.347 5.76112 229.975 13.7412C232.602 5.76112 240.115 0 248.975 0ZM364.975 0C375.685 0 384.428 8.41891 384.949 19H268.981C269.247 8.46153 277.872 0 288.475 0C297.811 0 305.612 6.56146 307.524 15.3242C309.63 6.53408 317.539 0 326.975 0C335.834 0 343.347 5.76112 345.975 13.7412C348.602 5.76112 356.115 0 364.975 0Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+
+                    <svg
+                      class="absolute left-0 bottom-px translate-y-full rotate-180 w-full h-5 text-dark"
+                      viewBox="0 0 385 19"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M248.975 0C259.685 0 268.428 8.41891 268.949 19H0C0.521052 8.41891 9.26425 0 19.9746 0C28.8343 0 36.3474 5.76112 38.9746 13.7412C41.6018 5.76112 49.1149 0 57.9746 0C67.4101 0 75.3183 6.5342 77.4238 15.3242C79.3357 6.56136 87.1384 0 96.4746 0C105.728 0 113.476 6.44493 115.475 15.0908C117.473 6.44493 125.221 0 134.475 0C143.728 0 151.476 6.44493 153.475 15.0908C155.473 6.44493 163.221 0 172.475 0C181.811 0 189.612 6.56146 191.524 15.3242C193.63 6.53408 201.539 0 210.975 0C219.834 0 227.347 5.76112 229.975 13.7412C232.602 5.76112 240.115 0 248.975 0ZM364.975 0C375.685 0 384.428 8.41891 384.949 19H268.981C269.247 8.46153 277.872 0 288.475 0C297.811 0 305.612 6.56146 307.524 15.3242C309.63 6.53408 317.539 0 326.975 0C335.834 0 343.347 5.76112 345.975 13.7412C348.602 5.76112 356.115 0 364.975 0Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </>
+                )}
+
+                <div>
+                  <h3
+                    class={`h5 mb-2 ${plan.isPopular ? "text-white" : "text-text-dark"} flex flex-wrap gap-2 justify-between items-center`}
+                  >
+                    <span>{markdownify(plan.title)}</span>
+                    {plan.isPopular && (
+                      <span class="px-3 py-1 text-xs font-medium bg-primary text-text-dark rounded-full h-6">
+                        Popular
+                      </span>
+                    )}
+                  </h3>
+                  <p
+                    class={`mb-8 ${plan.isPopular ? "text-text-light" : "text-text-dark/80"}`}
+                    set:html={markdownify(plan.description)}
+                  />
+                  <div class="flex justify-between items-center flex-wrap gap-2">
+                    {/* PRICE NUMBERS */}
+                    <div class="flex items-baseline gap-2">
+                      <h3
+                        class={`flex items-center text-h1 font-bold ${plan.isPopular ? "text-white" : "text-text-dark"}`}
+                      >
+                        <span>{plan.price_prefix}</span>
+                        <span
+                          class="data-count"
+                          data-count-yearly={plan.price.yearly.amount}
+                          data-count-monthly={plan.price.monthly.amount}
+                          set:html={plan.price.monthly.amount}
+                        />
+                      </h3>
+                      <div
+                        class={`flex flex-col gap-1 ${plan.isPopular ? "text-text-light" : "text-text-dark/80"}`}
+                      >
+                        <span class="text-monthly">
+                          /{plan.price.monthly.period}
+                        </span>
+                        <span class="text-yearly hidden">
+                          /{plan.price.yearly.period}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <hr
+                    class={`mt-4 mb-8 ${plan.isPopular ? "border-border/30" : "border-border/70"}`}
+                  />
+                  <ul class="flex flex-col gap-4">
+                    {plan.features &&
+                      plan.features.length &&
+                      plan.features.map((feature) => {
+                        return (
+                          <li class="flex items-baseline gap-x-2 text-sm">
+                            <svg
+                              width="15"
+                              height="15"
+                              viewBox="0 0 15 15"
+                              fill="none"
+                              class={
+                                plan.isPopular
+                                  ? "text-text-light"
+                                  : "text-text-dark/80"
+                              }
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M7.3125 0C5.86623 0 4.45243 0.428871 3.2499 1.23238C2.04736 2.03589 1.1101 3.17794 0.556634 4.51413C0.00316839 5.85031 -0.141643 7.32061 0.140511 8.7391C0.422665 10.1576 1.11911 11.4605 2.14178 12.4832C3.16446 13.5059 4.46742 14.2023 5.88591 14.4845C7.30439 14.7666 8.77469 14.6218 10.1109 14.0684C11.4471 13.5149 12.5891 12.5776 13.3926 11.3751C14.1961 10.1726 14.625 8.75878 14.625 7.3125C14.623 5.37373 13.8519 3.51496 12.481 2.14404C11.11 0.773127 9.25127 0.00204737 7.3125 0ZM10.523 6.02297L6.58547 9.96047C6.53323 10.0128 6.47119 10.0543 6.40291 10.0826C6.33462 10.1109 6.26142 10.1254 6.1875 10.1254C6.11358 10.1254 6.04039 10.1109 5.9721 10.0826C5.90381 10.0543 5.84178 10.0128 5.78953 9.96047L4.10203 8.27297C3.99649 8.16742 3.93719 8.02427 3.93719 7.875C3.93719 7.72573 3.99649 7.58258 4.10203 7.47703C4.20758 7.37148 4.35074 7.31219 4.5 7.31219C4.64927 7.31219 4.79242 7.37148 4.89797 7.47703L6.1875 8.76727L9.72703 5.22703C9.7793 5.17477 9.84134 5.13331 9.90962 5.10503C9.97791 5.07674 10.0511 5.06219 10.125 5.06219C10.1989 5.06219 10.2721 5.07674 10.3404 5.10503C10.4087 5.13331 10.4707 5.17477 10.523 5.22703C10.5752 5.27929 10.6167 5.34134 10.645 5.40962C10.6733 5.4779 10.6878 5.55109 10.6878 5.625C10.6878 5.69891 10.6733 5.7721 10.645 5.84038C10.6167 5.90866 10.5752 5.97071 10.523 6.02297Z"
+                                fill="currentColor"
+                              />
+                            </svg>
+
+                            <span
+                              class={`font-medium ${plan.isPopular ? "text-text-light" : "text-text-dark/80"}`}
+                            >
+                              {feature}
+                            </span>
+                          </li>
+                        );
+                      })}
+                  </ul>
+                </div>
+
+                {/* CTA BUTTON */}
+                {plan.cta.enable && (
+                  <a
+                    href={plan.cta.link}
+                    class={`btn w-full mt-6 text-center ${plan.isPopular ? "btn-primary bg-body border-body text-text-dark" : "btn-dark rounded-full"}`}
+                  >
+                    <span>{plan.cta.text}</span>
+                  </a>
+                )}
+              </div>
+            );
+          })
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  function pricingInit() {
+    // Select the toggle switch element
+    const toggleSwitch =
+      document.querySelector<HTMLInputElement>(".pricing-check");
+    const numbers = document.querySelectorAll<HTMLDivElement>(".data-count");
+    toggleSwitch &&
+      toggleSwitch.addEventListener("change", function () {
+        if (toggleSwitch.checked) {
+          numbers.forEach(function (number) {
+            const yearlyCount = number.getAttribute("data-count-yearly");
+            if (yearlyCount) {
+              number.innerHTML = yearlyCount;
+              animateCounter(number, parseInt(yearlyCount, 10));
+            }
+          });
+          toggleVisibility(".text-yearly", "d-block", "hidden");
+          toggleVisibility(".text-monthly", "hidden", "d-block");
+        } else {
+          numbers.forEach(function (number) {
+            const monthlyCount = number.getAttribute("data-count-monthly");
+            if (monthlyCount) {
+              number.innerHTML = monthlyCount;
+              animateCounter(number, parseInt(monthlyCount, 10));
+            }
+          });
+          toggleVisibility(".text-monthly", "block", "hidden");
+          toggleVisibility(".text-yearly", "hidden", "d-block");
+        }
+      });
+
+    function animateCounter(element: HTMLElement, endValue: number) {
+      let startValue = 0;
+      const duration = 300;
+      let startTime: number | null = null;
+
+      function step(currentTime: number) {
+        if (!startTime) startTime = currentTime;
+        const progress = currentTime - startTime;
+        const value =
+          Math.min(progress / duration, 1) * (endValue - startValue) +
+          startValue;
+        element.innerHTML = Math.ceil(value).toString();
+        if (progress < duration) {
+          requestAnimationFrame(step);
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+
+    function toggleVisibility(
+      selector: string,
+      addClass: string,
+      removeClass: string
+    ) {
+      const elements = document.querySelectorAll<HTMLElement>(selector);
+      elements.forEach(function (element) {
+        element.classList.add(addClass);
+        element.classList.remove(removeClass);
+      });
+    }
+  }
+  document.addEventListener("astro:page-load", pricingInit);
+</script>

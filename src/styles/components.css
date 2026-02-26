@@ -1,0 +1,252 @@
+/* section style */
+.section {
+  @apply py-30 xl:py-36;
+}
+.section-sm {
+  @apply py-20 xl:py-24;
+}
+/* container */
+.container {
+  @apply mx-auto xl:max-w-380! px-4;
+}
+
+/* social icons */
+.social-icons {
+  @apply space-x-3;
+}
+.social-icons li {
+  @apply inline-block;
+}
+.social-icons li a {
+  @apply flex h-9 w-9 items-center justify-center text-center leading-9 text-text-dark;
+}
+.social-icons li a svg {
+  @apply h-5 w-5;
+}
+
+/* notice */
+.notice {
+  @apply mb-6 rounded-lg border px-8 py-6;
+}
+
+.notice-head {
+  @apply flex items-center;
+}
+
+.notice-head svg {
+  @apply mr-3;
+}
+
+.notice-head p {
+  @apply font-secondary text-xl font-semibold text-text-dark;
+}
+
+.notice-body {
+  @apply mt-3;
+}
+
+.notice-body p {
+  @apply my-0;
+}
+
+.notice.note {
+  @apply text-[#1B83E2];
+  @apply border-current;
+}
+
+.notice.tip {
+  @apply text-[#40D294];
+  @apply border-current;
+}
+
+.notice.info {
+  @apply text-[#E3A72C];
+  @apply border-current;
+}
+
+.notice.warning {
+  @apply text-[#DB2C23];
+  @apply border-current;
+}
+
+/* tab */
+.tab {
+  @apply overflow-hidden rounded-lg border border-border;
+}
+
+.tab-nav {
+  @apply flex border-b border-border bg-light   !m-0 !list-none;
+}
+
+.tab-nav-item {
+  @apply cursor-pointer border-b-[3px] border-border py-2 text-lg text-text-dark opacity-80  !my-0 !px-8;
+}
+
+.tab-nav-item.active {
+  @apply border-b-[3px] border-dark opacity-100;
+}
+
+.tab-content {
+  @apply px-5;
+}
+
+.tab-content-panel {
+  @apply p-8;
+}
+
+.tab-content-panel p {
+  @apply mb-0;
+}
+
+.tab-content-panel.active {
+  @apply block;
+}
+
+/* accordion */
+.accordion {
+  @apply mb-6 overflow-hidden rounded-lg border border-border bg-light;
+}
+
+.accordion-header {
+  @apply flex w-full cursor-pointer items-center justify-between px-8 py-4 text-lg text-text-dark;
+}
+
+.accordion-icon {
+  @apply h-[.8em] w-[.8em] rotate-[-90deg] transition-transform duration-200;
+}
+
+.accordion-content {
+  @apply max-h-0 overflow-hidden px-8 py-0;
+}
+
+.accordion.active .accordion-icon {
+  @apply rotate-0;
+}
+
+.accordion.active .accordion-content {
+  @apply max-h-screen;
+}
+
+/* modal */
+.modal {
+  @apply fixed inset-0 z-40 hidden h-full w-full overflow-auto;
+}
+
+.modal-overlay {
+  @apply fixed inset-0 z-40 hidden h-full w-full bg-black/40;
+}
+
+.modal-content {
+  @apply relative top-1/2 z-50 mx-auto max-w-[90%] -translate-y-1/2 rounded-lg bg-body p-8;
+}
+
+.modal-close {
+  @apply absolute right-3 top-3 h-8 w-8 rounded-full bg-light text-center leading-8 text-text-dark;
+}
+
+/* 4 column background grid Homepage*/
+.bg-4col-grid {
+  /* Inset the grid from the edges responsively */
+  --grid-inset: clamp(16px, 6vw, 72px);
+  --grid-inner: calc(100% - (var(--grid-inset) * 2));
+  /* Equally spaced positions within the inset area */
+  --p1: calc(var(--grid-inset) + (var(--grid-inner) * 0.125));
+  --p2: calc(var(--grid-inset) + (var(--grid-inner) * 0.375));
+  --p3: calc(var(--grid-inset) + (var(--grid-inner) * 0.625));
+  --p4: calc(var(--grid-inset) + (var(--grid-inner) * 0.875));
+  --grid-color: color-mix(in srgb, var(--color-border) 40%, transparent);
+  background-image:
+    linear-gradient(to bottom, var(--grid-color), var(--grid-color)),
+    linear-gradient(to bottom, var(--grid-color), var(--grid-color)),
+    linear-gradient(to bottom, var(--grid-color), var(--grid-color)),
+    linear-gradient(to bottom, var(--grid-color), var(--grid-color));
+  background-size:
+    1px 100%,
+    1px 100%,
+    1px 100%,
+    1px 100%;
+  background-position:
+    var(--p1) 0,
+    var(--p2) 0,
+    var(--p3) 0,
+    var(--p4) 0;
+  background-repeat: no-repeat;
+}
+
+/* trusted brands */
+.fade-overlay-carousel {
+  @apply relative;
+}
+.fade-overlay-carousel::before {
+  @apply absolute left-0 top-0 z-10 h-full w-20 bg-linear-to-r from-light to-transparent content-[""];
+}
+.fade-overlay-carousel::after {
+  @apply absolute right-0 top-0 z-10 h-full w-20 bg-linear-to-l from-light to-transparent content-[""];
+}
+
+/* call to action  */
+.nested-circles {
+  @apply absolute inset-y-0 h-[200%] -top-[20%] transition-all duration-500 aspect-square left-1/2 -translate-x-1/2 rounded-full -z-10 border border-border;
+
+  .nested-circle {
+    @apply border border-border w-full h-full rounded-full absolute inset-0 left-1/2 top-1/2;
+
+    .nested-circle-icon {
+      @apply absolute rounded-full bg-white shadow-2xl grid place-items-center p-2;
+    }
+  }
+  .nested-circle:nth-child(1) {
+    @apply w-[80%]! h-[80%]! border-border;
+    .nested-circle-icon:nth-child(1) {
+      @apply left-0 top-1/2;
+    }
+    .nested-circle-icon:nth-child(2) {
+      @apply right-0 top-1/2;
+    }
+    .nested-circle-icon:nth-child(3) {
+      @apply top-0 left-1/2;
+    }
+    .nested-circle-icon:nth-child(4) {
+      @apply bottom-0 left-1/2;
+    }
+  }
+  .nested-circle:nth-child(2) {
+    @apply w-[60%]! h-[60%]! border-border;
+    .nested-circle-icon:nth-child(1) {
+      @apply left-0 top-1/2;
+    }
+    .nested-circle-icon:nth-child(2) {
+      @apply right-0 top-1/2;
+    }
+    .nested-circle-icon:nth-child(3) {
+      @apply top-0 left-1/2;
+    }
+    .nested-circle-icon:nth-child(4) {
+      @apply bottom-0 left-1/2;
+    }
+  }
+}
+
+/* content style */
+.content {
+  @apply prose max-w-none;
+  @apply prose-headings:mb-[.3em] prose-headings:mt-[.6em] prose-headings:text-text-dark;
+  @apply prose-headings:scroll-mt-28;
+  @apply prose-h1:text-h3-sm md:prose-h1:text-h3;
+  @apply prose-h2:text-h4-sm md:prose-h2:text-h4;
+  @apply prose-h3:text-h5-sm md:prose-h3:text-h5;
+  @apply prose-p:text-base prose-p:text-text;
+  @apply prose-a:text-text prose-a:[&.btn]:no-underline;
+  @apply prose-img:max-w-full prose-img:rounded-lg;
+  @apply prose-strong:text-text-dark;
+  @apply prose-hr:border-border;
+  @apply prose-pre:rounded-lg prose-pre:bg-light;
+  @apply prose-code:text-text-dark;
+  @apply prose-li:text-text;
+  @apply prose-blockquote:rounded-lg prose-blockquote:border prose-blockquote:border-l-[10px] prose-blockquote:border-primary prose-blockquote:bg-light prose-blockquote:px-8 prose-blockquote:py-10 prose-blockquote:font-secondary prose-blockquote:text-2xl prose-blockquote:not-italic prose-blockquote:text-text-dark;
+  @apply prose-table:relative prose-table:overflow-hidden prose-table:rounded-lg prose-table:before:absolute prose-table:before:left-0 prose-table:before:top-0 prose-table:before:h-full prose-table:before:w-full prose-table:before:rounded-[inherit] prose-table:before:border prose-table:before:border-border prose-table:before:content-[""];
+  @apply prose-thead:border-border prose-thead:bg-light;
+  @apply prose-th:relative prose-th:z-10 prose-th:px-4 prose-th:py-[18px] prose-th:text-text-dark;
+  @apply prose-tr:border-border;
+  @apply prose-td:relative prose-td:z-10 prose-td:px-3 prose-td:py-[18px];
+}

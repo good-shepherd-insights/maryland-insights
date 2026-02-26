@@ -1,0 +1,128 @@
+---
+import dateFormat from "@/lib/utils/dateFormat";
+import { markdownify } from "@/lib/utils/textConverter";
+import ImageMod from "./ImageMod.astro";
+
+const {
+  data,
+  id,
+  showImage = true,
+  hasDarkArrow = false,
+  smallImage = false,
+} = Astro.props;
+const { title, description, image, button, date, author } = data;
+---
+
+<div class="bg-body rounded-2xl p-6 group relative">
+  {
+    showImage && (
+      <div data-aos="zoom-out-sm" data-aos-delay="350">
+        <ImageMod
+          src={image}
+          width={smallImage ? 172 : 500}
+          height={smallImage ? 40 : 400}
+          alt={title}
+          class="rounded-lg object-cover mb-6"
+        />
+      </div>
+    )
+  }
+
+  {
+    date && author && (
+      <div class="flex items-center gap-3 mb-4 text-xs text-text-light">
+        <span>{author.name}</span>
+        <span class="text-text-light/50">•</span>
+        <time datetime={dateFormat(date)}>{dateFormat(date)}</time>
+      </div>
+    )
+  }
+
+  <h3
+    class={showImage ? "mb-3 h5 font-medium" : "mb-3 h5 font-medium"}
+    set:html={markdownify(title)}
+  />
+
+  <p class="text-sm line-clamp-2" set:html={markdownify(description)} />
+
+  <a href={`${id ? id : button.link}`} class="before:absolute before:inset-0">
+    <div
+      class={`flex justify-between relative mt-10 ${hasDarkArrow ? "text-dark" : "text-light"}`}
+    >
+      <span class="text-xs text-dark"
+        >{`${id ? "Learn More" : button.label}`}</span
+      >
+
+      <span
+        class={`absolute h-20.75 w-27.75 ${smallImage ? "-bottom-8 -right-6.5" : "-bottom-6.5 -right-6.5"}`}
+      >
+        <svg
+          class="h-full w-full"
+          viewBox="0 0 111 83"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M110.185 82.7881H0C8.49637 82.7881 16.0655 77.4197 18.875 69.4014L32.667 30.04C34.7742 24.0263 40.451 20 46.8232 20H90.1846C101.23 20 110.185 11.0457 110.185 0V82.7881Z"
+            fill="currentColor"></path>
+        </svg>
+
+        <span class="sr-only">{`${id ? "Learn More" : button.label}`}</span>
+        <span
+          class="absolute left-[60%] top-[60%] h-9.5 w-9.5 -translate-x-1/2 -translate-y-1/2 overflow-hidden"
+        >
+          <span
+            class="absolute inset-0 flex items-center justify-center transition-transform duration-300 translate-x-0 group-hover:translate-x-full"
+          >
+            <svg
+              width="38"
+              height="38"
+              viewBox="0 0 38 38"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5.9375 19H32.0625"
+                stroke="var(--color-text)"
+                stroke-width="2.625"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+              <path
+                d="M21.375 8.3125L32.0625 19L21.375 29.6875"
+                stroke="var(--color-text)"
+                stroke-width="2.625"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </span>
+
+          <span
+            class="absolute inset-0 flex items-center justify-center transition-transform duration-300 -translate-x-full group-hover:translate-x-0"
+            aria-hidden="true"
+          >
+            <svg
+              width="38"
+              height="38"
+              viewBox="0 0 38 38"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5.9375 19H32.0625"
+                stroke="var(--color-text)"
+                stroke-width="2.625"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+              <path
+                d="M21.375 8.3125L32.0625 19L21.375 29.6875"
+                stroke="var(--color-text)"
+                stroke-width="2.625"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </span>
+        </span>
+      </span>
+    </div>
+  </a>
+</div>

@@ -1,0 +1,81 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  features: CollectionEntry<"pricing">["data"]["comparison_section"]["comparison_table"]["features"];
+  planNames: CollectionEntry<"pricing">["data"]["comparison_section"]["plan_names"];
+};
+const { features, planNames } = Astro.props;
+---
+
+<div class="md:hidden flex flex-col gap-8">
+  {
+    planNames.map((plan, planIndex) => (
+      <div
+        data-aos="fade-up-sm"
+        class="rounded-xl border border-border overflow-hidden"
+      >
+        <table class="min-w-full text-left border-collapse">
+          <thead class="text-text-light bg-light">
+            <tr>
+              <th
+                colspan="2"
+                class="w-[40%] h6 font-semibold p-6 border-b border-r border-border"
+              >
+                Features
+              </th>
+              <th class="w-[20%] text-xl leading-8.5 font-semibold p-6 border-b border-border text-center">
+                <p class="flex justify-between gap-2">
+                  <span>{plan.label}</span>
+                  <data class="text-text-dark font-bold" value={plan.price}>
+                    {plan.price}
+                  </data>
+                </p>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {features.map((feature, featureIndex) => {
+              const value = feature.values?.[planIndex] ?? "—";
+              const isLastRow = featureIndex === features.length - 1;
+
+              return (
+                <tr class="even:bg-light">
+                  <td
+                    colspan="2"
+                    class={`w-[40%] p-6 border-r border-border ${!isLastRow ? "border-b border-border" : ""}`}
+                  >
+                    <h6>{feature.name}</h6>
+                    <p class="mt-1">{feature.description}</p>
+                  </td>
+                  <td
+                    class={`w-[20%] p-6 text-center ${!isLastRow ? "border-b border-border" : ""}`}
+                  >
+                    {value === "active" ? (
+                      <img
+                        class="mx-auto"
+                        src="/images/icons/active.svg"
+                        alt=""
+                        aria-hidden="true"
+                      />
+                    ) : value === "cross" ? (
+                      <img
+                        class="mx-auto"
+                        src="/images/icons/cross.svg"
+                        alt=""
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      value
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    ))
+  }
+</div>

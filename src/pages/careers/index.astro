@@ -1,0 +1,303 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import Base from "@/layouts/Base.astro";
+import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import { humanize, markdownify, slugify } from "@/lib/utils/textConverter";
+import CallToAction from "@/partials/CallToAction.astro";
+import Facts from "@/partials/Facts.astro";
+import PageHeader from "@/partials/PageHeader.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+
+const pageIndex = await getListPage("careers", "-index");
+if (pageIndex.data.draft) return Astro.redirect("/404");
+
+const { title, description, image, section_title, gallery, facts_section } =
+  pageIndex.data;
+
+const jobs = await getSinglePage("careers");
+const publishedJobs = jobs.filter((job) => !job.data.draft);
+const sortedJobs = sortByDate(publishedJobs);
+
+const departmentLabels = Array.from(
+  new Set(
+    publishedJobs
+      .map((job) => (typeof job.data.department === "string" ? job.data.department.trim() : ""))
+      .filter(Boolean) as string[],
+  ),
+).sort((a, b) => a.localeCompare(b));
+
+const hasOtherDepartment = publishedJobs.some(
+  (job) => !job.data.department || (typeof job.data.department === "string" && !job.data.department.trim()),
+);
+
+const departmentGroups: Array<{ key: string; label: string }> = [
+  ...departmentLabels.map((label) => ({
+    key: slugify(label).toLocaleLowerCase(),
+    label,
+  })),
+  ...(hasOtherDepartment ? [{ key: "other", label: "Other" }] : []),
+];
+---
+
+<Base {...pageIndex.data}>
+  <PageHeader title={title} description={description} />
+  <section class="section-sm bg-light">
+    <div class="container">
+      {
+        section_title && (
+          <h2
+                data-aos="fade-up-sm"
+      data-aos-delay="150"
+            class="lg:w-[80%] xl:w-[60%] mx-auto text-center text-balance"
+            set:html={markdownify(section_title)}
+          />
+        )
+      }
+      {
+        image && (
+         <div       data-aos="zoom-in-sm"
+      data-aos-delay="200">
+           <ImageMod
+            src={image}
+            alt={title}
+            class="mt-12 mx-auto rounded-2xl lg:rounded-3xl"
+            width={1300}
+            height={601}
+          />
+         </div>
+        )
+      }
+    </div>
+  </section>
+
+
+  {facts_section && (
+  <div class="border-t border-border bg-light">
+    <div class="container">
+      <div class="flex flex-col gap-6 lg:flex-row lg:justify-between max-lg:text-center items-center py-4">
+      <h2
+            data-aos="fade-right-sm"
+      data-aos-delay="200"
+        class="h4 w-full"
+        set:html={markdownify(facts_section.title)}
+      />
+      <p
+            data-aos="fade-left-sm"
+      data-aos-delay="200"
+        class="text-balance lg:ml-auto lg:text-right text-sm"
+        set:html={markdownify(facts_section.description)}
+      />
+    </div>
+    </div>
+  </div>
+  <Facts data={facts_section} />)}
+
+  <section class="section bg-light pb-0"></section>
+
+  {
+    gallery && gallery.enable && (
+      <section
+        class="section section-divider bg-body"
+        style="--section-divider-color: var(--color-body)"
+      >
+        <div class="container">
+          <h2
+                data-aos="fade-up-sm"
+      data-aos-delay="150"
+            class="lg:w-[80%] xl:w-[60%] mx-auto text-center text-balance"
+            set:html={markdownify(gallery.title)}
+          />
+       <div       data-aos="zoom-in-sm"
+      data-aos-delay="200">
+           <ImageMod
+            src={gallery.image}
+            alt={gallery.title}
+            class="mt-12 mx-auto rounded-2xl lg:rounded-3xl"
+            width={1300}
+            height={601}
+          />
+       </div>
+        </div>
+      </section>
+    )
+  }
+
+    <!-- All careers with shuffle animation  -->
+  <section
+    class="section bg-dark section-divider"
+    style="--section-divider-color: var(--color-dark)"
+  >
+    <div class="container">
+        <h2
+          data-aos="fade-up-sm"
+          data-aos-delay="150" class="mb-12 text-center xl:w-[60%] mx-auto text-balance text-white"
+          set:html={markdownify("Available positions to join")}
+          />
+
+            <ul
+            data-aos="fade-up-sm"
+            data-aos-delay="150"
+            class="flex justify-center items-center flex-wrap shuffle-filter">
+              <li class="selected" data-target="all">
+                <button
+                  type="button"
+                  class={`btn btn-primary btn-sm border-2 hover:-translate-y-0.75 transition-transform m-3 inline-block capitalize py-3 rounded-full`}
+                >
+                  All Together
+                </button>
+              </li>
+              {departmentGroups.map((group) => (
+                <li data-target={group.key}>
+                  <button
+                    type="button"
+                    class={`btn btn-outline btn-sm border-2 bg-body hover:-translate-y-0.75 transition-transform m-3 inline-block capitalize py-3 rounded-full`}
+                  >
+                    {humanize(group.label)}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+          <div data-aos="fade-up-sm" data-aos-delay="250">
+              <ul class="shuffle-container relative flex flex-wrap mt-6 xl:w-[80%] mx-auto">
+              <li
+                class="shuffle-sizer w-full md:w-1/2 lg:w-1/3 p-3"
+                aria-hidden="true"
+              />
+              {sortedJobs.map((job) => {
+                const departmentRaw = job?.data?.department;
+                const department =
+                  typeof departmentRaw === "string" ? departmentRaw.trim() : "";
+                const departmentKey = department
+                  ? slugify(department).toLocaleLowerCase()
+                  : "other";
+
+                const jobGroups = [departmentKey, "all"];
+
+                return (
+                  <li
+                    class="shuffle-item w-full p-6 xl:p-10 rounded-2xl bg-white mb-5 lg:mb-7 last:mb-0"
+                    data-groups={JSON.stringify(jobGroups)}>
+                      <div class="flex flex-wrap justify-between items-center gap-6">
+                        <div>
+                          <h3 class="h6 mb-2" set:html={markdownify(job.data.title)}/>
+                          <p class="mb-4 text-sm text-text-light line-clamp-3" set:html={markdownify(job.data.department)}/>
+                        </div>
+
+                        <ul class="flex gap-6 flex-wrap">
+                          {job.data.employment_type && (
+                            <li class="text-sm text-text-dark/70">
+                              <svg class="inline w-5 h-5 -mt-1 mr-1" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="18" cy="18" r="15" stroke="#121212" stroke-width="2"/>
+                                <path d="M18 12V18L21 21" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                               {job.data.employment_type}
+                            </li>
+                          )}
+                          {job.data.salary_range && (
+                            <li class="text-sm text-text-dark/70">
+                              <svg class="inline w-5 h-5 -mt-1 mr-1" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M24 21C24 22.2426 25.0074 23.25 26.25 23.25C27.4926 23.25 28.5 22.2426 28.5 21C28.5 19.7574 27.4926 18.75 26.25 18.75C25.0074 18.75 24 19.7574 24 21Z" stroke="#121212" stroke-width="2"/>
+                                <path d="M15 10.5H24C28.2426 10.5 30.364 10.5 31.682 11.818C33 13.136 33 15.2574 33 19.5V22.5C33 26.7426 33 28.864 31.682 30.182C30.364 31.5 28.2426 31.5 24 31.5H15C9.34315 31.5 6.51472 31.5 4.75736 29.7426C3 27.9853 3 25.1569 3 19.5V16.5C3 10.8431 3 8.01472 4.75736 6.25736C6.51472 4.5 9.34315 4.5 15 4.5H21C22.395 4.5 23.0924 4.5 23.6647 4.65333C25.2176 5.06944 26.4306 6.2824 26.8467 7.83531C27 8.40756 27 9.10504 27 10.5" stroke="#121212" stroke-width="2" stroke-linecap="round"/>
+                              </svg>
+
+                              {job.data.salary_range}
+                            </li>
+                          )}
+
+                            {job.data.location && (
+                            <li class="text-sm text-text-dark/70 mb-2">
+                              <svg class="inline w-5 h-5 -mt-1 mr-1" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20.4266 32.0504C19.7761 32.6595 18.9066 33 18.0017 33C17.0968 33 16.2273 32.6595 15.5767 32.0504C9.61953 26.439 1.63614 20.1704 5.5294 11.0695C7.63445 6.14873 12.6875 3 18.0017 3C23.3158 3 28.3689 6.14873 30.4739 11.0695C34.3623 20.1589 26.3985 26.4583 20.4266 32.0504Z" stroke="#121212" stroke-width="2"/>
+                                <path d="M23.25 16.5C23.25 19.3995 20.8995 21.75 18 21.75C15.1005 21.75 12.75 19.3995 12.75 16.5C12.75 13.6005 15.1005 11.25 18 11.25C20.8995 11.25 23.25 13.6005 23.25 16.5Z" stroke="#121212" stroke-width="2"/>
+                              </svg>
+                                {job.data.location}
+                            </li>
+                          )}
+                        </ul>
+
+                        <div>
+                          <a
+                            href={`/careers/${job.id}`}
+                            class="btn btn-dark rounded-full text-sm"
+                          >
+                            <span>Apply Now</span>
+                            <svg class="inline ml-1" width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M1 6.36401C0.447715 6.36401 0 6.81173 0 7.36401C0 7.9163 0.447715 8.36401 1 8.36401V7.36401V6.36401ZM17.7071 8.07112C18.0976 7.6806 18.0976 7.04743 17.7071 6.65691L11.3431 0.292946C10.9526 -0.0975785 10.3195 -0.0975785 9.92893 0.292946C9.53841 0.68347 9.53841 1.31664 9.92893 1.70716L15.5858 7.36401L9.92893 13.0209C9.53841 13.4114 9.53841 14.0446 9.92893 14.4351C10.3195 14.8256 10.9526 14.8256 11.3431 14.4351L17.7071 8.07112ZM1 7.36401V8.36401H17V7.36401V6.36401H1V7.36401Z" fill="white"/>
+                            </svg>
+
+                          </a>
+                          </div>
+                      </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+    </div>
+  </section>
+  <CallToAction />
+</Base>
+
+
+<script>
+  import Shuffle from "shufflejs";
+
+  document.addEventListener("astro:page-load", () => {
+    const element = document.querySelector(
+      ".shuffle-container"
+    ) as HTMLElement | null;
+    if (!element) return;
+
+    let shuffleInstance = new Shuffle(element, {
+      itemSelector: ".shuffle-item",
+      sizer: element.querySelector(".shuffle-sizer") as HTMLElement,
+    });
+
+    const filter = document.querySelector(".shuffle-filter");
+    if (!filter) return;
+
+    const baseBtnClasses =
+      "btn btn-sm hover:-translate-y-0.75 active:scale-95 transition-transform duration-200 inline-block m-2 capitalize py-2.5 rounded-full text-text-dark";
+    const activeBtnClasses = `${baseBtnClasses} btn-primary text-white`;
+    const inactiveBtnClasses = `${baseBtnClasses} btn-outline bg-body`;
+
+    const filtterLists = Array.from(filter.children) as HTMLElement[];
+
+    const setButtonVariant = (listItem: HTMLElement, isSelected: boolean) => {
+      const button = listItem.querySelector(
+        "button"
+      ) as HTMLButtonElement | null;
+      if (!button) return;
+      button.className = isSelected ? activeBtnClasses : inactiveBtnClasses;
+    };
+
+    // Apply correct styles on load ("All Together" is selected by default)
+    filtterLists.forEach((listItem) => {
+      setButtonVariant(listItem, listItem.classList.contains("selected"));
+    });
+
+    filtterLists.forEach((listItem) => {
+      const button = listItem.querySelector(
+        "button"
+      ) as HTMLButtonElement | null;
+      button?.addEventListener("click", function () {
+        filtterLists.forEach((li) => {
+          li.classList.remove("selected");
+          setButtonVariant(li, false);
+        });
+
+        const activeLi = (this as HTMLElement).closest(
+          "li"
+        ) as HTMLElement | null;
+        if (activeLi) {
+          activeLi.classList.add("selected");
+          setButtonVariant(activeLi, true);
+        }
+
+        const keyword = activeLi?.getAttribute("data-target") || "all";
+        shuffleInstance.filter(keyword);
+      });
+    });
+  });
+</script>

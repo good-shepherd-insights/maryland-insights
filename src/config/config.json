@@ -1,0 +1,41 @@
+{
+  "site": {
+    "title": "Novai",
+    "base_url": "https://novai-astro.vercel.app",
+    "base_path": "/",
+    "trailing_slash": false,
+    "favicon": "/images/favicon.png",
+    "logo": "/images/logo.png",
+    "logo_width": "129",
+    "logo_height": "32",
+    "logo_text": "Novai"
+  },
+
+  "params": {
+    "footer_description": "Novai is a real early-stage software looking for an analytics platform that scales with you, check out our stage program.",
+    "copyright": "© {year} [Themefisher](https://themefisher.com/). All Rights Reserved."
+  },
+
+  "navigation_button": {
+    "enable": true,
+    "label": "Get Started",
+    "link": "https://themefisher.com/products/novai-astro"
+  },
+
+  "google_tag_manager": {
+    "enable": false,
+    "gtm_id": "GTM-XXXXXX"
+  },
+
+  "subscription_in_footer": {
+    "enable": true,
+    "mailchimp_form_action": "https://gmail.us4.list-manage.com/subscribe/post?u=463ee871f45d2d93748e77cad&amp;id=a0a2c6d074",
+    "mailchimp_form_name": "b_463ee871f45d2d93748e77cad_a0a2c6d074"
+  },
+
+  "metadata": {
+    "meta_author": "Themefisher",
+    "meta_image": "/images/og-image.png",
+    "meta_description": "Astro AI Agent Template for building AI-powered websites with customizable themes and layouts."
+  }
+}

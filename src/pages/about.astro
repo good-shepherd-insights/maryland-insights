@@ -1,0 +1,88 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import Base from "@/layouts/Base.astro";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import CallToAction from "@/partials/CallToAction.astro";
+import Facts from "@/partials/Facts.astro";
+import PageHeader from "@/partials/PageHeader.astro";
+import Testimonial from "@/partials/Testimonial.astro";
+import TrustedBrands from "@/partials/TrustedBrands.astro";
+
+const pageIndex = await getListPage("about", "-index");
+const { title, description, gallery, facts_section, teams_section } =
+  pageIndex.data;
+
+if (pageIndex.data.draft) return Astro.redirect("/404");
+---
+
+<Base {...pageIndex.data}>
+  <PageHeader title={title} description={description} />
+
+  {
+    gallery.enable && (
+      <section class="section-sm bg-light">
+        <div class="container">
+          <h2
+          data-aos="fade-up-sm"
+        data-aos-delay="150"
+            class="lg:w-[80%] xl:w-[70%] mx-auto text-center text-balance"
+            set:html={markdownify(gallery.title)}
+          />
+         <div data-aos="fade-up-sm" data-aos-delay="250">
+           <ImageMod
+            src={gallery.image}
+            alt={gallery.title}
+            class="mt-12 mx-auto rounded-2xl lg:rounded-3xl"
+            width={1300}
+            height={601}
+            />
+         </div>
+        </div>
+      </section>
+    )
+  }
+
+  <div class="border-t border-border">
+    <TrustedBrands />
+  </div>
+  <Facts data={facts_section} />
+
+  {
+    teams_section.enable && (
+      <section class="section pb-0 bg-light"></section>
+      <section class="section section-divider" style="--section-divider-color: var(--color-body)">
+        <div class="container xl:w-[80%] mx-auto">
+          <h2
+           data-aos="fade-up-sm"
+           data-aos-delay="150"
+            class="mb-10 text-center xl:w-[60%] mx-auto text-balance"
+            set:html={markdownify(teams_section.title)}
+          />
+
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {teams_section.members.map((member) => (
+              <div
+                class="text-center max-w-sm p-6 rounded-2xl bg-light/50"
+                data-aos="fade-up-sm"
+              >
+                <ImageMod
+                  src={member.image}
+                  alt={member.name}
+                  width={335}
+                  height={335}
+                  class="mx-auto rounded-xl object-cover"
+                />
+                <h3 class="mt-6 h6">{member.name}</h3>
+                <p class="mt-2 text-sm text-muted">{member.position}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <Testimonial />
+  <CallToAction />
+</Base>

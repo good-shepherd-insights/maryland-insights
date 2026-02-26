@@ -1,0 +1,45 @@
+---
+import CardPrimary from "@/components/CardPrimary.astro";
+import Base from "@/layouts/Base.astro";
+import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import CallToAction from "@/partials/CallToAction.astro";
+import PageHeader from "@/partials/PageHeader.astro";
+
+const pageIndex = await getListPage("caseStudies", "-index");
+if (pageIndex.data.draft) return Astro.redirect("/404");
+
+const { title, description, section_title } = pageIndex.data;
+const cases = await getSinglePage("caseStudies");
+---
+
+<Base {...pageIndex.data}>
+  <PageHeader title={title} description={description} />
+  <section class="section-sm bg-light">
+    <div class="container">
+      {
+        section_title && (
+          <h2
+            data-aos="fade-up-sm"
+            data-aos-delay="150"
+            class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
+            set:html={markdownify(section_title)}
+          />
+        )
+      }
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          cases?.map((post) => (
+            <CardPrimary
+              data={post.data}
+              id={`/case-studies/${post.id} `}
+              smallImage
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+  <CallToAction />
+</Base>

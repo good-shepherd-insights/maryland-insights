@@ -1,0 +1,233 @@
+/* aos animation */
+[data-aos="fade-up-sm"] {
+  transform: translateY(30px);
+  opacity: 0;
+  transition-property: transform, opacity;
+  &.aos-animate {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+[data-aos="fade-down-sm"] {
+  transform: translateY(-15px);
+  opacity: 0;
+  transition-property: transform, opacity;
+  &.aos-animate {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+[data-aos="fade-left-sm"] {
+  transform: translateX(30px);
+  opacity: 0;
+  transition-property: transform, opacity;
+  &.aos-animate {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+[data-aos="fade-right-sm"] {
+  transform: translateX(-30px);
+  opacity: 0;
+  transition-property: transform, opacity;
+  &.aos-animate {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+[data-aos="zoom-out-sm"] {
+  transform: scale(1.05);
+  opacity: 0.5;
+  transition-property: transform, opacity;
+  &.aos-animate {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+[data-aos="zoom-in-sm"] {
+  transform: scale(0.9);
+  opacity: 0.5;
+  transition-property: transform, opacity;
+  &.aos-animate {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Banner sequential dot animations */
+@keyframes dotPulse {
+  0% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+}
+
+.dots-seq circle {
+  animation: dotPulse 2.4s ease-in-out infinite;
+  transform-origin: 50% 50%;
+  will-change: opacity, transform;
+}
+.dots-seq circle:nth-child(1) {
+  animation-delay: 0s;
+}
+.dots-seq circle:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.dots-seq circle:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+/* Gentle robot bob */
+@keyframes robotBob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(0.6deg);
+  }
+}
+.robot-bob {
+  animation: robotBob 3s ease-in-out infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* Cursor animations */
+@keyframes cursorFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(10px, -8px) rotate(2deg);
+  }
+  50% {
+    transform: translate(-5px, 5px) rotate(-1deg);
+  }
+  75% {
+    transform: translate(8px, -3px) rotate(1deg);
+  }
+}
+
+@keyframes cursorBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes cursorPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+}
+
+/* Horizontal infinite scroll animation */
+@keyframes inf-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes inf-scroll-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.inf-slide-track {
+  display: flex;
+}
+.inf-slide {
+  flex-shrink: 0;
+}
+
+/* Animate CTA Circles */
+.inf-rotate {
+  animation: inf-rotate 140s linear infinite;
+  /* reverse animation on children to make it look still while parent is rotating */
+  & > *:nth-child(1) {
+    animation: inf-rotate-reverse 140s linear infinite;
+  }
+  & > *:nth-child(2) {
+    animation: inf-rotate-reverse-2 140s linear infinite;
+  }
+  & > *:nth-child(3) {
+    animation: inf-rotate-reverse 140s linear infinite;
+  }
+  & > *:nth-child(4) {
+    animation: inf-rotate-reverse-2 140s linear infinite;
+  }
+}
+.inf-rotate:nth-child(2) {
+  animation: inf-rotate-child-2 70s linear infinite;
+  & > *:nth-child(1) {
+    animation: inf-rotate-reverse 70s linear infinite;
+  }
+  & > *:nth-child(2) {
+    animation: inf-rotate-reverse-2 70s linear infinite;
+  }
+  & > *:nth-child(3) {
+    animation: inf-rotate-reverse 70s linear infinite;
+  }
+  & > *:nth-child(4) {
+    animation: inf-rotate-reverse-2 70s linear infinite;
+  }
+}
+
+@keyframes inf-rotate {
+  0% {
+    transform: translateX(-50%) translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-50%) rotate(360deg);
+  }
+}
+@keyframes inf-rotate-child-2 {
+  0% {
+    transform: translateX(-50%) translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-50%) rotate(360deg);
+  }
+}
+@keyframes inf-rotate-reverse {
+  0% {
+    transform: translateX(-50%) translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-50%) rotate(-360deg);
+  }
+}
+@keyframes inf-rotate-reverse-2 {
+  0% {
+    transform: translateX(50%) translateY(50%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(50%) translateY(50%) rotate(-360deg);
+  }
+}

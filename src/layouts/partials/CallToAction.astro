@@ -1,0 +1,145 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+
+const sectionData = await getListPage("ctaSection", "call-to-action");
+if (!sectionData.data.enable) {
+  return null;
+}
+const { title, description, button, rotating_icons } = sectionData.data;
+
+const dotPalette = [
+  "var(--color-primary)",
+  "color-mix(in srgb, var(--color-primary) 55%, var(--color-body))",
+  "color-mix(in srgb, var(--color-primary) 35%, var(--color-body))",
+  "color-mix(in srgb, var(--color-primary) 25%, var(--color-dark))",
+];
+
+const dots = Array.from({ length: 16 }, () => {
+  const x = Math.round(Math.random() * 100);
+  const y = Math.round(Math.random() * 100);
+  const size = Math.round(4 + Math.random() * 7);
+  const opacity = +(0.18 + Math.random() * 0.32).toFixed(2);
+  const blur = +(Math.random() * 1.2).toFixed(2);
+  const color = dotPalette[Math.floor(Math.random() * dotPalette.length)];
+
+  return { x, y, size, opacity, blur, color };
+});
+---
+
+<section class="bg-light py-40 mb-0 relative isolate overflow-hidden group">
+  <div class="cta-dots" aria-hidden="true">
+    {
+      dots.map((dot) => (
+        <span
+          class="cta-dot"
+          style={`--x:${dot.x};--y:${dot.y};--s:${dot.size}px;--o:${dot.opacity};--b:${dot.blur}px;--c:${dot.color};`}
+        />
+      ))
+    }
+  </div>
+
+  <div class="container">
+    <div
+      class="section-intro text-center lg:col-8 mx-auto text-balance space-y-6 relative before:absolute before:inset-0 before:bg-light before:w-full before:mx-auto before:rounded-full before:blur-xl before:-z-10 z-10"
+    >
+      {
+        title && (
+          <h2
+            data-aos="fade-up-sm"
+            data-aos-delay="150"
+            class=" text-h1"
+            set:html={markdownify(title)}
+          />
+        )
+      }
+      {
+        description && (
+          <p
+            data-aos="fade-up-sm"
+            data-aos-delay="200"
+            class="text-lg"
+            set:html={markdownify(description)}
+          />
+        )
+      }
+
+      {
+        button.enable && (
+          <a
+            data-aos="fade-up-sm"
+            data-aos-delay="250"
+            href={button.link}
+            class="btn btn-outline"
+          >
+            {button.label}
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  {/* BG CIRCLES */}
+  <div class="nested-circles group-hover:scale-90">
+    <div class="nested-circle inf-rotate">
+      {
+        rotating_icons.slice(0, 4).map((image) => (
+          <div class="nested-circle-icon">
+            <ImageMod
+              width={120}
+              height={120}
+              src={image}
+              alt=""
+              class="text-text-dark rounded-full w-12 lg:w-16 aspect-square"
+            />
+          </div>
+        ))
+      }
+    </div>
+    <div class="nested-circle inf-rotate">
+      {
+        rotating_icons.slice(4, 8).map((image) => (
+          <div class="nested-circle-icon">
+            <ImageMod
+              width={50}
+              height={50}
+              src={image}
+              alt=""
+              class="rounded-full w-8 lg:w-12 aspect-square"
+            />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-dots {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -10;
+  }
+
+  .cta-dot {
+    position: absolute;
+    left: calc(var(--x) * 1%);
+    top: calc(var(--y) * 1%);
+    width: var(--s);
+    height: var(--s);
+    border-radius: 999px;
+    background: var(--c);
+    opacity: var(--o);
+    filter: blur(var(--b));
+    transform: translate(-50%, -50%);
+  }
+
+  /* Keep dots away from the CTA text blob a bit */
+  @media (max-width: 1024px) {
+    .cta-dots {
+      opacity: 0.85;
+    }
+  }
+</style>
