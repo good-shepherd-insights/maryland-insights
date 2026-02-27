@@ -78,10 +78,10 @@ plans:
       - SLA & priority support
     price:
       yearly:
-        amount: "Custom"
+        amount: 999.99
         period: year
       monthly:
-        amount: "Custom"
+        amount: 999.99
         period: month
     cta:
       enable: true
