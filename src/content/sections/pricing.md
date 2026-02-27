@@ -79,10 +79,10 @@ plans:
     price:
       yearly:
         amount: "Custom"
-        period: year
+        period: ""
       monthly:
         amount: "Custom"
-        period: month
+        period: ""
     cta:
       enable: true
       text: Contact Us
