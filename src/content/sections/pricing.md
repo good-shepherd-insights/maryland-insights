@@ -7,92 +7,84 @@ plans_labels:
   - "Yearly"
 plans:
   - title: Starter
-    description: Get started with a professional website at no extra cost.
+    description: Get started with your first website at no cost.
     price_prefix: "$"
     isPopular: false
     features:
-      - Basic AI chatbot
-      - 1 integration (website or Slack)
-      - Up to 500 interactions/month
-      - Advanced AI handling
-      - Enterprise ERP integrations
-      - Email & chat support
+      - 1 Site
+      - 10 Pages
+      - Free domain
+      - $5 AI credit for generations
     price:
       yearly:
-        amount: 9
+        amount: 0
         period: year
       monthly:
-        amount: 19
+        amount: 0
         period: month
     cta:
       enable: true
       text: Get Started
       link: "/contact"
-  - title: Growth
-    description: Designed for growing businesses with more advanced needs.
-    price_prefix: "$"
-    isPopular: false
-    features:
-      - Basic AI chatbot
-      - 1 integration (website or Slack)
-      - Up to 500 interactions/month
-      - Advanced AI handling
-      - Enterprise ERP integrations
-      - Email & chat support
-    price:
-      yearly:
-        amount: 19
-        period: year
-      monthly:
-        amount: 29
-        period: month
-    cta:
-      enable: true
-      text: Get Started
-      link: "/contact"
-  - title: Pro
-    description: Advanced features for established businesses seeking growth
+  - title: Business
+    description: Perfect for growing businesses ready to expand their online presence.
     price_prefix: "$"
     isPopular: true
     features:
-      - All Essential features
-      - Enterprise ERP integrations
-      - Advanced reporting and analytics
-      - Custom workflows
-      - Priority support
-      - Email & chat support
+      - 1 Site
+      - 25 Pages
+      - Custom domain integration
+      - $20 AI credit for generations
     price:
       yearly:
-        amount: 49
+        amount: 39.99
         period: year
       monthly:
-        amount: 59
+        amount: 39.99
+        period: month
+    cta:
+      enable: true
+      text: Get Started
+      link: "/contact"
+  - title: Business Pro
+    description: Advanced solution for businesses managing multiple sites and high-volume AI needs.
+    price_prefix: "$"
+    isPopular: false
+    features:
+      - 3 Sites
+      - $50 AI credit for generations
+    price:
+      yearly:
+        amount: 99.99
+        period: year
+      monthly:
+        amount: 99.99
         period: month
     cta:
       enable: true
       text: Get Started
       link: "/contact"
   - title: Enterprise
-    description: Comprehensive solution for large enterprises with complex needs
-    price_prefix: "$"
+    description: Custom solution for large organizations with advanced requirements and dedicated support.
+    price_prefix: ""
     isPopular: false
     features:
-      - All Premium features
-      - Multi-company management
-      - Advanced security controls
-      - API access
+      - Unlimited Sites
+      - Unlimited Pages
+      - Custom domain integration
+      - Custom AI credit allocation
       - Dedicated account manager
       - Custom branding
-      - Email & chat support
+      - SLA & priority support
     price:
       yearly:
-        amount: 580
+        amount: 999.99
         period: year
       monthly:
-        amount: 470
+        amount: 999.99
         period: month
     cta:
       enable: true
-      text: Get Started
+      text: Contact Us
       link: "/contact"
 ---

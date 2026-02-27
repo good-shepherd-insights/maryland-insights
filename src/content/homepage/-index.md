@@ -1,7 +1,8 @@
 ---
 banner:
-  title: "Build a Website That Grows Your Business"
-  content: "Maryland's #1 website builder for small businesses uses AI and SEO to turn your site into a steady revenue engine."
+  title: "Maryland's Leading Website & Growth Partner"
+  content: "Crafting smart solutions in lot’s with moments therefore
+    revolutionizing efficiency and innovation."
   image: "/images/homepage/banner.png"
   button_solid:
     enable: true

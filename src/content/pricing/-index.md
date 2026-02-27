@@ -10,29 +10,61 @@ comparison_section:
   title: "Compare the <mark>membership</mark> pricing"
   plan_names:
     - label: "Starter"
-      price: "$19"
-    - label: "Growth"
-      price: "$29"
-    - label: "Pro"
-      price: "$59"
+      price: "$0"
+    - label: "Business"
+      price: "$39.99"
+    - label: "Business Pro"
+      price: "$99.99"
     - label: "Enterprise"
-      price: "Contact Us"
+      price: "Custom"
 
   comparison_table:
     features:
-      - name: "User Accounts"
-        description: "The number of users allowed to access the plan."
+      - name: "Sites"
+        description: "The number of websites included in the plan."
         values:
-          - "Up to 5"
-          - "—"
-          - "Up to 25"
+          - "1"
+          - "1"
+          - "3"
           - "Unlimited"
 
-      - name: "Core AI Tools"
-        description: "Access to essential AI features and modules."
+      - name: "Pages"
+        description: "The number of pages allowed per site."
+        values:
+          - "10"
+          - "25"
+          - "Unlimited"
+          - "Unlimited"
+
+      - name: "Domain"
+        description: "Domain options included with the plan."
+        values:
+          - "Free domain"
+          - "Custom domain integration"
+          - "Custom domain integration"
+          - "Custom domain integration"
+
+      - name: "AI Credit for Generations"
+        description: "Monthly AI credits available for content and asset generation."
+        values:
+          - "$5"
+          - "$20"
+          - "$50"
+          - "Custom"
+
+      - name: "AI Content Generation"
+        description: "Access to AI-powered content creation tools."
         values:
           - "active"
-          - "—"
+          - "active"
+          - "active"
+          - "active"
+
+      - name: "Priority Support"
+        description: "Access to priority customer support."
+        values:
+          - "cross"
+          - "active"
           - "active"
           - "active"
 
@@ -40,71 +72,15 @@ comparison_section:
         description: "Detailed insights and reporting capabilities."
         values:
           - "cross"
-          - "—"
+          - "active"
           - "active"
           - "active"
 
-      - name: "Custom AI Solutions"
-        description: "Tailored AI development for your business needs."
+      - name: "Custom Branding"
+        description: "Remove platform branding and apply your own."
         values:
           - "cross"
-          - "—"
-          - "active"
-          - "active"
-
-      - name: "Real-Time Data Processing"
-        description: "Instant data analysis and actionable insights."
-        values:
-          - "active"
-          - "—"
-          - "active"
-          - "active"
-
-      - name: "Industry-Specific AI Models"
-        description: "AI models tailored for your industry."
-        values:
-          - "Basic"
-          - "—"
-          - "Advanced"
-          - "Fully Scalable"
-
-      - name: "Dedicated Account Manager"
-        description: "Personalized support for your account."
-        values:
-          - "Limited"
-          - "—"
-          - "Moderate"
-          - "Full API Suite with Premium Support"
-
-      - name: "Integration Support"
-        description: "Help with connecting AI to your systems."
-        values:
-          - "Basic"
-          - "—"
-          - "Advanced"
-          - "Full Integration Support"
-
-      - name: "Scalability"
-        description: "Ability to grow and expand with your business."
-        values:
-          - "Limited"
-          - "—"
-          - "Advanced"
-          - "Enterprise-Grade Security"
-
-      - name: "On-Site Training & Setup"
-        description: "In-person onboarding and training sessions."
-        values:
-          - "active"
-          - "—"
-          - "active"
-          - "active"
-
-      - name: "Data Security & Compliance"
-        description: "Protection and compliance for your data."
-        values:
           - "cross"
-          - "—"
           - "active"
           - "active"
 ---
