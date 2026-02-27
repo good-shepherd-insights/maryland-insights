@@ -15,6 +15,8 @@ comparison_section:
       price: "$39.99"
     - label: "Business Pro"
       price: "$99.99"
+    - label: "Enterprise"
+      price: "Custom"
 
   comparison_table:
     features:
@@ -24,6 +26,7 @@ comparison_section:
           - "1"
           - "1"
           - "3"
+          - "Unlimited"
 
       - name: "Pages"
         description: "The number of pages allowed per site."
@@ -31,11 +34,13 @@ comparison_section:
           - "10"
           - "25"
           - "Unlimited"
+          - "Unlimited"
 
       - name: "Domain"
         description: "Domain options included with the plan."
         values:
           - "Free domain"
+          - "Custom domain integration"
           - "Custom domain integration"
           - "Custom domain integration"
 
@@ -45,10 +50,12 @@ comparison_section:
           - "$5"
           - "$20"
           - "$50"
+          - "Custom"
 
       - name: "AI Content Generation"
         description: "Access to AI-powered content creation tools."
         values:
+          - "active"
           - "active"
           - "active"
           - "active"
@@ -59,11 +66,13 @@ comparison_section:
           - "cross"
           - "active"
           - "active"
+          - "active"
 
       - name: "Advanced Analytics"
         description: "Detailed insights and reporting capabilities."
         values:
           - "cross"
+          - "active"
           - "active"
           - "active"
 
@@ -72,5 +81,6 @@ comparison_section:
         values:
           - "cross"
           - "cross"
+          - "active"
           - "active"
 ---

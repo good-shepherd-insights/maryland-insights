@@ -64,4 +64,27 @@ plans:
       enable: true
       text: Get Started
       link: "/contact"
+  - title: Enterprise
+    description: Custom solution for large organizations with advanced requirements and dedicated support.
+    price_prefix: ""
+    isPopular: false
+    features:
+      - Unlimited Sites
+      - Unlimited Pages
+      - Custom domain integration
+      - Custom AI credit allocation
+      - Dedicated account manager
+      - Custom branding
+      - SLA & priority support
+    price:
+      yearly:
+        amount: "Custom"
+        period: year
+      monthly:
+        amount: "Custom"
+        period: month
+    cta:
+      enable: true
+      text: Contact Us
+      link: "/contact"
 ---
