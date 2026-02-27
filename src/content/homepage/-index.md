@@ -1,12 +1,11 @@
 ---
 banner:
-  title: "AI Agents Creation With In Seconds"
-  content: "Crafting smart solutions in lot’s with moments therefore
-    revolutionizing efficiency and innovation."
+  title: "Build a Website That Grows Your Business"
+  content: "Maryland's #1 website builder for small businesses uses AI and SEO to turn your site into a steady revenue engine."
   image: "/images/homepage/banner.png"
   button_solid:
     enable: true
-    label: "Build Your Agent"
+    label: "Start Building"
     link: "/contact"
   button_underline:
     enable: true
@@ -15,91 +14,91 @@ banner:
 
   tag_lines:
     - "No Credit Card"
-    - "30-Day Free Trial"
+    - "7-Day Free Trial"
     - "Cancel Anytime"
 
-  cursor_1: Thinking
-  cursor_2: Creating
+  cursor_1: Growing
+  cursor_2: Ranking
 
 agents_swiper:
   enable: true
-  title: "Which AI Agent is 💡 <mark>right for you?</mark> Boost efficiency, automate tasks, and 🚀 <mark>drive innovation</mark> today!"
+  title: "Which service is 💡 <mark>right for you?</mark> Grow your website, dominate 🚀 <mark>local search</mark> today!"
   agents:
-    - label: "Conversational AI Agents"
-      description: "AI-powered chatbots and virtual assistants that engage users via text or voice."
+    - label: "Website Builder"
+      description: "Custom website design and development that converts visitors into customers."
       icon: "/images/icons/message.svg"
       button:
         enable: true
-        label: "Try it out"
-        link: "#"
-    - label: "Autonomous AI Agents"
-      description: "Self-operating AI systems that make decisions and take actions independently."
+        label: "Learn More"
+        link: "/features"
+    - label: "SEO Optimization"
+      description: "Search engine optimization and ranking strategies that drive organic traffic."
       icon: "/images/icons/ai.svg"
       button:
         enable: true
-        label: "Try it out"
-        link: "#"
-    - label: "Image generator AI Agents"
-      description: "AI models that generate content, including text, images, music, and code."
+        label: "Learn More"
+        link: "/features"
+    - label: "AI-Powered Content"
+      description: "AI-generated content and copywriting tailored to your brand voice and audience."
       icon: "/images/icons/image.svg"
       button:
         enable: true
-        label: "Try it out"
-        link: "#"
-    - label: "Decision-Making AI  Agents"
-      description: "Supercharge your sales with our powerful and intuitive sales platform."
+        label: "Learn More"
+        link: "/features"
+    - label: "Local SEO"
+      description: "Google Maps, local search citations, and Maryland-focused ranking strategies."
       icon: "/images/icons/decision.svg"
       button:
         enable: true
-        label: "Try it out"
-        link: "#"
-    - label: "Conversational AI Agents"
-      description: "AI-powered chatbots and virtual assistants that engage users via text or voice."
+        label: "Learn More"
+        link: "/features"
+    - label: "Website Builder"
+      description: "Custom website design and development that converts visitors into customers."
       icon: "/images/icons/message.svg"
       button:
         enable: true
-        label: "Try it out"
-        link: "#"
-    - label: "Autonomous AI Agents"
-      description: "Self-operating AI systems that make decisions and take actions independently."
+        label: "Learn More"
+        link: "/features"
+    - label: "SEO Optimization"
+      description: "Search engine optimization and ranking strategies that drive organic traffic."
       icon: "/images/icons/ai.svg"
       button:
         enable: true
-        label: "Try it out"
-        link: "#"
-    - label: "Image generator AI Agents"
-      description: "AI models that generate content, including text, images, music, and code."
+        label: "Learn More"
+        link: "/features"
+    - label: "AI-Powered Content"
+      description: "AI-generated content and copywriting tailored to your brand voice and audience."
       icon: "/images/icons/image.svg"
       button:
         enable: true
-        label: "Try it out"
-        link: "#"
-    - label: "Decision-Making AI  Agents"
-      description: "Supercharge your sales with our powerful and intuitive sales platform."
+        label: "Learn More"
+        link: "/features"
+    - label: "Local SEO"
+      description: "Google Maps, local search citations, and Maryland-focused ranking strategies."
       icon: "/images/icons/decision.svg"
       button:
         enable: true
-        label: "Try it out"
-        link: "#"
+        label: "Learn More"
+        link: "/features"
 
 facts_section:
   enable: true
   # Don't use more that 4 facts here
   facts:
-    - label: "Define"
-      description: "Set AI agent purpose supporting automation, analytics a chatbot for instant customer assistance."
+    - label: "Build"
+      description: "Launch a professional, AI-optimized website designed to convert Maryland visitors into paying customers."
       icon: "/images/icons/define.svg"
-    - label: "Customize"
-      description: "Train your AI with set workflows, and fine-tune responses personalize tone, FAQs, and industry."
-      icon: "/images/icons/gear.svg"
-    - label: "Deploy"
-      description: "Integrate your AI agent with websites, apps, and messaging platforms connect with WhatsApp, Slack."
-      icon: "/images/icons/rocket.svg"
     - label: "Optimize"
-      description: "Monitor performance, analyze data, and improve AI responses use insights to refine accuracy and enhance"
+      description: "Fine-tune your site's performance, speed, and user experience to maximize search rankings."
+      icon: "/images/icons/gear.svg"
+    - label: "Rank"
+      description: "Dominate local Maryland search results with proven on-page and off-page SEO strategies."
+      icon: "/images/icons/rocket.svg"
+    - label: "Grow"
+      description: "Track real revenue metrics, analyze growth data, and scale your online presence with confidence."
       icon: "/images/icons/star.svg"
 
 featured_features_section:
   enable: true
-  title: "Key features to automate scale ⚙️ your business"
+  title: "Key features to build, rank ⚙️ and grow your business"
 ---

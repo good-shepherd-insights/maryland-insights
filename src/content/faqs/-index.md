@@ -1,6 +1,6 @@
 ---
 title: "FAQs"
-meta_title: "FAQs - Novai"
+meta_title: "FAQs - Maryland Insights"
 description: "Welcome to our Frequently Asked Questions section! Here, you'll find answers to common queries."
 image: ""
 draft: false

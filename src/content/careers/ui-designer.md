@@ -1,6 +1,6 @@
 ---
 title: "UI Designer"
-meta_title: "UI Designer | Novai"
+meta_title: "UI Designer | Maryland Insights"
 description: "Join our team as a UI Designer and help us create beautiful and engaging user interfaces."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"

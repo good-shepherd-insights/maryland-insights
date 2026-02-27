@@ -1,6 +1,6 @@
 ---
 title: "Pricing"
-meta_title: "Pricing - Novai"
+meta_title: "Pricing - Maryland Insights"
 description: "Choose the plan that fits your goals — getting started or scaling fast. All plans come with full feature access."
 image: ""
 draft: false

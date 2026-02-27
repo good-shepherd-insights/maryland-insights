@@ -1,11 +1,11 @@
 ---
 title: "Careers"
-meta_title: "Careers - Novai"
-description: "Join us in developing AI solutions that empower you to enhance your productivity and thought processes."
+meta_title: "Careers - Maryland Insights"
+description: "Join us in building AI-powered websites and growth strategies that empower Maryland small businesses."
 image: "/images/careers/careers-banner.png"
 draft: false
 
-section_title: "Join Novai and <mark>streamline</mark> 💼 <mark>opportunities</mark>"
+section_title: "Join Maryland Insights and <mark>streamline</mark> 💼 <mark>opportunities</mark>"
 
 gallery:
   enable: true
@@ -14,8 +14,8 @@ gallery:
 
 facts_section:
   enable: true
-  title: "Why join <mark>Novai</mark>?"
-  description: "Create your AI agent in 4 simple steps to revolutionize your business operations join a community of satisfied customers from around the globe who trust us for their needs. Discover the benefits of being part of our family!"
+  title: "Why join <mark>Maryland Insights</mark>?"
+  description: "Be part of a team that builds real growth for real businesses. Join a community of talented professionals helping Maryland small businesses thrive online through AI, SEO, and world-class web development."
   # Don't use more that 4 facts here
   facts:
     - label: "Fast Growing"

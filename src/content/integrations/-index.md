@@ -1,11 +1,11 @@
 ---
 title: "Integrations"
-meta_title: "Integrations - Novai"
+meta_title: "Integrations - Maryland Insights"
 description: "Integrate our AI assistant with the tools you already use — from Slack to Salesforce"
 image: ""
 draft: false
 
-section_title: "Build <mark>AI agents</mark> in minutes to automate 🌟 <mark>workflows</mark>"
+section_title: "Connect your <mark>favorite tools</mark> to automate 🌟 <mark>workflows</mark>"
 
 integrations_list:
   - title: "HTML 5"

@@ -1,6 +1,6 @@
 ---
 title: "SEO Specialist"
-meta_title: "SEO Specialist | Novai"
+meta_title: "SEO Specialist | Maryland Insights"
 description: "Join our team as an SEO Specialist and help us improve our search engine rankings."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"

@@ -1,6 +1,6 @@
 ---
 title: "Blog"
-meta_title: "Blog - Novai"
+meta_title: "Blog - Maryland Insights"
 description: "Discover tips, updates, and insights on better task management and teamwork."
 image: ""
 draft: false
@@ -12,6 +12,6 @@ featured_posts:
 
 actual_posts:
   enable: true
-  title: "<mark>Explore the</mark> future of productivity <mark>with Novai</mark>"
+  title: "<mark>Explore the</mark> future of growth <mark>with Maryland Insights</mark>"
   # All posts are in `src/content/blog/` directory
 ---

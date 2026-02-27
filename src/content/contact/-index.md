@@ -1,6 +1,6 @@
 ---
 title: "Contact"
-meta_title: "Contact - Novai"
+meta_title: "Contact - Maryland Insights"
 description: "Questions about billing, licensing, or support? We're here to help."
 image: "/images/contact/contact-banner.png"
 draft: false
@@ -46,11 +46,11 @@ contact_info:
       icon: "FaPhone"
 
     - label: "Email Us"
-      value: "support@novai.com"
+      value: "support@marylandinsights.com"
       icon: "FaRegEnvelope"
 
     - label: "Join Our Community"
-      value: "https://community.novai.ai"
+      value: "https://marylandinsights.com/community"
       icon: "FaGlobe"
 
 gallery_section:
