@@ -1,6 +1,6 @@
 ---
 title: "Content Strategist"
-meta_title: "Content Strategist | Novai"
+meta_title: "Content Strategist | Maryland Insights"
 description: "Join our team as a Content Strategist and help us create and manage our content strategy."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"

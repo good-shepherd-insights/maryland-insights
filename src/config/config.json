@@ -1,25 +1,25 @@
 {
   "site": {
-    "title": "Novai",
-    "base_url": "https://novai-astro.vercel.app",
+    "title": "Maryland Insights",
+    "base_url": "https://marylandinsights.com",
     "base_path": "/",
     "trailing_slash": false,
     "favicon": "/images/favicon.png",
-    "logo": "/images/logo.png",
-    "logo_width": "129",
+    "logo": "/images/logo.svg",
+    "logo_width": "220",
     "logo_height": "32",
-    "logo_text": "Novai"
+    "logo_text": "Maryland Insights"
   },
 
   "params": {
-    "footer_description": "Novai is a real early-stage software looking for an analytics platform that scales with you, check out our stage program.",
-    "copyright": "© {year} [Themefisher](https://themefisher.com/). All Rights Reserved."
+    "footer_description": "Maryland Insights is Maryland's #1 website builder for small businesses, combining AI and SEO to drive real revenue growth.",
+    "copyright": "© {year} Maryland Insights. All Rights Reserved."
   },
 
   "navigation_button": {
     "enable": true,
     "label": "Get Started",
-    "link": "https://themefisher.com/products/novai-astro"
+    "link": "/contact"
   },
 
   "google_tag_manager": {
@@ -34,8 +34,8 @@
   },
 
   "metadata": {
-    "meta_author": "Themefisher",
+    "meta_author": "Maryland Insights",
     "meta_image": "/images/og-image.png",
-    "meta_description": "Astro AI Agent Template for building AI-powered websites with customizable themes and layouts."
+    "meta_description": "Maryland's #1 website builder for small businesses. AI-powered growth and SEO services that turn your site into a steady revenue engine."
   }
 }

@@ -1,6 +1,6 @@
 ---
 title: "Customer Success Manager"
-meta_title: "Customer Success Manager | Novai"
+meta_title: "Customer Success Manager | Maryland Insights"
 description: "Ensure our customers achieve their goals and realize the full value of our AI-powered development platform."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"

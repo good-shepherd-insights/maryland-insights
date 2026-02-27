@@ -1,6 +1,6 @@
 ---
 title: "UX Researcher"
-meta_title: "UX Researcher | Novai"
+meta_title: "UX Researcher | Maryland Insights"
 description: "Join our team as a UX Researcher and help us understand our users’ needs and behaviors."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"

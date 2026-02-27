@@ -1,6 +1,6 @@
 ---
 title: "Product Marketing Manager"
-meta_title: "Product Marketing Manager | Novai"
+meta_title: "Product Marketing Manager | Maryland Insights"
 description: "Lead our product marketing strategy and help us tell the story of our innovative AI-powered development tools."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"

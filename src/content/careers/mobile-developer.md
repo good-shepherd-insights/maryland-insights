@@ -1,6 +1,6 @@
 ---
 title: "Mobile Developer"
-meta_title: "Mobile Developer | Novai"
+meta_title: "Mobile Developer | Maryland Insights"
 description: "Join our team as a Mobile Developer and build the next generation of our AI-powered mobile applications."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"

@@ -1,6 +1,6 @@
 ---
 title: "Graphic Designer"
-meta_title: "Graphic Designer | Novai"
+meta_title: "Graphic Designer | Maryland Insights"
 description: "Join our team as a Graphic Designer and help us create beautiful and engaging visual content."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"
