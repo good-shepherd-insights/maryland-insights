@@ -1,6 +1,6 @@
 ---
 title: "Backend Developer"
-meta_title: "Backend Developer | Novai"
+meta_title: "Backend Developer | Maryland Insights"
 description: "Join our team as a Backend Developer and build the engine that powers our AI-driven platform."
 image: "/images/image-placeholder.png"
 date: 2025-06-22T10:00:00Z

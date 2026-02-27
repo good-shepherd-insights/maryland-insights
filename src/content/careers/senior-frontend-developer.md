@@ -1,6 +1,6 @@
 ---
 title: "Senior Frontend Developer"
-meta_title: "Senior Frontend Developer | Novai"
+meta_title: "Senior Frontend Developer | Maryland Insights"
 description: "Join our team as a Senior Frontend Developer and help us build the future of AI-powered development tools."
 image: "/images/image-placeholder.png"
 date: 2025-06-22T10:00:00Z

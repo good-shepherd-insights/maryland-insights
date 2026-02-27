@@ -1,6 +1,6 @@
 ---
 title: "DevOps Engineer"
-meta_title: "DevOps Engineer | Novai"
+meta_title: "DevOps Engineer | Maryland Insights"
 description: "Join our team as a DevOps Engineer and help us build and maintain our cloud infrastructure."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"

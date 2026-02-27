@@ -1,7 +1,7 @@
 ---
 enable: true
 title: "Integration <mark>with</mark> your <mark>favorite</mark> tools"
-description: "Unleash the power of AI within Novai. Upgrade your productivity with Novai, the open AI Agent integration."
+description: "Supercharge your website growth with Maryland Insights. Connect your favorite tools and unlock a complete AI-powered SEO strategy."
 
 rotating_icons:
   - "/images/icons/shopify.svg"
@@ -15,6 +15,6 @@ rotating_icons:
 
 button:
   enable: true
-  label: "Get This Template"
-  link: "https://themefisher.com/products/novai-astro"
+  label: "Get Started"
+  link: "/contact"
 ---

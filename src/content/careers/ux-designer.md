@@ -1,6 +1,6 @@
 ---
 title: "UX Designer"
-meta_title: "UX Designer | Novai"
+meta_title: "UX Designer | Maryland Insights"
 description: "Join our team as a UX Designer and help us create intuitive and user-friendly experiences."
 date: 2025-06-22T10:00:00Z
 image: "/images/image-placeholder.png"

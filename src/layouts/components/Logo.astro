@@ -50,7 +50,7 @@ const {
                   width: (width ? width : logo_width.replace("px", "")) + "px",
                 }
           }
-          format="webp"
+          format={(src || logo).endsWith(".svg") ? "svg" : "webp"}
         />
       </>
     ) : logo_text ? (

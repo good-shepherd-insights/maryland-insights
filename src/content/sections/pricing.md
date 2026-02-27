@@ -7,7 +7,7 @@ plans_labels:
   - "Yearly"
 plans:
   - title: Starter
-    description: Get started with AI agents at no cost.
+    description: Get started with a professional website at no extra cost.
     price_prefix: "$"
     isPopular: false
     features:

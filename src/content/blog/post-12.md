@@ -1,7 +1,7 @@
 ---
-title: "How to Train AI Agents That Actually Understand Your Business"
+title: "How to Train Growth Strategies That Actually Understand Your Business"
 meta_title: ""
-description: "Artificial Intelligence (AI) enables machines to perform tasks that typically require human intelligence, such as learning, reasoning, and language understanding. It plays a major role in modern technology and innovation. This tutorial will guide you through the process of building an AI Model Comparison App using Novai and Portkey. You will learn how to integrate these platforms to allow users to compare responses from different AI models seamlessly."
+description: "Artificial Intelligence (AI) enables machines to perform tasks that typically require human intelligence, such as learning, reasoning, and language understanding. It plays a major role in modern technology and innovation. This tutorial will guide you through the process of building an AI Model Comparison App using Maryland Insights and Portkey. You will learn how to integrate these platforms to allow users to compare responses from different AI models seamlessly."
 date: 2025-04-04T05:00:00Z
 image: "/images/blog/5.png"
 categories: ["Product Updates"]
@@ -14,7 +14,7 @@ draft: false
 
 # 🤖 Artificial Intelligence (AI)
 
-Artificial Intelligence (AI) enables machines to perform tasks that typically require human intelligence, such as learning, reasoning, and language understanding. It plays a major role in modern technology and innovation. This tutorial will guide you through the process of building an AI Model Comparison App using Novai and Portkey. You will learn how to integrate these platforms to allow users to compare responses from different AI models seamlessly. The application will enable users to input prompts and receive outputs from various models, showcasing the differences in their responses. The AI Model Comparison App will be able to:
+Artificial Intelligence (AI) enables machines to perform tasks that typically require human intelligence, such as learning, reasoning, and language understanding. It plays a major role in modern technology and innovation. This tutorial will guide you through the process of building an AI Model Comparison App using Maryland Insights and Portkey. You will learn how to integrate these platforms to allow users to compare responses from different AI models seamlessly. The application will enable users to input prompts and receive outputs from various models, showcasing the differences in their responses. The AI Model Comparison App will be able to:
 
 ---
 
@@ -88,7 +88,7 @@ print(model.predict(["AI is transforming technology"]))
 
 ## 🔍 Real-World Applications
 
-Congratulations on following this AI tutorial to build your own AI Model Comparison App! You have learned how to integrate Novai with Portkey, set up data sources, create a user-friendly interface, and implement the necessary logic to compare AI models.
+Congratulations on following this AI tutorial to build your own AI Model Comparison App! You have learned how to integrate Maryland Insights with Portkey, set up data sources, create a user-friendly interface, and implement the necessary logic to compare AI models.
 
 - Healthcare diagnosis
 - Recommendation systems
@@ -99,4 +99,4 @@ Congratulations on following this AI tutorial to build your own AI Model Comp
 
 ## ✅ Summary
 
-AI is reshaping industries by improving efficiency and enabling smarter solutions. Understanding its fundamentals is essential for future-ready skills. If you have any doubts or questions as you continue your journey with Novai and Portkey, feel free to reach out to us on Slack.
+AI is reshaping industries by improving efficiency and enabling smarter solutions. Understanding its fundamentals is essential for future-ready skills. If you have any doubts or questions as you continue your journey with Maryland Insights and Portkey, feel free to reach out to us on Slack.
