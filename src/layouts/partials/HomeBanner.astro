@@ -25,19 +25,19 @@ const {
     >
       <div class="lg:w-[50%] xl:w-[45%] text-center lg:text-left">
         <h1
-          data-aos="fade-up-sm"
-          data-aos-delay="100"
+         
+         
           class="max-lg:w-[70%] mx-auto lg:text-7xl xl:text-[100px] lg:leading-20 xl:leading-25 font-semibold"
           set:html={markdownify(title)}
         />
         <p
-          data-aos="fade-up-sm"
-          data-aos-delay="200"
+         
+         
           class="pt-8 pb-10 text-lg text-balance"
           set:html={markdownify(content)}
         />
 
-        <div data-aos="fade-up-sm" data-aos-delay="250">
+        <div>
           <Button
             enable={button_solid.enable}
             link={button_solid.link}
@@ -54,8 +54,8 @@ const {
         </div>
 
         <ul
-          data-aos="fade-up-sm"
-          data-aos-delay="350"
+         
+         
           class="flex gap-4 flex-wrap mt-12 text-sm font-bold text-dark max-lg:justify-center"
         >
           {
@@ -141,7 +141,7 @@ const {
               fill="var(--color-primary)"></circle>
           </svg>
 
-          <div data-aos="zoom-out-sm" data-aos-delay="100">
+          <div>
             <ImageMod
               src={image}
               alt="Home Banner"

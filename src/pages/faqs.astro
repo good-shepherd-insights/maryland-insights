@@ -21,8 +21,8 @@ const { title, description, section_title, faqs_list, cta } = pageIndex.data;
       {
         section_title && (
           <h2
-            data-aos="fade-up-sm"
-            data-aos-delay="150"
+           
+           
             class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
             set:html={markdownify(section_title)}
           />
@@ -63,7 +63,7 @@ const { title, description, section_title, faqs_list, cta } = pageIndex.data;
               d="M248.975 0C259.685 0 268.428 8.41891 268.949 19H0C0.521052 8.41891 9.26425 0 19.9746 0C28.8343 0 36.3474 5.76112 38.9746 13.7412C41.6018 5.76112 49.1149 0 57.9746 0C67.4101 0 75.3183 6.5342 77.4238 15.3242C79.3357 6.56136 87.1384 0 96.4746 0C105.728 0 113.476 6.44493 115.475 15.0908C117.473 6.44493 125.221 0 134.475 0C143.728 0 151.476 6.44493 153.475 15.0908C155.473 6.44493 163.221 0 172.475 0C181.811 0 189.612 6.56146 191.524 15.3242C193.63 6.53408 201.539 0 210.975 0C219.834 0 227.347 5.76112 229.975 13.7412C232.602 5.76112 240.115 0 248.975 0ZM364.975 0C375.685 0 384.428 8.41891 384.949 19H268.981C269.247 8.46153 277.872 0 288.475 0C297.811 0 305.612 6.56146 307.524 15.3242C309.63 6.53408 317.539 0 326.975 0C335.834 0 343.347 5.76112 345.975 13.7412C348.602 5.76112 356.115 0 364.975 0Z"
               fill="currentColor"></path>
           </svg>
-          <div data-aos="fade-up-sm" data-aos-delay="100">
+          <div>
             <ImageMod
               src={cta.image}
               alt=""
@@ -73,24 +73,24 @@ const { title, description, section_title, faqs_list, cta } = pageIndex.data;
               aria-hidden="true"
             />
             <h4
-              data-aos="fade-up-sm"
-              data-aos-delay="100"
+             
+             
               class="h6"
               set:html={markdownify(cta.title)}
             />
 
             <p
               class="text-balance mt-4 mb-15"
-              data-aos="fade-up-sm"
-              data-aos-delay="100"
+             
+             
               set:html={markdownify(cta.description)}
             />
 
             {
               cta.button.enable && (
                 <a
-                  data-aos="fade-up-sm"
-                  data-aos-delay="150"
+                 
+                 
                   class="btn btn-dark"
                   rel="noopener noreferrer"
                   href={cta.button.link}
@@ -105,8 +105,8 @@ const { title, description, section_title, faqs_list, cta } = pageIndex.data;
         <!-- Right Side: FAQ Accordion -->
         <div
           class="w-full lg:max-w-218 flex flex-col gap-4"
-          data-aos="fade-left-sm"
-          data-aos-delay="100"
+         
+         
         >
           {
             faqs_list?.map((faq, i) => (

@@ -26,16 +26,16 @@ const {
 >
   <div class="container text-center">
     <h1
-      data-aos="fade-up-sm"
-      data-aos-delay="150"
+     
+     
       class={`xl:w-[80%] text-balance mx-auto ${(blogData || caseData) && "h2"}`}
       set:text={humanize(title)}
     />
     {
       description && (
         <p
-          data-aos="fade-up-sm"
-          data-aos-delay="200"
+         
+         
           class="w-[80%] lg:w-[60%] xl:w-[45%] text-balance text-center mx-auto mt-2"
           set:html={markdownify(description)}
         />
@@ -45,8 +45,8 @@ const {
     {
       blogData && (
         <div
-          data-aos="fade-up-sm"
-          data-aos-delay="200"
+         
+         
           class="mt-8 flex flex-wrap items-center gap-3 md:gap-4 justify-center"
         >
           {blogData.author?.image && (
@@ -77,8 +77,8 @@ const {
     {
       caseData && (
         <div
-          data-aos="fade-up-sm"
-          data-aos-delay="200"
+         
+         
           class="mt-8 flex flex-wrap items-center gap-3 md:gap-4 justify-center"
         >
           {caseData.author?.image && (
@@ -109,8 +109,8 @@ const {
     {
       careerData && (
         <div
-          data-aos="fade-up-sm"
-          data-aos-delay="200"
+         
+         
           class="mt-8 flex flex-wrap items-center gap-6 justify-center text-text-dark text-left"
         >
           {careerData.department && (

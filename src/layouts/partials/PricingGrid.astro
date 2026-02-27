@@ -17,13 +17,13 @@ const { haveDivider = false, background } = Astro.props;
     <div class="flex flex-col items-center gap-8 lg:gap-12">
       <h2
         class="mb-3 text-center text-balance lg:w-[80%] xl:w-[50%]"
-        data-aos="fade-up-sm"
-        data-aos-delay="100"
+       
+       
         set:html={markdownify(title)}
       />
 
       <!-- TOGGLER -->
-      <div class="text-center mb-12" data-aos="fade-up-sm" data-aos-delay="100">
+      <div class="text-center mb-12">
         <div class="flex items-center gap-4">
           <span class="text-base text-text-dark font-medium"
             >{plans_labels[0]}</span
@@ -59,8 +59,8 @@ const { haveDivider = false, background } = Astro.props;
           plans.map((plan, index) => {
             return (
               <div
-                data-aos="fade-up-sm"
-                data-aos-delay={index * 100}
+               
+               
                 class={`p-8 flex flex-col justify-between relative ${plan.isPopular ? "bg-dark text-white" : `${background ? "bg-body" : "bg-light"} text-text-dark rounded-xl`}`}
               >
                 {plan.isPopular && (

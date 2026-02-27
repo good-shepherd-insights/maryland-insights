@@ -40,15 +40,15 @@ const sortedPosts = sortByDate(publishedPosts);
       <section class="section-sm bg-light">
         <div class="container">
           <h2
-            data-aos="fade-up-sm"
-            data-aos-delay="150"
+           
+           
             class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
             set:html={markdownify(featured_posts.title)}
           />
 
           <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {featuredFirst && (
-              <div data-aos="fade-up-sm" data-aos-delay="150">
+              <div>
                 <CardPrimary
                   data={featuredFirst.data}
                   id={`/blog/${featuredFirst.id}`}
@@ -59,7 +59,7 @@ const sortedPosts = sortByDate(publishedPosts);
             {featuredCol2.length > 0 && (
               <div class="flex flex-col gap-6">
                 {featuredCol2.map((post) => (
-                  <div data-aos="fade-up-sm" data-aos-delay="150">
+                  <div>
                     <CardPrimary
                       data={post.data}
                       id={`/blog/${post.id}`}
@@ -73,7 +73,7 @@ const sortedPosts = sortByDate(publishedPosts);
             {featuredCol3.length > 0 && (
               <div class="w-full flex flex-col gap-6 sm:grid sm:grid-cols-2 lg:flex lg:flex-col md:col-span-2 lg:col-span-1">
                 {featuredCol3.map((post) => (
-                  <div data-aos="fade-up-sm" data-aos-delay="150">
+                  <div>
                     <CardPrimary
                       data={post.data}
                       id={post.id}
@@ -99,15 +99,15 @@ const sortedPosts = sortByDate(publishedPosts);
         actual_posts && actual_posts.enable && (
           <>
             <h2
-              data-aos="fade-up-sm"
-              data-aos-delay="150"
+             
+             
               class="mb-12 text-center xl:w-[60%] mx-auto text-balance text-white"
               set:html={markdownify(actual_posts.title)}
             />
 
             <ul
-              data-aos="fade-up-sm"
-              data-aos-delay="250"
+             
+             
               class="flex justify-center items-center flex-wrap shuffle-filter"
             >
               <li class="selected" data-target="all">
