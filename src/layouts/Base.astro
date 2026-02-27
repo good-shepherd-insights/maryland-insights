@@ -195,8 +195,6 @@ const { title, meta_title, description, image, noindex, canonical } =
     <Footer />
 
     <script>
-      import AOS from "aos";
-      import "aos/dist/aos.css";
       import Lenis from "lenis";
 
       declare global {
@@ -223,17 +221,6 @@ const { title, meta_title, description, image, noindex, canonical } =
             return;
           }
           window.scrollTo(0, 0);
-        }
-
-        function initAOS() {
-          AOS.init({
-            duration: 600,
-            offset: 100,
-            once: true,
-          });
-
-          // Ensure AOS recalculates after layout settles
-          requestAnimationFrame(() => AOS.refreshHard());
         }
 
         function destroyLenis() {
@@ -264,7 +251,6 @@ const { title, meta_title, description, image, noindex, canonical } =
 
         document.addEventListener("astro:page-load", () => {
           scrollToTop();
-          initAOS();
           initLenis();
           // Ensure Lenis (once initialized) also snaps to top
           scrollToTop();
@@ -273,7 +259,6 @@ const { title, meta_title, description, image, noindex, canonical } =
         // Scroll to top on route change
         document.addEventListener("astro:after-swap", () => {
           scrollToTop();
-          initAOS();
         });
 
         // Scroll to top on full page reloads too
@@ -294,15 +279,6 @@ const { title, meta_title, description, image, noindex, canonical } =
         document.addEventListener("astro:before-preparation", () => {
           destroyLenis();
         });
-
-        // Keep AOS positions accurate if viewport changes
-        window.addEventListener(
-          "resize",
-          () => {
-            AOS.refresh();
-          },
-          { passive: true }
-        );
       }
     </script>
   </body>

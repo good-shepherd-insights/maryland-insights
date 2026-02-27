@@ -24,12 +24,12 @@ if (pageIndex.data.draft) return Astro.redirect("/404");
       <section class="section-sm bg-light">
         <div class="container">
           <h2
-          data-aos="fade-up-sm"
-        data-aos-delay="150"
+         
+       
             class="lg:w-[80%] xl:w-[70%] mx-auto text-center text-balance"
             set:html={markdownify(gallery.title)}
           />
-         <div data-aos="fade-up-sm" data-aos-delay="250">
+         <div>
            <ImageMod
             src={gallery.image}
             alt={gallery.title}
@@ -54,8 +54,8 @@ if (pageIndex.data.draft) return Astro.redirect("/404");
       <section class="section section-divider" style="--section-divider-color: var(--color-body)">
         <div class="container xl:w-[80%] mx-auto">
           <h2
-           data-aos="fade-up-sm"
-           data-aos-delay="150"
+          
+          
             class="mb-10 text-center xl:w-[60%] mx-auto text-balance"
             set:html={markdownify(teams_section.title)}
           />
@@ -64,7 +64,7 @@ if (pageIndex.data.draft) return Astro.redirect("/404");
             {teams_section.members.map((member) => (
               <div
                 class="text-center max-w-sm p-6 rounded-2xl bg-light/50"
-                data-aos="fade-up-sm"
+               
               >
                 <ImageMod
                   src={member.image}

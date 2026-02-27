@@ -23,8 +23,8 @@ const features = await getSinglePage("features");
       {
         section_title && (
           <h2
-            data-aos="fade-up-sm"
-            data-aos-delay="150"
+           
+           
             class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
             set:html={markdownify(section_title)}
           />
@@ -35,7 +35,7 @@ const features = await getSinglePage("features");
         {
           features?.map((feature) => (
             <div class="h-auto! flex">
-              <div class="w-full" data-aos="fade-up-sm" data-aos-delay="250">
+              <div class="w-full">
                 <CardPrimary
                   data={feature.data}
                   id={`/features/${feature.id}`}
@@ -57,14 +57,14 @@ const features = await getSinglePage("features");
         <div class="container">
           <div class="flex flex-col gap-6 lg:flex-row lg:justify-between max-lg:text-center items-center mb-12">
             <h2
-              data-aos="fade-up-sm"
-              data-aos-delay="150"
+             
+             
               class="text-balance text-white"
               set:html={markdownify(use_cases.title)}
             />
             <p
-              data-aos="fade-up-sm"
-              data-aos-delay="150"
+             
+             
               class="text-balance lg:ml-auto lg:text-right text-lg text-white"
               set:html={markdownify(use_cases.description)}
             />
@@ -74,8 +74,8 @@ const features = await getSinglePage("features");
             {use_cases.cases?.map((item, i) => (
               <div
                 class={`flex justify-between items-center gap-10 flex-col-reverse lg:flex-row ${i % 2 !== 0 ? "lg:flex-row-reverse" : ""}`}
-                data-aos="zoom-in-sm"
-                data-aos-delay="150"
+               
+               
               >
                 <div class="lg:w-[50%]">
                   {/* Icon */}

@@ -24,13 +24,13 @@ function replaceYear(text: string) {
     >
       <!-- Left -->
       <div class="w-full lg:w-[25%]">
-        <div data-aos="fade-right-sm" data-aos-delay="100">
+        <div>
           <Logo width={160} height={40} />
         </div>
 
         <p
-          data-aos="fade-right-sm"
-          data-aos-delay="200"
+         
+         
           class="mt-8 text-balance"
           set:html={markdownify(config.params.footer_description)}
         />
@@ -38,23 +38,23 @@ function replaceYear(text: string) {
 
       <!-- middle -->
       <div
-        data-aos="fade-up-sm"
-        data-aos-delay="100"
+       
+       
         class="flex flex-col md:flex-row justify-between w-full lg:max-w-[30%] gap-10 xl:gap-0"
       >
         {
           footer.map((menu) => (
             <div class="w-full lg:max-w-37.5 flex flex-col gap-4">
               <h6
-                data-aos="fade-up-sm"
-                data-aos-delay="100"
+               
+               
                 class="font-semibold"
               >
                 {menu.title}
               </h6>
               <ul class="flex flex-col gap-4">
                 {menu.children.map((link, i) => (
-                  <li data-aos="fade-up-sm" data-aos-delay={100 + i * 100}>
+                  <li>
                     <a href={link.url} class="hover:text-primary text-sm">
                       {link.name}
                     </a>
@@ -72,8 +72,8 @@ function replaceYear(text: string) {
           config.subscription_in_footer.enable && (
             <div class="md:w-[70%] lg:w-[30%] mx-auto">
               <h6
-                data-aos="fade-left-sm"
-                data-aos-delay="100"
+               
+               
                 class="font-semibold mb-4"
               >
                 Newsletter
@@ -84,8 +84,8 @@ function replaceYear(text: string) {
                 method="post"
               >
                 <div
-                  data-aos="fade-left-sm"
-                  data-aos-delay="200"
+                 
+                 
                   class="flex justify-between rounded-lg bg-light px-3 py-2 border border-border mb-5"
                 >
                   <input
@@ -112,8 +112,8 @@ function replaceYear(text: string) {
                 </div>
 
                 <label
-                  data-aos="fade-left-sm"
-                  data-aos-delay="300"
+                 
+                 
                   for="checkbox"
                   class="text-sm block"
                   style="line-height:normal"
