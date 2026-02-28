@@ -15,7 +15,7 @@ banner:
 
   tag_lines:
     - "No Credit Card"
-    - "7-Day Free Trial"
+    - "Free Forever"
     - "Cancel Anytime"
 
   cursor_1: Growing

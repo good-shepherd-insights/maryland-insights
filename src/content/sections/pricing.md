@@ -78,11 +78,11 @@ plans:
       - SLA & priority support
     price:
       yearly:
-        amount: 999.99
-        period: year
+        amount: "Custom"
+        period: ""
       monthly:
-        amount: 999.99
-        period: month
+        amount: "Custom"
+        period: ""
     cta:
       enable: true
       text: Contact Us

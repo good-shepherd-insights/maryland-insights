@@ -34,11 +34,11 @@ export const pricingSection = defineCollection({
         features: z.array(z.string()),
         price: z.object({
           yearly: z.object({
-            amount: z.number(),
+            amount: z.union([z.number(), z.string()]),
             period: z.string(),
           }),
           monthly: z.object({
-            amount: z.number(),
+            amount: z.union([z.number(), z.string()]),
             period: z.string(),
           }),
         }),

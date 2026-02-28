@@ -128,10 +128,10 @@ const { haveDivider = false, background } = Astro.props;
                         class={`flex flex-col gap-1 ${plan.isPopular ? "text-text-light" : "text-text-dark/80"}`}
                       >
                         <span class="text-monthly">
-                          /{plan.price.monthly.period}
+                          {plan.price.monthly.period ? `/${plan.price.monthly.period}` : ""}
                         </span>
                         <span class="text-yearly hidden">
-                          /{plan.price.yearly.period}
+                          {plan.price.yearly.period ? `/${plan.price.yearly.period}` : ""}
                         </span>
                       </div>
                     </div>
