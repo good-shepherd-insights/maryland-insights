@@ -37,7 +37,7 @@ plans:
       - $20 AI credit for generations
     price:
       yearly:
-        amount: 39.99
+        amount: 359.99
         period: year
       monthly:
         amount: 39.99
@@ -55,7 +55,7 @@ plans:
       - $50 AI credit for generations
     price:
       yearly:
-        amount: 99.99
+        amount: 999.99
         period: year
       monthly:
         amount: 99.99

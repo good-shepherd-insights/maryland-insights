@@ -15,63 +15,63 @@ comparison_section:
       price: "$39.99"
     - label: "Business Pro"
       price: "$99.99"
-    - label: "Enterprise"
-      price: "Custom"
+    - label: "Business (Annual)"
+      price: "$359.99"
+    - label: "Business Pro (Annual)"
+      price: "$999.99"
 
   comparison_table:
     features:
-      - name: "Sites"
-        description: "The number of websites included in the plan."
+      - name: "Website Design"
+        description: "Custom website design and development."
         values:
-          - "1"
-          - "1"
-          - "3"
+          - "1 page"
+          - "Up to 5 pages"
+          - "Up to 10 pages"
+          - "Up to 15 pages"
+          - "Up to 20 pages"
+
+      - name: "SEO Optimization"
+        description: "Search engine optimization setup and fine-tuning."
+        values:
+          - "Basic"
+          - "Standard"
+          - "Advanced"
+          - "Advanced"
+          - "Advanced"
+
+      - name: "Local SEO"
+        description: "Maryland-focused local search optimization."
+        values:
+          - "cross"
+          - "active"
+          - "active"
+          - "active"
+          - "active"
+
+      - name: "Content Updates"
+        description: "Monthly content updates and modifications."
+        values:
+          - "1/month"
+          - "3/month"
+          - "5/month"
+          - "7/month"
           - "Unlimited"
 
-      - name: "Pages"
-        description: "The number of pages allowed per site."
+      - name: "Analytics"
+        description: "Website traffic and performance analytics."
         values:
-          - "10"
-          - "25"
-          - "Unlimited"
-          - "Unlimited"
-
-      - name: "Domain"
-        description: "Domain options included with the plan."
-        values:
-          - "Free domain"
-          - "Custom domain integration"
-          - "Custom domain integration"
-          - "Custom domain integration"
-
-      - name: "AI Credit for Generations"
-        description: "Monthly AI credits available for content and asset generation."
-        values:
-          - "$5"
-          - "$20"
-          - "$50"
-          - "Custom"
-
-      - name: "AI Content Generation"
-        description: "Access to AI-powered content creation tools."
-        values:
-          - "active"
-          - "active"
-          - "active"
-          - "active"
+          - "Basic"
+          - "Standard"
+          - "Advanced"
+          - "Advanced"
+          - "Advanced"
 
       - name: "Priority Support"
         description: "Access to priority customer support."
         values:
           - "cross"
           - "active"
-          - "active"
-          - "active"
-
-      - name: "Advanced Analytics"
-        description: "Detailed insights and reporting capabilities."
-        values:
-          - "cross"
           - "active"
           - "active"
           - "active"
@@ -81,6 +81,7 @@ comparison_section:
         values:
           - "cross"
           - "cross"
+          - "active"
           - "active"
           - "active"
 ---
