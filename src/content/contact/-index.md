@@ -55,18 +55,10 @@ contact_info:
 
 gallery_section:
   enable: true
-  title: "Stop by and <mark>meet the team</mark> around the world"
+  title: "Stop by and <mark>meet the team</mark> in Maryland"
   image: "/images/contact/contact-banner.png"
   locations:
-    - name: "New York Office"
-      address: "123 Fifth Avenue, New York, NY 10001"
-      icon: "FaLocationDot"
-
-    - name: "San Francisco Office"
-      address: "456 Market Street, San Francisco, CA 94111"
-      icon: "FaLocationDot"
-
-    - name: "London Office"
-      address: "789 Oxford Street, London, UK W1D 2ES"
+    - name: "Lanham Office"
+      address: "7375 Executive Pl. Suite 400, Lanham, MD 20706"
       icon: "FaLocationDot"
 ---

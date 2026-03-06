@@ -14,9 +14,9 @@ banner:
     link: "/contact"
 
   tag_lines:
-    - "No Credit Card"
-    - "7-Day Free Trial"
-    - "Cancel Anytime"
+    - "Maryland Owned"
+    - "Local Expertise"
+    - "Dedicated Support"
 
   cursor_1: Growing
   cursor_2: Ranking
