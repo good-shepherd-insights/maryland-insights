@@ -14,9 +14,9 @@ banner:
     link: "/contact"
 
   tag_lines:
-    - "Maryland Owned"
-    - "Local Expertise"
-    - "Dedicated Support"
+    - "No Credit Card"
+    - "Free Forever"
+    - "Cancel Anytime"
 
   cursor_1: Growing
   cursor_2: Ranking
