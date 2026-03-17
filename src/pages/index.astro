@@ -8,7 +8,6 @@ import Features from "@/partials/Features.astro";
 import FeautresCarousel from "@/partials/FeautresCarousel.astro";
 import HomeBanner from "@/partials/HomeBanner.astro";
 import PricingGrid from "@/partials/PricingGrid.astro";
-import Testimonial from "@/partials/Testimonial.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
 
 const pageIndex = await getListPage("homepage", "-index");
@@ -22,6 +21,5 @@ const pageIndex = await getListPage("homepage", "-index");
   <Features />
   <PricingGrid haveDivider />
   <FeautresCarousel />
-  <Testimonial />
   <CallToAction />
 </Base>

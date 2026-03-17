@@ -1,7 +1,7 @@
 ---
 enable: true
-title: "Integration <mark>with</mark> your <mark>favorite</mark> tools"
-description: "Supercharge your website growth with Maryland Insights. Connect your favorite tools and unlock a complete AI-powered SEO strategy."
+title: "Ready to Grow Your Maryland Business?"
+description: "Join hundreds of Maryland businesses that have transformed their online presence. Get started today with a free consultation."
 
 rotating_icons:
   - "/images/icons/shopify.svg"
@@ -15,6 +15,6 @@ rotating_icons:
 
 button:
   enable: true
-  label: "Get Started"
+  label: "Get Your Free Consultation"
   link: "/contact"
 ---

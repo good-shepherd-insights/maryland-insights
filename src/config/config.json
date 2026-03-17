@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "Maryland Insights",
+    "title": "Maryland Insights | Best Website Builder for Maryland Small Business",
     "base_url": "https://marylandinsights.com",
     "base_path": "/",
     "trailing_slash": false,
@@ -12,7 +12,7 @@
   },
 
   "params": {
-    "footer_description": "Maryland Insights is Maryland's #1 website builder for small businesses, combining AI and SEO to drive real revenue growth.",
+    "footer_description": "Turn your website into a steady business. Maryland's #1 website builder for small businesses uses data-driven insights to deliver real revenue growth.",
     "copyright": "© {year} Maryland Insights. All Rights Reserved."
   },
 

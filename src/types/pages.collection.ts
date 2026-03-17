@@ -81,17 +81,19 @@ export const about = defineCollection({
         )
         .length(4),
     }),
-    teams_section: z.object({
-      enable: z.boolean(),
-      title: z.string(),
-      members: z.array(
-        z.object({
-          name: z.string(),
-          position: z.string(),
-          image: z.string(),
-        }),
-      ),
-    }),
+    teams_section: z
+      .object({
+        enable: z.boolean(),
+        title: z.string(),
+        members: z.array(
+          z.object({
+            name: z.string(),
+            position: z.string(),
+            image: z.string(),
+          }),
+        ),
+      })
+      .optional(),
   }),
 });
 

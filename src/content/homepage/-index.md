@@ -1,17 +1,16 @@
 ---
 banner:
   title: "Maryland's Leading Website & Growth Partner"
-  content: "Crafting smart solutions in lot’s with moments therefore
-    revolutionizing efficiency and innovation."
+  content: "Turn your website into a steady business. Maryland's #1 website builder for small businesses uses data-driven insights to deliver real revenue growth."
   image: "/images/homepage/banner.png"
   button_solid:
     enable: true
-    label: "Start Building"
+    label: "Get Started"
     link: "/contact"
   button_underline:
     enable: true
-    label: "Request Demo"
-    link: "/contact"
+    label: "Learn More"
+    link: "/about"
 
   tag_lines:
     - "No Credit Card"
@@ -39,30 +38,23 @@ agents_swiper:
         enable: true
         label: "Learn More"
         link: "/features"
-    - label: "AI-Powered Content"
-      description: "AI-generated content and copywriting tailored to your brand voice and audience."
-      icon: "/images/icons/image.svg"
-      button:
-        enable: true
-        label: "Learn More"
-        link: "/features"
     - label: "Local SEO"
-      description: "Google Maps, local search citations, and Maryland-focused ranking strategies."
+      description: "Google Maps, local citations, and Maryland-focused ranking strategies."
       icon: "/images/icons/decision.svg"
       button:
         enable: true
         label: "Learn More"
         link: "/features"
-    - label: "Website Builder"
-      description: "Custom website design and development that converts visitors into customers."
-      icon: "/images/icons/message.svg"
+    - label: "Analytics & Reporting"
+      description: "Track performance, analyze data, and make informed decisions with detailed reports."
+      icon: "/images/icons/gear.svg"
       button:
         enable: true
         label: "Learn More"
         link: "/features"
-    - label: "SEO Optimization"
-      description: "Search engine optimization and ranking strategies that drive organic traffic."
-      icon: "/images/icons/ai.svg"
+    - label: "Marketing Automation"
+      description: "Automate campaigns, personalize messaging, and optimize your marketing workflows."
+      icon: "/images/icons/define.svg"
       button:
         enable: true
         label: "Learn More"
@@ -70,13 +62,6 @@ agents_swiper:
     - label: "AI-Powered Content"
       description: "AI-generated content and copywriting tailored to your brand voice and audience."
       icon: "/images/icons/image.svg"
-      button:
-        enable: true
-        label: "Learn More"
-        link: "/features"
-    - label: "Local SEO"
-      description: "Google Maps, local search citations, and Maryland-focused ranking strategies."
-      icon: "/images/icons/decision.svg"
       button:
         enable: true
         label: "Learn More"

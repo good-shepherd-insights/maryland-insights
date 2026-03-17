@@ -1,21 +1,21 @@
 ---
 enable: true
-title: "⚡️ Powerful <mark>Use Cases</mark> for Every Industry"
+title: "⚡️ Industries <mark>We Serve</mark> in Maryland"
 subtitle: "Our platform transforms businesses across Maryland with tailored website and growth strategies."
 
 list:
-  - title: E-Commerce Websites
-    subtitle: "Build and optimize online stores that convert browsers into buyers with AI-powered product pages."
+  - title: Small Business
+    subtitle: "Professional websites designed to help Maryland small businesses grow and reach more customers."
     icon: "FaCartShopping"
     image: "/images/homepage/feature-1.png"
 
-  - title: Local Business SEO
-    subtitle: "Rank higher in Maryland local search results and attract more customers from your community."
+  - title: Home Services
+    subtitle: "websites for contractors, plumbers, electricians, and other home service professionals."
     icon: "FaHeadset"
     image: "/images/homepage/feature-1.png"
 
-  - title: Lead Generation
-    subtitle: "Turn your website into a lead machine with conversion-optimized landing pages and calls-to-action."
+  - title: Professional Services
+    subtitle: "websites for lawyers, accountants, consultants, and other professional service providers."
     icon: "FaSackDollar"
     image: "/images/homepage/feature-1.png"
 ---
