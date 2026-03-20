@@ -7,7 +7,7 @@ draft: false
 
 comparison_section:
   enable: true
-  title: "Compare the <mark>membership</mark> pricing"
+  title: "Compare <mark>plans</mark> and features"
   plan_names:
     - label: "Starter"
       price: "$0"
@@ -20,6 +20,54 @@ comparison_section:
 
   comparison_table:
     features:
+      - name: "Custom Domain"
+        description: "Connect your own domain or get one free."
+        values:
+          - "Free domain"
+          - "active"
+          - "active"
+          - "active"
+
+      - name: "AI Website Builder"
+        description: "Create your site with AI in minutes."
+        values:
+          - "active"
+          - "active"
+          - "active"
+          - "active"
+
+      - name: "SSL Security"
+        description: "Secure, encrypted connection for your site."
+        values:
+          - "active"
+          - "active"
+          - "active"
+          - "active"
+
+      - name: "SEO Tools"
+        description: "Tools to rank higher in search results."
+        values:
+          - "Basic"
+          - "Advanced"
+          - "Advanced"
+          - "Advanced"
+
+      - name: "Analytics"
+        description: "Track visitors and performance insights."
+        values:
+          - "cross"
+          - "active"
+          - "active"
+          - "active"
+
+      - name: "Marketing Automation"
+        description: "Automate your marketing workflows."
+        values:
+          - "cross"
+          - "active"
+          - "active"
+          - "active"
+
       - name: "Sites"
         description: "The number of websites included in the plan."
         values:
@@ -36,48 +84,8 @@ comparison_section:
           - "Unlimited"
           - "Unlimited"
 
-      - name: "Domain"
-        description: "Domain options included with the plan."
-        values:
-          - "Free domain"
-          - "Custom domain integration"
-          - "Custom domain integration"
-          - "Custom domain integration"
-
-      - name: "AI Credit for Generations"
-        description: "Monthly AI credits available for content and asset generation."
-        values:
-          - "$5"
-          - "$20"
-          - "$50"
-          - "Custom"
-
-      - name: "AI Content Generation"
-        description: "Access to AI-powered content creation tools."
-        values:
-          - "active"
-          - "active"
-          - "active"
-          - "active"
-
       - name: "Priority Support"
         description: "Access to priority customer support."
-        values:
-          - "cross"
-          - "active"
-          - "active"
-          - "active"
-
-      - name: "Advanced Analytics"
-        description: "Detailed insights and reporting capabilities."
-        values:
-          - "cross"
-          - "active"
-          - "active"
-          - "active"
-
-      - name: "Custom Branding"
-        description: "Remove platform branding and apply your own."
         values:
           - "cross"
           - "cross"

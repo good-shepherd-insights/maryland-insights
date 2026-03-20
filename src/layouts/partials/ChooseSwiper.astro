@@ -19,7 +19,7 @@ const swiperOptions: SwiperOptions = {
   spaceBetween: 24,
   loop: true,
   autoplay: {
-    delay: 2500,
+    delay: 5000,
     disableOnInteraction: false,
   },
   pagination: {
@@ -75,11 +75,11 @@ const swiperOptions: SwiperOptions = {
                   />
 
                   <h3
-                    set:text={markdownify(agent.label)}
+                    set:html={markdownify(agent.label)}
                     class="mt-10 mb-6 h5"
                   />
                   <p
-                    set:text={markdownify(agent.description)}
+                    set:html={markdownify(agent.description)}
                     class="text-sm"
                   />
 

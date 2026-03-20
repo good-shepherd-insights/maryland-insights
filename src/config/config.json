@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "Maryland Insights | Best Website Builder for Maryland Small Business",
+    "title": "Maryland Insights — Build Your Maryland Business Website | Free",
     "base_url": "https://marylandinsights.com",
     "base_path": "/",
     "trailing_slash": false,
@@ -12,7 +12,7 @@
   },
 
   "params": {
-    "footer_description": "Turn your website into a steady business. Maryland's #1 website builder for small businesses uses data-driven insights to deliver real revenue growth.",
+    "footer_description": "Build. Rank. Grow. — For Maryland Businesses. The new way for Maryland small businesses to build professional websites with AI-powered tools.",
     "copyright": "© {year} Maryland Insights. All Rights Reserved."
   },
 
@@ -36,6 +36,6 @@
   "metadata": {
     "meta_author": "Maryland Insights",
     "meta_image": "/images/og-image.png",
-    "meta_description": "Maryland's #1 website builder for small businesses. AI-powered growth and SEO services that turn your site into a steady revenue engine."
+    "meta_description": "The new way for Maryland small businesses to build professional websites. AI-powered, Maryland-focused SEO, and growth tools. Start for free."
   }
 }

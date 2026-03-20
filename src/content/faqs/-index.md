@@ -5,30 +5,32 @@ description: "Welcome to our Frequently Asked Questions section! Here, you'll fi
 image: ""
 draft: false
 
-section_title: "Let’s <mark>answer</mark> to your common ❔ <mark>questions</mark>"
+section_title: "Let us answer your common questions"
 
 cta:
-  title: "Can’t Find Answer?"
+  title: "Can't Find Answer?"
   description: "Still have questions? Feel free to get in touch with us today!"
   image: "/images/call.png"
   button:
     enable: true
-    label: "Contact Support"
+    label: "Get Started"
     link: "/contact"
 
 faqs_list:
-  - question: What industries does Optivus serve?
-    answer: Optivus serves various industries including healthcare, finance, e-commerce, manufacturing, and technology sectors, providing tailored AI solutions for each industry's specific needs.
+  - question: "Is Maryland Insights only for Maryland businesses?"
+    answer: "Yes — we specialize in helping Maryland small businesses grow. Our SEO, local search, and marketing tools are all optimized for the Maryland market."
 
-  - question: What is Optivus, and what does the company do?
-    answer: Optivus is an AI-powered technology company that develops smart automation and data intelligence tools for businesses.
+  - question: "Do I need coding skills to build a website?"
+    answer: "No. Our AI-powered builder creates professional websites without any coding. Just answer a few questions and your site is ready."
 
-  - question: How can I get started with Optivus solutions?
-    answer: You can schedule a free demo or consultation through our website to explore the best solutions for your business needs.
+  - question: "Can I use my own domain?"
+    answer: "Absolutely. Connect any domain you own, or we can help you find the perfect .com for your Maryland business."
 
-  - question: What makes Optivus' AI solutions unique?
-    answer: Our AI is trained on industry-specific data and continually learns from user behavior, providing highly personalized and accurate insights.
+  - question: "Is there a free plan?"
+    answer: "Yes. Our Starter plan is free forever. Perfect for Maryland businesses just getting started online."
 
-  - question: Do you provide ongoing support after implementation?
-    answer: Yes, we offer 24/7 customer support, regular updates, and dedicated account managers to ensure long-term success.
----
+  - question: "How does Maryland-focused SEO work?"
+    answer: "We optimize your site specifically for Maryland search results — local citations, Google Maps, and keywords your Maryland customers are searching for."
+
+  - question: "Do you provide ongoing support?"
+    answer: "Yes, we offer 24/7 customer support, regular updates, and dedicated account managers to ensure your success."

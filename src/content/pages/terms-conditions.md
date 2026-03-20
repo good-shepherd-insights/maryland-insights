@@ -1,5 +1,5 @@
 ---
-title: "Terms & Conditions"
+title: "Terms and Conditions"
 meta_title: ""
 description: "We may update or modify these Terms at any time, and continued use of our Service after changes."
 image: ""

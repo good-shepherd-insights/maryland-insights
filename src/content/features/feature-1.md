@@ -1,41 +1,35 @@
 ---
-title: "Task Automation"
-meta_title: ""
-description: "AI-powered chatbots and virtual assistants that engage users via text or voice."
+title: "Website Builder"
+meta_title: "Website Builder for Maryland Businesses - Maryland Insights"
+description: "Create a website built specifically for Maryland businesses in minutes. No coding needed."
 image: "/images/features/1.png"
 button:
   enable: true
-  label: "Learn More"
-  link: "#"
+  label: "Get Started"
+  link: "/contact"
 draft: false
 ---
 
-## Automate Repetitive Tasks Effortlessly
+## Build a Website That Makes Your Maryland Business Real
 
-Task Automation helps businesses and teams save time by automating routine and repetitive processes. Using AI-driven workflows, tasks that once required manual effort can now be completed faster and more accurately.
+Create a professional, conversion-optimized website without writing a single line of code. Our platform is designed specifically for the Maryland market, helping small businesses launch beautiful, effective sites that resonate with local customers.
 
 ## Key Benefits
 
-- ⏱️ **Save Time** – Reduce hours spent on repetitive work
-- ⚙️ **Increase Efficiency** – Ensure tasks are completed consistently
-- 📉 **Reduce Errors** – Minimize human mistakes with automated logic
-- 📈 **Scale Easily** – Handle growing workloads without extra effort
+- **Maryland-Focused Design** — Choose from designer templates built specifically for Maryland small businesses.
+- **AI-Powered Creation** — Describe your business and let AI generate a professional site in seconds.
+- **Complete Creative Control** — Easy point-and-click customization to match your unique Maryland brand.
+- **Built for Growth** — Every site is optimized for performance and Maryland search results from day one.
 
 ## How It Works
 
-1. Identify repetitive or rule-based tasks
-2. Configure automation rules or AI workflows
-3. Monitor performance and optimize as needed
+1. **Describe Your Business** — Tell us what you do and who your Maryland customers are.
+2. **AI Generates Your Site** — Get a personalized, business-ready website in minutes.
+3. **Customize and Launch** — Fine-tune your design and connect your Maryland-focused domain.
+4. **Attract Local Customers** — Start appearing in search results and growing your presence.
 
-## Use Cases
+## Why Maryland Businesses Choose Us
 
-- Automated data entry and processing
-- Scheduling and notifications
-- Customer support task handling
-- Report generation and updates
+Generic website builders don't understand the Maryland market. We provide the local expertise and specialized tools you need to stand out in the Old Line State.
 
-## Why Choose Our Automation Solution?
-
-Our platform combines intelligent automation with an easy-to-use interface, making it simple for teams to get started without technical complexity.
-
-> Focus on what matters most while automation takes care of the rest.
+> A professional website makes it real for your Maryland business. Build yours today.

@@ -7,7 +7,7 @@ draft: false
 
 gallery:
   enable: true
-  title: "Growing Maryland Businesses Since 2015 - Your <mark>trusted local partner</mark> for website and SEO success."
+  title: "Maryland businesses have been trusting us since 2015 to build their online presence. We're not just a website builder — we're your Maryland neighbors who understand what it takes to succeed in the Old Line State."
   image: "/images/about/about-banner.png"
 
 facts_section:

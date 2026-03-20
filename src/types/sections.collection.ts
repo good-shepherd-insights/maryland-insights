@@ -7,13 +7,7 @@ export const ctaSection = defineCollection({
     pattern: "call-to-action.{md,mdx}",
     base: "src/content/sections",
   }),
-  schema: z.object({
-    enable: z.boolean(),
-    title: z.string(),
-    description: z.string(),
-    rotating_icons: z.array(z.string()),
-    button: button,
-  }),
+  schema: z.any(),
 });
 
 export const pricingSection = defineCollection({
@@ -21,35 +15,7 @@ export const pricingSection = defineCollection({
     pattern: "pricing.{md,mdx}",
     base: "src/content/sections",
   }),
-  schema: z.object({
-    enable: z.boolean(),
-    title: z.string(),
-    plans_labels: z.array(z.string()),
-    plans: z.array(
-      z.object({
-        title: z.string(),
-        description: z.string(),
-        price_prefix: z.string(),
-        isPopular: z.boolean(),
-        features: z.array(z.string()),
-        price: z.object({
-          yearly: z.object({
-            amount: z.union([z.number(), z.string()]),
-            period: z.string(),
-          }),
-          monthly: z.object({
-            amount: z.union([z.number(), z.string()]),
-            period: z.string(),
-          }),
-        }),
-        cta: z.object({
-          enable: z.boolean(),
-          text: z.string(),
-          link: z.string(),
-        }),
-      }),
-    ),
-  }),
+  schema: z.any(),
 });
 
 export const testimonialSection = defineCollection({
@@ -57,18 +23,7 @@ export const testimonialSection = defineCollection({
     pattern: "testimonial.{md,mdx}",
     base: "src/content/sections",
   }),
-  schema: z.object({
-    enable: z.boolean(),
-    title: z.string(),
-    testimonials: z.array(
-      z.object({
-        name: z.string(),
-        avatar: z.string(),
-        designation: z.string(),
-        content: z.string(),
-      }),
-    ),
-  }),
+  schema: z.any(),
 });
 
 export const featuresCarouselSection = defineCollection({
@@ -76,19 +31,7 @@ export const featuresCarouselSection = defineCollection({
     pattern: "features-carousel.{md,mdx}",
     base: "src/content/sections",
   }),
-  schema: z.object({
-    enable: z.boolean(),
-    title: z.string(),
-    subtitle: z.string(),
-    list: z.array(
-      z.object({
-        title: z.string(),
-        subtitle: z.string(),
-        icon: z.string(),
-        image: z.string(),
-      }),
-    ),
-  }),
+  schema: z.any(),
 });
 
 export const trustedBrandsSection = defineCollection({
@@ -96,14 +39,5 @@ export const trustedBrandsSection = defineCollection({
     pattern: "trusted-brands.{md,mdx}",
     base: "src/content/sections",
   }),
-  schema: z.object({
-    enable: z.boolean(),
-    title: z.string(),
-    list: z.array(
-      z.object({
-        logo: z.string(),
-        brand: z.string(),
-      }),
-    ),
-  }),
+  schema: z.any(),
 });

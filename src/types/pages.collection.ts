@@ -63,7 +63,12 @@ export const homepage = defineCollection({
 export const about = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/about" }),
   schema: z.object({
-    ...commonFields,
+    title: z.string(),
+    description: z.string(),
+    meta_title: z.string().optional(),
+    date: z.date().optional(),
+    image: z.string().optional(),
+    draft: z.boolean(),
     gallery: z.object({
       enable: z.boolean(),
       title: z.string(),
@@ -100,7 +105,12 @@ export const about = defineCollection({
 export const careers = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "src/content/careers" }),
   schema: z.object({
-    ...commonFields,
+    title: z.string(),
+    description: z.string(),
+    meta_title: z.string().optional(),
+    date: z.date().optional(),
+    image: z.string().optional(),
+    draft: z.boolean(),
     section_title: z.string().optional(),
     gallery: z
       .object({
@@ -138,7 +148,12 @@ export const careers = defineCollection({
 export const blog = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "src/content/blog" }),
   schema: z.object({
-    ...commonFields,
+    title: z.string(),
+    description: z.string(),
+    meta_title: z.string().optional(),
+    date: z.date().optional(),
+    image: z.string().optional(),
+    draft: z.boolean(),
     categories: z.array(z.string()).optional(),
     author: z
       .object({
@@ -165,7 +180,12 @@ export const blog = defineCollection({
 export const caseStudies = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "src/content/case-studies" }),
   schema: z.object({
-    ...commonFields,
+    title: z.string(),
+    description: z.string(),
+    meta_title: z.string().optional(),
+    date: z.date().optional(),
+    image: z.string().optional(),
+    draft: z.boolean(),
     section_title: z.string().optional(),
     categories: z.array(z.string()).optional(),
     author: z
@@ -188,69 +208,55 @@ export const caseStudies = defineCollection({
 });
 
 export const contact = defineCollection({
-  loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/contact" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/contact" }),
   schema: z.object({
-    ...commonFields,
-    section_title: z.string(),
-    contact_form: z.object({
-      enable: z.boolean(),
-      title: z.string(),
-      description: z.string(),
-      form_action: z.string(),
-      fields: z.array(
-        z.object({
-          label: z.string(),
-          type: z.string(),
-          name: z.string(),
-          placeholder: z.string(),
-          required: z.boolean(),
-        }),
-      ),
-      submit_button_label: z.string(),
-    }),
-    contact_info: z.object({
-      enable: z.boolean(),
-      informations: z.array(
-        z.object({
-          label: z.string(),
-          value: z.string(),
-          icon: z.string(),
-        }),
-      ),
-    }),
-    gallery_section: z.object({
-      enable: z.boolean(),
-      title: z.string(),
-      image: z.string(),
-      locations: z.array(
-        z.object({
-          name: z.string(),
-          address: z.string(),
-          icon: z.string(),
-        }),
-      ),
-    }),
-  }),
-});
-
-export const features = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/features" }),
-  schema: z.object({
-    ...commonFields,
-    button: button.optional(),
+    title: z.string(),
+    description: z.string(),
+    meta_title: z.string().optional(),
+    date: z.date().optional(),
+    image: z.string().optional(),
+    draft: z.boolean(),
     section_title: z.string().optional(),
-    use_cases: z
+    contact_form: z
       .object({
         enable: z.boolean(),
         title: z.string(),
         description: z.string(),
-        cases: z.array(
+        form_action: z.string(),
+        fields: z.array(
           z.object({
-            title: z.string(),
-            description: z.string(),
+            label: z.string(),
+            type: z.string(),
+            name: z.string(),
+            placeholder: z.string(),
+            required: z.boolean(),
+          }),
+        ),
+        submit_button_label: z.string(),
+      })
+      .optional(),
+    contact_info: z
+      .object({
+        enable: z.boolean(),
+        informations: z.array(
+          z.object({
+            label: z.string(),
+            value: z.string(),
             icon: z.string(),
-            image: z.string(),
-            button: button,
+          }),
+        ),
+      })
+      .optional(),
+    gallery_section: z
+      .object({
+        enable: z.boolean(),
+        title: z.string(),
+        image: z.string(),
+        locations: z.array(
+          z.object({
+            name: z.string(),
+            address: z.string(),
+            icon: z.string(),
           }),
         ),
       })
@@ -258,81 +264,34 @@ export const features = defineCollection({
   }),
 });
 
+export const features = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/features" }),
+  schema: z.any(),
+});
+
 export const integrations = defineCollection({
   loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/integrations" }),
-  schema: z.object({
-    ...commonFields,
-    section_title: z.string(),
-    integrations_list: z.array(
-      z.object({
-        title: z.string(),
-        image: z.string(),
-        description: z.string(),
-        link: z.string().optional(),
-      }),
-    ),
-  }),
+  schema: z.any(),
 });
 
 export const pricing = defineCollection({
   loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/pricing" }),
-  schema: z.object({
-    ...commonFields,
-    comparison_section: z
-      .object({
-        enable: z.boolean(),
-        title: z.string(),
-        plan_names: z
-          .array(z.object({ label: z.string(), price: z.string() }))
-          .min(1),
-        comparison_table: z.object({
-          features: z.array(
-            z.object({
-              name: z.string(),
-              description: z.string(),
-              values: z.array(z.string()),
-            }),
-          ),
-        }),
-      })
-      .superRefine((data, ctx) => {
-        const planCount = data.plan_names.length;
-        data.comparison_table.features.forEach((feature, index) => {
-          if (feature.values.length !== planCount) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: `Feature "${feature.name}" must have exactly ${planCount} values to match plan_names.`,
-              path: ["comparison_table", "features", index, "values"],
-            });
-          }
-        });
-      }),
-  }),
+  schema: z.any(),
 });
 
 export const faqs = defineCollection({
   loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/faqs" }),
-  schema: z.object({
-    ...commonFields,
-    section_title: z.string(),
-    faqs_list: z.array(
-      z.object({
-        question: z.string(),
-        answer: z.string(),
-      }),
-    ),
-    cta: z.object({
-      title: z.string(),
-      description: z.string(),
-      image: z.string(),
-      button: button,
-    }),
-  }),
+  schema: z.any(),
 });
 
 export const pages = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/pages" }),
   schema: z.object({
-    ...commonFields,
+    title: z.string(),
+    description: z.string(),
+    meta_title: z.string().optional(),
+    date: z.date().optional(),
+    image: z.string().optional(),
+    draft: z.boolean(),
   }),
 });

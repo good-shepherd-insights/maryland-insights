@@ -1,20 +1,22 @@
 ---
 enable: true
-title: "Choose a <mark>plan</mark> 🪙 that fits your pricing <mark>needs</mark>"
+title: "Choose a <mark>plan</mark> that fits your pricing <mark>needs</mark>"
 
 plans_labels:
   - "Monthly"
   - "Yearly"
 plans:
   - title: Starter
-    description: Get started with your first website at no cost.
+    description: "Start for free. Perfect for Maryland businesses getting started online."
     price_prefix: "$"
     isPopular: false
     features:
       - 1 Site
       - 10 Pages
       - Free domain
-      - $5 AI credit for generations
+      - AI Website Builder
+      - SSL Security
+      - Basic SEO tools
     price:
       yearly:
         amount: 0
@@ -24,17 +26,21 @@ plans:
         period: month
     cta:
       enable: true
-      text: Get Started
+      text: "Start for Free"
       link: "/contact"
   - title: Business
-    description: Perfect for growing businesses ready to expand their online presence.
+    description: "Most Popular — Perfect for growing Maryland businesses ready to expand."
     price_prefix: "$"
     isPopular: true
     features:
       - 1 Site
       - 25 Pages
       - Custom domain integration
-      - $20 AI credit for generations
+      - AI Website Builder
+      - SSL Security
+      - Advanced SEO tools
+      - Advanced analytics
+      - Marketing automation
     price:
       yearly:
         amount: 39.99
@@ -44,15 +50,22 @@ plans:
         period: month
     cta:
       enable: true
-      text: Get Started
+      text: "Get Started"
       link: "/contact"
   - title: Business Pro
-    description: Advanced solution for businesses managing multiple sites and high-volume AI needs.
+    description: "For Maryland businesses managing multiple locations or high-volume needs."
     price_prefix: "$"
     isPopular: false
     features:
       - 3 Sites
-      - $50 AI credit for generations
+      - Unlimited Pages
+      - Custom domain integration
+      - AI Website Builder
+      - SSL Security
+      - Advanced SEO tools
+      - Advanced analytics
+      - Marketing automation
+      - Priority support
     price:
       yearly:
         amount: 99.99
@@ -62,20 +75,23 @@ plans:
         period: month
     cta:
       enable: true
-      text: Get Started
+      text: "Get Started"
       link: "/contact"
   - title: Enterprise
-    description: Custom solution for large organizations with advanced requirements and dedicated support.
+    description: "Custom solutions for large Maryland organizations with dedicated support."
     price_prefix: ""
     isPopular: false
     features:
       - Unlimited Sites
       - Unlimited Pages
       - Custom domain integration
-      - Custom AI credit allocation
+      - AI Website Builder
+      - SSL Security
+      - Advanced SEO tools
+      - Advanced analytics
+      - Marketing automation
+      - Priority support
       - Dedicated account manager
-      - Custom branding
-      - SLA & priority support
     price:
       yearly:
         amount: "Custom"
@@ -85,6 +101,6 @@ plans:
         period: ""
     cta:
       enable: true
-      text: Contact Us
+      text: "Contact Sales"
       link: "/contact"
 ---

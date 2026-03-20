@@ -1,6 +1,6 @@
 ---
 enable: true
-title: "Clients <mark>trust us</mark> and our exclusive 🔧 <mark>service</mark>"
+title: "Trusted by Maryland businesses"
 
 # Testimonials
 testimonials:

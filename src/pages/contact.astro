@@ -55,10 +55,8 @@ if (pageIndex.data.draft) {
         class="flex flex-col gap-7.5 justify-center lg:flex-row lg:items-stretch"
       >
         {
-          contact_form.enable && (
+          contact_form?.enable && (
             <div
-             
-             
               class="lg:w-[65%]"
             >
               <form
@@ -103,13 +101,11 @@ if (pageIndex.data.draft) {
         }
         <!-- Contact Information  -->
         {
-          contact_info.enable && (
+          contact_info?.enable && (
             <div class="lg:w-[35%]">
               <div class="flex flex-wrap justify-center lg:flex-col gap-7.5 w-full">
                 {contact_info.informations?.map((info, i) => (
                   <div
-                   
-                   
                     class="bg-body p-7 rounded-3xl card-shadow flex-1 min-w-62"
                   >
                     <DynamicIcon
@@ -135,15 +131,13 @@ if (pageIndex.data.draft) {
 
   <!-- Gallery Section  -->
   {
-    gallery_section.enable && (
+    gallery_section?.enable && (
       <section
         class="section section-divider bg-dark"
         style="--section-divider-color: var(--color-dark)"
       >
         <div class="container">
           <h2
-           
-           
             set:html={markdownify(gallery_section.title)}
             class="mb-12 text-white xl:w-[60%] mx-auto text-balance text-center"
           />
@@ -152,7 +146,7 @@ if (pageIndex.data.draft) {
             <div>
               <ImageMod
                 src={gallery_section.image}
-                alt={section_title}
+                alt={section_title ?? ""}
                 width={1500}
                 height={600}
                 class="mx-auto rounded-3xl"
@@ -163,8 +157,6 @@ if (pageIndex.data.draft) {
           <div class="flex flex-wrap justify-center gap-7.5 w-full mt-7.5">
             {gallery_section.locations?.map((location, i) => (
               <div
-               
-               
                 class="bg-body/5 p-7 rounded-2xl flex-1 min-w-62"
               >
                 <DynamicIcon

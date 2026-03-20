@@ -1,21 +1,21 @@
 ---
 enable: true
-title: "⚡️ Industries <mark>We Serve</mark> in Maryland"
-subtitle: "Our platform transforms businesses across Maryland with tailored website and growth strategies."
+title: "Industries <mark>We Serve</mark> in Maryland"
+subtitle: "We provide industry-specific solutions designed to help Maryland businesses succeed in their local markets."
 
 list:
   - title: Small Business
-    subtitle: "Professional websites designed to help Maryland small businesses grow and reach more customers."
+    subtitle: "Professional websites designed to help Maryland small businesses grow their local brand and attract more customers."
     icon: "FaCartShopping"
     image: "/images/homepage/feature-1.png"
 
   - title: Home Services
-    subtitle: "websites for contractors, plumbers, electricians, and other home service professionals."
+    subtitle: "Build trust and book more local jobs with a professional website optimized for the Maryland home services market."
     icon: "FaHeadset"
     image: "/images/homepage/feature-1.png"
 
   - title: Professional Services
-    subtitle: "websites for lawyers, accountants, consultants, and other professional service providers."
+    subtitle: "Establish local authority and generate high-quality leads for your Maryland professional practice."
     icon: "FaSackDollar"
     image: "/images/homepage/feature-1.png"
 ---

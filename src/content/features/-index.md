@@ -1,35 +1,35 @@
 ---
 title: "Features"
-meta_title: "Features - Maryland Insights"
+meta_title: "Maryland Business Website Features - Maryland Insights"
 description: "Discover the AI-powered website and SEO features that help Maryland small businesses grow steadily online."
 image: ""
 draft: false
 
-section_title: "Key features to <mark>build, rank</mark> and grow ⚙️ your <mark>business</mark> 🚀"
+section_title: "Key features to <mark>build, rank</mark> and grow your <mark>Maryland business</mark>"
 
 use_cases:
   enable: true
-  title: "Powerful Use <mark>Cases</mark> for <mark>Every</mark> Industry"
-  description: "Our platform transforms businesses across Maryland with tailored website and growth strategies."
+  title: "Tailored Solutions for <mark>Maryland Industries</mark>"
+  description: "We provide industry-specific website and marketing strategies designed to help Maryland businesses thrive in their local markets."
   cases:
-    - title: "E-Commerce Websites"
-      description: "Build and optimize online stores that convert browsers into buyers. Our AI-powered product pages, smart search, and conversion-focused layouts help Maryland retailers grow revenue steadily."
+    - title: "Small Business"
+      description: "Stand out in your local community with a professional website that makes your business real. From retail shops to local cafes, we provide the tools to build your brand and attract Maryland customers both online and in-person."
       icon: "FaCartShopping"
       image: "/images/features/use-case-1.png"
       button:
         enable: true
         label: "Get Started"
         link: "/contact"
-    - title: "Local Business SEO"
-      description: "Rank higher in Maryland local search results and attract more customers from your community. We handle on-page SEO, Google Maps citations, and local link-building so you dominate your market."
+    - title: "Home Services"
+      description: "Build trust and book more local jobs. Whether you're a contractor, plumber, or electrician, our platform is optimized for the Maryland home services market—helping you appear on Google Maps and win customers searching nearby."
       icon: "FaHeadset"
       image: "/images/features/use-case-2.png"
       button:
         enable: true
         label: "Get Started"
         link: "/contact"
-    - title: "Lead Generation"
-      description: "Turn your website into a lead machine with conversion-optimized landing pages and calls-to-action. We track and analyze every visitor interaction so you know exactly what drives growth."
+    - title: "Professional Services"
+      description: "Establish authority and generate high-quality leads for your practice. We help Maryland lawyers, accountants, and consultants build professional websites that showcase their expertise and connect with their local audience."
       icon: "FaSackDollar"
       image: "/images/features/use-case-3.png"
       button:

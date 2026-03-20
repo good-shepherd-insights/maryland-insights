@@ -1,7 +1,7 @@
 ---
 banner:
-  title: "Maryland's Leading Website & Growth Partner"
-  content: "Turn your website into a steady business. Maryland's #1 website builder for small businesses uses data-driven insights to deliver real revenue growth."
+  title: "Build, rank and <mark>grow</mark> a Maryland business that stands out"
+  content: "Go from words to a business-ready site, built specifically for Maryland small businesses. Dominate local search, attract Maryland customers, and grow with AI-powered tools."
   image: "/images/homepage/banner.png"
   button_solid:
     enable: true
@@ -9,62 +9,59 @@ banner:
     link: "/contact"
   button_underline:
     enable: true
-    label: "Learn More"
-    link: "/about"
-
+    label: "Start for Free"
+    link: "/pricing"
   tag_lines:
-    - "No Credit Card"
-    - "Free Forever"
-    - "Cancel Anytime"
-
+    - "Start for free. No credit card required."
+    - "Free forever. Cancel anytime."
   cursor_1: Growing
   cursor_2: Ranking
 
 agents_swiper:
   enable: true
-  title: "Which service is 💡 <mark>right for you?</mark> Grow your website, dominate 🚀 <mark>local search</mark> today!"
+  title: "A website makes it <mark>real</mark> for your Maryland business"
   agents:
     - label: "Website Builder"
-      description: "Custom website design and development that converts visitors into customers."
+      description: "Create a website built specifically for Maryland businesses in minutes. No coding needed."
       icon: "/images/icons/message.svg"
       button:
         enable: true
-        label: "Learn More"
+        label: "Get Started"
         link: "/features"
     - label: "SEO Optimization"
-      description: "Search engine optimization and ranking strategies that drive organic traffic."
+      description: "Rank higher and get found by Maryland customers searching for local services."
       icon: "/images/icons/ai.svg"
       button:
         enable: true
-        label: "Learn More"
+        label: "Get Started"
         link: "/features"
     - label: "Local SEO"
-      description: "Google Maps, local citations, and Maryland-focused ranking strategies."
+      description: "Dominate local search and appear on Google Maps for your Maryland community."
       icon: "/images/icons/decision.svg"
       button:
         enable: true
-        label: "Learn More"
+        label: "Get Started"
         link: "/features"
-    - label: "Analytics & Reporting"
-      description: "Track performance, analyze data, and make informed decisions with detailed reports."
+    - label: "Analytics and Reporting"
+      description: "Track Maryland visitors and understand what drives growth in your local market."
       icon: "/images/icons/gear.svg"
       button:
         enable: true
-        label: "Learn More"
+        label: "Get Started"
         link: "/features"
     - label: "Marketing Automation"
-      description: "Automate campaigns, personalize messaging, and optimize your marketing workflows."
+      description: "Automate marketing campaigns that convert Maryland customers into loyal buyers."
       icon: "/images/icons/define.svg"
       button:
         enable: true
-        label: "Learn More"
+        label: "Get Started"
         link: "/features"
     - label: "AI-Powered Content"
-      description: "AI-generated content and copywriting tailored to your brand voice and audience."
+      description: "Generate compelling content that resonates with your Maryland audience in seconds."
       icon: "/images/icons/image.svg"
       button:
         enable: true
-        label: "Learn More"
+        label: "Get Started"
         link: "/features"
 
 facts_section:
@@ -86,5 +83,5 @@ facts_section:
 
 featured_features_section:
   enable: true
-  title: "Key features to build, rank ⚙️ and grow your business"
+  title: "Key features to build, rank and grow your Maryland business"
 ---

@@ -1,41 +1,35 @@
 ---
-title: "Analytics & Insights"
-meta_title: ""
-description: "AI-powered chatbots and virtual assistants that engage users via text or voice."
+title: "Local SEO"
+meta_title: "Local SEO for Maryland Communities - Maryland Insights"
+description: "Dominate local search and appear on Google Maps for your Maryland community."
 image: "/images/features/3.png"
 button:
   enable: true
-  label: "Learn More"
-  link: "#"
+  label: "Get Started"
+  link: "/contact"
 draft: false
 ---
 
-## Automate Repetitive Tasks Effortlessly
+## Dominate Local Search in Your Maryland Community
 
-Task Automation helps businesses and teams save time by automating routine and repetitive processes. Using AI-driven workflows, tasks that once required manual effort can now be completed faster and more accurately.
+When customers in your area search for services nearby, your Maryland business should be the first thing they see. We specialize in putting your business on the map—literally.
 
 ## Key Benefits
 
-- ⏱️ **Save Time** – Reduce hours spent on repetitive work
-- ⚙️ **Increase Efficiency** – Ensure tasks are completed consistently
-- 📉 **Reduce Errors** – Minimize human mistakes with automated logic
-- 📈 **Scale Easily** – Handle growing workloads without extra effort
+- **Google Maps Dominance** — Complete optimization of your Google Business Profile for Maryland locations.
+- **Local Market Citations** — Get listed in the Maryland directories and platforms that actually drive traffic.
+- **Reputation Management** — Build trust with Maryland customers through strategic review management.
+- **Proximity Targeting** — Appear at the exact moment Maryland customers are searching nearby.
 
 ## How It Works
 
-1. Identify repetitive or rule-based tasks
-2. Configure automation rules or AI workflows
-3. Monitor performance and optimize as needed
+1. **Profile Optimization** — We maximize your visibility on Google Maps and local search packs.
+2. **Local Authority** — Build citations across Maryland-specific platforms to boost local trust.
+3. **Review Strategy** — Help your Maryland business stand out with a professional reputation.
+4. **Performance Tracking** — Monitor how many Maryland customers are finding and calling you.
 
-## Use Cases
+## Why Maryland Businesses Choose Us
 
-- Automated data entry and processing
-- Scheduling and notifications
-- Customer support task handling
-- Report generation and updates
+Local search is about more than just keywords—it's about location. We understand Maryland's unique geography and how to make your business the local leader.
 
-## Why Choose Our Automation Solution?
-
-Our platform combines intelligent automation with an easy-to-use interface, making it simple for teams to get started without technical complexity.
-
-> Focus on what matters most while automation takes care of the rest.
+> When Maryland customers search nearby, ensure your business is the one they find.
