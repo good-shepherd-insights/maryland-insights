@@ -3,6 +3,8 @@
     "default": {
       "theme_color": {
         "primary": "#FE9240",
+        "secondary": "#FFC20E",
+        "accent": "#10B981",
         "body": "#ffffff",
         "border": "#E3E0DC",
         "light": "#FAF7F2",

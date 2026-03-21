@@ -7,6 +7,8 @@
 @theme {
   /* === Colors === */
   --color-primary: #FE9240;
+  --color-secondary: #FFC20E;
+  --color-accent: #10B981;
   --color-body: #ffffff;
   --color-border: #E3E0DC;
   --color-light: #FAF7F2;

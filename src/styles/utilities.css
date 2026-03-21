@@ -30,8 +30,104 @@
   -webkit-background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  line-height: 1;
-  letter-spacing: -0.05em;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+
+  display: inline-block;
+  position: relative;
+}
+
+@utility gradient-orange {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff, transparent 0%),
+    color-mix(in srgb, var(--color-primary), transparent 3%),
+    color-mix(in srgb, var(--color-primary), transparent 15%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+@utility gradient-green {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff, transparent 0%),
+    color-mix(in srgb, var(--color-accent), transparent 3%),
+    color-mix(in srgb, var(--color-accent), transparent 15%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+@utility gradient-build {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff, transparent 0%),
+    color-mix(in srgb, #999999, transparent 3%),
+    color-mix(in srgb, #999999, transparent 15%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+@utility gradient-rank {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff, transparent 0%),
+    color-mix(in srgb, #e31837, transparent 3%),
+    color-mix(in srgb, #e31837, transparent 15%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+@utility gradient-grow {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff, transparent 0%),
+    color-mix(in srgb, var(--color-accent), transparent 3%),
+    color-mix(in srgb, var(--color-accent), transparent 15%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+@utility text-rank {
+  color: #e31837;
+}
+
+@utility text-grow {
+  color: #10b981;
+}
+
+/* Gradient Color Text */
+@utility gradient-text {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-text-light), transparent 0%),
+    color-mix(in srgb, var(--color-text-light), transparent 20%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 
   display: inline-block;
   position: relative;

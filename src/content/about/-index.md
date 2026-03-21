@@ -14,16 +14,16 @@ facts_section:
   enable: true
   # Don't use more that 4 facts here
   facts:
-    - label: "Build"
+    - label: "<span class='text-build'>Build</span>"
       description: "Launch a professional, AI-optimized website designed to convert Maryland visitors into paying customers."
       icon: "/images/icons/define.svg"
     - label: "Optimize"
       description: "Fine-tune your site's performance, speed, and user experience to maximize search rankings."
       icon: "/images/icons/gear.svg"
-    - label: "Rank"
+    - label: "<span class='text-rank'>Rank</span>"
       description: "Dominate local Maryland search results with proven on-page and off-page SEO strategies."
       icon: "/images/icons/rocket.svg"
-    - label: "Grow"
+    - label: "<span class='text-grow'>Grow</span>"
       description: "Track real revenue metrics, analyze growth data, and scale your online presence with confidence."
       icon: "/images/icons/star.svg"
 ---

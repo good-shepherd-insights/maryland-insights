@@ -12,7 +12,7 @@
   },
 
   "params": {
-    "footer_description": "Build. Rank. Grow. — For Maryland Businesses. The new way for Maryland small businesses to build professional websites with AI-powered tools.",
+    "footer_description": "<span class='text-build'>Build</span>. <span class='text-rank'>Rank</span>. <span class='text-grow'>Grow</span>. — For Maryland Businesses. The new way for Maryland small businesses to build professional websites with AI-powered tools.",
     "copyright": "© {year} Maryland Insights. All Rights Reserved."
   },
 
