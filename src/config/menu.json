@@ -1,6 +1,10 @@
 {
   "main": [
     {
+      "name": "Home",
+      "url": "/"
+    },
+    {
       "name": "About",
       "url": "/about"
     },
@@ -13,61 +17,18 @@
       "url": "/pricing"
     },
     {
-      "name": "Contact",
-      "url": "/contact"
+      "name": "Blog",
+      "url": "/blog"
     },
     {
-      "name": "Pages",
-      "url": "",
-      "hasChildren": true,
-      "children": [
-        {
-          "name": "Blog",
-          "url": "/blog"
-        },
-        {
-          "name": "Case Studies",
-          "url": "/case-studies"
-        },
-        {
-          "name": "Careers",
-          "url": "/careers"
-        },
-        {
-          "name": "Integrations",
-          "url": "/integrations"
-        },
-        {
-          "name": "FAQs",
-          "url": "/faqs"
-        },
-        {
-          "name": "Terms",
-          "url": "/terms-conditions"
-        },
-        {
-          "name": "Privacy Policy",
-          "url": "/privacy-policy"
-        },
-        {
-          "name": "Elements",
-          "url": "/elements"
-        },
-        {
-          "name": "404 Page",
-          "url": "/404"
-        }
-      ]
+      "name": "Contact",
+      "url": "/contact"
     }
   ],
   "footer": [
     {
       "title": "Quick Links",
       "children": [
-        {
-          "name": "Elements",
-          "url": "/elements"
-        },
         {
           "name": "Pricing",
           "url": "/pricing"
@@ -77,8 +38,12 @@
           "url": "/about"
         },
         {
-          "name": "404 Error",
-          "url": "/404"
+          "name": "Terms",
+          "url": "/terms-conditions"
+        },
+        {
+          "name": "Privacy Policy",
+          "url": "/privacy-policy"
         }
       ]
     },
@@ -88,10 +53,6 @@
         {
           "name": "Contact Us",
           "url": "/contact"
-        },
-        {
-          "name": "Case Studies",
-          "url": "/case-studies"
         },
         {
           "name": "FAQs",

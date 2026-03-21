@@ -5,7 +5,7 @@ description: "Discover the AI-powered website and SEO features that help Marylan
 image: ""
 draft: false
 
-section_title: "Key features to <span class='text-build'>build</span>, <span class='text-rank'>rank</span> and <span class='text-grow'>grow</span> your <mark>Maryland business</mark>"
+section_title: "Key features to <span class='gradient-build'>build</span>, <span class='gradient-rank'>rank</span> and <span class='gradient-grow'>grow</span> your <mark>Maryland Business</mark>"
 
 use_cases:
   enable: true

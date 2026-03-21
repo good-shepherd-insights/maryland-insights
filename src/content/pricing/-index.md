@@ -7,7 +7,7 @@ draft: false
 
 comparison_section:
   enable: true
-  title: "Compare <mark>plans</mark> and features"
+  title: "Compare <span class='gradient-yellow'>plans</span> and features"
   plan_names:
     - label: "Starter"
       price: "$0"

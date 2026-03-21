@@ -37,6 +37,20 @@
   position: relative;
 }
 
+@utility gradient-yellow {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff, transparent 0%),
+    color-mix(in srgb, var(--color-secondary), transparent 3%),
+    color-mix(in srgb, var(--color-secondary), transparent 15%)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
 @utility gradient-orange {
   background: linear-gradient(
     180deg,

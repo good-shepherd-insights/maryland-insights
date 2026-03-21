@@ -36,7 +36,7 @@ contact_info:
   enable: true
   informations:
     - label: "Call Us"
-      value: "+1 (800) 321-9876"
+      value: "+1 (240) 441-5259"
       icon: "FaPhone"
     - label: "Email Us"
       value: "support@marylandinsights.com"
@@ -46,11 +46,11 @@ gallery_section:
   title: "Stop by and <mark>meet the team</mark> in Maryland"
   image: "/images/contact/contact-banner.png"
   locations:
+    - name: "Maryland Headquarters"
+      address: "7375 Executive Pl. Suite 400, Lanham, MD 20706"
+      icon: "FaLocationDot"
     - name: "Baltimore Office"
       address: "100 E. Pratt Street, Baltimore, MD 21202"
-      icon: "FaLocationDot"
-    - name: "Bethesda Office"
-      address: "4720 Elm Street, Bethesda, MD 20814"
       icon: "FaLocationDot"
     - name: "Columbia Office"
       address: "10221 Wincopin Circle, Columbia, MD 21044"

@@ -1,6 +1,6 @@
 ---
 banner:
-  title: "<span class='gradient-build'>Build</span>, <span class='gradient-rank'>rank</span> and <span class='gradient-grow'>grow</span> a Maryland Business that stands out"
+  title: "<span class='gradient-build'>Build</span>, <span class='gradient-rank'>rank</span> and <span class='gradient-grow'>grow</span> a Maryland Business that <span class='gradient-yellow'>stands out</span>"
   content: "Go from words to a business-ready site, built specifically for Maryland small businesses. Dominate local search, attract Maryland customers, and grow with AI-powered tools."
   image: "/images/homepage/banner.png"
   button_solid:
@@ -68,20 +68,20 @@ facts_section:
   enable: true
   # Don't use more that 4 facts here
   facts:
-    - label: "<span class='text-build'>Build</span>"
+    - label: "<span class='gradient-build'>Build</span>"
       description: "Launch a professional, AI-optimized website designed to convert Maryland visitors into paying customers."
       icon: "/images/icons/define.svg"
     - label: "Optimize"
       description: "Fine-tune your site's performance, speed, and user experience to maximize search rankings."
       icon: "/images/icons/gear.svg"
-    - label: "<span class='text-rank'>Rank</span>"
+    - label: "<span class='gradient-rank'>Rank</span>"
       description: "Dominate local Maryland search results with proven on-page and off-page SEO strategies."
       icon: "/images/icons/rocket.svg"
-    - label: "<span class='text-grow'>Grow</span>"
+    - label: "<span class='gradient-grow'>Grow</span>"
       description: "Track real revenue metrics, analyze growth data, and scale your online presence with confidence."
       icon: "/images/icons/star.svg"
 
 featured_features_section:
   enable: true
-  title: "Key features to <span class='text-build'>build</span>, <span class='text-rank'>rank</span> and <span class='text-grow'>grow</span> your Maryland business"
+  title: "Key features to <span class='gradient-build'>build</span>, <span class='gradient-rank'>rank</span> and <span class='gradient-grow'>grow</span> your Maryland Business"
 ---

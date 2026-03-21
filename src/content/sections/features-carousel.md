@@ -1,6 +1,6 @@
 ---
 enable: true
-title: "Industries <mark>We Serve</mark> in Maryland"
+title: "Industries <span class='gradient-yellow'>We Serve</span> in Maryland"
 subtitle: "We provide industry-specific solutions designed to help Maryland businesses succeed in their local markets."
 
 list:

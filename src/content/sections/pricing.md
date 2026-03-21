@@ -1,6 +1,6 @@
 ---
 enable: true
-title: "Choose a <mark>plan</mark> that fits your pricing <mark>needs</mark>"
+title: "Choose a <span class='gradient-yellow'>plan</span> that fits your pricing <mark>needs</mark>"
 
 plans_labels:
   - "Monthly"
