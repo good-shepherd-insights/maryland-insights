@@ -1,24 +1,19 @@
 {
   "main": [
     {
-      "name": "facebook",
-      "icon": "FaFacebook",
-      "link": "https://www.facebook.com/"
+      "name": "instagram",
+      "icon": "FaInstagram",
+      "link": "https://www.instagram.com/marylandinsights/"
     },
     {
       "name": "x",
       "icon": "FaXTwitter",
-      "link": "https://x.com/"
-    },
-    {
-      "name": "github",
-      "icon": "FaGithub",
-      "link": "https://www.github.com/"
+      "link": "https://x.com/marylandinsight"
     },
     {
       "name": "linkedin",
       "icon": "FaLinkedin",
-      "link": "https://www.linkedin.com/"
+      "link": "https://www.linkedin.com/company/maryland-insights/"
     }
   ]
 }

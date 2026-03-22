@@ -15,8 +15,8 @@ const pageIndex = await getListPage("homepage", "-index");
 
 <Base>
   <HomeBanner />
-  <ChooseSwiper />
   <TrustedBrands />
+  <ChooseSwiper />
   <Facts data={pageIndex.data.facts_section} enableAnimation={false} />
   <Features />
   <PricingGrid haveDivider />

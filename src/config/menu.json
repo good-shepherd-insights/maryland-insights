@@ -21,6 +21,10 @@
       "url": "/faqs"
     },
     {
+      "name": "Blog",
+      "url": "/blog"
+    },
+    {
       "name": "Contact",
       "url": "/contact"
     }
@@ -61,10 +65,6 @@
         {
           "name": "Blog",
           "url": "/blog"
-        },
-        {
-          "name": "Careers",
-          "url": "/careers"
         }
       ]
     }
