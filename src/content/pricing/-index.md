@@ -7,7 +7,7 @@ draft: false
 
 comparison_section:
   enable: true
-  title: "Compare <span class='gradient-yellow'>plans</span> and features"
+  title: "Compare <span class='gradient-orange'>plans</span> and features"
   plan_names:
     - label: "Starter"
       price: "$0"
@@ -64,7 +64,7 @@ comparison_section:
         description: "Automate your marketing workflows."
         values:
           - "cross"
-          - "active"
+          - "cross"
           - "active"
           - "active"
 

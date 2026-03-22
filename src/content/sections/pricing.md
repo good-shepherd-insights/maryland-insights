@@ -1,6 +1,6 @@
 ---
 enable: true
-title: "Choose a <span class='gradient-yellow'>plan</span> that fits your pricing <mark>needs</mark>"
+title: "Choose a <span class='gradient-orange'>plan</span> that fits your pricing <mark>needs</mark>"
 
 plans_labels:
   - "Monthly"
@@ -40,7 +40,6 @@ plans:
       - SSL Security
       - Advanced SEO tools
       - Advanced analytics
-      - Marketing automation
     price:
       yearly:
         amount: 39.99

@@ -33,3 +33,10 @@ When customers in your area search for services nearby, your Maryland business s
 Local search is about more than just keywords—it's about location. We understand Maryland's unique geography and how to make your business the local leader.
 
 > When Maryland customers search nearby, ensure your business is the one they find.
+
+## Ready to Get Started?
+
+<div class="flex flex-wrap gap-4 mt-8">
+  <a href="/contact" class="btn btn-dark rounded-full">Get Started</a>
+  <a href="/pricing" class="btn btn-outline rounded-full">View Pricing</a>
+</div>

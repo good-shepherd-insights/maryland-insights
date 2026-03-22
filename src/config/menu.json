@@ -5,10 +5,6 @@
       "url": "/"
     },
     {
-      "name": "About",
-      "url": "/about"
-    },
-    {
       "name": "Features",
       "url": "/features"
     },
@@ -17,8 +13,12 @@
       "url": "/pricing"
     },
     {
-      "name": "Blog",
-      "url": "/blog"
+      "name": "About",
+      "url": "/about"
+    },
+    {
+      "name": "FAQs",
+      "url": "/faqs"
     },
     {
       "name": "Contact",
@@ -57,6 +57,10 @@
         {
           "name": "FAQs",
           "url": "/faqs"
+        },
+        {
+          "name": "Blog",
+          "url": "/blog"
         },
         {
           "name": "Careers",

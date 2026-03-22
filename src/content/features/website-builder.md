@@ -33,3 +33,10 @@ Create a professional, conversion-optimized website without writing a single lin
 Generic website builders don't understand the Maryland market. We provide the local expertise and specialized tools you need to stand out in the Old Line State.
 
 > A professional website makes it real for your Maryland business. Build yours today.
+
+## Ready to Get Started?
+
+<div class="flex flex-wrap gap-4 mt-8">
+  <a href="/contact" class="btn btn-dark rounded-full">Get Started</a>
+  <a href="/pricing" class="btn btn-outline rounded-full">View Pricing</a>
+</div>

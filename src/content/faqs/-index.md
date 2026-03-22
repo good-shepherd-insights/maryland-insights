@@ -24,7 +24,7 @@ faqs_list:
     answer: "Not at all. Our AI-powered builder is designed for entrepreneurs, not developers. Simply describe your business, and our system will generate a professional, high-converting site tailored to your Maryland audience in minutes."
 
   - question: "Will my website look professional to Maryland customers?"
-    answer: "Absolutely. We follow the 'A website makes it real' philosophy. Every site built on our platform uses world-class design standards and high-quality templates that ensure your Maryland Business looks established, credible, and premium from day one."
+    answer: "Absolutely. Your Maryland customers are searching — and our platform ensures your business is the answer they find. Every site built on our platform uses world-class design standards and high-quality templates that ensure your Maryland Business looks established, credible, and premium from day one."
 
   - question: "How does the AI builder help me rank in Maryland search results?"
     answer: "Our AI doesn't just write copy; it performs Local SEO optimization. It automatically structures your site for Google Maps, generates location-based keywords, and ensures your Maryland Business is visible to the people searching for your services nearby."

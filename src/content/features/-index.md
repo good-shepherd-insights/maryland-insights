@@ -5,14 +5,14 @@ description: "Discover the AI-powered website and SEO features that help Marylan
 image: ""
 draft: false
 
-section_title: "Key features to <span class='gradient-build'>build</span>, <span class='gradient-rank'>rank</span> and <span class='gradient-grow'>grow</span> your <mark>Maryland Business</mark>"
+section_title: "Key features to build, rank and grow your <span class='gradient-orange'>Maryland Business</span>"
 
 use_cases:
   enable: true
   title: "Tailored Solutions for <mark>Maryland Industries</mark>"
   description: "We provide industry-specific website and marketing strategies designed to help Maryland businesses thrive in their local markets."
   cases:
-    - title: "Small Business"
+    - title: "Local Retail"
       description: "Stand out in your local community with a professional website that makes your business real. From retail shops to local cafes, we provide the tools to build your brand and attract Maryland customers both online and in-person."
       icon: "FaCartShopping"
       image: "/images/features/use-case-1.png"

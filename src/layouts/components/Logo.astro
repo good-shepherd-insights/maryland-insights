@@ -31,7 +31,7 @@ const {
 } = config.site;
 ---
 
-<a href="/" class={`navbar-brand inline-block`}>
+<a href="/" class={`navbar-brand inline-block flex items-center gap-2`}>
   {
     src || logo ? (
       <>
@@ -52,6 +52,7 @@ const {
           }
           format={(src || logo).endsWith(".svg") ? "svg" : "webp"}
         />
+        <span class="font-black text-text-dark text-xl tracking-tighter ml-1" style="text-shadow: 0 1px 0 rgba(0,0,0,0.15);">Maryland Insights</span>
       </>
     ) : logo_text ? (
       logo_text

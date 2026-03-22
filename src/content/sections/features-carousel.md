@@ -1,10 +1,10 @@
 ---
 enable: true
-title: "Industries <span class='gradient-yellow'>We Serve</span> in Maryland"
+title: "Industries <span class='gradient-orange'>We Serve</span> in Maryland"
 subtitle: "We provide industry-specific solutions designed to help Maryland businesses succeed in their local markets."
 
 list:
-  - title: Small Business
+  - title: Local Retail
     subtitle: "Professional websites designed to help Maryland small businesses grow their local brand and attract more customers."
     icon: "FaCartShopping"
     image: "/images/homepage/feature-1.png"

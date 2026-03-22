@@ -7,7 +7,7 @@ draft: false
 
 gallery:
   enable: true
-  title: "Maryland businesses have been trusting us since 2015 to build their online presence. We're not just a website builder — we're your Maryland neighbors who understand what it takes to succeed in the Old Line State."
+  title: "Since 2015, we've been helping Maryland businesses get found, attract customers, and grow — because your success matters to us."
   image: "/images/about/about-banner.png"
 
 facts_section:

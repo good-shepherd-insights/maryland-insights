@@ -33,3 +33,10 @@ Create professional marketing copy, blog posts, and website content in seconds. 
 Generic AI content sounds like a robot. Our AI tools are designed to help Maryland businesses produce authentic, high-quality content that builds trust in the local community.
 
 > Professional content at the speed of AI, localized for the Maryland market.
+
+## Ready to Get Started?
+
+<div class="flex flex-wrap gap-4 mt-8">
+  <a href="/contact" class="btn btn-dark rounded-full">Get Started</a>
+  <a href="/pricing" class="btn btn-outline rounded-full">View Pricing</a>
+</div>
