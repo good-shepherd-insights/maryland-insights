@@ -18,7 +18,13 @@ export default defineConfig({
   vite: { plugins: [tailwindcss()] },
   integrations: [
     react(),
-    sitemap(),
+    sitemap({
+      filter: (page) =>
+        !page.includes("/elements") &&
+        !page.includes("/get-started") &&
+        !page.includes("/start-for-free") &&
+        !page.includes("/enterprise-support"),
+    }),
     AutoImport({
       imports: [
         "@/shortcodes/Button",
