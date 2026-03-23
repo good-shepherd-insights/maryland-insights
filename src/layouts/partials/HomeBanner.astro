@@ -8,6 +8,7 @@ import Button from "@/shortcodes/Button";
 const pageIndex = await getListPage("homepage", "-index");
 const {
   title,
+  subtitle,
   content,
   image,
   button_solid,
@@ -18,20 +19,28 @@ const {
 } = pageIndex.data.banner;
 ---
 
-<section class="section bg-light pt-26 lg:pt-32 pb-1 lg:pb-2 bg-4col-grid overflow-x-hidden">
+<section
+  class="section bg-light pt-30 md:pt-36 lg:pt-32 pb-10 lg:pb-8 bg-4col-grid overflow-x-hidden touch-pan-y"
+>
   <div class="container">
     <div
       class="flex flex-col lg:flex-row gap-10 xl:gap-20 justify-center items-center"
     >
       <div class="lg:w-[50%] xl:w-[45%] text-center lg:text-left">
         <h1
-          class="max-lg:w-[70%] mx-auto text-5xl md:text-5xl lg:text-6xl xl:text-[3.6rem] lg:leading-tight xl:leading-tight font-semibold"
+          class="max-lg:w-[70%] mx-auto text-4xl md:text-5xl lg:text-6xl xl:text-[3.6rem] lg:leading-tight xl:leading-tight font-semibold"
           set:html={markdownify(title)}
         />
+        {
+          subtitle && (
+            <h2
+              class="pt-2 text-3xl md:text-4xl font-semibold gradient-orange"
+              set:html={markdownify(subtitle)}
+            />
+          )
+        }
         <p
-         
-         
-          class="pt-8 pb-10 text-lg text-balance"
+          class="pt-4 pb-10 text-lg text-balance"
           set:html={markdownify(content)}
         />
 
@@ -52,8 +61,6 @@ const {
         </div>
 
         <ul
-         
-         
           class="flex gap-4 flex-wrap mt-12 text-sm font-bold text-dark max-lg:justify-center"
         >
           {
@@ -152,7 +159,7 @@ const {
 
           {
             cursor_1 && (
-              <div class="absolute top-0 left-10 z-20">
+              <div class="absolute top-10 left-10 z-20">
                 <Cursor
                   client:load
                   text={cursor_1}
@@ -166,7 +173,7 @@ const {
 
           {
             cursor_2 && (
-              <div class="absolute -bottom-10 right-20 z-20">
+              <div class="absolute -bottom-2 right-20 z-20">
                 <Cursor
                   client:load
                   text={cursor_2}

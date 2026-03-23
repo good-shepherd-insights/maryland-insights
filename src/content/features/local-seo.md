@@ -6,7 +6,7 @@ image: "/images/features/3.png"
 button:
   enable: true
   label: "Get Started"
-  link: "/contact"
+  link: "/get-started"
 draft: false
 ---
 

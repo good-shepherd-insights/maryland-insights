@@ -43,6 +43,7 @@ const swiperOptions: SwiperOptions = {
 ---
 
 <section
+  id="be-the-answer"
   class="section bg-dark section-divider"
   style="--section-divider-color: var(--color-dark)"
 >
@@ -87,7 +88,7 @@ const swiperOptions: SwiperOptions = {
                     <div class="mt-auto">
                       <a
                         href={agent.button.link}
-                        target="_blank"
+                        target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
                         rel="noopener"
                         class="flex items-center group text-text-dark text-sm font-medium mt-6"
                       >

@@ -19,7 +19,7 @@
   "navigation_button": {
     "enable": true,
     "label": "Get Started",
-    "link": "/contact"
+    "link": "/get-started"
   },
 
   "google_tag_manager": {

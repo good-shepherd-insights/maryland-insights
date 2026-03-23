@@ -50,9 +50,9 @@ gallery_section:
       address: "7375 Executive Pl. Suite 400, Lanham, MD 20706"
       icon: "FaLocationDot"
     - name: "Baltimore Office"
-      address: "100 E. Pratt Street, Baltimore, MD 21202"
+      address: "Coming Soon"
       icon: "FaLocationDot"
     - name: "Columbia Office"
-      address: "10221 Wincopin Circle, Columbia, MD 21044"
+      address: "Coming Soon"
       icon: "FaLocationDot"
 ---

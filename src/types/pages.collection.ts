@@ -21,6 +21,7 @@ export const homepage = defineCollection({
   schema: z.object({
     banner: z.object({
       title: z.string(),
+      subtitle: z.string().optional(),
       content: z.string(),
       image: z.string(),
       button_solid: button,

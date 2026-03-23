@@ -87,7 +87,7 @@ const Cursor: React.FC<CursorProps> = ({
   return (
     <div
       ref={containerRef}
-      className='relative cursor-pointer'
+      className='relative pointer-events-none'
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

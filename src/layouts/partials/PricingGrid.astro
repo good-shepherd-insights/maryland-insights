@@ -116,13 +116,19 @@ const { haveDivider = false, background } = Astro.props;
                       <h3
                         class={`flex items-center text-5xl font-bold ${plan.isPopular ? "text-white" : "text-text-dark"}`}
                       >
-                        <span>{plan.price_prefix}</span>
-                        <span
-                          class="data-count"
-                          data-count-yearly={plan.price.yearly.amount}
-                          data-count-monthly={plan.price.monthly.amount}
-                          set:html={plan.price.monthly.amount}
-                        />
+                        {typeof plan.price.monthly.amount === "string" && plan.price.monthly.amount === "Custom" ? (
+                          <span class="text-3xl">{plan.price.monthly.amount}</span>
+                        ) : (
+                          <>
+                            <span>{plan.price_prefix}</span>
+                            <span
+                              class="data-count"
+                              data-count-yearly={plan.price.yearly.amount}
+                              data-count-monthly={plan.price.monthly.amount}
+                              set:html={plan.price.monthly.amount}
+                            />
+                          </>
+                        )}
                       </h3>
                       <div
                         class={`flex flex-col gap-1 ${plan.isPopular ? "text-text-light" : "text-text-dark/80"}`}

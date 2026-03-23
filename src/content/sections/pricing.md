@@ -27,9 +27,9 @@ plans:
     cta:
       enable: true
       text: "Start for Free"
-      link: "/contact"
+      link: "/start-for-free"
   - title: Business
-    description: "Most Popular — Perfect for growing Maryland businesses ready to expand."
+    description: "Perfect for growing Maryland businesses ready to expand."
     price_prefix: "$"
     isPopular: true
     features:
@@ -42,7 +42,7 @@ plans:
       - Advanced analytics
     price:
       yearly:
-        amount: 39.99
+        amount: 359.99
         period: year
       monthly:
         amount: 39.99
@@ -50,7 +50,7 @@ plans:
     cta:
       enable: true
       text: "Get Started"
-      link: "/contact"
+      link: "/get-started"
   - title: Business Pro
     description: "For Maryland businesses managing multiple locations or high-volume needs."
     price_prefix: "$"
@@ -67,7 +67,7 @@ plans:
       - Priority support
     price:
       yearly:
-        amount: 99.99
+        amount: 999.99
         period: year
       monthly:
         amount: 99.99
@@ -75,7 +75,7 @@ plans:
     cta:
       enable: true
       text: "Get Started"
-      link: "/contact"
+      link: "/get-started"
   - title: Enterprise
     description: "Custom solutions for large Maryland organizations with dedicated support."
     price_prefix: ""
@@ -101,5 +101,5 @@ plans:
     cta:
       enable: true
       text: "Contact Sales"
-      link: "/contact"
+      link: "/enterprise-support"
 ---

@@ -19,7 +19,7 @@ use_cases:
       button:
         enable: true
         label: "Get Started"
-        link: "/contact"
+        link: "/get-started"
     - title: "Home Services"
       description: "Build trust and book more local jobs. Whether you're a contractor, plumber, or electrician, our platform is optimized for the Maryland home services market—helping you appear on Google Maps and win customers searching nearby."
       icon: "FaHeadset"
@@ -27,7 +27,7 @@ use_cases:
       button:
         enable: true
         label: "Get Started"
-        link: "/contact"
+        link: "/get-started"
     - title: "Professional Services"
       description: "Establish authority and generate high-quality leads for your practice. We help Maryland lawyers, accountants, and consultants build professional websites that showcase their expertise and connect with their local audience."
       icon: "FaSackDollar"
@@ -35,5 +35,5 @@ use_cases:
       button:
         enable: true
         label: "Get Started"
-        link: "/contact"
+        link: "/get-started"
 ---
