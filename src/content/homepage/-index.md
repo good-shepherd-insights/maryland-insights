@@ -35,35 +35,35 @@ agents_swiper:
       button:
         enable: true
         label: "Get Started"
-        link: "/features/aeo-optimization"
+        link: "/get-started"
     - label: "Local SEO"
       description: "Dominate local search and appear on Google Maps for your Maryland community."
       icon: "/images/icons/decision.svg"
       button:
         enable: true
         label: "Get Started"
-        link: "/features/local-seo"
+        link: "/get-started"
     - label: "Analytics and Reporting"
       description: "Track Maryland visitors and understand what drives growth in your local market."
       icon: "/images/icons/gear.svg"
       button:
         enable: true
         label: "Get Started"
-        link: "/features/analytics-reporting"
+        link: "/get-started"
     - label: "Marketing Automation"
       description: "Automate marketing campaigns that convert Maryland customers into loyal buyers."
       icon: "/images/icons/define.svg"
       button:
         enable: true
         label: "Get Started"
-        link: "/features/marketing-automation"
+        link: "/get-started"
     - label: "AI-Powered Content"
       description: "Generate compelling content that resonates with your Maryland audience in seconds."
       icon: "/images/icons/image.svg"
       button:
         enable: true
         label: "Get Started"
-        link: "/features/ai-powered-content"
+        link: "/get-started"
 
 facts_section:
   enable: true

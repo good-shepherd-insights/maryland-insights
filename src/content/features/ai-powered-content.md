@@ -37,6 +37,6 @@ Generic AI content sounds like a robot. Our AI tools are designed to help Maryla
 ## Ready to Get Started?
 
 <div class="flex flex-wrap gap-4 mt-8">
-  <a href="/contact" class="btn btn-dark rounded-full">Get Started</a>
+  <a href="/get-started" class="btn btn-dark rounded-full">Get Started</a>
   <a href="/pricing" class="btn btn-outline rounded-full">View Pricing</a>
 </div>

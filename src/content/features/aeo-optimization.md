@@ -38,6 +38,6 @@ We don't just "do SEO." We provide AEO strategies designed for Maryland business
 ## Ready to Get Started?
 
 <div class="flex flex-wrap gap-4 mt-8">
-  <a href="/contact" class="btn btn-dark rounded-full">Get Started</a>
+  <a href="/get-started" class="btn btn-dark rounded-full">Get Started</a>
   <a href="/pricing" class="btn btn-outline rounded-full">View Pricing</a>
 </div>
