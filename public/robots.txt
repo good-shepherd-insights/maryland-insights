@@ -23,6 +23,9 @@ User-agent: Applebot-Extended
 User-agent: Pinterestbot
 User-agent: TurnitinBot
 User-agent: YandexBot
+User-agent: Grok
+User-agent: CCBot
+User-agent: Crawl-Worker
 Disallow: /
 
 # ==============================================================================

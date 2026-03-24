@@ -1,6 +1,9 @@
+```astro
 ---
 import TwSizeIndicator from "@/components/TwSizeIndicator.astro";
 import config from "@/config/config.json";
+import menu from "@/config/menu.json";
+import social from "@/config/social.json";
 import theme from "@/config/theme.json";
 import { plainify } from "@/lib/utils/textConverter";
 import Footer from "@/partials/Footer.astro";
@@ -121,6 +124,14 @@ const { title, meta_title, description, image, noindex, canonical } =
     <!-- noindex robots -->
     {noindex && <meta name="robots" content="noindex,nofollow" />}
 
+    <link rel="security" href="/.well-known/security.txt" />
+    <link
+      rel="search"
+      type="application/opensearchdescription+xml"
+      title="Maryland Insights"
+      href="/opensearch.xml"
+    />
+
     <!-- meta-description -->
     <meta
       name="description"
@@ -219,7 +230,10 @@ const { title, meta_title, description, image, noindex, canonical } =
             "@type": "Organization",
             "@id": `${config.site.base_url}/#organization`,
             "name": config.site.title,
+            "legalName": "Maryland Insights LLC",
+            "foundingDate": "2024-01-01",
             "url": config.site.base_url,
+            "sameAs": social.main.map((s) => s.link),
             "contactPoint": [
               {
                 "@type": "ContactPoint",
@@ -246,6 +260,17 @@ const { title, meta_title, description, image, noindex, canonical } =
             "image": {
               "@id": `${config.site.base_url}/#logo`,
             },
+          },
+          {
+            "@type": "ItemList",
+            "@id": `${config.site.base_url}/#navigation`,
+            "name": "Main Menu",
+            "itemListElement": menu.main.map((item, index) => ({
+              "@type": "SiteNavigationElement",
+              "position": index + 1,
+              "name": item.name,
+              "url": `${config.site.base_url}${item.url !== "/" ? item.url : ""}`,
+            })),
           },
           ...(Astro.props.schema || []),
           {

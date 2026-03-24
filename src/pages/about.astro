@@ -1,4 +1,5 @@
 ---
+import config from "@/config/config.json";
 import ImageMod from "@/components/ImageMod.astro";
 import Base from "@/layouts/Base.astro";
 import { getListPage } from "@/lib/contentParser.astro";
@@ -13,10 +14,28 @@ const pageIndex = await getListPage("about", "-index");
 const { title, description, gallery, facts_section, teams_section } =
   pageIndex.data;
 
+const aboutSchema = {
+  "@type": "AboutPage",
+  "mainEntity": {
+    "@type": "Organization",
+    "@id": `${config.site.base_url}/#organization`,
+  },
+};
+
+const teamSchema = (teams_section?.members || []).map((member: any) => ({
+  "@type": "Person",
+  "name": member.name,
+  "jobTitle": member.position,
+  "image": member.image ? `${config.site.base_url}${member.image}` : undefined,
+  "affiliation": {
+    "@id": `${config.site.base_url}/#organization`,
+  },
+}));
+
 if (pageIndex.data.draft) return Astro.redirect("/404");
 ---
 
-<Base {...pageIndex.data}>
+<Base {...pageIndex.data} schema={[aboutSchema, ...teamSchema]}>
   <PageHeader title={title} description={description} />
 
   {
