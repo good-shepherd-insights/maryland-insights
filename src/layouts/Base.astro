@@ -37,6 +37,7 @@ export interface Props {
   image?: string;
   noindex?: boolean;
   canonical?: string;
+  schema?: any[];
 }
 
 // destructure frontmatter
@@ -109,7 +110,13 @@ const { title, meta_title, description, image, noindex, canonical } =
     </title>
 
     <!-- canonical url -->
-    {canonical && <link rel="canonical" href={canonical} item-prop="url" />}
+    <link
+      rel="canonical"
+      href={canonical
+        ? canonical
+        : `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`}
+      item-prop="url"
+    />
 
     <!-- noindex robots -->
     {noindex && <meta name="robots" content="noindex,nofollow" />}
@@ -180,7 +187,98 @@ const { title, meta_title, description, image, noindex, canonical } =
       }`}
     />
     <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- structured data -->
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": `${config.site.base_url}/#website`,
+            "url": config.site.base_url,
+            "name": config.site.title,
+            "description": config.metadata.meta_description,
+            "publisher": {
+              "@id": `${config.site.base_url}/#organization`,
+            },
+            "inLanguage": "en-US",
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": `${config.site.base_url}/search?q={search_term_string}`,
+                },
+                "query-input": "required name=search_term_string",
+              },
+            ],
+          },
+          {
+            "@type": "Organization",
+            "@id": `${config.site.base_url}/#organization`,
+            "name": config.site.title,
+            "url": config.site.base_url,
+            "contactPoint": [
+              {
+                "@type": "ContactPoint",
+                "telephone": "+1-000-000-0000",
+                "contactType": "customer service",
+                "areaServed": "US-MD",
+                "availableLanguage": "en",
+              },
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Placeholder St",
+              "addressLocality": "Baltimore",
+              "addressRegion": "MD",
+              "postalCode": "21201",
+              "addressCountry": "US",
+            },
+            "logo": {
+              "@type": "ImageObject",
+              "url": `${config.site.base_url}${config.site.logo}`,
+              "width": config.site.logo_width,
+              "height": config.site.logo_height,
+            },
+            "image": {
+              "@id": `${config.site.base_url}/#logo`,
+            },
+          },
+          ...(Astro.props.schema || []),
+          {
+            "@type": "BreadcrumbList",
+            "@id": `${config.site.base_url}${Astro.url.pathname}#breadcrumb`,
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": config.site.base_url,
+              },
+              ...Astro.url.pathname
+                .split("/")
+                .filter(Boolean)
+                .map((path, index) => ({
+                  "@type": "ListItem",
+                  "position": index + 2,
+                  "name": path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, " "),
+                  "item": `${config.site.base_url}/${Astro.url.pathname
+                    .split("/")
+                    .filter(Boolean)
+                    .slice(0, index + 1)
+                    .join("/")}`,
+                })),
+            ],
+          },
+        ],
+      })}
+    />
   </head>
+
+
   <body>
     {/* google tag manager noscript */}
     {

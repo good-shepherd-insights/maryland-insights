@@ -11,9 +11,21 @@ const pageIndex = await getListPage("faqs", "-index");
 if (pageIndex.data.draft) return Astro.redirect("/404");
 
 const { title, description, section_title, faqs_list, cta } = pageIndex.data;
+
+const faqSchema = {
+  "@type": "FAQPage",
+  "mainEntity": faqs_list.map((faq: any) => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer,
+    },
+  })),
+};
 ---
 
-<Base {...pageIndex.data}>
+<Base {...pageIndex.data} schema={[faqSchema]}>
   <PageHeader title={title} description={description} />
 
   <section class="section-sm bg-light">

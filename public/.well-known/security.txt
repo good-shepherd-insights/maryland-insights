@@ -1,0 +1,6 @@
+Contact: mailto:security@marylandinsights.com
+Expires: 2027-01-01T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://marylandinsights.com/.well-known/security.txt
+Policy: https://marylandinsights.com/security-policy
+Hiring: https://marylandinsights.com/careers

@@ -40,9 +40,33 @@ const validHeadings = headings.filter((heading) => heading.depth === 2);
 const posts = await getSinglePage("blog");
 const sortedPosts = sortByDate(posts).slice(0, 5);
 const similarPosts = similarItems(post, posts).slice(0, 3);
+
+const blogSchema = {
+  "@type": "BlogPosting",
+  "@id": `${config.site.base_url}/blog/${post.id}#blogposting`,
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `${config.site.base_url}/blog/${post.id}`,
+  },
+  "headline": title,
+  "description": post.data.description,
+  "image": post.data.image
+    ? `${config.site.base_url}${post.data.image}`
+    : `${config.site.base_url}${config.metadata.meta_image}`,
+  "datePublished": post.data.date,
+  "dateModified": post.data.date, // If a modified date exists, use it here
+  "author": {
+    "@type": "Person",
+    "name": post.data.author.name,
+    "url": post.data.author.uri || `${config.site.base_url}/about`,
+  },
+  "publisher": {
+    "@id": `${config.site.base_url}/#organization`,
+  },
+};
 ---
 
-<Base {...post.data}>
+<Base {...post.data} schema={[blogSchema]}>
   <PageHeader title={title} blogData={blogData} />
   <section class="section-sm bg-light">
     <div

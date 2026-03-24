@@ -1,4 +1,64 @@
-User-agent: *
-Allow: /
+# [PRODUCTION-GRADE ROBOTS.TXT]
+# Target: Maryland Insights (Directory Site)
+# Version: 2026.1 - Enhanced AI Scraper Defense & Crawl Budget Management
 
+# ==============================================================================
+# SECTION 1: AI & LLM DEFENSE
+# ==============================================================================
+# Block major AI training crawlers from scraping site data to protect content value.
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: Google-Extended
+User-agent: CCBot
+User-agent: anthropic-ai
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: OAI-SearchBot
+User-agent: PerplexityBot
+User-agent: YouBot
+User-agent: Amazonbot
+User-agent: FacebookBot
+User-agent: Imagesift
+User-agent: Applebot-Extended
+User-agent: Pinterestbot
+User-agent: TurnitinBot
+User-agent: YandexBot
+Disallow: /
+
+# ==============================================================================
+# SECTION 2: AGGRESSIVE MARKETING & SEO BOT MANAGEMENT
+# ==============================================================================
+# Block scrapers that consume crawl budget without improving search visibility.
+User-agent: AhrefsBot
+User-agent: SemrushBot
+User-agent: DotBot
+User-agent: PetalBot
+User-agent: MJ12bot
+Disallow: /
+
+# ==============================================================================
+# SECTION 3: CRAWL TRAP & DUPLICATE CONTENT PREVENTION
+# ==============================================================================
+# Use User-agent: * for all legitimate search engines (Google, Bing, DuckyDuckGo, etc.)
+User-agent: *
+# PROTECT SERVER RESOURCES: Prevent crawl-spikes on this content-heavy site.
+Crawl-delay: 10
+# General site access
+Allow: /
+# Block API endpoints to prevent unnecessary crawling of backend data
 Disallow: /api/*
+# PREVENT CRAWL TRAPS: Block all URL parameters (tracking IDs, dynamic filters, etc.)
+# WARNING: If this directory site implements filtering (e.g. ?category=restaurants)
+# using URL parameters, this rule will block those results from search indexing.
+# For production directory SEO, consider specific param blocking (e.g. Disallow: /*?fbclid=*)
+# This prevents bots from being trapped in infinite loops or indexing redundant pages.
+Disallow: /*?*
+# Block common asset-only paths only if they don't impact page rendering.
+# (Recommended: Allow search engines to access CSS/JS in /_astro/ for proper rendering)
+
+
+# ==============================================================================
+# SECTION 4: SITEMAP DISCOVERY
+# ==============================================================================
+# Absolute URL to the sitemap index for search engines.
+Sitemap: https://marylandinsights.com/sitemap-index.xml

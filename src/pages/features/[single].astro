@@ -22,9 +22,26 @@ const { feature } = Astro.props;
 const { title, description, image } = feature.data;
 
 const { Content } = await render(feature);
+
+const featureSchema = {
+  "@type": "SoftwareApplication",
+  "name": title,
+  "description": description,
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+  },
+  "image": image ? `${config.site.base_url}${image}` : undefined,
+  "publisher": {
+    "@id": `${config.site.base_url}/#organization`,
+  },
+};
 ---
 
-<Base {...feature.data}>
+<Base {...feature.data} schema={[featureSchema]}>
   <PageHeader title={title} description={description} />
 
   <section class="section-sm bg-light">
