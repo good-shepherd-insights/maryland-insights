@@ -1,4 +1,3 @@
-```astro
 ---
 import TwSizeIndicator from "@/components/TwSizeIndicator.astro";
 import config from "@/config/config.json";
@@ -60,7 +59,10 @@ const { title, meta_title, description, image, noindex, canonical } =
     <!-- favicon -->
     <link rel="shortcut icon" href={config.site.favicon} />
     <!-- DM Sans font for logo -->
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet"
+    />
     <!-- theme meta -->
     <meta name="theme-name" content="Maryland-Insights" />
     <meta name="msapplication-TileColor" content="#000000" />
@@ -115,9 +117,8 @@ const { title, meta_title, description, image, noindex, canonical } =
     <!-- canonical url -->
     <link
       rel="canonical"
-      href={canonical
-        ? canonical
-        : `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`}
+      href={canonical ||
+        `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`}
       item-prop="url"
     />
 
@@ -136,7 +137,7 @@ const { title, meta_title, description, image, noindex, canonical } =
     <meta
       name="description"
       content={plainify(
-        description ? description : config.metadata.meta_description
+        description ? description : config.metadata.meta_description,
       )}
     />
 
@@ -149,7 +150,7 @@ const { title, meta_title, description, image, noindex, canonical } =
     <meta
       property="og:title"
       content={plainify(
-        meta_title ? meta_title : title ? title : config.site.title
+        meta_title ? meta_title : title ? title : config.site.title,
       )}
     />
 
@@ -157,7 +158,7 @@ const { title, meta_title, description, image, noindex, canonical } =
     <meta
       property="og:description"
       content={plainify(
-        description ? description : config.metadata.meta_description
+        description ? description : config.metadata.meta_description,
       )}
     />
     <meta property="og:type" content="website" />
@@ -170,7 +171,7 @@ const { title, meta_title, description, image, noindex, canonical } =
     <meta
       name="twitter:title"
       content={plainify(
-        meta_title ? meta_title : title ? title : config.site.title
+        meta_title ? meta_title : title ? title : config.site.title,
       )}
     />
 
@@ -178,7 +179,7 @@ const { title, meta_title, description, image, noindex, canonical } =
     <meta
       name="twitter:description"
       content={plainify(
-        description ? description : config.metadata.meta_description
+        description ? description : config.metadata.meta_description,
       )}
     />
 
@@ -208,19 +209,19 @@ const { title, meta_title, description, image, noindex, canonical } =
           {
             "@type": "WebSite",
             "@id": `${config.site.base_url}/#website`,
-            "url": config.site.base_url,
-            "name": config.site.title,
-            "description": config.metadata.meta_description,
-            "publisher": {
+            url: config.site.base_url,
+            name: config.site.title,
+            description: config.metadata.meta_description,
+            publisher: {
               "@id": `${config.site.base_url}/#organization`,
             },
-            "inLanguage": "en-US",
-            "potentialAction": [
+            inLanguage: "en-US",
+            potentialAction: [
               {
                 "@type": "SearchAction",
-                "target": {
+                target: {
                   "@type": "EntryPoint",
-                  "urlTemplate": `${config.site.base_url}/search?q={search_term_string}`,
+                  urlTemplate: `${config.site.base_url}/search?q={search_term_string}`,
                 },
                 "query-input": "required name=search_term_string",
               },
@@ -229,68 +230,70 @@ const { title, meta_title, description, image, noindex, canonical } =
           {
             "@type": "Organization",
             "@id": `${config.site.base_url}/#organization`,
-            "name": config.site.title,
-            "legalName": "Maryland Insights LLC",
-            "foundingDate": "2024-01-01",
-            "url": config.site.base_url,
-            "sameAs": social.main.map((s) => s.link),
-            "contactPoint": [
+            name: config.site.title,
+            legalName: "Maryland Insights LLC",
+            foundingDate: "2024-01-01",
+            url: config.site.base_url,
+            sameAs: social.main.map((s) => s.link),
+            contactPoint: [
               {
                 "@type": "ContactPoint",
-                "telephone": "+1-000-000-0000",
-                "contactType": "customer service",
-                "areaServed": "US-MD",
-                "availableLanguage": "en",
+                telephone: "+1-000-000-0000",
+                contactType: "customer service",
+                areaServed: "US-MD",
+                availableLanguage: "en",
               },
             ],
-            "address": {
+            address: {
               "@type": "PostalAddress",
-              "streetAddress": "Placeholder St",
-              "addressLocality": "Baltimore",
-              "addressRegion": "MD",
-              "postalCode": "21201",
-              "addressCountry": "US",
+              streetAddress: "Placeholder St",
+              addressLocality: "Baltimore",
+              addressRegion: "MD",
+              postalCode: "21201",
+              addressCountry: "US",
             },
-            "logo": {
+            logo: {
               "@type": "ImageObject",
-              "url": `${config.site.base_url}${config.site.logo}`,
-              "width": config.site.logo_width,
-              "height": config.site.logo_height,
+              url: `${config.site.base_url}${config.site.logo}`,
+              width: config.site.logo_width,
+              height: config.site.logo_height,
             },
-            "image": {
+            image: {
               "@id": `${config.site.base_url}/#logo`,
             },
           },
           {
             "@type": "ItemList",
             "@id": `${config.site.base_url}/#navigation`,
-            "name": "Main Menu",
-            "itemListElement": menu.main.map((item, index) => ({
+            name: "Main Menu",
+            itemListElement: menu.main.map((item, index) => ({
               "@type": "SiteNavigationElement",
-              "position": index + 1,
-              "name": item.name,
-              "url": `${config.site.base_url}${item.url !== "/" ? item.url : ""}`,
+              position: index + 1,
+              name: item.name,
+              url: `${config.site.base_url}${item.url !== "/" ? item.url : ""}`,
             })),
           },
           ...(Astro.props.schema || []),
           {
             "@type": "BreadcrumbList",
             "@id": `${config.site.base_url}${Astro.url.pathname}#breadcrumb`,
-            "itemListElement": [
+            itemListElement: [
               {
                 "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": config.site.base_url,
+                position: 1,
+                name: "Home",
+                item: config.site.base_url,
               },
               ...Astro.url.pathname
                 .split("/")
                 .filter(Boolean)
                 .map((path, index) => ({
                   "@type": "ListItem",
-                  "position": index + 2,
-                  "name": path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, " "),
-                  "item": `${config.site.base_url}/${Astro.url.pathname
+                  position: index + 2,
+                  name:
+                    path.charAt(0).toUpperCase() +
+                    path.slice(1).replace(/-/g, " "),
+                  item: `${config.site.base_url}/${Astro.url.pathname
                     .split("/")
                     .filter(Boolean)
                     .slice(0, index + 1)
@@ -302,7 +305,6 @@ const { title, meta_title, description, image, noindex, canonical } =
       })}
     />
   </head>
-
 
   <body>
     {/* google tag manager noscript */}
@@ -397,7 +399,7 @@ const { title, meta_title, description, image, noindex, canonical } =
           () => {
             scrollToTop();
           },
-          { once: true }
+          { once: true },
         );
 
         // Handle bfcache restores
