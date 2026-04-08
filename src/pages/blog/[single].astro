@@ -31,7 +31,7 @@ const { title } = post.data;
 const { Content, headings } = await render(post);
 
 const blogData = {
-  author: post.data.author,
+  author: post.data.author || { name: "Admin" },
   date: post.data.date,
 };
 
@@ -44,23 +44,23 @@ const similarPosts = similarItems(post, posts).slice(0, 3);
 const blogSchema = {
   "@type": "BlogPosting",
   "@id": `${config.site.base_url}/blog/${post.id}#blogposting`,
-  "mainEntityOfPage": {
+  mainEntityOfPage: {
     "@type": "WebPage",
     "@id": `${config.site.base_url}/blog/${post.id}`,
   },
-  "headline": title,
-  "description": post.data.description,
-  "image": post.data.image
+  headline: title,
+  description: post.data.description,
+  image: post.data.image
     ? `${config.site.base_url}${post.data.image}`
     : `${config.site.base_url}${config.metadata.meta_image}`,
-  "datePublished": post.data.date,
-  "dateModified": post.data.date, // If a modified date exists, use it here
-  "author": {
+  datePublished: post.data.date,
+  dateModified: post.data.date, // If a modified date exists, use it here
+  author: {
     "@type": "Person",
-    "name": post.data.author.name,
-    "url": post.data.author.uri || `${config.site.base_url}/about`,
+    name: post.data.author?.name || "Admin",
+    url: `${config.site.base_url}/about`,
   },
-  "publisher": {
+  publisher: {
     "@id": `${config.site.base_url}/#organization`,
   },
 };
@@ -74,11 +74,7 @@ const blogSchema = {
     >
       {
         validHeadings.length > 0 && (
-          <aside
-           
-           
-            class="bg-body rounded-2xl p-4 shrink-0 max-w-62 lg:sticky top-30 hidden lg:block"
-          >
+          <aside class="bg-body rounded-2xl p-4 shrink-0 max-w-62 lg:sticky top-30 hidden lg:block">
             <nav>
               <small class="font-semibold text-text-dark font-primary text-sm">
                 Table of Contents
@@ -100,8 +96,6 @@ const blogSchema = {
         )
       }
       <article
-       
-       
         class="w-full lg:w-7/12 bg-body rounded-2xl px-6 sm:px-8 xl:px-10"
       >
         {
@@ -125,16 +119,35 @@ const blogSchema = {
             </nav>
           )
         }
+        {
+          post.data.image && (
+            <ImageMod
+              src={post.data.image}
+              width={900}
+              height={500}
+              alt={title}
+              class="rounded-2xl object-cover mb-8 w-full"
+            />
+          )
+        }
         <div class="content">
           <Content />
         </div>
+
+        <div
+          class="flex flex-wrap items-center justify-center gap-4 mt-12 py-10 border-t border-border/50"
+        >
+          <a href="/get-started" class="btn btn-primary px-10">Get Started</a>
+          <a
+            href="https://cal.id/maryland-insights/business-growth-consult?overlayCalendar=true"
+            class="btn btn-outline px-10"
+          >
+            Book a Growth Consultation
+          </a>
+        </div>
       </article>
 
-      <aside
-       
-       
-        class="w-full lg:w-auto shrink-0 lg:max-w-62 lg:sticky top-30"
-      >
+      <aside class="w-full lg:w-auto shrink-0 lg:max-w-62 lg:sticky top-30">
         {
           sortedPosts.length > 0 && (
             <nav class="bg-body rounded-2xl p-4">
@@ -202,11 +215,7 @@ const blogSchema = {
                   target="_blank"
                   method="post"
                 >
-                  <div
-                   
-                   
-                    class="flex justify-between rounded-lg bg-light px-3 py-2 border border-border mb-5 mt-2"
-                  >
+                  <div class="flex justify-between rounded-lg bg-light px-3 py-2 border border-border mb-5 mt-2">
                     <input
                       type="email"
                       placeholder="Enter your email"
@@ -236,8 +245,6 @@ const blogSchema = {
                   </div>
 
                   <label
-                   
-                   
                     for="checkbox"
                     class="text-xs block"
                     style="line-height:normal"
@@ -274,11 +281,9 @@ const blogSchema = {
         similarPosts.length > 0 && (
           <div>
             <h2
-             
-             
               class="text-center text-white text-balance mx-auto mb-12"
               set:html={markdownify(
-                "<mark>Related</mark> blog posts <mark>you may</mark> like"
+                "<mark>Related</mark> blog posts <mark>you may</mark> like",
               )}
             />
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
