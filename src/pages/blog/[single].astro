@@ -74,23 +74,23 @@ const blogSchema = {
     >
       {
         validHeadings.length > 0 && (
-          <aside class="bg-body rounded-2xl p-4 shrink-0 max-w-62 lg:sticky top-30 hidden lg:block">
+          <aside class="bg-body rounded-2xl p-6 shrink-0 max-w-62 lg:sticky top-30 hidden lg:block border border-border/50 shadow-sm">
             <nav>
-              <small class="font-semibold text-text-dark font-primary text-sm">
-                Table of Contents
+              <small class="block mb-4 font-semibold text-text-dark font-primary text-[10px] uppercase tracking-wider">
+                In this article
               </small>
-              <ul>
-                {validHeadings.map((heading) => (
-                  <li>
-                    <a
-                      href={`#${heading.slug}`}
-                      class="block py-2 px-2 text-xs hover:bg-light rounded"
-                    >
-                      {heading.text}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              <div class="toc-desktop-container">
+                <div class="toc-desktop-line" />
+                <ul class="space-y-1">
+                  {validHeadings.map((heading) => (
+                    <li>
+                      <a href={`#${heading.slug}`} class="toc-desktop-link">
+                        {heading.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </nav>
           </aside>
         )
@@ -100,18 +100,27 @@ const blogSchema = {
       >
         {
           validHeadings.length > 0 && (
-            <nav class="lg:hidden py-6 border-b border-border">
-              <small class="font-semibold text-text-dark font-primary text-sm">
-                Table of Contents
+            <nav class="lg:hidden my-8 p-5 bg-light/50 border border-border rounded-2xl">
+              <small class="block mb-3 font-semibold text-text-dark font-primary text-[10px] uppercase tracking-wider">
+                Quick Navigation
               </small>
-              <ul>
+              <ul class="space-y-1">
                 {validHeadings.map((heading) => (
                   <li>
-                    <a
-                      href={`#${heading.slug}`}
-                      class="block py-2 pl-2 text-sm hover:bg-light rounded"
-                    >
-                      {heading.text}
+                    <a href={`#${heading.slug}`} class="toc-link group bg-body">
+                      <span class="font-medium">{heading.text}</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="toc-link-icon opacity-100! translate-x-0!"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="9 18 15 12 9 6" />
+                      </svg>
                     </a>
                   </li>
                 ))}

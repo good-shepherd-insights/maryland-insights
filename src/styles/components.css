@@ -24,6 +24,41 @@
   @apply h-5 w-5;
 }
 
+/* Table of Contents Enhancement */
+.toc-link {
+  @apply flex items-center justify-between py-3 px-4 text-sm transition-all duration-300 rounded-lg;
+  @apply text-text border border-transparent;
+}
+
+.toc-link:hover {
+  @apply bg-light text-text-dark border-border;
+}
+
+.toc-link-icon {
+  @apply w-4 h-4 opacity-0 -translate-x-2 transition-all duration-300;
+}
+
+.toc-link:hover .toc-link-icon {
+  @apply opacity-70 translate-x-0;
+}
+
+/* Desktop Vertical Stepper */
+.toc-desktop-container {
+  @apply relative pl-2;
+}
+
+.toc-desktop-line {
+  @apply absolute left-0 top-0 h-full w-[1px] bg-border;
+}
+
+.toc-desktop-link {
+  @apply block py-1.5 px-3 text-xs text-text transition-colors duration-200 border-l border-transparent -ml-[1px];
+}
+
+.toc-desktop-link:hover {
+  @apply text-text-dark border-primary;
+}
+
 /* notice */
 .notice {
   @apply mb-6 rounded-lg border px-8 py-6;

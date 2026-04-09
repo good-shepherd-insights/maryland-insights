@@ -18,3 +18,9 @@
   @import "./buttons.css";
   @import "./animations.css";
 }
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
