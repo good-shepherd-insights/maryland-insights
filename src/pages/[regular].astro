@@ -1,8 +1,11 @@
 ---
+import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
+import { plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
+import type { Article } from "schema-dts";
 import { render } from "astro:content";
 
 // get static paths for all pages
@@ -23,9 +26,18 @@ export async function getStaticPaths() {
 const { page } = Astro.props;
 const { title, description } = page.data;
 const { Content } = await render(page);
+
+const pageSchema: Article = {
+  "@type": "Article",
+  "headline": plainify(title),
+  "description": plainify(description),
+  "publisher": {
+    "@id": `${config.site.base_url}/#organization`,
+  }
+};
 ---
 
-<Base {...page.data}>
+<Base {...page.data} schema={[pageSchema]}>
   <PageHeader title={title} description={description} />
 
   <section class="section-sm bg-light">

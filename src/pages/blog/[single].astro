@@ -8,9 +8,10 @@ import { getSinglePage } from "@/lib/contentParser.astro";
 import dateFormat from "@/lib/utils/dateFormat";
 import similarItems from "@/lib/utils/similarItems";
 import { sortByDate } from "@/lib/utils/sortFunctions";
-import { markdownify } from "@/lib/utils/textConverter";
+import { markdownify, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
+import type { BlogPosting } from "schema-dts";
 import { render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -41,26 +42,26 @@ const posts = await getSinglePage("blog");
 const sortedPosts = sortByDate(posts).slice(0, 5);
 const similarPosts = similarItems(post, posts).slice(0, 3);
 
-const blogSchema = {
+const blogSchema: BlogPosting = {
   "@type": "BlogPosting",
   "@id": `${config.site.base_url}/blog/${post.id}#blogposting`,
-  mainEntityOfPage: {
+  "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": `${config.site.base_url}/blog/${post.id}`,
   },
-  headline: title,
-  description: post.data.description,
-  image: post.data.image
+  "headline": plainify(title),
+  "description": plainify(post.data.description),
+  "image": post.data.image
     ? `${config.site.base_url}${post.data.image}`
     : `${config.site.base_url}${config.metadata.meta_image}`,
-  datePublished: post.data.date,
-  dateModified: post.data.date, // If a modified date exists, use it here
-  author: {
+  "datePublished": post.data.date ? new Date(post.data.date).toISOString() : undefined,
+  "dateModified": post.data.date ? new Date(post.data.date).toISOString() : undefined, // If a modified date exists, use it here
+  "author": {
     "@type": "Person",
-    name: post.data.author?.name || "Admin",
-    url: `${config.site.base_url}/about`,
+    "name": plainify(post.data.author?.name || "Admin"),
+    "url": `${config.site.base_url}/about`,
   },
-  publisher: {
+  "publisher": {
     "@id": `${config.site.base_url}/#organization`,
   },
 };

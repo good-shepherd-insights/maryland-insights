@@ -8,14 +8,29 @@ import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import PricingGrid from "@/partials/PricingGrid.astro";
 import Testimonial from "@/partials/Testimonial.astro";
+import type { Product, AggregateOffer } from "schema-dts";
+import config from "@/config/config.json";
 
 const pageIndex = await getListPage("pricing", "-index");
 if (pageIndex.data.draft) return Astro.redirect("/404");
 
 const { title, description, comparison_section } = pageIndex.data;
+
+const pricingSchema: Product = {
+  "@type": "Product",
+  "name": config.site.title + " Plans",
+  "description": description,
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "USD",
+    "lowPrice": 0,
+    "highPrice": 99,
+  } as AggregateOffer,
+  "category": "SoftwareApplication"
+};
 ---
 
-<Base {...pageIndex.data}>
+<Base {...pageIndex.data} schema={[pricingSchema]}>
   <PageHeader title={title} description={description} />
   <PricingGrid background="bg-light" />
   <!-- Compare Pricing Plans -->

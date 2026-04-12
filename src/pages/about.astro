@@ -3,29 +3,29 @@ import config from "@/config/config.json";
 import ImageMod from "@/components/ImageMod.astro";
 import Base from "@/layouts/Base.astro";
 import { getListPage } from "@/lib/contentParser.astro";
-import { markdownify } from "@/lib/utils/textConverter";
+import { markdownify, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import Facts from "@/partials/Facts.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
+import type { AboutPage, Person } from "schema-dts";
 
 const pageIndex = await getListPage("about", "-index");
 const { title, description, gallery, facts_section, teams_section } =
   pageIndex.data;
 
-const aboutSchema = {
+const aboutSchema: AboutPage = {
   "@type": "AboutPage",
   "mainEntity": {
-    "@type": "Organization",
     "@id": `${config.site.base_url}/#organization`,
   },
 };
 
-const teamSchema = (teams_section?.members || []).map((member: any) => ({
+const teamSchema: Person[] = (teams_section?.members || []).map((member: any) => ({
   "@type": "Person",
-  "name": member.name,
-  "jobTitle": member.position,
+  "name": plainify(member.name),
+  "jobTitle": plainify(member.position),
   "image": member.image ? `${config.site.base_url}${member.image}` : undefined,
   "affiliation": {
     "@id": `${config.site.base_url}/#organization`,

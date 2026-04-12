@@ -5,9 +5,10 @@ import Base from "@/layouts/Base.astro";
 import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
 import { getTaxonomy } from "@/lib/taxonomyParser.astro";
 import { sortByDate } from "@/lib/utils/sortFunctions";
-import { markdownify, slugify, humanize } from "@/lib/utils/textConverter";
+import { markdownify, slugify, humanize, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
+import type { Blog, BlogPosting, Person } from "schema-dts";
 
 const BLOG_FOLDER = "blog";
 
@@ -31,21 +32,21 @@ const categoryGroups = [
 const publishedPosts = posts.filter((post) => !post.data.draft);
 const sortedPosts = sortByDate(publishedPosts);
 
-const blogIndexSchema = {
+const blogIndexSchema: Blog = {
   "@type": "Blog",
-  "name": title,
-  "description": description,
+  "name": plainify(title),
+  "description": plainify(description),
   "url": `${config.site.base_url}/blog`,
   "blogPost": sortedPosts.slice(0, 10).map((post) => ({
     "@type": "BlogPosting",
-    "headline": post.data.title,
+    "headline": plainify(post.data.title),
     "url": `${config.site.base_url}/blog/${post.id}`,
     "datePublished": post.data.date,
     "author": {
       "@type": "Person",
-      "name": post.data.author.name,
-    },
-  })),
+      "name": plainify(post.data.author.name),
+    } as Person,
+  } as BlogPosting)),
 };
 ---
 

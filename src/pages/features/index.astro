@@ -7,15 +7,27 @@ import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
+import type { CollectionPage } from "schema-dts";
+import config from "@/config/config.json";
 
 const pageIndex = await getListPage("features", "-index");
 if (pageIndex.data.draft) return Astro.redirect("/404");
 const { title, description, section_title, use_cases } = pageIndex.data;
 
 const features = await getSinglePage("features");
+
+const collectionSchema: CollectionPage = {
+  "@type": "CollectionPage",
+  "name": title,
+  "description": description,
+  "url": `${config.site.base_url}/features`,
+  "publisher": {
+    "@id": `${config.site.base_url}/#organization`
+  }
+};
 ---
 
-<Base {...pageIndex.data}>
+<Base {...pageIndex.data} schema={[collectionSchema]}>
   <PageHeader title={title} description={description} />
 
   <section class="section-sm bg-light">
@@ -71,7 +83,7 @@ const features = await getSinglePage("features");
           </div>
 
           <div class="space-y-20">
-            {use_cases.cases?.map((item, i) => (
+            {use_cases.cases?.map((item: any, i: number) => (
               <div
                 class={`flex justify-between items-center gap-10 flex-col-reverse lg:flex-row ${i % 2 !== 0 ? "lg:flex-row-reverse" : ""}`}
                

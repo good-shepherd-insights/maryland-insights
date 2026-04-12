@@ -2,8 +2,9 @@
 import ImageMod from "@/components/ImageMod.astro";
 import Base from "@/layouts/Base.astro";
 import { getListPage } from "@/lib/contentParser.astro";
-import { markdownify } from "@/lib/utils/textConverter";
+import { markdownify, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
+import type { FAQPage, Question } from "schema-dts";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
 
@@ -12,16 +13,16 @@ if (pageIndex.data.draft) return Astro.redirect("/404");
 
 const { title, description, section_title, faqs_list, cta } = pageIndex.data;
 
-const faqSchema = {
+const faqSchema: FAQPage = {
   "@type": "FAQPage",
   "mainEntity": faqs_list.map((faq: any) => ({
     "@type": "Question",
-    "name": faq.question,
+    "name": plainify(faq.question),
     "acceptedAnswer": {
       "@type": "Answer",
-      "text": faq.answer,
+      "text": plainify(faq.answer),
     },
-  })),
+  } as Question)),
 };
 ---
 
@@ -121,7 +122,7 @@ const faqSchema = {
           data-aos-delay="100"
         >
           {
-            faqs_list?.map((faq, i) => (
+            faqs_list?.map((faq: any, i: number) => (
               <div
                 role="button"
                 tabindex="0"

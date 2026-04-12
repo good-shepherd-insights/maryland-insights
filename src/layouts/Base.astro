@@ -14,6 +14,9 @@ import {
 } from "@digi4care/astro-google-tagmanager";
 import { AstroFont } from "astro-font";
 import { ClientRouter } from "astro:transitions";
+import { SEO } from "astro-seo";
+import { Schema } from "astro-seo-schema";
+import type { LocalBusiness, BreadcrumbList, ItemList } from "schema-dts";
 
 // font families
 const pf = theme.fonts.font_family.primary;
@@ -45,6 +48,73 @@ export interface Props {
 // destructure frontmatter
 const { title, meta_title, description, image, noindex, canonical } =
   Astro.props;
+
+// Compile Breadcrumb List
+const pathArr = Astro.url.pathname.split("/").filter(Boolean);
+const breadcrumbItems = [
+  {
+    "@type": "ListItem",
+    position: 1,
+    name: "Home",
+    item: config.site.base_url,
+  },
+  ...pathArr.map((path, index) => ({
+    "@type": "ListItem",
+    position: index + 2,
+    name: path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, " "),
+    item: `${config.site.base_url}/${pathArr.slice(0, index + 1).join("/")}`,
+  })),
+];
+
+// Combine all graph items
+const graphItems: any[] = [
+  {
+    "@type": "LocalBusiness",
+    "@id": `${config.site.base_url}/#organization`,
+    name: config.site.title,
+    url: config.site.base_url,
+    logo: `${config.site.base_url}${config.site.logo}`,
+    image: `${config.site.base_url}/images/og-image.png`,
+    description: config.metadata.meta_description,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "7375 Executive Pl. Suite 400",
+      addressLocality: "Lanham",
+      addressRegion: "MD",
+      postalCode: "20706",
+      addressCountry: "US",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 38.9800,
+      longitude: -76.8500,
+    },
+    telephone: "+1-240-441-5259",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+1-240-441-5259",
+      contactType: "customer service",
+      areaServed: "Maryland",
+    },
+  } as LocalBusiness,
+  {
+    "@type": "BreadcrumbList",
+    "@id": `${config.site.base_url}${Astro.url.pathname}#breadcrumb`,
+    itemListElement: breadcrumbItems,
+  } as BreadcrumbList,
+  {
+    "@type": "ItemList",
+    "@id": `${config.site.base_url}/#navigation`,
+    name: "Main Menu",
+    itemListElement: menu.main.map((item, index) => ({
+      "@type": "SiteNavigationElement",
+      position: index + 1,
+      name: item.name,
+      url: `${config.site.base_url}${item.url !== "/" ? item.url : ""}`,
+    })),
+  } as ItemList,
+  ...(Astro.props.schema || []),
+];
 ---
 
 <!doctype html>
@@ -56,25 +126,45 @@ const { title, meta_title, description, image, noindex, canonical } =
         <GoogleTagmanager id={config.google_tag_manager.gtm_id} />
       )
     }
-    <!-- favicon -->
-    <link rel="shortcut icon" href={config.site.favicon} />
+    
+    <SEO
+      title={plainify(meta_title ? meta_title : title ? title : config.site.title)}
+      description={plainify(description ? description : config.metadata.meta_description)}
+      canonical={canonical || `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`}
+      noindex={noindex}
+      openGraph={{
+        basic: {
+          title: plainify(meta_title ? meta_title : title ? title : config.site.title),
+          type: "website",
+          image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`
+        }
+      }}
+      twitter={{
+        card: "summary_large_image",
+        title: plainify(meta_title ? meta_title : title ? title : config.site.title),
+        description: plainify(description ? description : config.metadata.meta_description),
+        image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`
+      }}
+      extend={{
+        meta: [
+          { name: "theme-name", content: "Maryland-Insights" },
+          { name: "msapplication-TileColor", content: "#000000" },
+          { name: "theme-color", content: "#fff", media: "(prefers-color-scheme: light)" },
+          { name: "theme-color", content: "#000", media: "(prefers-color-scheme: dark)" },
+          { name: "author", content: config.metadata.meta_author }
+        ],
+        link: [
+          { rel: "shortcut icon", href: config.site.favicon },
+          { rel: "security", href: "/.well-known/security.txt" },
+          { rel: "search", type: "application/opensearchdescription+xml", title: "Maryland Insights", href: "/opensearch.xml" }
+        ]
+      }}
+    />
+
     <!-- DM Sans font for logo -->
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
       rel="stylesheet"
-    />
-    <!-- theme meta -->
-    <meta name="theme-name" content="Maryland-Insights" />
-    <meta name="msapplication-TileColor" content="#000000" />
-    <meta
-      name="theme-color"
-      media="(prefers-color-scheme: light)"
-      content="#fff"
-    />
-    <meta
-      name="theme-color"
-      media="(prefers-color-scheme: dark)"
-      content="#000"
     />
     <meta name="generator" content={Astro.generator} />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -109,200 +199,13 @@ const { title, meta_title, description, image, noindex, canonical } =
       content="width=device-width, initial-scale=1, maximum-scale=5"
     />
 
-    <!-- title -->
-    <title>
-      {plainify(meta_title ? meta_title : title ? title : config.site.title)}
-    </title>
-
-    <!-- canonical url -->
-    <link
-      rel="canonical"
-      href={canonical ||
-        `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`}
-      item-prop="url"
-    />
-
-    <!-- noindex robots -->
-    {noindex && <meta name="robots" content="noindex,nofollow" />}
-
-    <link rel="security" href="/.well-known/security.txt" />
-    <link
-      rel="search"
-      type="application/opensearchdescription+xml"
-      title="Maryland Insights"
-      href="/opensearch.xml"
-    />
-
-    <!-- meta-description -->
-    <meta
-      name="description"
-      content={plainify(
-        description ? description : config.metadata.meta_description,
-      )}
-    />
-
     <ClientRouter />
 
-    <!-- author from config.json -->
-    <meta name="author" content={config.metadata.meta_author} />
-
-    <!-- og-title -->
-    <meta
-      property="og:title"
-      content={plainify(
-        meta_title ? meta_title : title ? title : config.site.title,
-      )}
-    />
-
-    <!-- og-description -->
-    <meta
-      property="og:description"
-      content={plainify(
-        description ? description : config.metadata.meta_description,
-      )}
-    />
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:url"
-      content={`${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`}
-    />
-
-    <!-- twitter-title -->
-    <meta
-      name="twitter:title"
-      content={plainify(
-        meta_title ? meta_title : title ? title : config.site.title,
-      )}
-    />
-
-    <!-- twitter-description -->
-    <meta
-      name="twitter:description"
-      content={plainify(
-        description ? description : config.metadata.meta_description,
-      )}
-    />
-
-    <!-- og-image -->
-    <meta
-      property="og:image"
-      content={`${config.site.base_url}${
-        image ? image : config.metadata.meta_image
-      }`}
-    />
-
-    <!-- twitter-image -->
-    <meta
-      name="twitter:image"
-      content={`${config.site.base_url}${
-        image ? image : config.metadata.meta_image
-      }`}
-    />
-    <meta name="twitter:card" content="summary_large_image" />
-
-    <!-- structured data -->
-    <script
-      type="application/ld+json"
-      set:html={JSON.stringify({
+    <Schema
+      item={{
         "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "WebSite",
-            "@id": `${config.site.base_url}/#website`,
-            url: config.site.base_url,
-            name: config.site.title,
-            description: config.metadata.meta_description,
-            publisher: {
-              "@id": `${config.site.base_url}/#organization`,
-            },
-            inLanguage: "en-US",
-            potentialAction: [
-              {
-                "@type": "SearchAction",
-                target: {
-                  "@type": "EntryPoint",
-                  urlTemplate: `${config.site.base_url}/search?q={search_term_string}`,
-                },
-                "query-input": "required name=search_term_string",
-              },
-            ],
-          },
-          {
-            "@type": "Organization",
-            "@id": `${config.site.base_url}/#organization`,
-            name: config.site.title,
-            legalName: "Maryland Insights LLC",
-            foundingDate: "2024-01-01",
-            url: config.site.base_url,
-            sameAs: social.main.map((s) => s.link),
-            contactPoint: [
-              {
-                "@type": "ContactPoint",
-                telephone: "+1-000-000-0000",
-                contactType: "customer service",
-                areaServed: "US-MD",
-                availableLanguage: "en",
-              },
-            ],
-            address: {
-              "@type": "PostalAddress",
-              streetAddress: "Placeholder St",
-              addressLocality: "Baltimore",
-              addressRegion: "MD",
-              postalCode: "21201",
-              addressCountry: "US",
-            },
-            logo: {
-              "@type": "ImageObject",
-              url: `${config.site.base_url}${config.site.logo}`,
-              width: config.site.logo_width,
-              height: config.site.logo_height,
-            },
-            image: {
-              "@id": `${config.site.base_url}/#logo`,
-            },
-          },
-          {
-            "@type": "ItemList",
-            "@id": `${config.site.base_url}/#navigation`,
-            name: "Main Menu",
-            itemListElement: menu.main.map((item, index) => ({
-              "@type": "SiteNavigationElement",
-              position: index + 1,
-              name: item.name,
-              url: `${config.site.base_url}${item.url !== "/" ? item.url : ""}`,
-            })),
-          },
-          ...(Astro.props.schema || []),
-          {
-            "@type": "BreadcrumbList",
-            "@id": `${config.site.base_url}${Astro.url.pathname}#breadcrumb`,
-            itemListElement: [
-              {
-                "@type": "ListItem",
-                position: 1,
-                name: "Home",
-                item: config.site.base_url,
-              },
-              ...Astro.url.pathname
-                .split("/")
-                .filter(Boolean)
-                .map((path, index) => ({
-                  "@type": "ListItem",
-                  position: index + 2,
-                  name:
-                    path.charAt(0).toUpperCase() +
-                    path.slice(1).replace(/-/g, " "),
-                  item: `${config.site.base_url}/${Astro.url.pathname
-                    .split("/")
-                    .filter(Boolean)
-                    .slice(0, index + 1)
-                    .join("/")}`,
-                })),
-            ],
-          },
-        ],
-      })}
+        "@graph": graphItems,
+      } as any}
     />
   </head>
 

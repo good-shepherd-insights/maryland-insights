@@ -1,12 +1,19 @@
 ---
 import Base from "@/layouts/Base.astro";
 import PageHeader from "@/partials/PageHeader.astro";
+import type { SearchResultsPage } from "schema-dts";
 
 const title = "Search Results";
 const description = "Search results for your Maryland business needs.";
+
+const searchSchema: SearchResultsPage = {
+  "@type": "SearchResultsPage",
+  "name": title,
+  "description": description
+};
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} schema={[searchSchema]}>
   <PageHeader title={title} />
   <section class="section">
     <div class="container text-center">

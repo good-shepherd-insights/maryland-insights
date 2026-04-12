@@ -7,6 +7,7 @@ import { getListPage } from "@/lib/contentParser.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
+import type { ContactPage } from "schema-dts";
 
 const pageIndex = await getListPage("contact", "-index");
 const {
@@ -36,7 +37,7 @@ const toContactHref = (rawValue: string) => {
   return value;
 };
 
-const contactSchema = {
+const contactSchema: ContactPage = {
   "@type": "ContactPage",
   "mainEntity": {
     "@id": `${config.site.base_url}/#organization`,

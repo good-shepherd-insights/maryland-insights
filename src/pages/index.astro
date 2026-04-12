@@ -13,7 +13,7 @@ import TrustedBrands from "@/partials/TrustedBrands.astro";
 const pageIndex = await getListPage("homepage", "-index");
 ---
 
-<Base>
+<Base {...pageIndex.data}>
   <HomeBanner />
   <TrustedBrands />
   <ChooseSwiper />
