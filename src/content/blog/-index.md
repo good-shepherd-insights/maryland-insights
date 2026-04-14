@@ -7,7 +7,7 @@ draft: false
 
 featured_posts:
   enable: true
-  title: "Featured 🚀 <mark>updates & productivity</mark> tips"
+  title: "Featured <mark>updates & productivity</mark> tips"
   # Featured post has boolean flag on each blog post's frontmatter
 
 actual_posts:

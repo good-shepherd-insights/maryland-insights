@@ -1,23 +1,40 @@
 ---
 import config from "@/config/config.json";
+
+// Setup environment variable fallback
+const appId = import.meta.env.PUBLIC_APOLLO_APP_ID || config.apollo_tracker?.app_id;
+const isEnabled = config.apollo_tracker?.enable && appId;
 ---
 
-{config.apollo_tracker?.enable && config.apollo_tracker?.app_id && (
-  <!-- Apollo Tracker -->
-  <script is:inline define:vars={{ appId: config.apollo_tracker.app_id }}>
-    function initApollo() {
-      var n = Math.random().toString(36).substring(7);
-      var o = document.createElement("script");
-      o.src = "https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=" + n;
-      o.async = true;
-      o.defer = true;
-      o.onload = function() {
-        if (window.trackingFunctions && window.trackingFunctions.onLoad) {
-          window.trackingFunctions.onLoad({ appId: appId });
-        }
-      };
-      document.head.appendChild(o);
-    }
-    initApollo();
-  </script>
+{isEnabled && (
+  <>
+    <!-- Preconnect resource hints -->
+    <link rel="preconnect" href="https://assets.apollo.io" />
+    <link rel="dns-prefetch" href="https://assets.apollo.io" />
+
+    <!-- Apollo Tracker executed via Partytown Web Worker -->
+    <script type="text/partytown" is:inline define:vars={{ appId: appId }}>
+      function initApollo() {
+        if (window._apolloTrackerInjected) return;
+        window._apolloTrackerInjected = true;
+
+        var n = Math.random().toString(36).substring(7);
+        var o = document.createElement("script");
+        o.src = "https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=" + n;
+        o.async = true;
+        o.defer = true;
+        o.onload = function() {
+          if (window.trackingFunctions && window.trackingFunctions.onLoad) {
+            window.trackingFunctions.onLoad({ appId: appId });
+          }
+        };
+        document.head.appendChild(o);
+      }
+      
+      // Hook into Astro's SPA routing lifecycle 
+      document.addEventListener("astro:page-load", () => {
+        initApollo();
+      });
+    </script>
+  </>
 )}

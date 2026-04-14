@@ -1,6 +1,7 @@
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
+import partytown from "@astrojs/partytown";
 import tailwindcss from "@tailwindcss/vite";
 import AutoImport from "astro-auto-import";
 import { defineConfig } from "astro/config";
@@ -18,6 +19,11 @@ export default defineConfig({
   vite: { plugins: [tailwindcss()] },
   integrations: [
     react(),
+    partytown({
+      config: {
+        forward: ["trackingFunctions.onLoad"],
+      },
+    }),
     sitemap({
       filter: (page) =>
         !page.includes("/elements") &&
