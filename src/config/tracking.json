@@ -1,0 +1,17 @@
+{
+  "tracking": {
+    "gtm": {
+      "enable": true,
+      "id": "GTM-XXXXXX"
+    },
+    "apollo": {
+      "enable": true,
+      "app_id": "69dd10de52e7900011719d54"
+    },
+    "posthog": {
+      "enable": true,
+      "api_key": "phc_3I6wObzXZQl2awT0lzk7ZKiTN2Ryya6oVF2emzzpqN5",
+      "api_host": "https://us.i.posthog.com"
+    }
+  }
+}

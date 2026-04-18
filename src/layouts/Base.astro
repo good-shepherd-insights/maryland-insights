@@ -5,14 +5,12 @@ import menu from "@/config/menu.json";
 import social from "@/config/social.json";
 import theme from "@/config/theme.json";
 import { plainify } from "@/lib/utils/textConverter";
-import ApolloTracker from "@/components/ApolloTracker.astro";
+import trackingConfig from "@/config/tracking.json";
+import TrackingManager from "@/components/tracking/TrackingManager.astro";
 import Footer from "@/partials/Footer.astro";
 import Header from "@/partials/Header.astro";
 import "@/styles/main.css";
-import {
-  GoogleTagmanager,
-  GoogleTagmanagerNoscript,
-} from "@digi4care/astro-google-tagmanager";
+import { GoogleTagmanagerNoscript } from "@digi4care/astro-google-tagmanager";
 import { AstroFont } from "astro-font";
 import { ClientRouter } from "astro:transitions";
 import { SEO } from "astro-seo";
@@ -121,15 +119,8 @@ const graphItems: any[] = [
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- google tag manager -->
-    {
-      config.google_tag_manager.enable && (
-        <GoogleTagmanager id={config.google_tag_manager.gtm_id} />
-      )
-    }
-
-    <!-- apollo tracker -->
-    <ApolloTracker />
+    <!-- unified tracking manager -->
+    <TrackingManager />
     
     <SEO
       title={plainify(meta_title ? meta_title : title ? title : config.site.title)}
@@ -216,8 +207,8 @@ const graphItems: any[] = [
   <body>
     {/* google tag manager noscript */}
     {
-      config.google_tag_manager.enable && (
-        <GoogleTagmanagerNoscript id={config.google_tag_manager.gtm_id} />
+      trackingConfig.tracking.gtm?.enable && trackingConfig.tracking.gtm?.id && (
+        <GoogleTagmanagerNoscript id={trackingConfig.tracking.gtm.id} />
       )
     }
 

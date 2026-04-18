@@ -21,7 +21,7 @@ export default defineConfig({
     react(),
     partytown({
       config: {
-        forward: ["trackingFunctions.onLoad"],
+        forward: ["trackingFunctions.onLoad", "dataLayer.push"],
       },
     }),
     sitemap({

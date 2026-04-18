@@ -22,11 +22,6 @@
     "link": "/get-started"
   },
 
-  "google_tag_manager": {
-    "enable": false,
-    "gtm_id": "GTM-XXXXXX"
-  },
-
   "subscription_in_footer": {
     "enable": true,
     "mailchimp_form_action": "https://gmail.us4.list-manage.com/subscribe/post?u=463ee871f45d2d93748e77cad&amp;id=a0a2c6d074",
@@ -37,10 +32,5 @@
     "meta_author": "Maryland Insights",
     "meta_image": "/images/og-image.png",
     "meta_description": "The new way for Maryland small businesses to build professional websites. AI-powered, Maryland-focused SEO, and growth tools. Start for free."
-  },
-
-  "apollo_tracker": {
-    "enable": true,
-    "app_id": "69dd10de52e7900011719d54"
   }
 }

@@ -1,0 +1,15 @@
+---
+// PostHog Tracker initialization component
+---
+
+<script>
+  import { initPostHog, posthog } from '@/lib/analytics/posthog';
+  
+  // Safely initialize the singleton on the client
+  initPostHog();
+
+  // Hook telemetry capture into Astro's SPA lifecycle flawlessly
+  document.addEventListener('astro:page-load', () => {
+    posthog.capture('$pageview');
+  });
+</script>

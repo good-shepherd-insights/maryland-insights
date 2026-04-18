@@ -1,0 +1,12 @@
+---
+import trackerData from "@/config/tracking.json";
+import ApolloTracker from "./ApolloTracker.astro";
+import GtmTracker from "./GtmTracker.astro";
+import PostHogTracker from "./PostHogTracker.astro";
+
+const config = trackerData.tracking;
+---
+
+{config.gtm?.enable && config.gtm?.id && <GtmTracker id={config.gtm.id} />}
+{config.apollo?.enable && config.apollo?.app_id && <ApolloTracker id={config.apollo.app_id} />}
+{config.posthog?.enable && <PostHogTracker />}

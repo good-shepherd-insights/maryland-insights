@@ -1,18 +1,17 @@
 ---
-import config from "@/config/config.json";
+export interface Props {
+  id?: string;
+}
 
-// Setup environment variable fallback
-const appId = import.meta.env.PUBLIC_APOLLO_APP_ID || config.apollo_tracker?.app_id;
-const isEnabled = config.apollo_tracker?.enable && appId;
+const { id } = Astro.props;
+const appId = import.meta.env.PUBLIC_APOLLO_APP_ID || id;
 ---
 
-{isEnabled && (
+{appId && (
   <>
-    <!-- Preconnect resource hints -->
     <link rel="preconnect" href="https://assets.apollo.io" />
     <link rel="dns-prefetch" href="https://assets.apollo.io" />
 
-    <!-- Apollo Tracker executed via Partytown Web Worker -->
     <script type="text/partytown" is:inline define:vars={{ appId: appId }}>
       function initApollo() {
         if (window._apolloTrackerInjected) return;
@@ -31,7 +30,6 @@ const isEnabled = config.apollo_tracker?.enable && appId;
         document.head.appendChild(o);
       }
       
-      // Hook into Astro's SPA routing lifecycle 
       document.addEventListener("astro:page-load", () => {
         initApollo();
       });

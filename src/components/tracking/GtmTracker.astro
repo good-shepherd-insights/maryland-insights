@@ -1,0 +1,10 @@
+---
+import { GoogleTagmanager } from "@digi4care/astro-google-tagmanager";
+
+export interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+---
+
+{id && <GoogleTagmanager id={id} partytown={true} />}
