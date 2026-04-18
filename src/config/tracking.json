@@ -11,7 +11,7 @@
     "posthog": {
       "enable": true,
       "api_key": "phc_3I6wObzXZQl2awT0lzk7ZKiTN2Ryya6oVF2emzzpqN5",
-      "api_host": "https://us.i.posthog.com"
+      "api_host": "https://server.marylandinsights.com"
     }
   }
 }
