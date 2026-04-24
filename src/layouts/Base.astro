@@ -187,14 +187,14 @@ const graphItems: any[] = [
     <SEO
       title={plainify(meta_title ? meta_title : title ? title : config.site.title)}
       description={plainify(description ? description : config.metadata.meta_description)}
-      canonical={canonical || `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`}
+      canonical={canonical || new URL(Astro.url.pathname, config.site.base_url).toString()}
       noindex={noindex}
       openGraph={{
         basic: {
           title: plainify(meta_title ? meta_title : title ? title : config.site.title),
           type: og_type,
           image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`,
-          url: canonical || `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`
+          url: canonical || new URL(Astro.url.pathname, config.site.base_url).toString()
         },
         optional: {
           locale: config.metadata.locale,
