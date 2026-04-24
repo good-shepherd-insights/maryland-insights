@@ -58,6 +58,32 @@ export const homepage = defineCollection({
       enable: z.boolean(),
       title: z.string(),
     }),
+    faqs_section: z
+      .object({
+        enable: z.boolean(),
+        section_title: z.string().optional(),
+        faqs_list: z.array(
+          z.object({
+            question: z.string(),
+            answer: z.string(),
+          }),
+        ),
+      })
+      .optional(),
+    integrations_section: z
+      .object({
+        enable: z.boolean(),
+        section_title: z.string().optional(),
+        integrations_list: z.array(
+          z.object({
+            title: z.string(),
+            description: z.string(),
+            image: z.string(),
+            link: z.string().optional(),
+          }),
+        ),
+      })
+      .optional(),
   }),
 });
 
@@ -153,6 +179,7 @@ export const blog = defineCollection({
     description: z.string(),
     meta_title: z.string().optional(),
     date: z.date().optional(),
+    lastmod: z.date().optional(),
     image: z.string().optional(),
     draft: z.boolean(),
     categories: z.array(z.string()).optional(),
@@ -160,9 +187,45 @@ export const blog = defineCollection({
       .object({
         name: z.string(),
         image: z.string().optional(),
+        twitter: z.string().optional(),
       })
       .optional(),
     featured: z.boolean().optional(),
+    schema_type: z
+      .enum(["BlogPosting", "Article", "TechArticle", "NewsArticle"])
+      .default("BlogPosting"),
+    howto: z
+      .object({
+        name: z.string(),
+        description: z.string().optional(),
+        totalTime: z.string().optional(),
+        steps: z.array(
+          z.object({
+            name: z.string(),
+            text: z.string(),
+          }),
+        ),
+      })
+      .optional(),
+    video: z
+      .object({
+        name: z.string(),
+        description: z.string(),
+        thumbnailUrl: z.string(),
+        uploadDate: z.string(),
+        duration: z.string().optional(),
+        embedUrl: z.string().optional(),
+        contentUrl: z.string().optional(),
+      })
+      .optional(),
+    faqs: z
+      .array(
+        z.object({
+          question: z.string(),
+          answer: z.string(),
+        }),
+      )
+      .optional(),
     featured_posts: z
       .object({
         enable: z.boolean(),

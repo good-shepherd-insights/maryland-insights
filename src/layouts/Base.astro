@@ -15,7 +15,7 @@ import { AstroFont } from "astro-font";
 import { ClientRouter } from "astro:transitions";
 import { SEO } from "astro-seo";
 import { Schema } from "astro-seo-schema";
-import type { LocalBusiness, BreadcrumbList, ItemList } from "schema-dts";
+import type { LocalBusiness, BreadcrumbList, ItemList, WebSite, WebPage } from "schema-dts";
 
 // font families
 const pf = theme.fonts.font_family.primary;
@@ -42,11 +42,34 @@ export interface Props {
   noindex?: boolean;
   canonical?: string;
   schema?: any[];
+  og_type?: "website" | "article";
+  date_published?: string;
+  date_modified?: string;
+  author_name?: string;
+  author_twitter?: string;
+  article_tags?: string[];
+  article_section?: string;
+  googlebot?: string;
 }
 
+// Derive Twitter handle from social.json ("x" entry)
+const twitterEntry = social.main.find((s) => s.name === "x");
+const twitterHandle = twitterEntry
+  ? `@${twitterEntry.link.split("/").filter(Boolean).pop()}`
+  : undefined;
+
+// Derive sameAs links from social.json — only used if entries exist
+const sameAsLinks = social.main?.map((s: { link: string }) => s.link).filter(Boolean) || [];
+
+// Resolve locale for inLanguage — derived from config only
+const resolvedLocale = config.metadata.locale ? config.metadata.locale.replace("_", "-") : undefined;
+
 // destructure frontmatter
-const { title, meta_title, description, image, noindex, canonical } =
-  Astro.props;
+const { 
+  title, meta_title, description, image, noindex, canonical, 
+  og_type = "website", date_published, date_modified, author_name,
+  author_twitter, article_tags, article_section, googlebot
+} = Astro.props;
 
 // Compile Breadcrumb List
 const pathArr = Astro.url.pathname.split("/").filter(Boolean);
@@ -68,12 +91,30 @@ const breadcrumbItems = [
 // Combine all graph items
 const graphItems: any[] = [
   {
+    "@type": "WebSite",
+    "@id": `${config.site.base_url}/#website`,
+    name: config.site.title,
+    url: config.site.base_url,
+    ...(config.metadata.search_url ? {
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${config.site.base_url}${config.metadata.search_url}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
+    } : {}),
+  } as WebSite,
+  {
     "@type": "LocalBusiness",
     "@id": `${config.site.base_url}/#organization`,
     name: config.site.title,
     url: config.site.base_url,
     logo: `${config.site.base_url}${config.site.logo}`,
-    image: `${config.site.base_url}/images/og-image.png`,
+    ...(config.metadata.meta_image ? {
+      image: `${config.site.base_url}${config.metadata.meta_image}`,
+    } : {}),
     description: config.metadata.meta_description,
     address: {
       "@type": "PostalAddress",
@@ -95,12 +136,33 @@ const graphItems: any[] = [
       contactType: "customer service",
       areaServed: "Maryland",
     },
+    ...(sameAsLinks.length > 0 ? { sameAs: sameAsLinks } : {}),
   } as LocalBusiness,
   {
     "@type": "BreadcrumbList",
     "@id": `${config.site.base_url}${Astro.url.pathname}#breadcrumb`,
     itemListElement: breadcrumbItems,
   } as BreadcrumbList,
+  {
+    "@type": "WebPage",
+    "@id": `${config.site.base_url}${Astro.url.pathname}#webpage`,
+    name: plainify(meta_title ? meta_title : title ? title : config.site.title),
+    url: canonical || `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`,
+    description: plainify(description ? description : config.metadata.meta_description),
+    isPartOf: {
+      "@id": `${config.site.base_url}/#website`,
+    },
+    breadcrumb: {
+      "@id": `${config.site.base_url}${Astro.url.pathname}#breadcrumb`,
+    },
+    ...(image || config.metadata.meta_image ? {
+      primaryImageOfPage: {
+        "@type": "ImageObject",
+        url: `${config.site.base_url}${image || config.metadata.meta_image}`,
+      },
+    } : {}),
+    ...(resolvedLocale ? { inLanguage: resolvedLocale } : {}),
+  } as WebPage,
   {
     "@type": "ItemList",
     "@id": `${config.site.base_url}/#navigation`,
@@ -130,18 +192,47 @@ const graphItems: any[] = [
       openGraph={{
         basic: {
           title: plainify(meta_title ? meta_title : title ? title : config.site.title),
-          type: "website",
-          image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`
-        }
+          type: og_type,
+          image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`,
+          url: canonical || `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`
+        },
+        optional: {
+          locale: config.metadata.locale,
+          siteName: config.site.logo_text || config.site.title,
+        },
+        image: {
+          alt: plainify(meta_title ? meta_title : title ? title : config.site.title),
+          width: config.metadata.meta_image_width,
+          height: config.metadata.meta_image_height,
+        },
+        article: og_type === "article" ? {
+          publishedTime: date_published,
+          modifiedTime: date_modified,
+          authors: author_name ? [author_name] : undefined,
+          tags: article_tags,
+          section: article_section,
+        } : undefined
       }}
       twitter={{
         card: "summary_large_image",
+        site: twitterHandle,
+        creator: author_twitter ? `@${author_twitter}` : twitterHandle,
         title: plainify(meta_title ? meta_title : title ? title : config.site.title),
         description: plainify(description ? description : config.metadata.meta_description),
-        image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`
+        image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`,
+        imageAlt: plainify(meta_title ? meta_title : title ? title : config.site.title)
       }}
       extend={{
         meta: [
+          { name: "referrer", content: "strict-origin-when-cross-origin" },
+          ...(config.metadata.bot_directives
+            ? Object.entries(config.metadata.bot_directives).map(
+                ([bot, directive]) => ({
+                  name: bot,
+                  content: (bot === "googlebot" && googlebot) ? googlebot : directive as string,
+                })
+              )
+            : []),
           { name: "theme-name", content: "Maryland-Insights" },
           { name: "msapplication-TileColor", content: "#000000" },
           { name: "theme-color", content: "#fff", media: "(prefers-color-scheme: light)" },

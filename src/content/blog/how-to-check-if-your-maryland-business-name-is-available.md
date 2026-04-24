@@ -10,6 +10,23 @@ author:
   name: "Maryland Insights"
   image: "/images/logo.png"
 featured: true
+faqs:
+  - question: "How long does the Maryland SDAT search take?"
+    answer: "The actual search takes 5 to 10 minutes. Searching variations and evaluating similar names adds another 10 to 15 minutes. Total time is under 30 minutes for thorough validation."
+  - question: "Does SDAT search availability guarantee my name will be approved?"
+    answer: "No. Maryland clerks have discretion to reject names they determine are confusingly similar, even when the database search shows availability. Phonetic similarity and industry overlap create rejection risk."
+  - question: "Do I need to check trademarks if my name clears the SDAT search?"
+    answer: "Yes. State business registration and federal trademark protection operate independently. A USPTO search prevents infringement claims from businesses operating outside Maryland."
+  - question: "What happens if I file without checking trademarks first?"
+    answer: "You risk cease-and-desist letters, forced rebranding, and potential trademark litigation averaging $120,000 to $750,000. Trademark clearance costs under $2,000."
+  - question: "Should I register my domain before or after filing my LLC?"
+    answer: "Before. Some companies monitor USPTO filings and purchase matching domains to resell at markup. Securing your domain first prevents this."
+  - question: "How much does Maryland name reservation cost?"
+    answer: "$25 for a 30-day hold. Reserve when you need time to prepare formation documents. Skip it and file Articles of Organization immediately when you're ready."
+  - question: "What's the difference between Contains and Exact Match in SDAT search?"
+    answer: "Contains catches formatting variations (punctuation, spacing) the database won't surface with exact matches. Commas, periods, and hyphens create different search results for the same underlying name."
+  - question: "Will my LLC name work if the .com domain is taken?"
+    answer: "Legally, yes. Practically, domain unavailability in your industry often signals trademark conflicts. Geographic modifiers (summitsolutionsmd.com) or different extensions (.net, .org) work, but reconsider if a direct competitor owns the .com."
 ---
 
 **TL;DR:** Validating your Maryland business name takes 20 minutes and prevents months of legal problems. Run the SDAT search with variations, check USPTO trademarks in your industry class, verify domain availability, and secure it. Reserve the name for $25 if you need 30 days to prepare paperwork, or file immediately if you're ready. Skip this process and you risk cease-and-desist letters, expensive rebranding, and trademark litigation averaging $120,000 to $750,000.

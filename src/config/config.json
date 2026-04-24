@@ -31,6 +31,21 @@
   "metadata": {
     "meta_author": "Maryland Insights",
     "meta_image": "/images/og-image.png",
-    "meta_description": "The new way for Maryland small businesses to build professional websites. AI-powered, Maryland-focused SEO, and growth tools. Start for free."
+    "meta_image_width": 1200,
+    "meta_image_height": 630,
+    "locale": "en_US",
+    "meta_description": "The new way for Maryland small businesses to build professional websites. AI-powered, Maryland-focused SEO, and growth tools. Start for free.",
+    "bot_directives": {
+      "googlebot": "index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1",
+      "GPTBot": "index,follow",
+      "ChatGPT-User": "index,follow",
+      "Google-Extended": "index,follow",
+      "PerplexityBot": "index,follow",
+      "ClaudeBot": "index,follow",
+      "anthropic-ai": "index,follow",
+      "Bytespider": "index,follow",
+      "CCBot": "index,follow"
+    },
+    "search_url": "/search?q={search_term_string}"
   }
 }
