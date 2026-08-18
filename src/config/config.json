@@ -43,8 +43,7 @@
       "PerplexityBot": "index,follow",
       "ClaudeBot": "index,follow",
       "anthropic-ai": "index,follow",
-      "Bytespider": "index,follow",
-      "CCBot": "index,follow"
+      "Bytespider": "index,follow"
     },
     "search_url": "/search?q={search_term_string}"
   }

@@ -11,6 +11,7 @@ import { sortByDate } from "@/lib/utils/sortFunctions";
 import { markdownify, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
+import Faqs from "@/partials/Faqs.astro";
 // schema type is now dynamic via post.data.schema_type — no static type import needed
 import { render } from "astro:content";
 
@@ -380,6 +381,10 @@ if (post.data.faqs && post.data.faqs.length > 0) {
       }
     </div>
   </section>
+
+  {post.data.faqs && post.data.faqs.length > 0 && (
+    <Faqs data={{ faqs_list: post.data.faqs, section_title: "Frequently Asked Questions" }} prefix="blog-faq" />
+  )}
 
   <CallToAction />
 </Base>
