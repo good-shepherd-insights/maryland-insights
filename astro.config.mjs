@@ -29,7 +29,8 @@ export default defineConfig({
         !page.includes("/elements") &&
         !page.includes("/get-started") &&
         !page.includes("/start-for-free") &&
-        !page.includes("/enterprise-support"),
+        !page.includes("/enterprise-support") &&
+        !page.includes("/search"),
     }),
     AutoImport({
       imports: [

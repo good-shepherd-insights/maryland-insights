@@ -1,7 +1,6 @@
 ---
 import TwSizeIndicator from "@/components/TwSizeIndicator.astro";
 import config from "@/config/config.json";
-import menu from "@/config/menu.json";
 import social from "@/config/social.json";
 import theme from "@/config/theme.json";
 import { plainify } from "@/lib/utils/textConverter";
@@ -14,8 +13,9 @@ import { GoogleTagmanagerNoscript } from "@digi4care/astro-google-tagmanager";
 import { AstroFont } from "astro-font";
 import { ClientRouter } from "astro:transitions";
 import { SEO } from "astro-seo";
-import { Schema } from "astro-seo-schema";
-import type { LocalBusiness, BreadcrumbList, ItemList, WebSite, WebPage } from "schema-dts";
+import JsonLd from "@/lib/seo/JsonLd.astro";
+import { buildWebSite, buildOrganization, buildBreadcrumbList, buildWebPage, buildNavigation } from "@/lib/seo/graph";
+import { canonicalUrl } from "@/lib/seo/ids";
 
 // font families
 const pf = theme.fonts.font_family.primary;
@@ -58,122 +58,33 @@ const twitterHandle = twitterEntry
   ? `@${twitterEntry.link.split("/").filter(Boolean).pop()}`
   : undefined;
 
-// Derive sameAs links from social.json — only used if entries exist
-const sameAsLinks = social.main?.map((s: { link: string }) => s.link).filter(Boolean) || [];
-
 // Resolve locale for inLanguage — derived from config only
 const resolvedLocale = config.metadata.locale ? config.metadata.locale.replace("_", "-") : undefined;
 
 // destructure frontmatter
-const { 
-  title, meta_title, description, image, noindex, canonical, 
+const {
+  title, meta_title, description, image, noindex, canonical,
   og_type = "website", date_published, date_modified, author_name,
   author_twitter, article_tags, article_section, googlebot
 } = Astro.props;
 
-// Compile Breadcrumb List
-const pathArr = Astro.url.pathname.split("/").filter(Boolean);
-const breadcrumbItems = [
-  {
-    "@type": "ListItem",
-    position: 1,
-    name: "Home",
-    item: config.site.base_url,
-  },
-  ...pathArr.map((path, index) => ({
-    "@type": "ListItem",
-    position: index + 2,
-    name: path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, " "),
-    item: `${config.site.base_url}/${pathArr.slice(0, index + 1).join("/")}`,
-  })),
-];
+const resolvedImage = image || config.metadata.meta_image;
 
-// Combine all graph items
-const graphItems: any[] = [
-  {
-    "@type": "WebSite",
-    "@id": `${config.site.base_url}/#website`,
-    name: config.site.title,
-    url: config.site.base_url,
-    ...(config.metadata.search_url ? {
-      potentialAction: {
-        "@type": "SearchAction",
-        target: {
-          "@type": "EntryPoint",
-          urlTemplate: `${config.site.base_url}${config.metadata.search_url}`,
-        },
-        "query-input": "required name=search_term_string",
-      },
-    } : {}),
-  } as WebSite,
-  {
-    "@type": "LocalBusiness",
-    "@id": `${config.site.base_url}/#organization`,
-    name: config.site.title,
-    url: config.site.base_url,
-    logo: `${config.site.base_url}${config.site.logo}`,
-    ...(config.metadata.meta_image ? {
-      image: `${config.site.base_url}${config.metadata.meta_image}`,
-    } : {}),
-    description: config.metadata.meta_description,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "7375 Executive Pl. Suite 400",
-      addressLocality: "Lanham",
-      addressRegion: "MD",
-      postalCode: "20706",
-      addressCountry: "US",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: 38.9800,
-      longitude: -76.8500,
-    },
-    telephone: "+1-240-441-5259",
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: "+1-240-441-5259",
-      contactType: "customer service",
-      areaServed: "Maryland",
-    },
-    ...(sameAsLinks.length > 0 ? { sameAs: sameAsLinks } : {}),
-  } as LocalBusiness,
-  {
-    "@type": "BreadcrumbList",
-    "@id": `${config.site.base_url}${Astro.url.pathname}#breadcrumb`,
-    itemListElement: breadcrumbItems,
-  } as BreadcrumbList,
-  {
-    "@type": "WebPage",
-    "@id": `${config.site.base_url}${Astro.url.pathname}#webpage`,
-    name: plainify(meta_title ? meta_title : title ? title : config.site.title),
-    url: canonical || `${config.site.base_url}/${Astro.url.pathname.replace("/", "")}`,
-    description: plainify(description ? description : config.metadata.meta_description),
-    isPartOf: {
-      "@id": `${config.site.base_url}/#website`,
-    },
-    breadcrumb: {
-      "@id": `${config.site.base_url}${Astro.url.pathname}#breadcrumb`,
-    },
-    ...(image || config.metadata.meta_image ? {
-      primaryImageOfPage: {
-        "@type": "ImageObject",
-        url: `${config.site.base_url}${image || config.metadata.meta_image}`,
-      },
-    } : {}),
-    ...(resolvedLocale ? { inLanguage: resolvedLocale } : {}),
-  } as WebPage,
-  {
-    "@type": "ItemList",
-    "@id": `${config.site.base_url}/#navigation`,
-    name: "Main Menu",
-    itemListElement: menu.main.map((item, index) => ({
-      "@type": "SiteNavigationElement",
-      position: index + 1,
-      name: item.name,
-      url: `${config.site.base_url}${item.url !== "/" ? item.url : ""}`,
-    })),
-  } as ItemList,
+// Combine all graph items — shared nodes come from typed builders in @/lib/seo/graph
+// so canonical/@id generation can't diverge per page (see @/lib/seo/ids canonicalUrl).
+const graphItems: unknown[] = [
+  buildWebSite(),
+  buildOrganization(),
+  buildBreadcrumbList(Astro.url.pathname),
+  buildWebPage({
+    pathname: Astro.url.pathname,
+    name: meta_title ? meta_title : title ? title : config.site.title,
+    description: description ? description : config.metadata.meta_description,
+    canonical,
+    image: resolvedImage ? `${config.site.base_url}${resolvedImage}` : undefined,
+    locale: resolvedLocale,
+  }),
+  buildNavigation(),
   ...(Astro.props.schema || []),
 ];
 ---
@@ -181,22 +92,25 @@ const graphItems: any[] = [
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+
     <!-- unified tracking manager -->
     <TrackingManager />
     
     <SEO
       title={plainify(meta_title ? meta_title : title ? title : config.site.title)}
       description={plainify(description ? description : config.metadata.meta_description)}
-      canonical={canonical || new URL(Astro.url.pathname, config.site.base_url).toString()}
+      canonical={canonical || canonicalUrl(Astro.url.pathname)}
       noindex={noindex}
       openGraph={{
         basic: {
           title: plainify(meta_title ? meta_title : title ? title : config.site.title),
           type: og_type,
           image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`,
-          url: canonical || new URL(Astro.url.pathname, config.site.base_url).toString()
+          url: canonical || canonicalUrl(Astro.url.pathname)
         },
         optional: {
+          description: plainify(description ? description : config.metadata.meta_description),
           locale: config.metadata.locale,
           siteName: config.site.logo_text || config.site.title,
         },
@@ -253,7 +167,6 @@ const graphItems: any[] = [
       rel="stylesheet"
     />
     <meta name="generator" content={Astro.generator} />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
     <!-- google font css -->
     <AstroFont
@@ -287,12 +200,7 @@ const graphItems: any[] = [
 
     <ClientRouter />
 
-    <Schema
-      item={{
-        "@context": "https://schema.org",
-        "@graph": graphItems,
-      } as any}
-    />
+    <JsonLd graph={graphItems} />
   </head>
 
   <body>

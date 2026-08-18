@@ -281,32 +281,6 @@ AI isn't replacing search. It's changing who gets found.
 
 Will that be you or your competitor?
 
-## Frequently Asked Questions
-
-### How do I know if my Maryland business is showing up in AI search results?
-Go to ChatGPT or Perplexity and ask for your business type in your specific Maryland location (like "best HVAC company in Montgomery County" or "trusted plumber in Baltimore"). If your business doesn't appear in the recommendations, your website likely lacks proper JSON-LD structured data or current content.
-
-### What is JSON-LD and why does my website need it?
-JSON-LD is structured data that tells Google and AI platforms what your business offers, where you serve, your hours, and other key details. Most website builders skip this because it's not mandatory for basic websites. AI platforms need this data to understand and recommend your business.
-
-### Can I fix my structured data myself or do I need to hire someone?
-This depends on your website builder. Some platforms don't give you access to JSON-LD generation. Others claim to handle it automatically but make it impossible to optimize for local Maryland exposure. WordPress offers flexibility but requires technical knowledge. Marketing agencies charge $2,500 to $7,500 monthly to manage this.
-
-### Will fixing my JSON-LD guarantee ChatGPT recommends my business?
-Proper JSON-LD is necessary but not sufficient. AI also evaluates content relevance and authority. Your content needs to be current and relevant to Maryland searches. Local businesses have a built-in advantage over national competitors, even with lower overall authority.
-
-### How long does it take to see traffic from AI platforms after optimizing my website?
-JSON-LD changes propagate to Google in 1 to 2 days. You'll see improved accuracy in Google searches almost immediately. AI traffic and organic lead generation typically appear within 60 days of deploying a complete strategy (structured data, content, local optimization). Complete independence from lead aggregators takes about one year.
-
-### My Google Business Profile is strong but I still get zero AI traffic. Why?
-Google Business Profile gets you in the map pack but doesn't get your website recommended by AI search agents. When someone asks ChatGPT for specific details (menu items, hours, service areas), AI searches your website, not your GBP. Without proper website configuration, AI skips you.
-
-### What happens if AI recommends my business with incorrect information?
-AI pulls from whatever data it finds online. If your website is outdated, AI might use old information from Facebook pages, directories, or review sites. This leads to wrong addresses, incorrect hours, or outdated services. Customers get frustrated and leave bad reviews for problems you didn't cause. Keep your website current to prevent this.
-
-### Are lead aggregators like Thumbtack and Yelp worth the cost for Maryland businesses?
-Lead aggregators charge $100+ per lead (industry average is $198.44) without guaranteeing jobs. You're paying to know what a potential customer wants. This cost gets passed to Maryland residents through higher prices and visit fees. Building organic web presence costs less long-term and benefits both you and your customers.
-
 ## Key Takeaways
 
 - AI platforms need JSON-LD structured data to understand and recommend your business. Most website builders skip this technical requirement, leaving Maryland businesses invisible to ChatGPT and Perplexity.
