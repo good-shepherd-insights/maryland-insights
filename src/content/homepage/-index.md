@@ -1,22 +1,38 @@
 ---
 banner:
-  title: "<span class='gradient-build'>Build</span><span class='text-text-light'>,</span> <span class='gradient-rank'>rank</span> and <span class='gradient-grow'>grow</span> a Maryland Small Business."
-  subtitle: "Stand out locally and online."
-  content: "Go from words to a business-ready site, built specifically for Maryland small businesses. Dominate local search, attract Maryland customers, and grow with AI-powered tools."
-  image: "/images/homepage/banner.png"
+  eyebrow: "Built for Maryland small business"
+  title: "Built, ranked and <span style='color:#C8102E'>grown</span> for Maryland — measured, not guessed."
+  content: "Every plan ships with Local SEO tracking, AEO-ready content, and analytics scoped to your Maryland service area."
   button_solid:
     enable: true
-    label: "Get Started"
+    label: "Partner with Us"
     link: "/get-started"
   button_underline:
     enable: true
     label: "Learn More"
-    link: "/#be-the-answer"
+    link: "/features/analytics-reporting"
+  fine_print: "Get found. Get ranked. Get booked."
+  subtitle: "Stand out locally and online."
+  image: "/images/homepage/banner.png"
   tag_lines:
     - "Start for free. No credit card required."
     - "Free forever. Cancel anytime."
   cursor_1: Sales
   cursor_2: Customers
+  # PLACEHOLDER — not measured yet, swap in real figures before this ships
+  stats:
+    - value: "24"
+      label: "Counties Served"
+      accent: "rank"
+    - value: "3.2×"
+      label: "Avg. Local Traffic Lift"
+      accent: "grow"
+    - value: "48hr"
+      label: "Site to Launch"
+      accent: "build"
+    - value: "$0"
+      label: "To Start"
+      accent: ""
 
 agents_swiper:
   enable: true

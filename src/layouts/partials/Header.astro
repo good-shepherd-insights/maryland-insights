@@ -112,7 +112,7 @@ const { pathname } = Astro.url;
         navigation_button.enable && (
           <li class="mt-4 inline-block lg:hidden ml-4">
             <a
-              class="btn btn-outline btn-sm rounded-none bg-body text-text-dark border border-border"
+              class="btn btn-outline btn-sm rounded-none bg-body text-text-dark border border-[#A8A198]"
               href={navigation_button.link}
             >
               {navigation_button.label}
@@ -125,7 +125,7 @@ const { pathname } = Astro.url;
       {
         navigation_button.enable && (
           <a
-            class="btn btn-sm btn-outline rounded-none bg-body text-text-dark hidden lg:inline-block border-border"
+            class="btn btn-sm btn-outline rounded-none bg-body text-text-dark hidden lg:inline-block border-[#A8A198]"
             href={navigation_button.link}
             target={
               navigation_button.link.startsWith("http") ? "_blank" : "_self"

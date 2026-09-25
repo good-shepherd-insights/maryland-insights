@@ -20,15 +20,26 @@ export const homepage = defineCollection({
   loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/homepage" }),
   schema: z.object({
     banner: z.object({
+      eyebrow: z.string().optional(),
       title: z.string(),
       subtitle: z.string().optional(),
       content: z.string(),
-      image: z.string(),
+      image: z.string().optional(),
       button_solid: button,
       button_underline: button,
-      tag_lines: z.array(z.string()),
-      cursor_1: z.string(),
-      cursor_2: z.string(),
+      fine_print: z.string().optional(),
+      tag_lines: z.array(z.string()).optional(),
+      cursor_1: z.string().optional(),
+      cursor_2: z.string().optional(),
+      stats: z
+        .array(
+          z.object({
+            value: z.string(),
+            label: z.string(),
+            accent: z.string().optional(),
+          }),
+        )
+        .optional(),
     }),
     agents_swiper: z.object({
       enable: z.boolean(),

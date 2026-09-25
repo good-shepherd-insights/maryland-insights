@@ -3,19 +3,53 @@
 }
 
 .header.non_sticky {
-  @apply top-6 inset-x-0 fixed mx-8;
+  @apply top-0 inset-x-0 fixed md:top-6 md:mx-8;
 }
 
 .header.sticky_top {
-  @apply top-4 inset-x-0 fixed mx-8;
+  @apply top-0 inset-x-0 fixed md:top-4 md:mx-8;
 }
 
 .header.non_sticky > .navbar {
-  @apply bg-light/50 backdrop-blur-xs border border-border;
+  @apply bg-light md:bg-light/50 md:backdrop-blur-xs md:border-[3px] md:border-transparent;
 }
 
 .header.sticky_top > .navbar {
-  @apply shadow-xl shadow-black/5 bg-light/50 backdrop-blur-lg border border-border;
+  @apply shadow-xl shadow-black/5 bg-light md:bg-light/50 md:backdrop-blur-lg md:border-[3px] md:border-transparent;
+}
+
+/* logo width/height are set inline from config.json (same value at every breakpoint);
+   inline style outranks any class, so shrinking it on mobile only needs !important here */
+@media (max-width: 47.9375rem) {
+  .navbar-brand img {
+    width: 160px !important;
+    height: 51px !important;
+  }
+}
+
+/* tapered gradient border: 3px dark on the left to 1px light on the right — desktop card only */
+@media (min-width: 48rem) {
+  .header > .navbar::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to right, var(--color-dark), #A8A198);
+    clip-path: polygon(
+      evenodd,
+      0 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 0,
+      14px 3px,
+      14px calc(100% - 3px),
+      calc(100% - 1px) calc(100% - 1px),
+      calc(100% - 1px) 1px,
+      14px 3px
+    );
+  }
 }
 
 /* navbar items */
