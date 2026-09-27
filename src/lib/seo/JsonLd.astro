@@ -2,7 +2,7 @@
 // Replaces astro-seo-schema's <Schema>, whose JsonLd() serializer HTML-entity-escapes
 // every string VALUE inside the JSON-LD payload (& < > " ' -> &amp; &lt; &gt; &quot; &apos;)
 // before JSON.stringify — corrupting the data itself, not just guarding the <script> tag.
-// This serializer only neutralizes a literal closing </script> sequence, which is the
+// This serializer only neutralizes a literal closing script-tag sequence, which is the
 // actual XSS-relevant character sequence for a script context; it never touches JSON values.
 export interface Props {
   graph: unknown[];
