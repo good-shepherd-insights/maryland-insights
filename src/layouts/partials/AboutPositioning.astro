@@ -1,0 +1,55 @@
+import { markdownify } from "@/lib/utils/textConverter";
+
+type PositioningPanel = {
+  title: string;
+  description: string;
+  points: string[];
+  link_label: string;
+  link: string;
+};
+
+type Props = {
+  title: string;
+  intro: string;
+  business: PositioningPanel;
+  agency: PositioningPanel;
+  boundary: string;
+};
+
+const { title, intro, business, agency, boundary } = Astro.props as Props;
+
+const panels = [business, agency];
+---
+
+<section class="section-sm bg-light border-y border-border/70" aria-labelledby="about-positioning-title">
+  <div class="container lg:w-[84%] xl:w-[80%] mx-auto">
+    <div class="max-w-3xl mb-10 lg:mb-14">
+      <h2 id="about-positioning-title" class="mb-5 text-balance" set:html={markdownify(title)} />
+      <p class="text-lg leading-relaxed" set:html={markdownify(intro)} />
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+      {panels.map((panel) => (
+        <article class="bg-body p-8 lg:p-10 rounded-2xl border border-border/80">
+          <h3 class="h3 mb-4 text-balance" set:html={markdownify(panel.title)} />
+          <p class="leading-relaxed mb-7" set:html={markdownify(panel.description)} />
+          <ul class="space-y-3 border-t border-border pt-6 mb-8">
+            {panel.points.map((point) => (
+              <li class="flex items-start gap-3 leading-relaxed">
+                <span class="mt-[0.65em] h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+                <span set:html={markdownify(point)} />
+              </li>
+            ))}
+          </ul>
+          <a href={panel.link} class="font-secondary font-semibold text-text-dark underline decoration-border underline-offset-4 hover:decoration-text-dark transition-colors">
+            {panel.link_label}
+          </a>
+        </article>
+      ))}
+    </div>
+
+    <div class="mt-6 lg:mt-8 border-t border-border pt-6 lg:pt-8 max-w-4xl">
+      <p class="text-lg leading-relaxed text-text-dark" set:html={markdownify(boundary)} />
+    </div>
+  </div>
+</section>
