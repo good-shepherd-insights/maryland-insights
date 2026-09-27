@@ -10,6 +10,7 @@ import ServiceFeatureGrid from "@/components/services/ServiceFeatureGrid.astro";
 import ServiceProcess from "@/components/services/ServiceProcess.astro";
 import ServiceProof from "@/components/services/ServiceProof.astro";
 import ServiceArea from "@/components/services/ServiceArea.astro";
+import ServiceTrust from "@/components/services/ServiceTrust.astro";
 import { plainify } from "@/lib/utils/textConverter";
 import type { SoftwareApplication, FAQPage, Question } from "schema-dts";
 
@@ -41,6 +42,9 @@ const proofBlocks = Array.isArray(blocks)
   : [];
 const serviceAreaBlocks = Array.isArray(blocks)
   ? blocks.filter((block: any) => block?.type === "serviceArea")
+  : [];
+const trustBlocks = Array.isArray(blocks)
+  ? blocks.filter((block: any) => block?.type === "trust")
   : [];
 
 const serviceSchema: SoftwareApplication = {
@@ -134,6 +138,20 @@ if (faqs_list && faqs_list.length > 0) {
         title={block.title}
         intro={block.intro}
         counties={block.counties}
+      />
+    ))
+  }
+  {
+    trustBlocks.map((block: any) => (
+      <ServiceTrust
+        eyebrow={block.eyebrow}
+        title={block.title}
+        intro={block.intro}
+        backupPolicy={block.backupPolicy}
+        uptimePolicy={block.uptimePolicy}
+        migrationPolicy={block.migrationPolicy}
+        included={block.included}
+        extraCost={block.extraCost}
       />
     ))
   }
