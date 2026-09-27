@@ -87,6 +87,21 @@ blocks:
       - "Prince George's County"
       - "Anne Arundel County"
       - "Howard County"
+  - type: trust
+    eyebrow: "QA fixture — replace before production"
+    title: "The service policy should be as clear as the service itself"
+    intro: "This development sample shows how the trust section can answer the operational questions a business owner has before handing over an important part of its online presence. These statements are layout content only and are not Maryland Insights policy."
+    backupPolicy: "Sample policy text: define what is backed up, how often copies are created, how long they are retained, and who can request a recovery. A published policy should name the actual retention window and the recovery process rather than promise a vague safety net."
+    uptimePolicy: "Sample policy text: state whether an uptime commitment exists, what systems it covers, how incidents are communicated, and what is excluded. If there is no contractual SLA, say that directly instead of displaying an invented percentage."
+    migrationPolicy: "Sample policy text: explain the DNS, content, redirect, and verification steps involved in a migration. State when a cutover can happen, what customers may notice, and how a rollback decision is made if the deployed result is not acceptable."
+    included:
+      - "Sample: deployment pipeline maintenance and routine platform updates."
+      - "Sample: launch checks for forms, redirects, metadata, and critical conversion paths."
+      - "Sample: documented handoff of the site, domain, and operational responsibilities."
+    extraCost:
+      - "Sample: third-party subscriptions, paid data providers, and premium external services."
+      - "Sample: work outside the agreed site, content, migration, or support scope."
+      - "Sample: urgent changes that require work outside the normal delivery process."
 ---
 
 ## Key Benefits
