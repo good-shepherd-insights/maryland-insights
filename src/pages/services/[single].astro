@@ -7,6 +7,7 @@ import PageHeader from "@/partials/PageHeader.astro";
 import Faqs from "@/partials/Faqs.astro";
 import ServiceRichText from "@/components/services/ServiceRichText.astro";
 import ServiceFeatureGrid from "@/components/services/ServiceFeatureGrid.astro";
+import ServiceProcess from "@/components/services/ServiceProcess.astro";
 import { plainify } from "@/lib/utils/textConverter";
 import type { SoftwareApplication, FAQPage, Question } from "schema-dts";
 
@@ -29,6 +30,9 @@ const richTextBlocks = Array.isArray(blocks)
   : [];
 const featureGridBlocks = Array.isArray(blocks)
   ? blocks.filter((block: any) => block?.type === "featureGrid")
+  : [];
+const processBlocks = Array.isArray(blocks)
+  ? blocks.filter((block: any) => block?.type === "process")
   : [];
 
 const serviceSchema: SoftwareApplication = {
@@ -88,6 +92,16 @@ if (faqs_list && faqs_list.length > 0) {
         eyebrow={block.eyebrow}
         title={block.title}
         items={block.items}
+      />
+    ))
+  }
+  {
+    processBlocks.map((block: any) => (
+      <ServiceProcess
+        eyebrow={block.eyebrow}
+        title={block.title}
+        intro={block.intro}
+        steps={block.steps}
       />
     ))
   }

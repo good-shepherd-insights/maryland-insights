@@ -1,0 +1,51 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Step = {
+  number: string;
+  title: string;
+  description: string;
+};
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  steps: Step[];
+};
+
+const { eyebrow, title, intro, steps } = Astro.props as Props;
+const headingId = `service-${slugify(title)}`;
+---
+
+<section class="section-sm border-y border-border/70 bg-light" aria-labelledby={headingId}>
+  <div class="container">
+    <div class="grid items-start gap-10 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-5">
+        {
+          eyebrow && (
+            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
+              {eyebrow}
+            </p>
+          )
+        }
+        <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
+        {intro && <p class="mt-5 max-w-xl text-text-dark/75" set:html={markdownify(intro)} />}
+      </div>
+
+      <ol class="lg:col-span-7 border-t border-border">
+        {
+          steps.map((step) => (
+            <li class="grid gap-4 border-b border-border py-6 sm:grid-cols-[4rem_1fr] sm:gap-6 sm:py-8">
+              <span class="text-sm font-semibold tracking-[0.12em] text-text-light">{step.number}</span>
+              <div>
+                <h3 class="h5 mb-2 text-balance" set:html={markdownify(step.title)} />
+                <p class="max-w-2xl text-text-dark/75" set:html={markdownify(step.description)} />
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>

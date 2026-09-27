@@ -36,6 +36,23 @@ blocks:
         description: "Pages explain the actual services offered and the Maryland communities the business serves."
       - title: "Customer proof"
         description: "Reviews and testimonials reflect real customer experiences and give prospects useful reasons to trust the business."
+  - type: process
+    eyebrow: "Our working process"
+    title: "Local SEO work that can be checked at every stage"
+    intro: "The work moves from verification to publication to measurement, so the business owner can see what changed and why."
+    steps:
+      - number: "01"
+        title: "Audit the existing presence"
+        description: "We review the Google Business Profile, directory listings, service pages, location details, and current search visibility before recommending changes."
+      - number: "02"
+        title: "Align the business details"
+        description: "We correct inconsistencies in names, contact details, categories, hours, services, and service areas so customers and search engines receive the same information."
+      - number: "03"
+        title: "Build the useful local pages"
+        description: "We create or improve service and location content around the places the business actually serves, with clear evidence of expertise and a direct path to contact."
+      - number: "04"
+        title: "Measure and refine"
+        description: "We track visibility, engagement, calls, and conversions over time, then use those observations to decide what to improve next."
 ---
 
 ## Key Benefits
