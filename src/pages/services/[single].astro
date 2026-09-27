@@ -2,10 +2,10 @@
 import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
-import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Faqs from "@/partials/Faqs.astro";
 import ServiceBlocks from "@/components/services/ServiceBlocks.astro";
+import ServiceCTA from "@/components/services/ServiceCTA.astro";
 import { plainify } from "@/lib/utils/textConverter";
 import type { SoftwareApplication, FAQPage, Question } from "schema-dts";
 
@@ -69,5 +69,11 @@ if (faqs_list && faqs_list.length > 0) {
 
   {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `Frequently Asked Questions About ${title}` }} prefix="service-faq" />}
 
-  <CallToAction buttonLabel="Partner with Us" />
+  <ServiceCTA
+    eyebrow="Work with Maryland Insights"
+    title="Ready to make your next customer easier to find?"
+    description="Bring your service area, customer journey, and growth goals into one conversation. We’ll start with what your business needs and make the next step clear."
+    buttonLabel="Partner with Us"
+    buttonLink="/get-started"
+  />
 </Base>
