@@ -8,6 +8,93 @@ button:
   label: "Get Started"
   link: "/get-started"
 draft: false
+blocks:
+  - type: richText
+    eyebrow: "How we work"
+    title: "Content that starts from your market, not a blank prompt"
+    tone: "muted"
+    body: |
+      A generic AI writing tool has no idea what part of Maryland a business serves, who its actual customers are, or what makes it different from the next listing. Ask it for a blog post and it produces copy that could describe any business in any state — and local customers notice.
+
+      Our content tools start from the business's actual service area, industry, and existing brand voice. A draft comes out already grounded in the communities the business serves, instead of needing a full rewrite to sound local.
+
+      **What that changes:**
+
+      - Drafts reference the actual Maryland communities and customer needs this business serves, not a generic placeholder.
+      - Every piece is reviewed against the business's existing voice before it's used, not published straight from a prompt.
+      - Content is structured from the start to support the terms and questions this business actually needs to rank for.
+
+      The tool speeds up the draft. It doesn't replace the judgment of what should actually get published.
+  - type: featureGrid
+    eyebrow: "What gets produced"
+    title: "Drafted fast, grounded in your market"
+    items:
+      - title: "Fast first drafts"
+        description: "Blog posts, service pages, emails, and social content get a working first draft in seconds instead of a blank page."
+      - title: "Local market resonance"
+        description: "Drafts reference the communities and customer needs of this business's actual service area, not generic placeholder copy."
+      - title: "Consistent brand voice"
+        description: "Every piece is checked against the business's established tone, so content sounds like one business across every channel."
+  - type: process
+    eyebrow: "Our working process"
+    title: "From brand setup to a repeatable content workflow"
+    intro: "AI-drafted content only works if it starts from the right context. We build that in before any content gets produced."
+    steps:
+      - number: "01"
+        title: "Establish the brand and market context"
+        description: "We define the business's voice, service area, and the topics and questions its customers actually care about, before generating any content."
+        details: |
+          **We document:** tone and voice preferences, the specific Maryland communities served, and the products or services content should focus on.
+
+          **What you get:** a content foundation that keeps every draft grounded in the same business context, instead of starting from scratch each time.
+      - number: "02"
+        title: "Draft content against that context"
+        description: "Blog posts, service pages, and other content are drafted using the established brand and market context, not a blank generic prompt."
+        details: |
+          **Each draft:** references the business's actual service area and customer needs, and follows the documented tone rather than a generic AI default voice.
+      - number: "03"
+        title: "Review before publishing"
+        description: "Every draft is reviewed for accuracy, tone, and local relevance before it goes live, so nothing generic or incorrect gets published under the business's name."
+        details: |
+          **We check:** factual accuracy about the business's own services, tone consistency with existing published content, and whether the piece actually serves the customer question it was written for.
+      - number: "04"
+        title: "Refine the process over time"
+        description: "As the business's offer or service area changes, we update the underlying brand and market context so future drafts stay accurate."
+        details: |
+          **We revisit:** the documented context periodically, so new services or expanded service areas are reflected in future content rather than left out.
+  - type: proof
+    title: "QA fixture — draft-to-publish turnaround"
+    metricLabel: "Time from topic to a review-ready draft (synthetic QA data)"
+    before: "3 hours"
+    after: "15 minutes"
+    context: "This is synthetic data used to QA the proof block's layout and responsive behavior. It is not a reported client result."
+    changes: |
+      **QA-only fixture:** replace this with a real, sourced before-and-after once one is available.
+  - type: serviceArea
+    eyebrow: "Maryland service area"
+    title: "Content grounded in the communities you actually serve"
+    intro: "Content built for a business in Prince George's County shouldn't read the same as content for one in Frederick. Drafts are grounded in the specific Maryland communities this business serves, not a statewide generic voice."
+    counties:
+      - "Baltimore City"
+      - "Montgomery County"
+      - "Prince George's County"
+      - "Anne Arundel County"
+      - "Frederick County"
+  - type: trust
+    eyebrow: "QA fixture — replace before production"
+    title: "What's included, and where human review fits in"
+    intro: "This development sample shows how the trust section sets expectations around AI-assisted content and human review before a business relies on it. These statements are layout content only, not published Maryland Insights policy."
+    backupPolicy: "Sample policy text: state how drafted and published content is stored and versioned, so a business can retrieve or revert to a previous version."
+    uptimePolicy: "Sample policy text: content generation depends on third-party AI providers — a published policy should state what happens to the workflow if a provider has an outage."
+    migrationPolicy: "Sample policy text: describe how the business's documented brand and market context transfers if it moves to a different content platform or CMS."
+    included:
+      - "Sample: brand and market context setup, drafting, and human review before publishing."
+      - "Sample: periodic updates to the documented context as the business's offer changes."
+      - "Sample: a documented log of what was published and when."
+    extraCost:
+      - "Sample: content volume beyond the agreed monthly allotment."
+      - "Sample: video or design assets outside the standard written-content scope."
+      - "Sample: translation or localization into languages beyond the standard offering."
 ---
 
 ## Key Benefits
