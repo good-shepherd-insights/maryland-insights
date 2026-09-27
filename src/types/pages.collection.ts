@@ -264,6 +264,14 @@ export const blog = defineCollection({
         }),
       )
       .optional(),
+    blog_library_guide: z
+      .object({
+        enable: z.boolean(),
+        title: z.string(),
+        introduction: z.string(),
+        reading_note: z.string(),
+      })
+      .optional(),
     featured_posts: z
       .object({
         enable: z.boolean(),

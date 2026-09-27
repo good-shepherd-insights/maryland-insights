@@ -6,6 +6,7 @@ import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
 import { getTaxonomy } from "@/lib/taxonomyParser.astro";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import { markdownify, slugify, humanize, plainify } from "@/lib/utils/textConverter";
+import BlogLibraryGuide from "@/partials/BlogLibraryGuide.astro";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import type { Blog, BlogPosting, Person } from "schema-dts";
@@ -15,7 +16,15 @@ const BLOG_FOLDER = "blog";
 const postIndex = await getListPage(BLOG_FOLDER, "-index");
 if (postIndex.data.draft) return Astro.redirect("/404");
 
-const { title, description, featured_posts, actual_posts } = postIndex.data;
+const { title, description, blog_library_guide, featured_posts, actual_posts } = postIndex.data;
+const blogGuide = blog_library_guide ?? {
+  enable: true,
+  title: "A working library for Maryland business decisions",
+  introduction:
+    "This is where Maryland Insights collects practical reporting on the decisions that shape how a business gets established, gets discovered, and stays visible as search changes. The focus is the work in front of Maryland owners and the agencies serving them—not a feed of disconnected trends.",
+  reading_note:
+    "Start with the question closest to the work you are doing now, then use the topic index to move into the full archive. Featured articles surface the pieces worth beginning with; the archive lets you narrow the rest by subject instead of digging through every post.",
+};
 const posts = await getSinglePage(BLOG_FOLDER);
 const featuredPosts = posts.filter(
   (post) => post.data.featured && !post.data.draft
@@ -28,6 +37,9 @@ const featuredCol3 = featuredFive.slice(3, 5);
 const categories = await getTaxonomy(BLOG_FOLDER, "categories");
 const categoryGroups = [
   ...new Set(categories.map((category) => category.toLocaleLowerCase())),
+];
+const categoryLabels = [
+  ...new Map(categories.map((category) => [category.toLocaleLowerCase(), category])).values(),
 ];
 const publishedPosts = posts.filter((post) => !post.data.draft);
 const sortedPosts = sortByDate(publishedPosts);
@@ -52,6 +64,8 @@ const blogIndexSchema: Blog = {
 
 <Base {...postIndex.data} schema={[blogIndexSchema]}>
   <PageHeader title={title} description={description} />
+
+  {blogGuide.enable && <BlogLibraryGuide {...blogGuide} categories={categoryLabels} />}
 
   <!-- Featured section  -->
   {
@@ -108,6 +122,7 @@ const blogIndexSchema: Blog = {
 
   <!-- All blog with shuffle animation  -->
   <section
+    id="all-articles"
     class="section bg-dark section-divider"
     style="--section-divider-color: var(--color-dark)"
   >
