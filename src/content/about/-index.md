@@ -5,10 +5,32 @@ description: "Maryland Insights helps Maryland businesses turn visitors into cus
 image: ""
 draft: false
 
-gallery:
+company_narrative:
   enable: true
   title: "Since 2015, we've been helping Maryland businesses get found, attract customers, and grow: because your success matters to us."
   image: "/images/about/about-banner.png"
+  sections:
+    - id: "since-2015"
+      title: "Since 2015"
+      paragraphs:
+        - "We've spent years helping local businesses scale: and what we found wasn't a business problem or a customer problem. It was a tools problem."
+        - "Agencies were delivering strong work for their clients, but building it on the worst technology available: platforms that made every update slow, every fix expensive, and every \"quick change\" a support ticket. A full overhaul cost more than most small businesses could justify, so instead they lived with it: patching around limitations, accepting downtime, and treating maintenance as a permanent tax on growth."
+        - "The deeper problem was who these platforms were actually built for. Most technology vendors don't design around what a mid-market or small business actually needs day to day. They package a one-size-fits-all product, sell it as convenient, and let the business figure out the rest. It works fine until the business grows: and then the same platform that got them started becomes the thing holding them back, because it was never built to bend."
+        - "That's the problem we set out to fix. Not another all-in-one tool with the same rigid ceiling, but a platform built around how Maryland businesses and the agencies serving them actually operate: so reaching the community and scaling doesn't mean fighting your own technology to do it."
+    - id: "who-we-are"
+      title: "Who Are We"
+      paragraphs:
+        - "We are not a marketing agency, we are not a SaaS platform, and we are not a bespoke software agency either. We're a team of GTM engineers: people who build the actual infrastructure behind go-to-market, not just strategy decks or campaign management. That's what lets Maryland agencies migrate their clients onto our platform and scale their operations rapidly, instead of being limited by whatever a legacy vendor decided their roadmap should be. And it's what lets Maryland businesses benefit from that speed directly, without needing to understand any of the engineering behind it."
+        - "We build the tools Maryland businesses need to reach their customers: the website, the local visibility, the lead capture, the follow-up: as one connected system engineered to work together, not a stack of separate logins bolted together after the fact. When a business grows, adds a location, or changes how it sells, the platform adapts with them instead of requiring a rebuild."
+        - "We work the same way with agencies. An agency partnering with us gets direct access to the platform their clients run on: the ability to configure it, extend it, and deliver the exact marketing experience their clients are paying for, instead of reselling a rigid product and hoping it fits. When an agency needs something the platform doesn't do yet, they're talking to the engineers who can build it: not submitting a feature request into a queue."
+    - id: "mission"
+      title: "Mission"
+      paragraphs:
+        - "Our mission is to help Maryland businesses at scale across the entire state: from Baltimore City to the Eastern Shore: where agencies can deliver experiences that have lasting impact and spend less time wrestling with tooling and more time bringing a business's brand to life. When the platform handles the infrastructure, agencies get their time back for the work that actually differentiates them: the strategy, the creative, the relationship with the client."
+    - id: "vision"
+      title: "Vision"
+      paragraphs:
+        - "Our vision is a Maryland where a business can reach local Maryland residents without being drowned out by the noise of massive national brands with enormous ad spend budgets. Scale shouldn't be the deciding factor in who a customer finds first: the right infrastructure should let a Maryland business compete for its own community on equal footing, no matter how many zeros are on a competitor's marketing budget."
 
 facts_section:
   enable: true
@@ -53,29 +75,3 @@ story_section:
         label: "Partner with Us"
         link: "/get-started"
 ---
-
-## Since 2015
-
-We've spent years helping local businesses scale: and what we found wasn't a business problem or a customer problem. It was a tools problem.
-
-Agencies were delivering strong work for their clients, but building it on the worst technology available: platforms that made every update slow, every fix expensive, and every "quick change" a support ticket. A full overhaul cost more than most small businesses could justify, so instead they lived with it: patching around limitations, accepting downtime, and treating maintenance as a permanent tax on growth.
-
-The deeper problem was who these platforms were actually built for. Most technology vendors don't design around what a mid-market or small business actually needs day to day. They package a one-size-fits-all product, sell it as convenient, and let the business figure out the rest. It works fine until the business grows: and then the same platform that got them started becomes the thing holding them back, because it was never built to bend.
-
-That's the problem we set out to fix. Not another all-in-one tool with the same rigid ceiling, but a platform built around how Maryland businesses and the agencies serving them actually operate: so reaching the community and scaling doesn't mean fighting your own technology to do it.
-
-## Who Are We
-
-We are not a marketing agency, we are not a SaaS platform, and we are not a bespoke software agency either. We're a team of GTM engineers: people who build the actual infrastructure behind go-to-market, not just strategy decks or campaign management. That's what lets Maryland agencies migrate their clients onto our platform and scale their operations rapidly, instead of being limited by whatever a legacy vendor decided their roadmap should be. And it's what lets Maryland businesses benefit from that speed directly, without needing to understand any of the engineering behind it.
-
-We build the tools Maryland businesses need to reach their customers: the website, the local visibility, the lead capture, the follow-up: as one connected system engineered to work together, not a stack of separate logins bolted together after the fact. When a business grows, adds a location, or changes how it sells, the platform adapts with them instead of requiring a rebuild.
-
-We work the same way with agencies. An agency partnering with us gets direct access to the platform their clients run on: the ability to configure it, extend it, and deliver the exact marketing experience their clients are paying for, instead of reselling a rigid product and hoping it fits. When an agency needs something the platform doesn't do yet, they're talking to the engineers who can build it: not submitting a feature request into a queue.
-
-## Mission
-
-Our mission is to help Maryland businesses at scale across the entire state: from Baltimore City to the Eastern Shore: where agencies can deliver experiences that have lasting impact and spend less time wrestling with tooling and more time bringing a business's brand to life. When the platform handles the infrastructure, agencies get their time back for the work that actually differentiates them: the strategy, the creative, the relationship with the client.
-
-## Vision
-
-Our vision is a Maryland where a business can reach local Maryland residents without being drowned out by the noise of massive national brands with enormous ad spend budgets. Scale shouldn't be the deciding factor in who a customer finds first: the right infrastructure should let a Maryland business compete for its own community on equal footing, no matter how many zeros are on a competitor's marketing budget.

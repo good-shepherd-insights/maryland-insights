@@ -1,0 +1,78 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+
+type NarrativeSection = {
+  id: string;
+  title: string;
+  paragraphs: string[];
+};
+
+type Props = {
+  title: string;
+  image: string;
+  sections: NarrativeSection[];
+};
+
+const { title, image, sections } = Astro.props as Props;
+const primarySections = sections.slice(0, 2);
+const purposeSections = sections.slice(2);
+---
+
+<section class="section bg-light" aria-labelledby="about-narrative-title">
+  <div class="container lg:w-[84%] xl:w-[80%] mx-auto">
+    <div class="max-w-5xl">
+      <h2 id="about-narrative-title" class="text-balance">{title}</h2>
+    </div>
+
+    <figure class="mt-10 lg:mt-14">
+      <ImageMod
+        src={image}
+        alt="Maryland Insights"
+        class="w-full rounded-2xl lg:rounded-3xl"
+        width={1300}
+        height={601}
+      />
+    </figure>
+
+    <div class="mt-12 lg:mt-20 grid gap-10 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16 xl:gap-24">
+      <nav class="lg:sticky lg:top-28 lg:self-start" aria-label="About Maryland Insights">
+        <p class="font-secondary text-sm font-semibold uppercase tracking-[0.12em] text-muted">On this page</p>
+        <ol class="mt-4 border-t border-border">
+          {sections.map((section) => (
+            <li class="border-b border-border">
+              <a class="block py-3.5 text-sm font-medium text-text-dark transition-colors hover:text-primary" href={`#${section.id}`}>
+                {section.title}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <div class="min-w-0">
+        {primarySections.map((section, sectionIndex) => (
+          <article id={section.id} class:list={["scroll-mt-28", sectionIndex > 0 && "mt-16 lg:mt-24"]}>
+            <h3 class="h2 text-balance">{section.title}</h3>
+            <div class="mt-6 space-y-6 text-lg leading-relaxed lg:text-xl">
+              {section.paragraphs.map((paragraph, paragraphIndex) => (
+                <p class:list={[sectionIndex === 0 && paragraphIndex === 0 && "text-xl leading-relaxed text-text-dark lg:text-2xl"]}>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </article>
+        ))}
+
+        <div class="mt-16 grid gap-10 border-t border-border pt-10 lg:mt-24 lg:grid-cols-2 lg:gap-14 lg:pt-14">
+          {purposeSections.map((section) => (
+            <article id={section.id} class="scroll-mt-28">
+              <h3 class="h3 text-balance">{section.title}</h3>
+              <div class="mt-5 space-y-5 leading-relaxed">
+                {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
