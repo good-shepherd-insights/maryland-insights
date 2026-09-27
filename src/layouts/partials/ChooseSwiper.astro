@@ -1,45 +1,16 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
-import { getListPage } from "@/lib/contentParser.astro";
 import { markdownify } from "@/lib/utils/textConverter";
-import {
-  Swiper,
-  SwiperPagination,
-  SwiperSlide,
-  SwiperWrapper,
-} from "astro-swiper";
-import { FaAngleRight } from "react-icons/fa6";
-import type { SwiperOptions } from "swiper/types";
+import { FaCheck } from "react-icons/fa6";
+import type { CollectionEntry } from "astro:content";
 
-const pageIndex = await getListPage("homepage", "-index");
-if (!pageIndex.data.agents_swiper.enable) return null;
-const { title, agents } = pageIndex.data.agents_swiper;
-
-const swiperOptions: SwiperOptions = {
-  spaceBetween: 24,
-  loop: true,
-  autoplay: {
-    delay: 5000,
-    disableOnInteraction: false,
-  },
-  pagination: {
-    el: ".choose-slider-pagination",
-    type: "bullets",
-    clickable: true,
-    dynamicBullets: false,
-  },
-  breakpoints: {
-    768: {
-      slidesPerView: 2,
-    },
-    992: {
-      slidesPerView: 3,
-    },
-    1200: {
-      slidesPerView: 4,
-    },
-  },
+type Props = {
+  data: CollectionEntry<"homepage">["data"]["agents_swiper"];
 };
+
+const { data } = Astro.props as Props;
+if (!data.enable) return null;
+const { title, agents } = data;
 ---
 
 <section
@@ -47,65 +18,86 @@ const swiperOptions: SwiperOptions = {
   class="section bg-dark section-divider"
   style="--section-divider-color: var(--color-dark)"
 >
-  <div class="container">
-    <h2
-     
-     
-      class="text-center text-white text-balance"
-      set:html={markdownify(title)}
-    />
+  <div class="mx-0 md:mx-8">
+    <div class="container px-8">
+      <h2
+        class="text-center text-white text-balance"
+        set:html={markdownify(title)}
+      />
 
-    <div
-      class="xl:w-[80%] mx-auto mt-12"
-     
-     
-    >
-      <Swiper options={swiperOptions}>
-        <SwiperWrapper class={"mb-12 items-stretch"}>
-          {
-            agents?.map((agent) => (
-              <SwiperSlide class="h-auto! flex">
-                <div class="rounded-2xl bg-body px-7 py-10 flex flex-col h-full w-full">
-                  <ImageMod
-                    height={50}
-                    width={50}
-                    class="rounded-full"
-                    src={agent.icon}
-                    alt={agent.label}
-                    format="webp"
-                  />
-
-                  <h3
-                    set:html={markdownify(agent.label)}
-                    class="mt-10 mb-6 h5"
-                  />
-                  <p
-                    set:html={markdownify(agent.description)}
-                    class="text-sm"
-                  />
-
-                  {agent.button.enable && (
-                    <div class="mt-auto">
-                      <a
-                        href={agent.button.link}
-                        target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
-                        rel="noopener"
-                        class="flex items-center group text-text-dark text-sm font-medium mt-6"
-                      >
-                        {agent.button.label}
-                        <FaAngleRight className="ml-2 transition-transform duration-300 group-hover:translate-x-2" />
-                      </a>
+      <div class="mt-12 lg:mt-20 flex flex-col gap-16 lg:gap-24">
+        {
+          agents?.map((agent, i) => (
+            <div class={`grid gap-8 lg:gap-16 items-center ${agent.image ? "lg:grid-cols-2" : "lg:max-w-3xl lg:mx-auto"}`}>
+              {agent.image && (
+                <div class={i % 2 === 1 ? "lg:order-2" : ""}>
+                  <div
+                    class={agent.image_bg
+                      ? "rounded-2xl p-[3px]"
+                      : ""}
+                    style={agent.image_bg
+                      ? "background: linear-gradient(135deg, #C8102E, var(--color-secondary))"
+                      : undefined}
+                  >
+                    <div
+                      class={agent.image_bg
+                        ? "bg-light rounded-[calc(var(--radius-2xl)-3px)] p-5 flex items-center justify-center h-full"
+                        : ""}
+                    >
+                      <ImageMod
+                        src={agent.image}
+                        alt={agent.label}
+                        width={750}
+                        height={584}
+                        class={agent.image_bg
+                          ? "w-full h-auto max-w-sm mx-auto"
+                          : "w-full h-auto rounded-2xl"}
+                        format={agent.image.endsWith(".svg") ? "svg" : "webp"}
+                      />
                     </div>
-                  )}
+                  </div>
                 </div>
-              </SwiperSlide>
-            ))
-          }
-        </SwiperWrapper>
-        <SwiperPagination
-          class="choose-slider-pagination flex items-center justify-center"
-        />
-      </Swiper>
+              )}
+
+              <div>
+                <span class="text-sm font-medium uppercase tracking-wide text-white/50">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3
+                  class="mt-3 h3 text-white"
+                  set:html={markdownify(agent.label)}
+                />
+                <p
+                  class="mt-4 text-lg text-white/70 text-balance"
+                  set:html={markdownify(agent.description)}
+                />
+
+                {agent.points && (
+                  <ul class="mt-6 flex flex-col gap-3">
+                    {agent.points.map((point) => (
+                      <li class="flex items-start gap-3 text-white">
+                        <FaCheck className="mt-1 shrink-0 text-primary" />
+                        <span set:html={markdownify(point)} />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {agent.button.enable && (
+                  <a
+                    href={agent.button.link}
+                    target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
+                    rel="noopener"
+                    class="hero-cta-gold mt-8 inline-block text-center font-secondary font-semibold text-base px-8 py-4 transition"
+                  >
+                    {agent.button.label}
+                  </a>
+                )}
+              </div>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>

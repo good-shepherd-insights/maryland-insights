@@ -16,7 +16,10 @@ export default defineConfig({
   base: config.site.base_path ? config.site.base_path : "/",
   trailingSlash: config.site.trailing_slash ? "always" : "never",
   image: { service: sharp() },
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+    server: { allowedHosts: ["mouthwatering-hettie-openairish.ngrok-free.dev"] },
+  },
   integrations: [
     react(),
     partytown({

@@ -1,11 +1,11 @@
 ---
-title: "Analytics and Reporting"
+title: "Real-Time Growth"
 meta_title: "Analytics and Reporting for Maryland Small Businesses | Maryland Insights"
-description: "Track Maryland visitors, measure what drives growth in your local market, and make confident decisions backed by real data. Get clear, actionable reporting built for Maryland small businesses — no data team required."
-image: "/images/features/4.png"
+description: "One clear view of website activity, leads, local visibility, and marketing performance—so you know where business is coming from and what deserves your next dollar."
+image: "/images/features/ai-powered-content.svg"
 button:
   enable: true
-  label: "Click to Learn More"
+  label: "Get Access Now"
   link: "/get-started"
 draft: false
 faqs_list:

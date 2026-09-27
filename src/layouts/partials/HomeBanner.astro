@@ -16,16 +16,24 @@ const {
 ---
 
 <section
-  class="section bg-light pt-44 md:pt-36 pb-10 lg:pb-8 bg-4col-grid overflow-x-hidden touch-pan-y"
+  class="section bg-light pt-30 md:pt-36 pb-14 lg:pb-12 overflow-x-hidden touch-pan-y"
+  data-disabled-class="bg-4col-grid"
 >
   <div class="mx-0 md:mx-8">
-  <div class="container px-4 md:px-8">
-    <div class="xl:max-w-6xl mb-8 xl:mb-10">
+  <div class="container px-8">
+    <div class="xl:max-w-4xl mb-8 xl:mb-[81px]">
       {
         eyebrow && (
-          <span class="mb-3.5 inline-flex items-center justify-center h-6 px-3 py-1 text-xs font-medium bg-primary text-text-dark rounded-full">
-            {eyebrow}
-          </span>
+          <div class="mb-3.5 xl:mb-6 flex items-center gap-2">
+            <img
+              src="/images/brands/maryland-flag.svg"
+              alt="Maryland flag"
+              class="h-4 w-auto shrink-0"
+            />
+            <span class="text-xs font-medium uppercase tracking-wide text-text-light">
+              {eyebrow}
+            </span>
+          </div>
         )
       }
       <h1
@@ -33,9 +41,9 @@ const {
         set:html={markdownify(title)}
       />
 
-      <p class="mt-5 max-w-2xl text-xl leading-relaxed" set:html={markdownify(content)} />
+      <p class="mt-5 xl:mt-8 max-w-2xl text-xl leading-relaxed" set:html={markdownify(content)} />
 
-      <div class="mt-6 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-x-5">
+      <div class="mt-6 xl:mt-12 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-x-5">
         {
           button_solid.enable && (
             <a
@@ -66,20 +74,16 @@ const {
 
     {
       stats && stats.length > 0 && (
-        <div class="xl:max-w-6xl grid grid-cols-2 lg:grid-cols-4 border-t border-b border-border">
+        <div class="xl:max-w-5xl grid grid-cols-2 lg:grid-cols-4 border-t border-border">
           {stats.map((stat: { value: string; label: string; accent?: string }, i: number) => (
-            <div
-              class={`px-5 py-5 border-border ${
-                i % 2 === 0 ? "border-r" : ""
-              } lg:border-r ${i === stats.length - 1 ? "lg:border-r-0" : ""} ${
-                i >= 2 ? "border-t lg:border-t-0" : ""
-              }`}
-            >
-              <div class="font-secondary font-bold text-3xl tabular-nums text-dark">
-                {stat.value}
-              </div>
-              <div class="mt-1 text-sm font-bold uppercase tracking-[0.05em] text-text-light">
-                {stat.label}
+            <div class="px-5 xl:px-0 pt-10 xl:pt-8">
+              <div class={i > 0 ? "xl:border-l xl:border-border xl:pl-8" : ""}>
+                <div class="font-secondary font-bold text-3xl tabular-nums text-dark">
+                  {stat.value}
+                </div>
+                <div class="mt-5 xl:mt-3 text-sm font-bold uppercase tracking-[0.05em] text-text-light">
+                  {stat.label}
+                </div>
               </div>
             </div>
           ))}
@@ -89,13 +93,3 @@ const {
   </div>
   </div>
 </section>
-
-<style>
-  .hero-cta-gold {
-    background-color: #FFB612;
-    color: #121212;
-  }
-  .hero-cta-gold:hover {
-    background-color: #E6A410;
-  }
-</style>

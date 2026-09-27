@@ -11,23 +11,23 @@ import type { SoftwareApplication, FAQPage, Question } from "schema-dts";
 import { render } from "astro:content";
 
 export async function getStaticPaths() {
-  const features = await getSinglePage("features");
+  const services = await getSinglePage("services");
 
-  const paths = features.map((feature) => ({
+  const paths = services.map((service) => ({
     params: {
-      single: feature.id,
+      single: service.id,
     },
-    props: { feature },
+    props: { service },
   }));
   return paths;
 }
 
-const { feature } = Astro.props;
-const { title, description, image, faqs_list } = feature.data;
+const { service } = Astro.props;
+const { title, description, image, faqs_list } = service.data;
 
-const { Content } = await render(feature);
+const { Content } = await render(service);
 
-const featureSchema: SoftwareApplication = {
+const serviceSchema: SoftwareApplication = {
   "@type": "SoftwareApplication",
   "name": plainify(title),
   "description": plainify(description),
@@ -44,7 +44,7 @@ const featureSchema: SoftwareApplication = {
   },
 };
 
-const pageSchemas: (SoftwareApplication | FAQPage)[] = [featureSchema];
+const pageSchemas: (SoftwareApplication | FAQPage)[] = [serviceSchema];
 
 if (faqs_list && faqs_list.length > 0) {
   const faqSchema: FAQPage = {
@@ -65,7 +65,7 @@ if (faqs_list && faqs_list.length > 0) {
 }
 ---
 
-<Base {...feature.data} schema={pageSchemas}>
+<Base {...service.data} schema={pageSchemas}>
   <PageHeader title={title} description={description} />
 
   <section class="section-sm bg-light">
@@ -73,8 +73,6 @@ if (faqs_list && faqs_list.length > 0) {
       class="container flex flex-col lg:flex-row justify-center gap-5 items-start"
     >
       <article
-       
-       
         class="w-full lg:w-7/12 bg-body rounded-2xl px-6 sm:px-8 xl:px-10 py-4"
       >
         {
@@ -97,7 +95,7 @@ if (faqs_list && faqs_list.length > 0) {
     </div>
   </section>
 
-  {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `Frequently Asked Questions About ${title}` }} prefix="feature-faq" />}
+  {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `Frequently Asked Questions About ${title}` }} prefix="service-faq" />}
 
   <CallToAction />
 </Base>

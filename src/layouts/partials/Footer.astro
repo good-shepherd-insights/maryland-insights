@@ -16,46 +16,34 @@ function replaceYear(text: string) {
 }
 ---
 
-<footer class="section pb-0 text-center md:text-left overflow-x-hidden">
-  <div class="container">
+<footer class="section pb-0 text-left overflow-x-hidden">
+  <div class="mx-0 md:mx-8">
+  <div class="container px-8">
     <!-- Top Section -->
     <div
-      class="flex flex-col lg:flex-row gap-10 lg:gap-0 justify-between mb-10 lg:mb-28 max-lg:text-center"
+      class="flex flex-col lg:flex-row gap-10 lg:gap-12 justify-between mb-10 lg:mb-20"
     >
       <!-- Left -->
-      <div class="w-full lg:w-[25%]">
-        <div>
-          <Logo />
-        </div>
-
+      <div class="w-full lg:w-[30%]">
+        <Logo />
         <p
-         
-         
-          class="mt-8 text-balance"
+          class="mt-5 max-w-sm text-sm leading-relaxed text-text-light"
           set:html={markdownify(config.params.footer_description)}
         />
       </div>
 
       <!-- middle -->
-      <div
-       
-       
-        class="flex flex-col md:flex-row justify-between w-full lg:max-w-[30%] gap-10 xl:gap-0 pl-0 lg:pl-8"
-      >
+      <div class="grid grid-cols-2 gap-8 w-full lg:max-w-[30%]">
         {
           footer.map((menu) => (
-            <div class="w-full lg:max-w-37.5 flex flex-col gap-4">
-              <h6
-               
-               
-                class="font-semibold"
-              >
+            <div class="flex flex-col gap-4">
+              <h6 class="text-xs font-semibold uppercase tracking-wide text-text-dark">
                 {menu.title}
               </h6>
-              <ul class="flex flex-col gap-4">
-                {menu.children.map((link, i) => (
+              <ul class="flex flex-col gap-3 leading-snug">
+                {menu.children.map((link) => (
                   <li>
-                    <a href={link.url} class="hover:text-primary text-sm">
+                    <a href={link.url} class="text-base-sm text-text-light hover:text-primary transition">
                       {link.name}
                     </a>
                   </li>
@@ -70,12 +58,8 @@ function replaceYear(text: string) {
       {
         config.subscription_in_footer &&
           config.subscription_in_footer.enable && (
-            <div class="md:w-[70%] lg:w-[30%] mx-auto">
-              <h6
-               
-               
-                class="font-semibold mb-4"
-              >
+            <div class="w-full md:max-w-md lg:w-[30%]">
+              <h6 class="mb-4 text-xs font-semibold uppercase tracking-wide text-text-dark">
                 Newsletter
               </h6>
               <form
@@ -141,14 +125,20 @@ function replaceYear(text: string) {
 
     <!-- Bottom -->
     <div
-      class="py-6 border-t border-border flex flex-col-reverse gap-4 md:flex-row justify-between"
+      class="py-6 border-t border-border flex flex-col gap-4 md:flex-row md:items-center justify-between"
     >
-      <Social source={social.main} className="social-icons" />
+      <Social source={social.main} className="social-icons justify-start" />
 
-      <p
-        class="opacity-80 [&>a]:underline [&>a]:text-text-dark text-sm"
-        set:html={markdownify(replaceYear(config.params.copyright))}
-      />
+      <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
+        <p
+          class="text-text-light [&>a]:underline [&>a]:text-text-dark text-sm"
+          set:html={markdownify(replaceYear(config.params.copyright))}
+        />
+        <p class="text-text-light/70 text-xs">
+          Some logos via <a href="https://logo.dev" class="underline">Logo.dev</a>
+        </p>
+      </div>
     </div>
+  </div>
   </div>
 </footer>

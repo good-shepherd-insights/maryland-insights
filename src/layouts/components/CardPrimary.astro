@@ -43,14 +43,14 @@ const { title, description, image, button, date, author } = data;
     set:html={markdownify(title)}
   />
 
-  <p class="text-sm line-clamp-2" set:html={markdownify(description)} />
+  <p class="text-sm" set:html={markdownify(description)} />
 
-  <a href={`${id ? id : button.link}`} class="before:absolute before:inset-0">
+  <a href={`${id ? id : button?.link}`} class="before:absolute before:inset-0">
     <div
       class={`flex justify-between relative mt-10 ${hasDarkArrow ? "text-dark" : "text-light"}`}
     >
       <span class="text-xs text-dark"
-        >{`${id ? "Learn More" : button.label}`}</span
+        >{button?.label ?? "Learn More"}</span
       >
 
       <span
@@ -67,7 +67,7 @@ const { title, description, image, button, date, author } = data;
             fill="currentColor"></path>
         </svg>
 
-        <span class="sr-only">{`${id ? "Learn More" : button.label}`}</span>
+        <span class="sr-only">{button?.label ?? "Learn More"}</span>
         <span
           class="absolute left-[60%] top-[60%] h-9.5 w-9.5 -translate-x-1/2 -translate-y-1/2 overflow-hidden"
         >

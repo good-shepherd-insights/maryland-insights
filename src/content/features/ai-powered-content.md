@@ -1,11 +1,11 @@
 ---
-title: "AI-Powered Content"
+title: "Total Search Visibility"
 meta_title: "AI Content for Maryland Small Businesses | Maryland Insights"
-description: "Generate compelling, locally relevant content for your Maryland business in seconds. From blog posts and landing pages to social captions and email campaigns, our AI keeps your brand voice consistent, your content fresh, and your Maryland audience engaged."
-image: "/images/features/6.png"
+description: "Keep your business information accurate and visible across the places Maryland customers search—Google, maps, directories, and emerging AI search tools."
+image: "/images/features/local-seo.svg"
 button:
   enable: true
-  label: "Click to Learn More"
+  label: "Get Access Now"
   link: "/get-started"
 draft: false
 faqs_list:

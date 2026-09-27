@@ -1,11 +1,11 @@
 ---
-title: "Marketing Automation"
+title: "Automatic Customer Nurturing"
 meta_title: "Marketing Automation for Maryland Small Businesses | Maryland Insights"
-description: "Automate marketing campaigns that convert Maryland customers into loyal buyers. Set up email sequences, follow-ups, and local promotions once — then let the system work for you around the clock. Spend less time on repetitive tasks and more time growing your Maryland business."
-image: "/images/features/5.png"
+description: "Automatically keep new prospects and existing customers moving with timely texts, emails, reminders, and next steps—without your team having to chase every lead manually."
+image: "/images/features/marketing-automation.svg"
 button:
   enable: true
-  label: "Click to Learn More"
+  label: "Get Access Now"
   link: "/get-started"
 draft: false
 faqs_list:

@@ -5,12 +5,8 @@
       "url": "/"
     },
     {
-      "name": "Features",
-      "url": "/features"
-    },
-    {
-      "name": "Pricing",
-      "url": "/pricing"
+      "name": "Services",
+      "url": "/services"
     },
     {
       "name": "About",
@@ -33,10 +29,6 @@
     {
       "title": "Quick Links",
       "children": [
-        {
-          "name": "Pricing",
-          "url": "/pricing"
-        },
         {
           "name": "About Us",
           "url": "/about"

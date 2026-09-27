@@ -1,0 +1,59 @@
+---
+// Logo.dev Name Lookup — https://www.logo.dev/docs/logo-images/name
+// Free tier requires visible attribution on the public site when used commercially
+// (https://www.logo.dev/docs/platform/attribution). One sitewide footer credit
+// covers that requirement; showAttribution here is for callers that want a
+// per-instance credit as well.
+const LOGO_DEV_PUBLISHABLE_TOKEN = "pk_IBCRGDthQz6_nDSQHefhFA";
+
+interface Props {
+  name: string;
+  domain?: string;
+  size?: number;
+  format?: "png" | "jpg" | "webp";
+  theme?: "light" | "dark";
+  fallback?: "monogram" | "404";
+  class?: string;
+  showAttribution?: boolean;
+}
+
+const {
+  name,
+  domain,
+  size = 128,
+  format = "png",
+  theme,
+  fallback,
+  class: className,
+  showAttribution = false,
+} = Astro.props;
+
+const params = new URLSearchParams({
+  token: LOGO_DEV_PUBLISHABLE_TOKEN,
+  size: String(size),
+  format,
+});
+if (theme) params.set("theme", theme);
+if (fallback) params.set("fallback", fallback);
+
+// Domain lookup is exact; name lookup is a fuzzy fallback for brands without a known domain.
+const src = domain
+  ? `https://img.logo.dev/${encodeURIComponent(domain)}?${params.toString()}`
+  : `https://img.logo.dev/name/${encodeURIComponent(name)}?${params.toString()}`;
+---
+
+<figure class="inline-flex flex-col items-center gap-1 m-0">
+  <img
+    src={src}
+    alt={`${name} logo`}
+    width={size}
+    height={size}
+    loading="lazy"
+    class={`object-contain ${className ?? ""}`}
+  />
+  {showAttribution && (
+    <figcaption class="text-[10px] text-text-light">
+      Logos provided by <a href="https://logo.dev" class="underline">Logo.dev</a>
+    </figcaption>
+  )}
+</figure>

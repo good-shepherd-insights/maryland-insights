@@ -1,11 +1,11 @@
 ---
-title: "AEO Optimization"
+title: "24/7 Sales Website"
 meta_title: "AEO Optimization for Maryland Small Businesses | Maryland Insights"
-description: "Answer Engine Optimization built for Maryland small businesses. Get found on Google AI Overviews, ChatGPT, voice search, and featured snippets when local customers search for your services in Baltimore, Annapolis, Rockville, and beyond."
-image: "/images/features/2.png"
+description: "A professionally built Maryland business website designed to answer customer questions, build confidence, and make it easy to call, request a quote, or book."
+image: "/images/features/website-hosting.svg"
 button:
   enable: true
-  label: "Get Found by Maryland Customers"
+  label: "Get Access Now"
   link: "/get-started"
 draft: false
 faqs_list:

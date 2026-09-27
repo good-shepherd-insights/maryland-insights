@@ -1,0 +1,51 @@
+---
+import CompanyLogo from "@/components/CompanyLogo.astro";
+import ImageMod from "@/components/ImageMod.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+
+interface Props {
+  integration: {
+    title: string;
+    description: string;
+    logo_name?: string;
+    image?: string;
+    link?: string;
+  };
+}
+
+const { integration } = Astro.props;
+---
+
+<div
+  data-aos="fade-up-sm"
+  class="group bg-body rounded-xl border border-border p-6 flex flex-col text-left relative w-full h-full transition-colors duration-300 hover:border-primary/50"
+>
+  <div class="w-9 h-9 mb-4 shrink-0 flex items-center justify-center">
+    {integration.logo_name ? (
+      <CompanyLogo
+        name={integration.logo_name}
+        size={36}
+        class="w-9 h-9 object-contain"
+      />
+    ) : (
+      <ImageMod
+        src={integration.image}
+        alt={integration.title}
+        width={36}
+        height={36}
+        class="w-9 h-9 object-contain"
+      />
+    )}
+  </div>
+  <h3
+    class="font-secondary font-bold text-base leading-snug text-text-dark mb-1"
+    set:html={markdownify(integration.title)}
+  />
+  <p
+    class="text-text-dark/70 text-sm leading-relaxed text-balance"
+    set:html={markdownify(integration.description)}
+  />
+  {integration.link && (
+    <a href={integration.link} class="before:inset-0 before:absolute" />
+  )}
+</div>

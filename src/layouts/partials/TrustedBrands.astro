@@ -8,45 +8,28 @@ if (!sectionData.data.enable) return null;
 const { title, list } = sectionData.data;
 ---
 
-<section class="overflow-hidden bg-light py-10 lg:py-14">
-  <div class="container">
-    <div class="flex flex-col lg:flex-row items-start lg:items-center gap-10">
-      <h3
-       
-       
-        class="h6 lg:w-75 font-primary text-text-dark/70"
-        set:html={markdownify(title)}
-      />
-      <div
-       
-       
-        class={"inf-slider overflow-hidden fade-overlay-carousel lg:w-[calc(100%-500px)] ml-auto"}
-        data-inf-scroll-speed="80"
-        data-inf-direction="normal"
-        data-inf-slide-pause-on-hover="true"
-      >
-        <div class="inf-slide-track">
-          {
-            list?.map((brand) => (
-              <div class="inf-slide ml-5 px-8 text-text-light">
-                <ImageMod
-                  width={162}
-                  height={32}
-                  src={brand.logo}
-                  alt={brand.brand}
-                  class="object-contain max-h-8 h-full"
-                />
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    </div>
+<section class="bg-light py-10 lg:py-14">
+  <div class="mx-0 md:mx-8">
+  <div class="container px-8">
+    <h3
+      class="mb-6 text-xs font-medium uppercase tracking-wide text-text-light"
+      set:html={markdownify(title)}
+    />
+    <ul class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border-t border-l border-border">
+      {
+        list?.map((brand) => (
+          <li class="flex items-center justify-center h-28 px-6 border-r border-b border-border">
+            <ImageMod
+              width={brand.width}
+              height={brand.height}
+              src={brand.logo}
+              alt={brand.brand}
+              class={`h-14 w-auto object-contain grayscale opacity-70 transition duration-300 hover:grayscale-0 hover:opacity-100 ${brand.invert ? "invert" : ""}`}
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
   </div>
 </section>
-
-<script>
-  import { initInfiniteSliders } from "@/lib/utils/infSlider";
-
-  document.addEventListener("astro:page-load", () => initInfiniteSliders());
-</script>

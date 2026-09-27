@@ -10,6 +10,7 @@ import {
   integrations,
   pages,
   pricing,
+  services,
 } from "./types/pages.collection";
 import {
   ctaSection,
@@ -24,6 +25,7 @@ export const collections = {
   homepage,
   contact,
   features,
+  services,
   about,
   pricing,
   blog,

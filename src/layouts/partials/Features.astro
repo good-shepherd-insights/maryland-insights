@@ -39,9 +39,7 @@ const swiperOptions: SwiperOptions = {
       class="flex flex-col gap-6 lg:flex-row lg:justify-between max-lg:text-center items-center mb-12"
     >
       <h2
-       
-       
-        class="text-balance xl:w-[50%]"
+        class="text-balance leading-relaxed xl:w-[70%]"
         set:html={markdownify(title)}
       />
 
@@ -150,7 +148,7 @@ const swiperOptions: SwiperOptions = {
               <div class="w-full">
                 <CardPrimary
                   data={feature.data}
-                  id={`/features/${feature.id}`}
+                  id="/services"
                 />
               </div>
             </SwiperSlide>

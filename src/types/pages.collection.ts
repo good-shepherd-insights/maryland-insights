@@ -49,6 +49,9 @@ export const homepage = defineCollection({
           label: z.string(),
           description: z.string(),
           icon: z.string(),
+          image: z.string().optional(),
+          image_bg: z.boolean().optional(),
+          points: z.array(z.string()).optional(),
           button: button,
         }),
       ),
@@ -133,6 +136,23 @@ export const about = defineCollection({
             name: z.string(),
             position: z.string(),
             image: z.string(),
+          }),
+        ),
+      })
+      .optional(),
+    story_section: z
+      .object({
+        enable: z.boolean(),
+        title: z.string(),
+        agents: z.array(
+          z.object({
+            label: z.string(),
+            description: z.string(),
+            icon: z.string(),
+            image: z.string().optional(),
+            image_bg: z.boolean().optional(),
+            points: z.array(z.string()).optional(),
+            button: button,
           }),
         ),
       })
@@ -341,6 +361,11 @@ export const contact = defineCollection({
 
 export const features = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/features" }),
+  schema: z.any(),
+});
+
+export const services = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/services" }),
   schema: z.any(),
 });
 

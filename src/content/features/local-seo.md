@@ -1,11 +1,11 @@
 ---
-title: "Local SEO"
+title: "Capture Every Lead"
 meta_title: "Local SEO for Maryland Small Businesses | Maryland Insights"
-description: "Dominate local search and appear on Google Maps for your Maryland community. Target the neighborhoods, zip codes, and service areas that matter most to your business. Turn nearby searches into real foot traffic, leads, and phone calls."
-image: "/images/features/3.png"
+description: "See new calls, form submissions, messages, and customer inquiries in one place, so your team can respond before a ready-to-buy prospect moves on."
+image: "/images/features/aeo-optimization.svg"
 button:
   enable: true
-  label: "Click to Learn More"
+  label: "Get Access Now"
   link: "/get-started"
 draft: false
 faqs_list:

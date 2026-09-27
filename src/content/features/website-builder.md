@@ -1,11 +1,11 @@
 ---
-title: "Website Builder"
+title: "5-Star Review System"
 meta_title: "Website Builder for Maryland Small Businesses | Maryland Insights"
-description: "Create a professional website built specifically for Maryland small businesses in minutes. No coding needed — just a fast, conversion-ready online presence designed to attract local customers, rank in Maryland search results, and grow your business from day one."
-image: "/images/features/1.png"
+description: "Turn customer feedback into a stronger reputation with a simple system for generating reviews, monitoring what people say, and protecting your name online."
+image: "/images/features/analytics-reporting.svg"
 button:
   enable: true
-  label: "Click to Learn More"
+  label: "Get Access Now"
   link: "/get-started"
 draft: false
 faqs_list:
