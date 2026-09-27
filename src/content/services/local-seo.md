@@ -8,6 +8,24 @@ button:
   label: "Get Started"
   link: "/get-started"
 draft: false
+blocks:
+  - type: richText
+    eyebrow: "How we work"
+    title: "Local visibility built on evidence, not broad promises"
+    tone: "muted"
+    body: |
+      Local SEO is only useful when a customer can verify the business behind the listing. Our work starts with the details that search engines and people can check: the business name, address, phone number, service categories, hours, service area, and the services described on the site.
+
+      We build the page and listing signals around the places the business actually serves. That means separating Baltimore City from Montgomery County, keeping service-area language consistent, and avoiding a county list that the business cannot support.
+
+      **What we verify:**
+
+      - Google Business Profile categories, services, hours, and service-area settings match the business.
+      - Directory listings use consistent core business details.
+      - Service pages explain who the business helps, where it works, and what a customer should do next.
+      - Review requests point customers toward genuine experiences instead of manufactured testimonials.
+
+      The result is a local search presence that is easier for customers to understand and easier for the business owner to maintain.
 ---
 
 ## Key Benefits

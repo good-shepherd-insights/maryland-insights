@@ -6,6 +6,7 @@ import { getSinglePage } from "@/lib/contentParser.astro";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Faqs from "@/partials/Faqs.astro";
+import ServiceRichText from "@/components/services/ServiceRichText.astro";
 import { plainify } from "@/lib/utils/textConverter";
 import type { SoftwareApplication, FAQPage, Question } from "schema-dts";
 import { render } from "astro:content";
@@ -23,7 +24,10 @@ export async function getStaticPaths() {
 }
 
 const { service } = Astro.props;
-const { title, description, image, faqs_list } = service.data;
+const { title, description, image, faqs_list, blocks = [] } = service.data;
+const richTextBlocks = Array.isArray(blocks)
+  ? blocks.filter((block: any) => block?.type === "richText")
+  : [];
 
 const { Content } = await render(service);
 
@@ -94,6 +98,17 @@ if (faqs_list && faqs_list.length > 0) {
       </article>
     </div>
   </section>
+
+  {
+    richTextBlocks.map((block: any) => (
+      <ServiceRichText
+        eyebrow={block.eyebrow}
+        title={block.title}
+        body={block.body}
+        tone={block.tone}
+      />
+    ))
+  }
 
   {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `Frequently Asked Questions About ${title}` }} prefix="service-faq" />}
 
