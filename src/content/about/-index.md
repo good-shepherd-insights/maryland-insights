@@ -10,30 +10,6 @@ gallery:
   title: "Since 2015, we've been helping Maryland businesses get found, attract customers, and grow: because your success matters to us."
   image: "/images/about/about-banner.png"
 
-positioning:
-  enable: true
-  title: "Infrastructure for the work that gets a business found and chosen"
-  intro: "Maryland Insights gives businesses and the agencies serving them a connected foundation for reaching customers: the website, local visibility, lead capture, follow-up, and measurement working together instead of living in separate tools."
-  business:
-    title: "For Maryland businesses"
-    description: "Get the technical foundation behind your online presence without needing to become the person who maintains it."
-    points:
-      - "A professional website and hosting foundation built around how customers find and contact you."
-      - "Local visibility work that reflects the Maryland communities and services you actually serve."
-      - "Lead capture, follow-up, and reporting that make it easier to see what is producing an inquiry or sale."
-    link_label: "Explore services"
-    link: "/services"
-  agency:
-    title: "For agencies"
-    description: "Deliver a stronger client experience on infrastructure you can configure and extend, rather than reselling a rigid platform."
-    points:
-      - "A repeatable foundation for launching and maintaining client websites without rebuilding the stack every time."
-      - "Direct access to an extensible platform for the integrations, workflows, and experiences your clients need."
-      - "More time for strategy, creative, and client relationships instead of vendor limitations and maintenance work."
-    link_label: "Partner with us"
-    link: "/get-started"
-  boundary: "We build the infrastructure behind go-to-market work. We are not a traditional marketing agency, we do not run ad campaigns, and we do not force every business into the same closed system."
-
 facts_section:
   enable: true
   # Don't use more that 4 facts here
