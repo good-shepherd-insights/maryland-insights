@@ -10,7 +10,7 @@ banner:
   button_underline:
     enable: true
     label: "Learn More"
-    link: "/services"
+    link: "/about"
   fine_print: "Get found. Get ranked. Get booked."
   subtitle: "Stand out locally and online."
   image: "/images/homepage/banner.png"
@@ -145,5 +145,4 @@ featured_features_section:
   title: "Key features to build, rank and grow your Maryland Business"
 
 ---
-
 
