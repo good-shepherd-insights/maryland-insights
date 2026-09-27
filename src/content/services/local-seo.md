@@ -26,6 +26,16 @@ blocks:
       - Review requests point customers toward genuine experiences instead of manufactured testimonials.
 
       The result is a local search presence that is easier for customers to understand and easier for the business owner to maintain.
+  - type: featureGrid
+    eyebrow: "What gets checked"
+    title: "A local presence customers can verify"
+    items:
+      - title: "Business details"
+        description: "Name, address, phone, hours, categories, and service areas are kept consistent wherever customers find the business."
+      - title: "Service relevance"
+        description: "Pages explain the actual services offered and the Maryland communities the business serves."
+      - title: "Customer proof"
+        description: "Reviews and testimonials reflect real customer experiences and give prospects useful reasons to trust the business."
 ---
 
 ## Key Benefits

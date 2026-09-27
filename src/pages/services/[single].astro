@@ -6,6 +6,7 @@ import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Faqs from "@/partials/Faqs.astro";
 import ServiceRichText from "@/components/services/ServiceRichText.astro";
+import ServiceFeatureGrid from "@/components/services/ServiceFeatureGrid.astro";
 import { plainify } from "@/lib/utils/textConverter";
 import type { SoftwareApplication, FAQPage, Question } from "schema-dts";
 
@@ -25,6 +26,9 @@ const { service } = Astro.props;
 const { title, description, image, faqs_list, blocks = [] } = service.data;
 const richTextBlocks = Array.isArray(blocks)
   ? blocks.filter((block: any) => block?.type === "richText")
+  : [];
+const featureGridBlocks = Array.isArray(blocks)
+  ? blocks.filter((block: any) => block?.type === "featureGrid")
   : [];
 
 const serviceSchema: SoftwareApplication = {
@@ -75,6 +79,15 @@ if (faqs_list && faqs_list.length > 0) {
         title={block.title}
         body={block.body}
         tone={block.tone}
+      />
+    ))
+  }
+  {
+    featureGridBlocks.map((block: any) => (
+      <ServiceFeatureGrid
+        eyebrow={block.eyebrow}
+        title={block.title}
+        items={block.items}
       />
     ))
   }
