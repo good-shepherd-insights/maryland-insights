@@ -110,11 +110,10 @@ export const about = defineCollection({
     date: z.date().optional(),
     image: z.string().optional(),
     draft: z.boolean(),
-    origin_story: z.object({
+    gallery: z.object({
       enable: z.boolean(),
       title: z.string(),
       image: z.string(),
-      paragraphs: z.array(z.string()).min(1),
     }),
     facts_section: z.object({
       enable: z.boolean(),
