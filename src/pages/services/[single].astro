@@ -36,7 +36,7 @@ const processBlocks = Array.isArray(blocks)
   ? blocks.filter((block: any) => block?.type === "process")
   : [];
 const proofBlocks = Array.isArray(blocks)
-  ? blocks.filter((block: any) => block?.type === "proof")
+  ? blocks.filter((block: any) => block?.type === "proof" && (!block.qaOnly || import.meta.env.DEV))
   : [];
 
 const serviceSchema: SoftwareApplication = {

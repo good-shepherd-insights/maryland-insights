@@ -69,6 +69,17 @@ blocks:
           **We review:** the search queries and locations bringing attention, the pages receiving meaningful visits, calls or forms attributed to the site, and the points where prospective customers stop moving forward.
 
           **The next action is evidence-led:** strengthen a page that attracts the right searchers, correct a listing that sends the wrong signal, or change the conversion path when visitors are not taking the intended action.
+  - type: proof
+    qaOnly: true
+    title: "QA fixture — sample performance result"
+    metricLabel: "Performance score (synthetic QA data)"
+    before: "50"
+    after: "100"
+    context: "This sample is displayed only in development so the proof component can be reviewed before a real client case is supplied. It is not a reported client result."
+    changes: |
+      **QA-only fixture:** this content verifies the before-and-after layout, source treatment, and responsive behavior. Replace it with a real PageSpeed Insights result before publication.
+    sourceLabel: "PageSpeed Insights tool (sample only)"
+    sourceUrl: "https://pagespeed.web.dev/"
 ---
 
 ## Key Benefits
