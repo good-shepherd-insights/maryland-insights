@@ -52,6 +52,7 @@ if (pageIndex.data.draft) {
 
 <Base {...pageIndex.data} schema={[contactSchema]}>
   <PageHeader title={title} description={description} />
+  <ContactGuidance />
   <section class="section-sm bg-light">
     <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
       <h2
@@ -138,8 +139,6 @@ if (pageIndex.data.draft) {
       </div>
     </div>
   </section>
-
-  <ContactGuidance />
 
   <!-- Gallery Section  -->
   {
