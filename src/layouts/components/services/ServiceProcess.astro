@@ -5,6 +5,7 @@ type Step = {
   number: string;
   title: string;
   description: string;
+  details?: string;
 };
 
 type Props = {
@@ -18,10 +19,10 @@ const { eyebrow, title, intro, steps } = Astro.props as Props;
 const headingId = `service-${slugify(title)}`;
 ---
 
-<section class="section-sm border-y border-border/70 bg-light" aria-labelledby={headingId}>
+<section class="service-process section border-y border-border/70 bg-light" aria-labelledby={headingId}>
   <div class="container">
-    <div class="grid items-start gap-10 lg:grid-cols-12 lg:gap-16">
-      <div class="lg:col-span-5">
+    <div class="grid items-start gap-14 lg:grid-cols-12 lg:gap-20">
+      <div class="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
         {
           eyebrow && (
             <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
@@ -30,17 +31,25 @@ const headingId = `service-${slugify(title)}`;
           )
         }
         <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
-        {intro && <p class="mt-5 max-w-xl text-text-dark/75" set:html={markdownify(intro)} />}
+        {intro && <p class="mt-5 max-w-md text-text-dark/75" set:html={markdownify(intro)} />}
       </div>
 
-      <ol class="lg:col-span-7 border-t border-border">
+      <ol class="service-process-rail relative lg:col-span-8">
         {
-          steps.map((step) => (
-            <li class="grid gap-4 border-b border-border py-6 sm:grid-cols-[4rem_1fr] sm:gap-6 sm:py-8">
-              <span class="text-sm font-semibold tracking-[0.12em] text-text-light">{step.number}</span>
-              <div>
-                <h3 class="h5 mb-2 text-balance" set:html={markdownify(step.title)} />
-                <p class="max-w-2xl text-text-dark/75" set:html={markdownify(step.description)} />
+          steps.map((step, index) => (
+            <li class="service-process-step relative grid gap-5 pb-12 pl-16 last:pb-0 sm:grid-cols-[5rem_1fr] sm:gap-8 sm:pl-0">
+              <div class="service-process-marker absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full border border-primary bg-light text-xs font-semibold tracking-[0.12em] text-text-dark sm:static sm:h-auto sm:w-auto sm:justify-start sm:rounded-none sm:border-0 sm:bg-transparent sm:pt-1 sm:text-5xl sm:font-normal sm:tracking-[-0.06em] sm:text-text-light">
+                {step.number}
+              </div>
+              <div class="service-process-detail max-w-xl">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                  Stage {String(index + 1).padStart(2, "0")}
+                </p>
+                <h3 class="h4 mb-3 text-balance" set:html={markdownify(step.title)} />
+                <p class="text-text-dark/75" set:html={markdownify(step.description)} />
+                {step.details && (
+                  <div class="content mt-5 border-l-2 border-primary/40 pl-5 text-sm" set:html={markdownify(step.details, true) as string} />
+                )}
               </div>
             </li>
           ))
@@ -49,3 +58,45 @@ const headingId = `service-${slugify(title)}`;
     </div>
   </div>
 </section>
+
+<style>
+  .service-process-rail::before {
+    content: "";
+    position: absolute;
+    top: 1.25rem;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    width: 1px;
+    background: var(--color-border);
+  }
+
+  .service-process-step:nth-child(even) .service-process-detail {
+    margin-left: 0;
+  }
+
+  @media (min-width: 640px) {
+    .service-process-rail::before {
+      left: 2.5rem;
+    }
+
+    .service-process-step:nth-child(even) .service-process-detail {
+      margin-left: 2rem;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .service-process-step::before {
+      content: "";
+      position: absolute;
+      top: 2.5rem;
+      bottom: 0;
+      left: 1.25rem;
+      width: 1px;
+      background: var(--color-border);
+    }
+
+    .service-process-step:last-child::before {
+      display: none;
+    }
+  }
+</style>
