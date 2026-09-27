@@ -5,10 +5,15 @@ description: "Maryland Insights helps Maryland businesses turn visitors into cus
 image: ""
 draft: false
 
-gallery:
+origin_story:
   enable: true
   title: "Since 2015, we've been helping Maryland businesses get found, attract customers, and grow: because your success matters to us."
   image: "/images/about/about-banner.png"
+  paragraphs:
+    - "We've spent years helping local businesses scale: and what we found wasn't a business problem or a customer problem. It was a tools problem."
+    - "Agencies were delivering strong work for their clients, but building it on the worst technology available: platforms that made every update slow, every fix expensive, and every \"quick change\" a support ticket. A full overhaul cost more than most small businesses could justify, so instead they lived with it: patching around limitations, accepting downtime, and treating maintenance as a permanent tax on growth."
+    - "The deeper problem was who these platforms were actually built for. Most technology vendors don't design around what a mid-market or small business actually needs day to day. They package a one-size-fits-all product, sell it as convenient, and let the business figure out the rest. It works fine until the business grows: and then the same platform that got them started becomes the thing holding them back, because it was never built to bend."
+    - "That's the problem we set out to fix. Not another all-in-one tool with the same rigid ceiling, but a platform built around how Maryland businesses and the agencies serving them actually operate: so reaching the community and scaling doesn't mean fighting your own technology to do it."
 
 facts_section:
   enable: true
@@ -53,16 +58,6 @@ story_section:
         label: "Partner with Us"
         link: "/get-started"
 ---
-
-## Since 2015
-
-We've spent years helping local businesses scale: and what we found wasn't a business problem or a customer problem. It was a tools problem.
-
-Agencies were delivering strong work for their clients, but building it on the worst technology available: platforms that made every update slow, every fix expensive, and every "quick change" a support ticket. A full overhaul cost more than most small businesses could justify, so instead they lived with it: patching around limitations, accepting downtime, and treating maintenance as a permanent tax on growth.
-
-The deeper problem was who these platforms were actually built for. Most technology vendors don't design around what a mid-market or small business actually needs day to day. They package a one-size-fits-all product, sell it as convenient, and let the business figure out the rest. It works fine until the business grows: and then the same platform that got them started becomes the thing holding them back, because it was never built to bend.
-
-That's the problem we set out to fix. Not another all-in-one tool with the same rigid ceiling, but a platform built around how Maryland businesses and the agencies serving them actually operate: so reaching the community and scaling doesn't mean fighting your own technology to do it.
 
 ## Who Are We
 
