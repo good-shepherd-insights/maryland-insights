@@ -77,6 +77,16 @@ blocks:
     context: "This is synthetic Local SEO data used to QA the proof layout. It represents the number of business profiles and directories reviewed in a sample workflow, not a reported client result."
     changes: |
       **QA-only fixture:** this content verifies the before-and-after layout and responsive behavior. Replace it with a sourced Local SEO case study before publication.
+  - type: serviceArea
+    eyebrow: "Maryland service area"
+    title: "Local search work scoped to the places you actually serve"
+    intro: "Maryland is not one market. The search language, competitors, and customer expectations around Baltimore City differ from those in Montgomery County or the Eastern Shore. Service-area content should name the places the business can genuinely support."
+    counties:
+      - "Baltimore City"
+      - "Montgomery County"
+      - "Prince George's County"
+      - "Anne Arundel County"
+      - "Howard County"
 ---
 
 ## Key Benefits
