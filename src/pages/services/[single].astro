@@ -8,6 +8,7 @@ import Faqs from "@/partials/Faqs.astro";
 import ServiceRichText from "@/components/services/ServiceRichText.astro";
 import ServiceFeatureGrid from "@/components/services/ServiceFeatureGrid.astro";
 import ServiceProcess from "@/components/services/ServiceProcess.astro";
+import ServiceProof from "@/components/services/ServiceProof.astro";
 import { plainify } from "@/lib/utils/textConverter";
 import type { SoftwareApplication, FAQPage, Question } from "schema-dts";
 
@@ -33,6 +34,9 @@ const featureGridBlocks = Array.isArray(blocks)
   : [];
 const processBlocks = Array.isArray(blocks)
   ? blocks.filter((block: any) => block?.type === "process")
+  : [];
+const proofBlocks = Array.isArray(blocks)
+  ? blocks.filter((block: any) => block?.type === "proof")
   : [];
 
 const serviceSchema: SoftwareApplication = {
@@ -102,6 +106,20 @@ if (faqs_list && faqs_list.length > 0) {
         title={block.title}
         intro={block.intro}
         steps={block.steps}
+      />
+    ))
+  }
+  {
+    proofBlocks.map((block: any) => (
+      <ServiceProof
+        title={block.title}
+        metricLabel={block.metricLabel}
+        before={block.before}
+        after={block.after}
+        context={block.context}
+        sourceLabel={block.sourceLabel}
+        sourceUrl={block.sourceUrl}
+        changes={block.changes}
       />
     ))
   }

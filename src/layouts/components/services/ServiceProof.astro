@@ -1,0 +1,67 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Props = {
+  title: string;
+  metricLabel: string;
+  before: string;
+  after: string;
+  context: string;
+  sourceLabel: string;
+  sourceUrl: string;
+  changes?: string;
+};
+
+const { title, metricLabel, before, after, context, sourceLabel, sourceUrl, changes } = Astro.props as Props;
+const headingId = `service-${slugify(title)}`;
+---
+
+<section class="section-sm border-y border-border/70 bg-body" aria-labelledby={headingId}>
+  <div class="container">
+    <figure>
+      <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div class="max-w-2xl">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Measured result</p>
+          <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
+        </div>
+        <p class="text-sm text-text-dark/70">{metricLabel}</p>
+      </div>
+
+      <div class="service-proof-reading grid border-y border-border sm:grid-cols-[1fr_auto_1fr]">
+        <div class="py-8 sm:pr-8 lg:py-10">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Before</p>
+          <p class="text-5xl font-normal tracking-[-0.06em] text-text-dark sm:text-6xl">{before}</p>
+        </div>
+        <div class="hidden items-center border-x border-border px-6 text-2xl text-primary sm:flex" aria-hidden="true">→</div>
+        <div class="border-t border-border py-8 sm:border-t-0 sm:pl-8 lg:py-10">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">After</p>
+          <p class="text-5xl font-normal tracking-[-0.06em] text-text-dark sm:text-6xl">{after}</p>
+        </div>
+      </div>
+
+      <figcaption class="mt-6 grid gap-6 text-sm text-text-dark/75 lg:grid-cols-2 lg:gap-12">
+        <div>
+          <p class="mb-2 font-semibold text-text-dark">Context</p>
+          <p set:html={markdownify(context)} />
+        </div>
+        {
+          changes && (
+            <div>
+              <p class="mb-2 font-semibold text-text-dark">What changed</p>
+              <div class="content text-sm" set:html={markdownify(changes, true) as string} />
+            </div>
+          )
+        }
+      </figcaption>
+
+      <a
+        href={sourceUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-6 inline-flex text-sm font-semibold text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary"
+      >
+        Source: {sourceLabel}
+      </a>
+    </figure>
+  </div>
+</section>
