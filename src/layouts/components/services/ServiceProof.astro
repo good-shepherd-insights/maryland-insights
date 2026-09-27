@@ -7,8 +7,8 @@ type Props = {
   before: string;
   after: string;
   context: string;
-  sourceLabel: string;
-  sourceUrl: string;
+  sourceLabel?: string;
+  sourceUrl?: string;
   changes?: string;
 };
 
@@ -54,14 +54,18 @@ const headingId = `service-${slugify(title)}`;
         }
       </figcaption>
 
-      <a
-        href={sourceUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="mt-6 inline-flex text-sm font-semibold text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary"
-      >
-        Source: {sourceLabel}
-      </a>
+      {
+        sourceLabel && sourceUrl && (
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 inline-flex text-sm font-semibold text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary"
+          >
+            Source: {sourceLabel}
+          </a>
+        )
+      }
     </figure>
   </div>
 </section>

@@ -70,16 +70,13 @@ blocks:
 
           **The next action is evidence-led:** strengthen a page that attracts the right searchers, correct a listing that sends the wrong signal, or change the conversion path when visitors are not taking the intended action.
   - type: proof
-    qaOnly: true
-    title: "QA fixture — sample performance result"
-    metricLabel: "Performance score (synthetic QA data)"
-    before: "50"
-    after: "100"
-    context: "This sample is displayed only in development so the proof component can be reviewed before a real client case is supplied. It is not a reported client result."
+    title: "QA fixture — local listing coverage"
+    metricLabel: "Profiles and directories reviewed (synthetic QA data)"
+    before: "4"
+    after: "12"
+    context: "This is synthetic Local SEO data used to QA the proof layout. It represents the number of business profiles and directories reviewed in a sample workflow, not a reported client result."
     changes: |
-      **QA-only fixture:** this content verifies the before-and-after layout, source treatment, and responsive behavior. Replace it with a real PageSpeed Insights result before publication.
-    sourceLabel: "PageSpeed Insights tool (sample only)"
-    sourceUrl: "https://pagespeed.web.dev/"
+      **QA-only fixture:** this content verifies the before-and-after layout and responsive behavior. Replace it with a sourced Local SEO case study before publication.
 ---
 
 ## Key Benefits
