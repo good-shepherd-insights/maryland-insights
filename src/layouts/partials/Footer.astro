@@ -63,6 +63,7 @@ function replaceYear(text: string) {
                 Newsletter
               </h6>
               <form
+                data-newsletter-form
                 action={config.subscription_in_footer.mailchimp_form_action}
                 target="_blank"
                 method="post"
@@ -73,15 +74,18 @@ function replaceYear(text: string) {
                   class="flex justify-between rounded-lg bg-light px-3 py-2 border border-border mb-5"
                 >
                   <input
+                    id="newsletter-email"
                     type="email"
                     placeholder="Enter your email"
-                    class="form-input w-full rounded-full border-transparent! bg-transparent! py-2! pl-2! placeholder:opacity-100! placeholder:font-normal"
+                    class="form-input w-full rounded-full border-transparent! bg-transparent! py-2! pl-2! placeholder:opacity-100! placeholder:font-normal disabled:cursor-not-allowed disabled:opacity-40"
+                    disabled
                     required
                     name={config.subscription_in_footer.mailchimp_form_name}
                   />
                   <button
                     title="Subscribe"
-                    class="transition hover:opacity-80 pr-2"
+                    class="pr-2 transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
+                    disabled
                     type="submit"
                   >
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -98,14 +102,15 @@ function replaceYear(text: string) {
                 <label
                  
                  
-                  for="checkbox"
+                  for="newsletter-consent"
                   class="text-sm block"
                   style="line-height:normal"
                 >
                   <input
                     type="checkbox"
                     name="checkbox"
-                    id="checkbox"
+                    id="newsletter-consent"
+                    data-newsletter-consent
                     required
                     class="appearance-auto rounded-sm accent-primary ring-0"
                   />
@@ -142,3 +147,25 @@ function replaceYear(text: string) {
   </div>
   </div>
 </footer>
+
+<script>
+  const newsletterForm = document.querySelector<HTMLFormElement>("[data-newsletter-form]");
+
+  if (newsletterForm) {
+    const consent = newsletterForm.querySelector<HTMLInputElement>("[data-newsletter-consent]");
+    const email = newsletterForm.querySelector<HTMLInputElement>("#newsletter-email");
+    const submit = newsletterForm.querySelector<HTMLButtonElement>("[type=submit]");
+
+    const updateNewsletterState = () => {
+      const enabled = consent?.checked === true;
+      if (email) email.disabled = !enabled;
+      if (submit) submit.disabled = !enabled;
+    };
+
+    consent?.addEventListener("change", updateNewsletterState);
+    newsletterForm.addEventListener("submit", (event) => {
+      if (!consent?.checked) event.preventDefault();
+    });
+    updateNewsletterState();
+  }
+</script>
