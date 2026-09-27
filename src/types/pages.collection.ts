@@ -115,6 +115,28 @@ export const about = defineCollection({
       title: z.string(),
       image: z.string(),
     }),
+    positioning: z
+      .object({
+        enable: z.boolean(),
+        title: z.string(),
+        intro: z.string(),
+        business: z.object({
+          title: z.string(),
+          description: z.string(),
+          points: z.array(z.string()),
+          link_label: z.string(),
+          link: z.string(),
+        }),
+        agency: z.object({
+          title: z.string(),
+          description: z.string(),
+          points: z.array(z.string()),
+          link_label: z.string(),
+          link: z.string(),
+        }),
+        boundary: z.string(),
+      })
+      .optional(),
     facts_section: z.object({
       enable: z.boolean(),
       facts: z
