@@ -1,0 +1,62 @@
+---
+import ServiceArea from "@/components/services/ServiceArea.astro";
+import ServiceFeatureGrid from "@/components/services/ServiceFeatureGrid.astro";
+import ServiceProcess from "@/components/services/ServiceProcess.astro";
+import ServiceProof from "@/components/services/ServiceProof.astro";
+import ServiceRichText from "@/components/services/ServiceRichText.astro";
+import ServiceTrust from "@/components/services/ServiceTrust.astro";
+
+type Block = {
+  type: string;
+  [key: string]: any;
+};
+
+type Props = {
+  blocks?: Block[];
+};
+
+const { blocks = [] } = Astro.props as Props;
+---
+
+{
+  blocks.map((block) => {
+    switch (block.type) {
+      case "richText":
+        return <ServiceRichText eyebrow={block.eyebrow} title={block.title} body={block.body} tone={block.tone} />;
+      case "featureGrid":
+        return <ServiceFeatureGrid eyebrow={block.eyebrow} title={block.title} items={block.items} />;
+      case "process":
+        return <ServiceProcess eyebrow={block.eyebrow} title={block.title} intro={block.intro} steps={block.steps} />;
+      case "proof":
+        return (
+          <ServiceProof
+            title={block.title}
+            metricLabel={block.metricLabel}
+            before={block.before}
+            after={block.after}
+            context={block.context}
+            sourceLabel={block.sourceLabel}
+            sourceUrl={block.sourceUrl}
+            changes={block.changes}
+          />
+        );
+      case "serviceArea":
+        return <ServiceArea eyebrow={block.eyebrow} title={block.title} intro={block.intro} counties={block.counties} />;
+      case "trust":
+        return (
+          <ServiceTrust
+            eyebrow={block.eyebrow}
+            title={block.title}
+            intro={block.intro}
+            backupPolicy={block.backupPolicy}
+            uptimePolicy={block.uptimePolicy}
+            migrationPolicy={block.migrationPolicy}
+            included={block.included}
+            extraCost={block.extraCost}
+          />
+        );
+      default:
+        return null;
+    }
+  })
+}
