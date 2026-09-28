@@ -6,6 +6,7 @@ import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
 import Faqs from "@/partials/Faqs.astro";
+import FaqSupport from "@/partials/FaqSupport.astro";
 import type { FAQPage, Question } from "schema-dts";
 
 const pageIndex = await getListPage("faqs", "-index");
@@ -34,6 +35,8 @@ const faqSchema: FAQPage = {
 
 <Base {...pageIndex.data} schema={[faqSchema]}>
   <PageHeader title={title} description={description} />
+
+  <FaqSupport />
 
   <Faqs data={faqs_section} />
 

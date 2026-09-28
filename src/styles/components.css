@@ -1,9 +1,17 @@
+.hero-cta-gold {
+  background-color: #FFB612;
+  color: #121212;
+}
+.hero-cta-gold:hover {
+  background-color: #E6A410;
+}
+
 /* section style */
 .section {
-  @apply py-30 xl:py-36;
+  @apply py-16 xl:py-20;
 }
 .section-sm {
-  @apply py-20 xl:py-24;
+  @apply py-12 xl:py-16;
 }
 /* container */
 .container {

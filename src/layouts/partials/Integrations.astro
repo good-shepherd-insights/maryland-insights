@@ -1,79 +1,130 @@
 ---
-import ImageMod from "@/components/ImageMod.astro";
+import IntegrationCard from "@/components/IntegrationCard.astro";
+import { FaArrowRight } from "react-icons/fa6";
 import { markdownify } from "@/lib/utils/textConverter";
 import { getListPage } from "@/lib/contentParser.astro";
+import {
+  Swiper,
+  SwiperScrollbar,
+  SwiperSlide,
+  SwiperWrapper,
+} from "astro-swiper";
+import type { SwiperOptions } from "swiper/types";
 
 const { data } = Astro.props;
 if (data && data.enable === false) return null;
 
 let integrations_list = data?.integrations_list;
 let section_title = data?.section_title;
+let eyebrow = data?.eyebrow;
 
 if (!integrations_list) {
   const pageIndex = await getListPage("integrations", "-index");
   integrations_list = pageIndex.data.integrations_list;
   if (!section_title) section_title = pageIndex.data.section_title;
+  if (!eyebrow) eyebrow = pageIndex.data.eyebrow;
 }
+
+const swiperOptions: SwiperOptions = {
+  slidesPerView: 1.15,
+  spaceBetween: 14,
+  grid: {
+    rows: 2,
+    fill: "column",
+  },
+  scrollbar: {
+    el: ".integrations-scrollbar",
+    draggable: true,
+    hide: false,
+  },
+  breakpoints: {
+    480: { slidesPerView: 1.6 },
+    640: { slidesPerView: 2.3 },
+  },
+};
 ---
 
-<section class="section-sm bg-light">
-  <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
-    {
-      section_title && (
-        <h2
-          data-aos="fade-up-sm"
-          class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
-          set:html={markdownify(section_title)}
-        />
-      )
-    }
+{
+  integrations_list && (
+    <section class="section-sm bg-light">
+      <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {
-        integrations_list?.map((integration: any) => (
-          <div
+        {section_title && (
+          <h2
             data-aos="fade-up-sm"
-            class="group bg-body rounded-2xl p-6 flex flex-col items-center text-center card-shadow duration-300 relative"
-          >
-            <div class="mb-4 w-15 h-15 overflow-hidden">
-              <div class="w-15 h-30 transition duration-500 ease-out group-hover:-translate-y-15 flex flex-col">
-                <div class="w-15 h-15 flex items-center justify-center">
-                  <ImageMod
-                    src={integration.image}
-                    alt={integration.title}
-                    width={60}
-                    height={60}
-                    class="w-15 h-15"
-                  />
-                </div>
-                <div
-                  class="w-15 h-15 flex items-center justify-center"
-                  aria-hidden="true"
-                >
-                  <ImageMod
-                    src={integration.image}
-                    alt=""
-                    width={60}
-                    height={60}
-                    class="w-15 h-15"
-                  />
-                </div>
-              </div>
-            </div>
-            <h3 class="h6 mb-2" set:html={markdownify(integration.title)} />
-            <p
-              class="text-text-dark/70 text-sm mb-4 text-balance"
-              set:html={markdownify(integration.description)}
-            />
-            {integration.link && (
-              <a
-                href={integration.link}
-                class="before:inset-0 before:absolute"
-              />
-            )}
+            class="mb-12 text-center text-balance"
+            set:html={markdownify(section_title)}
+          />
+        )}
+
+        {/* Mobile / tablet: swipeable carousel — a 4-row grid was too noisy to scroll through on small screens */}
+        <div class="lg:hidden">
+          <div class="-mx-4 px-4 fade-overlay-carousel">
+            <Swiper options={swiperOptions} class="h-[560px]">
+              <SwiperWrapper>
+                {integrations_list.map((integration: any) => (
+                  <SwiperSlide>
+                    <IntegrationCard integration={integration} />
+                  </SwiperSlide>
+                ))}
+                <SwiperSlide>
+                  <a
+                    href="/integrations"
+                    class="group bg-body rounded-2xl p-6 flex flex-col items-center justify-center text-center duration-300 relative w-full h-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)]"
+                  >
+                    <div class="mb-4 w-15 h-15 shrink-0 flex items-center justify-center rounded-full bg-light">
+                      <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
+                    </div>
+                    <h3 class="h6 mb-2 shrink-0">And more…</h3>
+                    <p class="text-text-dark/70 text-sm">See the full list of integrations</p>
+                  </a>
+                </SwiperSlide>
+              </SwiperWrapper>
+            </Swiper>
           </div>
-        ))
-      }
-    </div>
-  </div>
-</section>
+          <SwiperScrollbar class="integrations-scrollbar mt-5 mx-auto" />
+        </div>
+
+        {/* Desktop: grid */}
+        <div class="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {integrations_list.map((integration: any) => (
+            <IntegrationCard integration={integration} />
+          ))}
+          <a
+            href="/integrations"
+            class="group bg-body rounded-2xl p-6 flex flex-col items-center justify-center text-center duration-300 relative w-full h-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)]"
+          >
+            <div class="mb-4 w-15 h-15 shrink-0 flex items-center justify-center rounded-full bg-light">
+              <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
+            </div>
+            <h3 class="h6 mb-2 shrink-0">And more…</h3>
+            <p class="text-text-dark/70 text-sm">See the full list of integrations</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  :global(.integrations-scrollbar) {
+    position: relative !important;
+    width: 120px !important;
+    height: 6px !important;
+    background-color: var(--color-border) !important;
+    border-radius: 999px !important;
+  }
+  :global(.integrations-scrollbar .swiper-scrollbar-drag) {
+    background-color: var(--color-primary) !important;
+    border-radius: 999px !important;
+    position: relative;
+  }
+  :global(.integrations-scrollbar .swiper-scrollbar-drag::before) {
+    content: "";
+    position: absolute;
+    top: -19px;
+    bottom: -19px;
+    left: 0;
+    right: 0;
+  }
+</style>

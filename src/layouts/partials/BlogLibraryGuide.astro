@@ -1,0 +1,39 @@
+---
+type Props = {
+  title: string;
+  introduction: string;
+  reading_note: string;
+  categories: string[];
+};
+
+const { title, introduction, reading_note, categories } = Astro.props as Props;
+---
+
+<section class="section-sm bg-light" aria-labelledby="blog-library-guide-title">
+  <div class="container lg:w-[84%] xl:w-[80%] mx-auto">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(15rem,0.65fr)] lg:gap-20 xl:gap-28">
+      <div class="max-w-3xl">
+        <h2 id="blog-library-guide-title" class="text-balance">{title}</h2>
+        <p class="mt-6 text-lg leading-relaxed lg:text-xl">{introduction}</p>
+      </div>
+
+      <div class="lg:border-l lg:border-border lg:pl-10 xl:pl-14">
+        <h3 class="h5">What this library covers</h3>
+        <ul class="mt-5 flex flex-wrap gap-x-3 gap-y-2" aria-label="Topics covered">
+          {categories.map((category) => (
+            <li>
+              <a class="font-secondary text-sm font-semibold text-text-dark underline decoration-border underline-offset-4 transition-colors hover:decoration-text-dark" href="#all-articles">
+                {category}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 grid gap-8 border-t border-border pt-8 lg:mt-16 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-16 lg:pt-10">
+      <h3 class="h4 text-balance">Read for the decision in front of you.</h3>
+      <p class="max-w-3xl leading-relaxed">{reading_note}</p>
+    </div>
+  </div>
+</section>

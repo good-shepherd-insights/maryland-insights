@@ -1,0 +1,26 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  body: string;
+  tone?: "default" | "muted";
+};
+
+const { eyebrow, title, body, tone = "default" } = Astro.props as Props;
+const headingId = `service-${slugify(title)}`;
+const sectionTone = tone === "muted" ? "bg-light" : "bg-body";
+---
+
+<section class={`section-sm ${sectionTone} border-y border-border/70`} aria-labelledby={headingId}>
+  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+    <div class="grid items-start gap-8 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-5">
+        <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
+      </div>
+
+      <div class="content lg:col-span-7" set:html={markdownify(body, true) as string} />
+    </div>
+  </div>
+</section>

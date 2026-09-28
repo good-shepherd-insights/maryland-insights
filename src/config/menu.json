@@ -1,28 +1,62 @@
 {
   "main": [
     {
-      "name": "Home",
-      "url": "/"
+      "name": "Services",
+      "url": "/services",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "Local SEO",
+          "url": "/services/local-seo"
+        },
+        {
+          "name": "AEO Optimization",
+          "url": "/services/aeo-optimization"
+        },
+        {
+          "name": "AI-Powered Content",
+          "url": "/services/ai-powered-content"
+        },
+        {
+          "name": "Analytics & Reporting",
+          "url": "/services/analytics-reporting"
+        },
+        {
+          "name": "Marketing Automation",
+          "url": "/services/marketing-automation"
+        },
+        {
+          "name": "Website Hosting",
+          "url": "/services/website-hosting"
+        }
+      ]
     },
     {
-      "name": "Features",
-      "url": "/features"
-    },
-    {
-      "name": "Pricing",
-      "url": "/pricing"
+      "name": "Integrations",
+      "url": "/integrations"
     },
     {
       "name": "About",
       "url": "/about"
     },
     {
-      "name": "FAQs",
-      "url": "/faqs"
-    },
-    {
-      "name": "Blog",
-      "url": "/blog"
+      "name": "Resources",
+      "url": "#",
+      "hasChildren": true,
+      "children": [
+        {
+          "name": "Tools",
+          "url": "/tools"
+        },
+        {
+          "name": "Blog",
+          "url": "/blog"
+        },
+        {
+          "name": "FAQs",
+          "url": "/faqs"
+        }
+      ]
     },
     {
       "name": "Contact",
@@ -33,10 +67,6 @@
     {
       "title": "Quick Links",
       "children": [
-        {
-          "name": "Pricing",
-          "url": "/pricing"
-        },
         {
           "name": "About Us",
           "url": "/about"

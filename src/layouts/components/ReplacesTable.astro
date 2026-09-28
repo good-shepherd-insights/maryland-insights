@@ -1,0 +1,254 @@
+---
+import CompanyLogo from "@/components/CompanyLogo.astro";
+import config from "@/config/config.json";
+
+type Plan = { label: string; logo?: string; isUs?: boolean };
+type Row = { name: string; description?: string; values: string[] };
+type Category = { category: string; rows: Row[] };
+
+type Props = {
+  categories: Category[];
+  planNames: Plan[];
+};
+
+const { categories, planNames } = Astro.props;
+const VISIBLE_ROWS = 4;
+---
+
+<div data-comparison-table>
+  <div class="comparison-lock">
+    <div class="comparison-frame rounded-2xl border border-border p-4 sm:p-6">
+      <div class="comparison-scroll overflow-hidden" role="region" aria-label="Business platform comparison, scroll vertically to compare features">
+      <table class="comparison-table min-w-full text-left table-fixed">
+        <thead>
+          <tr>
+            <th scope="col" class="feature-column sticky left-0 top-0 z-30 bg-light text-text-dark p-5 border-b border-r border-border">
+              <div class="flex items-center justify-between">
+                <span>Features</span>
+                <button
+                  type="button"
+                  data-expand-all-toggle
+                  class="text-xs font-semibold text-primary hover:underline"
+                >
+                  Expand All
+                </button>
+              </div>
+            </th>
+            {
+              planNames.map((plan, index) => (
+                <th
+                  scope="col"
+                  class={`sticky top-0 z-20 bg-light p-5 border-b border-border text-center ${index !== planNames.length - 1 ? "border-r border-border" : ""}`}
+                >
+                  <div class="flex items-center justify-center">
+                    {plan.isUs ? (
+                      <img src={config.site.logo} alt={plan.label} class="h-7 w-auto" />
+                    ) : plan.logo ? (
+                      <CompanyLogo name={plan.label} domain={plan.logo} size={96} format="webp" class="h-7 w-auto" />
+                    ) : null}
+                  </div>
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+
+          {
+            categories.map((category, catIndex) => (
+              <tbody>
+                <tr class="category-heading">
+                  <th scope="rowgroup"
+                    colspan={planNames.length + 1}
+                    class="p-4 px-6 bg-light border-b border-border text-xs font-bold tracking-wide text-text-light"
+                  >
+                    <span class="sticky left-5">{category.category}</span>
+                  </th>
+                </tr>
+                {category.rows.map((row, i) => {
+                  const isLastInCategory = i === category.rows.length - 1;
+                  const isExtra = i >= VISIBLE_ROWS;
+                  return (
+                    <tr class={isExtra ? "hidden" : ""} data-category-extra={isExtra ? catIndex : undefined}>
+                      <th
+                        scope="row"
+                        class={`feature-column sticky left-0 z-10 bg-light p-5 font-normal border-r border-border ${!isLastInCategory ? "border-b border-border" : ""}`}
+                      >
+                        <h3 class="text-base font-semibold">{row.name}</h3>
+                        {row.description && (
+                          <p class="mt-1 text-sm text-text-dark/70">{row.description}</p>
+                        )}
+                      </th>
+                      {row.values.map((value, index) => {
+                        const plan = planNames[index];
+                        return (
+                          <td
+                            class={`p-5 text-center ${index !== planNames.length - 1 ? "border-r border-border" : ""} ${!isLastInCategory ? "border-b border-border" : ""} ${plan.isUs ? "bg-primary/5" : ""}`}
+                          >
+                            {value === "active" ? (
+                              <img class="mx-auto" src={plan.isUs ? "/images/icons/active-accent.svg" : "/images/icons/active.svg"} alt="Included" />
+                            ) : value === "cross" ? (
+                              <img class="mx-auto" src="/images/icons/cross.svg" alt="Not included" />
+                            ) : (
+                              <span class="text-sm">{value}</span>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+                {category.rows.length > VISIBLE_ROWS && (
+                  <tr>
+                    <td colspan={planNames.length + 1} class="p-3 px-5 border-b border-border text-center">
+                      <button
+                        type="button"
+                        aria-expanded="false"
+                        class="text-sm font-semibold text-primary hover:underline"
+                        data-category-toggle={catIndex}
+                        data-more-label={`View ${category.rows.length - VISIBLE_ROWS} more`}
+                        data-less-label="View less"
+                      >
+                        {`View ${category.rows.length - VISIBLE_ROWS} more`}
+                      </button>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            ))
+          }
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .comparison-lock {
+    height: var(--comparison-lock-height, 100dvh);
+  }
+
+  .comparison-frame {
+    position: sticky;
+    top: var(--comparison-nav-bottom, 100px);
+    overflow: hidden;
+  }
+
+  .comparison-scroll {
+    max-height: calc(100dvh - var(--comparison-nav-bottom, 100px) - 10px);
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .feature-column {
+    width: 28%;
+  }
+
+  .comparison-table :is(th, td) {
+    padding-inline: clamp(12px, 1.5vw, 20px);
+    overflow-wrap: anywhere;
+  }
+
+  .comparison-table :global(img) {
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .comparison-table thead :global(img) {
+    min-width: 0;
+  }
+
+  @media (max-width: 767px) {
+    .comparison-table :is(h3, h6, p, td span) {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .comparison-table :is(th, td) {
+      padding-block: 12px;
+    }
+  }
+
+  .category-heading {
+    position: sticky;
+    top: var(--comparison-header-height, 69px);
+    z-index: 15;
+  }
+
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-comparison-table]").forEach((root) => {
+    const header = root.querySelector("thead")!;
+    const lock = root.querySelector<HTMLElement>(".comparison-lock")!;
+    const frame = root.querySelector<HTMLElement>(".comparison-frame")!;
+    const navbar = document.querySelector<HTMLElement>(".header");
+    const scroller = root.querySelector<HTMLElement>(".comparison-scroll")!;
+    const headings = root.querySelectorAll<HTMLElement>(".category-heading");
+    const updateCategoryPositions = () => {
+      const stickyTop = scroller.getBoundingClientRect().top + header.getBoundingClientRect().height;
+      headings.forEach((heading) => {
+        const sectionBottom = heading.parentElement!.getBoundingClientRect().bottom;
+        const offset = Math.min(0, sectionBottom - stickyTop - heading.offsetHeight);
+        heading.style.transform = `translateY(${offset}px)`;
+      });
+    };
+    const updateHeaderHeight = () => {
+      root.style.setProperty("--comparison-header-height", `${header.getBoundingClientRect().height}px`);
+      updateCategoryPositions();
+    };
+    const syncTableToPageScroll = () => {
+      const stickyTop = parseFloat(getComputedStyle(frame).top) || 0;
+      const lockTop = lock.getBoundingClientRect().top + window.scrollY;
+      const maxScroll = scroller.scrollHeight - scroller.clientHeight;
+      const tableScroll = Math.min(maxScroll, Math.max(0, window.scrollY - (lockTop - stickyTop)));
+      if (scroller.scrollTop !== tableScroll) scroller.scrollTop = tableScroll;
+      updateCategoryPositions();
+    };
+    const updateLockHeight = () => {
+      root.style.setProperty("--comparison-nav-bottom", `${Math.max(0, navbar?.getBoundingClientRect().bottom ?? 0)}px`);
+      root.style.setProperty("--comparison-lock-height", `${frame.getBoundingClientRect().height + scroller.scrollHeight - scroller.clientHeight}px`);
+      syncTableToPageScroll();
+    };
+    window.addEventListener("scroll", syncTableToPageScroll, { passive: true });
+    window.addEventListener("resize", updateLockHeight);
+    navbar?.addEventListener("transitionend", updateLockHeight);
+    if (navbar) new ResizeObserver(updateLockHeight).observe(navbar);
+    scroller.addEventListener("scroll", updateCategoryPositions, { passive: true });
+    new ResizeObserver(updateLockHeight).observe(root.querySelector("table")!);
+    new ResizeObserver(updateHeaderHeight).observe(header);
+    updateHeaderHeight();
+    updateLockHeight();
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-comparison-table] [data-category-toggle]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.categoryToggle;
+      const rows = btn.closest("[data-comparison-table]")!.querySelectorAll<HTMLElement>(`[data-category-extra="${id}"]`);
+      const expanded = rows[0]?.classList.contains("hidden") === false;
+      rows.forEach((row) => row.classList.toggle("hidden", expanded));
+      btn.setAttribute("aria-expanded", String(!expanded));
+      btn.textContent = expanded ? btn.dataset.moreLabel ?? "View more" : btn.dataset.lessLabel ?? "View less";
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-expand-all-toggle]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const root = btn.closest("[data-comparison-table]")!;
+      const allExtraRows = root.querySelectorAll<HTMLElement>("[data-category-extra]");
+      const allButtons = root.querySelectorAll<HTMLButtonElement>("[data-category-toggle]");
+      const isCurrentlyExpanded = btn.textContent?.trim() === "Collapse All";
+      allExtraRows.forEach((row) => row.classList.toggle("hidden", isCurrentlyExpanded));
+      allButtons.forEach((b) => {
+        b.setAttribute("aria-expanded", String(!isCurrentlyExpanded));
+        b.textContent = isCurrentlyExpanded ? b.dataset.moreLabel ?? "View more" : b.dataset.lessLabel ?? "View less";
+      });
+      btn.textContent = isCurrentlyExpanded ? "Expand All" : "Collapse All";
+    });
+  });
+</script>

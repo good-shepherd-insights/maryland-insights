@@ -13,7 +13,7 @@ if (!faqs_list) {
 }
 ---
 
-<section class="section-sm bg-body">
+<section id="faq-list" class="section-sm bg-body">
   <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
     {
       section_title && (
@@ -25,6 +25,28 @@ if (!faqs_list) {
         />
       )
     }
+    <div class="mb-8 max-w-md mx-auto relative">
+      <input
+        type="search"
+        data-faq-search
+        placeholder="Search questions (e.g. LLC, taxes, domain)..."
+        class="form-input w-full rounded-xl border-border bg-light px-4 py-3 text-sm text-text-dark placeholder:text-text-dark/60 focus:border-primary focus:ring-1 focus:ring-primary"
+      />
+    </div>
+
+    <div
+      data-faq-no-results
+      class="hidden text-center py-8 px-4 bg-light rounded-2xl border border-border mb-6"
+    >
+      <p class="text-text-dark font-medium mb-2">No matching questions found</p>
+      <button
+        type="button"
+        data-faq-reset-search
+        class="text-sm text-primary hover:underline font-semibold"
+      >
+        Clear search filter
+      </button>
+    </div>
 
     <div class="w-full flex flex-col gap-4" data-aos="fade-up-sm">
       {
@@ -38,7 +60,7 @@ if (!faqs_list) {
             data-faq-id={i}
           >
             <div class="flex justify-between items-center">
-              <h6 set:html={markdownify(faq.question)} />
+              <h3 class="h6 font-semibold" set:html={markdownify(faq.question)} />
               <span
                 class="toggle-icon text-text-light text-[32px] transition-all duration-300 rotate-0"
                 aria-hidden="true"
@@ -47,11 +69,17 @@ if (!faqs_list) {
               </span>
             </div>
 
-            <p
+            <div
               id={`${prefix}-answer-${i}`}
-              class="faq-answer overflow-hidden max-h-0 opacity-0 transition-[max-height,opacity] duration-[600ms,400ms] ease-in-out"
-              set:html={markdownify(faq.answer)}
-            />
+              class="faq-answer grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-300 ease-in-out"
+            >
+              <div class="overflow-hidden">
+                <p
+                  class="pt-2"
+                  set:html={markdownify(faq.answer)}
+                />
+              </div>
+            </div>
           </div>
         ))
       }
@@ -88,6 +116,37 @@ if (!faqs_list) {
         item.addEventListener("click", (e) => this.handleClick(e, item));
         item.addEventListener("keydown", (e) => this.handleKeydown(e, item));
       });
+
+      // Initialize search filter & zero-state handler
+      const searchInput = document.querySelector<HTMLInputElement>("[data-faq-search]");
+      const noResultsBox = document.querySelector<HTMLElement>("[data-faq-no-results]");
+      const resetBtn = document.querySelector<HTMLButtonElement>("[data-faq-reset-search]");
+
+      const filterFaqs = () => {
+        if (!searchInput) return;
+        const query = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+        this.items.forEach((item) => {
+          const text = item.textContent?.toLowerCase() ?? "";
+          const matches = query === "" || text.includes(query);
+          item.style.display = matches ? "" : "none";
+          if (matches) visibleCount++;
+        });
+        if (noResultsBox) {
+          noResultsBox.classList.toggle("hidden", visibleCount > 0);
+        }
+      };
+
+      if (searchInput) {
+        searchInput.addEventListener("input", filterFaqs);
+      }
+      if (resetBtn && searchInput) {
+        resetBtn.addEventListener("click", () => {
+          searchInput.value = "";
+          filterFaqs();
+          searchInput.focus();
+        });
+      }
     }
 
     private getElements(item: HTMLElement): FAQElements | null {
@@ -154,12 +213,9 @@ if (!faqs_list) {
       // Update ARIA attributes
       item.setAttribute("aria-expanded", "true");
 
-      // Set max height for smooth animation
-      answer.style.maxHeight = `${answer.scrollHeight}px`;
-
-      // Update classes
-      answer.classList.remove("opacity-0");
-      answer.classList.add("opacity-100");
+      // Grid rows animation
+      answer.classList.remove("grid-rows-[0fr]", "opacity-0");
+      answer.classList.add("grid-rows-[1fr]", "opacity-100");
 
       icon.classList.remove("rotate-0");
       icon.classList.add("rotate-180");
@@ -177,12 +233,9 @@ if (!faqs_list) {
       // Update ARIA attributes
       item.setAttribute("aria-expanded", "false");
 
-      // Reset max height
-      answer.style.maxHeight = "0";
-
-      // Update classes
-      answer.classList.remove("opacity-100");
-      answer.classList.add("opacity-0");
+      // Reset grid rows
+      answer.classList.remove("grid-rows-[1fr]", "opacity-100");
+      answer.classList.add("grid-rows-[0fr]", "opacity-0");
 
       icon.classList.remove("rotate-180");
       icon.classList.add("rotate-0");

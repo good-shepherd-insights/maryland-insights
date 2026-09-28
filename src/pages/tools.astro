@@ -1,0 +1,59 @@
+---
+import Base from "@/layouts/Base.astro";
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+import CallToAction from "@/partials/CallToAction.astro";
+import PageHeader from "@/partials/PageHeader.astro";
+import IntegrationCard from "@/components/IntegrationCard.astro";
+import type { CollectionPage } from "schema-dts";
+import config from "@/config/config.json";
+
+const pageIndex = await getListPage("tools", "-index");
+if (pageIndex.data.draft) return Astro.redirect("/404");
+
+const { title, description, eyebrow, section_title, tools_list } = pageIndex.data;
+
+const collectionSchema: CollectionPage = {
+  "@type": "CollectionPage",
+  "name": title,
+  "description": description,
+  "url": `${config.site.base_url}/tools`,
+  "publisher": {
+    "@id": `${config.site.base_url}/#organization`
+  }
+};
+---
+
+<Base {...pageIndex.data} schema={[collectionSchema]}>
+  <PageHeader
+    title={pageIndex.data.title}
+    description={pageIndex.data.description}
+  />
+
+  <section class="section-sm">
+    <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
+      {eyebrow && (
+        <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
+          {eyebrow}
+        </p>
+      )}
+      {section_title && (
+        <h2 class="mb-12 text-center text-balance" set:html={markdownify(section_title)} />
+      )}
+
+      {tools_list && tools_list.length > 0 ? (
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {tools_list.map((tool: any) => (
+            <IntegrationCard integration={tool} />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center text-text-dark/70 max-w-md mx-auto">
+          <p>New tools are on the way. Check back soon, or get in touch if there's something specific your Maryland business needs.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <CallToAction />
+</Base>

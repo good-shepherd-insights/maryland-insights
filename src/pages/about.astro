@@ -4,7 +4,9 @@ import ImageMod from "@/components/ImageMod.astro";
 import Base from "@/layouts/Base.astro";
 import { getListPage } from "@/lib/contentParser.astro";
 import { markdownify, plainify } from "@/lib/utils/textConverter";
+import AboutNarrative from "@/partials/AboutNarrative.astro";
 import CallToAction from "@/partials/CallToAction.astro";
+import ChooseSwiper from "@/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
@@ -12,7 +14,7 @@ import TrustedBrands from "@/partials/TrustedBrands.astro";
 import type { AboutPage, Person } from "schema-dts";
 
 const pageIndex = await getListPage("about", "-index");
-const { title, description, gallery, facts_section, teams_section } =
+const { title, description, company_narrative, facts_section, teams_section, story_section } =
   pageIndex.data;
 
 const aboutSchema: AboutPage = {
@@ -38,29 +40,9 @@ if (pageIndex.data.draft) return Astro.redirect("/404");
 <Base {...pageIndex.data} schema={[aboutSchema, ...teamSchema]}>
   <PageHeader title={title} description={description} />
 
-  {
-    gallery.enable && (
-      <section class="section-sm bg-light">
-        <div class="container">
-          <h2
-         
-       
-            class="lg:w-[80%] xl:w-[70%] mx-auto text-center text-balance"
-            set:html={markdownify(gallery.title)}
-          />
-         <div>
-           <ImageMod
-            src={gallery.image}
-            alt={gallery.title}
-            class="mt-12 mx-auto rounded-2xl lg:rounded-3xl"
-            width={1300}
-            height={601}
-            />
-         </div>
-        </div>
-      </section>
-    )
-  }
+  {company_narrative?.enable && <AboutNarrative {...company_narrative} />}
+
+  {story_section?.enable && <ChooseSwiper data={story_section} />}
 
   <div class="border-t border-border">
     <TrustedBrands />

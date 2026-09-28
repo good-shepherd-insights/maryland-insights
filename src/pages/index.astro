@@ -1,14 +1,16 @@
 ---
 import Base from "@/layouts/Base.astro";
+import ReplacesTable from "@/components/ReplacesTable.astro";
 import { getListPage } from "@/lib/contentParser.astro";
-import { plainify } from "@/lib/utils/textConverter";
+import { markdownify, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import ChooseSwiper from "@/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
 import Features from "@/partials/Features.astro";
-import FeautresCarousel from "@/partials/FeautresCarousel.astro";
+// import FeautresCarousel from "@/partials/FeautresCarousel.astro";
 import HomeBanner from "@/partials/HomeBanner.astro";
-import PricingGrid from "@/partials/PricingGrid.astro";
+import Integrations from "@/partials/Integrations.astro";
+// import PricingGrid from "@/partials/PricingGrid.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
 import Faqs from "@/partials/Faqs.astro";
 import type { FAQPage } from "schema-dts";
@@ -16,6 +18,9 @@ import type { FAQPage } from "schema-dts";
 const pageIndex = await getListPage("homepage", "-index");
 const faqsComponent = await getListPage("faqs", "-homepage");
 const faqs_section = faqsComponent.data;
+
+const pricingSectionPage = await getListPage("pricingSection", "pricing");
+const comparison_section = pricingSectionPage.data;
 
 // Unique Homepage FAQ Schema for Semantic Density
 const faqSchema: FAQPage | null = faqs_section?.faqs_list
@@ -38,11 +43,29 @@ const combinedSchema = [faqSchema].filter(Boolean);
 <Base {...pageIndex.data} schema={combinedSchema}>
   <HomeBanner />
   <TrustedBrands />
-  <ChooseSwiper />
+  <ChooseSwiper data={pageIndex.data.agents_swiper} />
   <Facts data={pageIndex.data.facts_section} enableAnimation={false} />
   <Features />
-  <PricingGrid haveDivider />
-  <FeautresCarousel />
+  {
+    comparison_section.enable && (
+      <section class="section">
+        <div class="container mx-auto">
+          <h2
+            class="mb-12 text-center text-balance"
+            set:html={markdownify(comparison_section.title)}
+          />
+
+          <ReplacesTable
+            categories={comparison_section.categories}
+            planNames={comparison_section.plan_names}
+          />
+        </div>
+      </section>
+    )
+  }
+  <Integrations />
+  {/* <PricingGrid haveDivider /> */}
+  {/* <FeautresCarousel /> */}
   <Faqs data={faqs_section} prefix="home-faq" />
   <CallToAction />
 </Base>

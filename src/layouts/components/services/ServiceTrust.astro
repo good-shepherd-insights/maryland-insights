@@ -1,0 +1,69 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  intro: string;
+  backupPolicy: string;
+  uptimePolicy: string;
+  migrationPolicy: string;
+  included: string[];
+  extraCost: string[];
+};
+
+const {
+  eyebrow,
+  title,
+  intro,
+  backupPolicy,
+  uptimePolicy,
+  migrationPolicy,
+  included,
+  extraCost,
+} = Astro.props as Props;
+const headingId = `service-${slugify(title)}`;
+---
+
+<section class="section border-y border-border/70 bg-light" aria-labelledby={headingId}>
+  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+    <div class="grid items-start gap-12 lg:grid-cols-12 lg:gap-20">
+      <div class="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
+        <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
+        <p class="mt-5 max-w-md text-text-dark/75" set:html={markdownify(intro)} />
+      </div>
+
+      <div class="lg:col-span-8">
+        <dl class="border-t border-border">
+          <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-8">
+            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Backups</dt>
+            <dd class="text-text-dark/80" set:html={markdownify(backupPolicy)} />
+          </div>
+          <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-8">
+            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Uptime</dt>
+            <dd class="text-text-dark/80" set:html={markdownify(uptimePolicy)} />
+          </div>
+          <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-8">
+            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Migration</dt>
+            <dd class="text-text-dark/80" set:html={markdownify(migrationPolicy)} />
+          </div>
+        </dl>
+
+        <div class="mt-10 grid gap-8 md:grid-cols-2">
+          <div>
+            <h3 class="h6 mb-4">Included</h3>
+            <ul class="space-y-3 border-t border-border pt-4">
+              {included.map((item) => <li class="border-b border-border pb-3 text-sm text-text-dark/80" set:html={markdownify(item)} />)}
+            </ul>
+          </div>
+          <div>
+            <h3 class="h6 mb-4">Additional cost</h3>
+            <ul class="space-y-3 border-t border-border pt-4">
+              {extraCost.map((item) => <li class="border-b border-border pb-3 text-sm text-text-dark/80" set:html={markdownify(item)} />)}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

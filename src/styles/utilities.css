@@ -17,134 +17,48 @@
     0 0 32px 0 color-mix(in srgb, var(--color-dark) 12%, transparent);
 }
 
-/* Gradient Color Text */
+/* Typography Color Utilities */
 @utility gradient-text {
-  --text-gradient: linear-gradient(
-    180deg,
-    color-mix(in srgb, #ffffff, transparent 0%),
-    color-mix(in srgb, var(--color-text-light), transparent 3%),
-    color-mix(in srgb, var(--color-text-light), transparent 15%)
-  );
-  background: var(--text-gradient);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-
-  display: inline-block;
-  position: relative;
+  color: inherit;
+  display: inline;
 }
 
 @utility gradient-yellow {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, #ffffff, transparent 0%),
-    color-mix(in srgb, var(--color-secondary), transparent 3%),
-    color-mix(in srgb, var(--color-secondary), transparent 15%)
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+  color: var(--color-secondary);
+  display: inline;
 }
 
 @utility gradient-orange {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, #ffffff, transparent 0%),
-    color-mix(in srgb, var(--color-primary), transparent 3%),
-    color-mix(in srgb, var(--color-primary), transparent 15%)
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+  color: var(--color-primary);
+  display: inline;
 }
 
 @utility gradient-green {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, #ffffff, transparent 0%),
-    color-mix(in srgb, var(--color-accent), transparent 3%),
-    color-mix(in srgb, var(--color-accent), transparent 15%)
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+  color: var(--color-accent);
+  display: inline;
 }
 
 @utility gradient-build {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, #ffffff, transparent 0%),
-    color-mix(in srgb, #999999, transparent 3%),
-    color-mix(in srgb, #999999, transparent 15%)
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+  color: var(--color-text-dark);
+  display: inline;
 }
 
 @utility gradient-rank {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, #ffffff, transparent 0%),
-    color-mix(in srgb, #e31837, transparent 3%),
-    color-mix(in srgb, #e31837, transparent 15%)
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+  color: #C8102E;
+  display: inline;
 }
 
 @utility gradient-grow {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, #ffffff, transparent 0%),
-    color-mix(in srgb, var(--color-accent), transparent 3%),
-    color-mix(in srgb, var(--color-accent), transparent 15%)
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
+  color: #10b981;
+  display: inline;
 }
 
 @utility text-rank {
-  color: #e31837;
+  color: #C8102E;
 }
 
 @utility text-grow {
   color: #10b981;
-}
-
-/* Gradient Color Text */
-@utility gradient-text {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-text-light), transparent 0%),
-    color-mix(in srgb, var(--color-text-light), transparent 20%)
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-
-  display: inline-block;
-  position: relative;
 }
 
 /* Section top divider (overlays previous section) */

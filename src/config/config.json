@@ -5,14 +5,14 @@
     "base_path": "/",
     "trailing_slash": false,
     "favicon": "/images/favicon.ico",
-    "logo": "/images/logo.png",
-    "logo_width": "48",
-    "logo_height": "48",
+    "logo": "/images/logo.svg",
+    "logo_width": "201",
+    "logo_height": "64",
     "logo_text": "Maryland Insights"
   },
 
   "params": {
-    "footer_description": "<span class='gradient-build'>Build</span>. <span class='gradient-rank'>Rank</span>. <span class='gradient-grow'>Grow</span>. — For Maryland Businesses. The new way for Maryland small businesses to build professional websites with AI-powered tools.",
+    "footer_description": "The new way for Maryland small businesses to build professional websites with AI-powered tools.",
     "copyright": "© {year} Maryland Insights. All Rights Reserved."
   },
 

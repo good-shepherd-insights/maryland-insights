@@ -20,15 +20,26 @@ export const homepage = defineCollection({
   loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/homepage" }),
   schema: z.object({
     banner: z.object({
+      eyebrow: z.string().optional(),
       title: z.string(),
       subtitle: z.string().optional(),
       content: z.string(),
-      image: z.string(),
+      image: z.string().optional(),
       button_solid: button,
       button_underline: button,
-      tag_lines: z.array(z.string()),
-      cursor_1: z.string(),
-      cursor_2: z.string(),
+      fine_print: z.string().optional(),
+      tag_lines: z.array(z.string()).optional(),
+      cursor_1: z.string().optional(),
+      cursor_2: z.string().optional(),
+      stats: z
+        .array(
+          z.object({
+            value: z.string(),
+            label: z.string(),
+            accent: z.string().optional(),
+          }),
+        )
+        .optional(),
     }),
     agents_swiper: z.object({
       enable: z.boolean(),
@@ -38,6 +49,9 @@ export const homepage = defineCollection({
           label: z.string(),
           description: z.string(),
           icon: z.string(),
+          image: z.string().optional(),
+          image_bg: z.boolean().optional(),
+          points: z.array(z.string()).optional(),
           button: button,
         }),
       ),
@@ -96,10 +110,17 @@ export const about = defineCollection({
     date: z.date().optional(),
     image: z.string().optional(),
     draft: z.boolean(),
-    gallery: z.object({
+    company_narrative: z.object({
       enable: z.boolean(),
       title: z.string(),
       image: z.string(),
+      sections: z.array(
+        z.object({
+          id: z.string(),
+          title: z.string(),
+          paragraphs: z.array(z.string()).min(1),
+        }),
+      ).length(4),
     }),
     facts_section: z.object({
       enable: z.boolean(),
@@ -122,6 +143,23 @@ export const about = defineCollection({
             name: z.string(),
             position: z.string(),
             image: z.string(),
+          }),
+        ),
+      })
+      .optional(),
+    story_section: z
+      .object({
+        enable: z.boolean(),
+        title: z.string(),
+        agents: z.array(
+          z.object({
+            label: z.string(),
+            description: z.string(),
+            icon: z.string(),
+            image: z.string().optional(),
+            image_bg: z.boolean().optional(),
+            points: z.array(z.string()).optional(),
+            button: button,
           }),
         ),
       })
@@ -225,6 +263,14 @@ export const blog = defineCollection({
           answer: z.string(),
         }),
       )
+      .optional(),
+    blog_library_guide: z
+      .object({
+        enable: z.boolean(),
+        title: z.string(),
+        introduction: z.string(),
+        reading_note: z.string(),
+      })
       .optional(),
     featured_posts: z
       .object({
@@ -333,8 +379,18 @@ export const features = defineCollection({
   schema: z.any(),
 });
 
+export const services = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/services" }),
+  schema: z.any(),
+});
+
 export const integrations = defineCollection({
   loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/integrations" }),
+  schema: z.any(),
+});
+
+export const tools = defineCollection({
+  loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/tools" }),
   schema: z.any(),
 });
 

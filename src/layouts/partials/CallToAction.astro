@@ -4,6 +4,10 @@ import { getListPage } from "@/lib/contentParser.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 
 const sectionData = await getListPage("ctaSection", "call-to-action");
+const { buttonLabel, buttonLink } = Astro.props as {
+  buttonLabel?: string;
+  buttonLink?: string;
+};
 if (!sectionData.data.enable) {
   return null;
 }
@@ -70,10 +74,10 @@ const dots = Array.from({ length: 16 }, () => {
           <a
            
            
-            href={button.link}
-            class="btn btn-outline"
+            href={buttonLink || button.link}
+            class="hero-cta-gold inline-block font-secondary font-semibold text-base px-8 py-4 transition"
           >
-            {button.label}
+            {buttonLabel || button.label}
           </a>
         )
       }
