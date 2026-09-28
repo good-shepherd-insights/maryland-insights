@@ -10,21 +10,36 @@ const {
   hasDarkArrow = false,
   smallImage = false,
   equalHeight = false,
+  imageFit = "cover",
+  imageSizes = "(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw",
   class: className = "",
 } = Astro.props;
 const { title, description, image, button, date, author } = data;
+const isSvg = typeof image === "string" && image.endsWith(".svg");
+const imageWidth = smallImage ? 172 : 696;
+const imageHeight = smallImage ? 40 : 528;
+const imageClass = smallImage
+  ? "h-full w-full object-contain"
+  : imageFit === "contain"
+    ? "h-full w-full object-contain"
+    : "h-full w-full object-cover";
 ---
 
 <div class={`bg-body rounded-2xl p-6 group relative ${equalHeight ? "flex flex-col h-full" : ""} ${className}`}>
   {
     showImage && (
-      <div>
+      <div class={`mb-6 overflow-hidden rounded-lg ${smallImage ? "h-10" : "aspect-[696/528]"} ${imageFit === "contain" ? "bg-light/60 p-3" : ""}`}>
         <ImageMod
           src={image}
-          width={smallImage ? 172 : 696}
-          height={smallImage ? 40 : 528}
+          width={imageWidth}
+          height={imageHeight}
           alt={title}
-          class="rounded-lg object-cover mb-6"
+          class={imageClass}
+          layout="constrained"
+          fit={imageFit}
+          sizes={imageSizes}
+          widths={smallImage ? [172, 344] : [348, 696, 1044, 1392]}
+          format={isSvg ? "svg" : "webp"}
         />
       </div>
     )
