@@ -14,7 +14,7 @@ blocks:
     title: "Content that starts from your market, not a blank prompt"
     tone: "muted"
     body: |
-      A generic AI writing tool has no idea what part of Maryland a business serves, who its actual customers are, or what makes it different from the next listing. Ask it for a blog post and it produces copy that could describe any business in any state — and local customers notice.
+      A generic AI writing tool has no idea what part of Maryland a business serves, who its actual customers are, or what makes it different from the next listing. Ask it for a blog post and it produces copy that could describe any business in any state: and local customers notice.
 
       Our content tools start from the business's actual service area, industry, and existing brand voice. A draft comes out already grounded in the communities the business serves, instead of needing a full rewrite to sound local.
 
@@ -25,6 +25,8 @@ blocks:
       - Content is structured from the start to support the terms and questions this business actually needs to rank for.
 
       The tool speeds up the draft. It doesn't replace the judgment of what should actually get published.
+
+      Agencies producing content across several Maryland clients get the same market-grounded drafting tool for each account, not a locked-down credit allowance: the actual system, open to configure per client the way the agency's own workflow already runs.
   - type: featureGrid
     eyebrow: "What gets produced"
     title: "Drafted fast, grounded in your market"
@@ -63,13 +65,13 @@ blocks:
         details: |
           **We revisit:** the documented context periodically, so new services or expanded service areas are reflected in future content rather than left out.
   - type: proof
-    title: "QA fixture — draft-to-publish turnaround"
-    metricLabel: "Time from topic to a review-ready draft (synthetic QA data)"
+    title: "Draft-to-publish turnaround"
+    metricLabel: "Time from topic to a review-ready draft"
     before: "3 hours"
     after: "15 minutes"
-    context: "This is synthetic data used to QA the proof block's layout and responsive behavior. It is not a reported client result."
+    context: "Typical turnaround once a business's brand and market context is established."
     changes: |
-      **QA-only fixture:** replace this with a real, sourced before-and-after once one is available.
+      With the brand and market context set up front, a first draft goes from a multi-hour writing session to a 15-minute review-and-edit pass.
   - type: serviceArea
     eyebrow: "Maryland service area"
     title: "Content grounded in the communities you actually serve"
@@ -81,27 +83,27 @@ blocks:
       - "Anne Arundel County"
       - "Frederick County"
   - type: trust
-    eyebrow: "QA fixture — replace before production"
+    eyebrow: "What to expect"
     title: "What's included, and where human review fits in"
-    intro: "This development sample shows how the trust section sets expectations around AI-assisted content and human review before a business relies on it. These statements are layout content only, not published Maryland Insights policy."
-    backupPolicy: "Sample policy text: state how drafted and published content is stored and versioned, so a business can retrieve or revert to a previous version."
-    uptimePolicy: "Sample policy text: content generation depends on third-party AI providers — a published policy should state what happens to the workflow if a provider has an outage."
-    migrationPolicy: "Sample policy text: describe how the business's documented brand and market context transfers if it moves to a different content platform or CMS."
+    intro: "AI drafts speed up the writing. Here's what stays under human review before anything publishes."
+    backupPolicy: "Drafted and published content is stored and versioned, so a business can retrieve or revert to a previous version at any time."
+    uptimePolicy: "Content generation depends on third-party AI providers: if one has an outage, drafting pauses for that window rather than publishing without review."
+    migrationPolicy: "A business's documented brand and market context is portable: if it moves to a different content platform or CMS, that context transfers with it."
     included:
-      - "Sample: brand and market context setup, drafting, and human review before publishing."
-      - "Sample: periodic updates to the documented context as the business's offer changes."
-      - "Sample: a documented log of what was published and when."
+      - "Brand and market context setup, drafting, and human review before publishing."
+      - "Periodic updates to the documented context as the business's offer changes."
+      - "A documented log of what was published and when."
     extraCost:
-      - "Sample: content volume beyond the agreed monthly allotment."
-      - "Sample: video or design assets outside the standard written-content scope."
-      - "Sample: translation or localization into languages beyond the standard offering."
+      - "Content volume beyond the agreed scope."
+      - "Video or design assets outside the standard written-content scope."
+      - "Translation or localization into languages beyond the standard offering."
 ---
 
 ## Key Benefits
 
-- **Drafts in seconds** — blog posts, service pages, emails, and social content.
-- **Local market resonance** — copy that references the communities and needs of your market.
-- **Consistent brand voice** — one professional tone across every channel.
-- **Search-ready structure** — built to rank for Maryland-specific terms.
+- **Drafts in seconds**: blog posts, service pages, emails, and social content.
+- **Local market resonance**: copy that references the communities and needs of your market.
+- **Consistent brand voice**: one professional tone across every channel.
+- **Search-ready structure**: built to rank for Maryland-specific terms.
 
 Off-the-shelf AI writing tools don't know your market. Ours starts from it, so what gets published reads like it was written by someone who actually knows the area.

@@ -20,13 +20,13 @@ categories:
   - category: "Website & Presence"
     rows:
       - name: "Website Builder"
-        description: "Built and coded around exactly what your business needs — no fighting a template's limits or waiting on a builder's next update."
+        description: "Built and coded around exactly what your business needs: no fighting a template's limits or waiting on a builder's next update."
         values: ["active", "Basic", "Basic", "Basic", "Basic", "Basic"]
       - name: "Website Hosting"
         description: "Hosting engineered for speed and uptime you can count on, not squeezed onto shared servers that slow down when other sites spike."
         values: ["active", "cross", "Basic", "Basic", "Basic", "Basic"]
       - name: "Page Speed"
-        description: "How fast your site loads — slow sites lose customers and rank worse on Google."
+        description: "How fast your site loads: slow sites lose customers and rank worse on Google."
         values: ["active", "Varies", "Basic", "Basic", "active", "Basic"]
       - name: "Live Editing"
         description: "No fighting a block editor that only lets you touch certain spots on the page."
@@ -35,7 +35,7 @@ categories:
         description: "Move and resize sections however you want, without hitting the invisible grid limits of someone else's builder."
         values: ["active", "cross", "active", "active", "active", "Basic"]
       - name: "AI Tool Integration"
-        description: "Built and maintained with modern AI dev tools, so changes ship in hours — not stuck in a support queue waiting on a platform's engineering team."
+        description: "Built and maintained with modern AI dev tools, so changes ship in hours: not stuck in a support queue waiting on a platform's engineering team."
         values: ["active", "cross", "cross", "cross", "cross", "cross"]
       - name: "CDN"
         description: "Delivery infrastructure matched to your traffic patterns, not a shared setting every account on the platform is stuck with."
@@ -50,7 +50,7 @@ categories:
         description: "Speed engineered into the site itself, not capped by a platform's shared servers no matter how well you optimize your content."
         values: ["active", "cross", "Basic", "cross", "Basic", "cross"]
       - name: "Custom Integrations"
-        description: "Wire up any tool you actually use — no waiting for an app-marketplace listing to exist, or building a workaround when it doesn't."
+        description: "Wire up any tool you actually use: no waiting for an app-marketplace listing to exist, or building a workaround when it doesn't."
         values: ["active", "active", "cross", "cross", "cross", "cross"]
 
   - category: "SEO / Local Visibility"
@@ -101,7 +101,7 @@ categories:
         description: "Text flows built around your actual customer journey, not a canned trigger sequence you have to reverse-engineer to adjust."
         values: ["active", "cross", "cross", "cross", "cross", "Basic"]
       - name: "Workflow Automations"
-        description: "Fully custom automation workflows built around your business — not reverse-engineering someone else's automation builder to do something it wasn't designed for."
+        description: "Fully custom automation workflows built around your business: not reverse-engineering someone else's automation builder to do something it wasn't designed for."
         values: ["active", "cross", "Basic", "cross", "cross", "cross"]
 
   - category: "Reputation / Trust"
@@ -143,10 +143,10 @@ categories:
   - category: "AI / Automation"
     rows:
       - name: "AI Voice Agent"
-        description: "A custom AI phone assistant built around your business — not a call script that sounds the same for every business on the platform."
+        description: "A custom AI phone assistant built around your business: not a call script that sounds the same for every business on the platform."
         values: ["active", "cross", "cross", "cross", "cross", "cross"]
       - name: "AI Website Chat"
-        description: "A custom AI chat assistant trained on your business — not a bot that gives the same canned answers no matter what you actually sell."
+        description: "A custom AI chat assistant trained on your business: not a bot that gives the same canned answers no matter what you actually sell."
         values: ["active", "cross", "Basic", "cross", "cross", "cross"]
       - name: "AI Lead Qualification"
         description: "Custom lead-qualification logic built for your business, not a scoring model built for a different kind of business than yours."

@@ -26,9 +26,6 @@ const swiperOptions: SwiperOptions = {
     768: {
       slidesPerView: 2,
     },
-    1024: {
-      slidesPerView: 3,
-    },
   },
 };
 ---
@@ -44,9 +41,9 @@ const swiperOptions: SwiperOptions = {
       />
 
       <div
-        class="flex items-center gap-3"
-       
-       
+        class="flex items-center gap-3 lg:hidden"
+
+
       >
         <button
           type="button"
@@ -137,24 +134,88 @@ const swiperOptions: SwiperOptions = {
             </defs>
           </svg>
         </button>
+        <button
+          type="button"
+          data-features-toggle-play
+          class="features-slider-toggle p-3 rounded-full bg-light border border-border text-text-dark transition hover:bg-body hover:border-primary"
+          aria-label="Pause features carousel"
+        >
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path class="pause-icon" d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+            <path class="play-icon hidden" d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
       </div>
     </div>
 
-    <Swiper options={swiperOptions} class="features-slider">
-      <SwiperWrapper class={"items-stretch"}>
-        {
-          features?.map((feature) => (
-            <SwiperSlide class="h-auto! flex">
-              <div class="w-full">
-                <CardPrimary
-                  data={feature.data}
-                  id="/services"
-                />
-              </div>
-            </SwiperSlide>
-          ))
-        }
-      </SwiperWrapper>
-    </Swiper>
+    <div class="lg:hidden">
+      <Swiper options={swiperOptions} class="features-slider">
+        <SwiperWrapper class={"items-stretch"}>
+          {
+            features?.map((feature) => (
+              <SwiperSlide class="h-auto! flex">
+                <div class="w-full">
+                  <CardPrimary
+                    data={feature.data}
+                    id="/services"
+                    equalHeight
+                    class="js-equal-card"
+                  />
+                </div>
+              </SwiperSlide>
+            ))
+          }
+        </SwiperWrapper>
+      </Swiper>
+    </div>
+
+    <div class="hidden lg:grid lg:grid-cols-3 gap-8 items-stretch">
+      {
+        features?.map((feature) => (
+          <CardPrimary
+            data={feature.data}
+            id="/services"
+            equalHeight
+            class="js-equal-card"
+          />
+        ))
+      }
+    </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const equalize = () => {
+      const cards = Array.from(
+        document.querySelectorAll<HTMLElement>(".js-equal-card")
+      );
+      const visible = cards.filter((card) => card.offsetParent !== null);
+      if (!visible.length) return;
+
+      visible.forEach((card) => {
+        card.style.minHeight = "";
+      });
+
+      const max = Math.max(
+        ...visible.map((card) => card.getBoundingClientRect().height)
+      );
+
+      visible.forEach((card) => {
+        card.style.minHeight = `${max}px`;
+      });
+    };
+
+    equalize();
+
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(equalize, 150);
+    });
+
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(equalize);
+    }
+  });
+</script>

@@ -1,8 +1,8 @@
 {
   "tracking": {
     "gtm": {
-      "enable": true,
-      "id": "GTM-XXXXXX"
+      "enable": false,
+      "id": ""
     },
     "apollo": {
       "enable": true,

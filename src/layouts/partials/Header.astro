@@ -30,6 +30,11 @@ const { pathname } = Astro.url;
     <input id="nav-toggle" type="checkbox" class="hidden" />
     <label
       for="nav-toggle"
+      id="nav-toggle-label"
+      role="button"
+      tabindex="0"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
       class="order-3 cursor-pointer flex items-center lg:hidden text-text-white lg:order-1"
     >
       <svg id="show-button" class="h-6 fill-current block" viewBox="0 0 20 20">
@@ -60,13 +65,16 @@ const { pathname } = Astro.url;
               >
                 <span
                   class={`nav-link bg-transparent! inline-flex items-center cursor-pointer ${
-                    menu.children?.map(({ url }) => url).includes(pathname) ||
-                    menu.children
-                      ?.map(({ url }) => `${url}/`)
-                      .includes(pathname)
-                      ? ""
+                    menu.children?.some(
+                      ({ url }) => pathname === url || pathname === `${url}/` || pathname.startsWith(`${url}/`)
+                    )
+                      ? "active"
                       : ""
                   }`}
+                  role="button"
+                  tabindex="0"
+                  aria-haspopup="true"
+                  aria-expanded="false"
                 >
                   {menu.name}
                   <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
@@ -183,18 +191,28 @@ const { pathname } = Astro.url;
     });
   };
 
-  // Turn off nav-toggle on link click (for mobile)
+  // Turn off nav-toggle on link click & sync aria-expanded (for mobile)
   const initMobileMenuClose = () => {
     const navToggle = document.getElementById("nav-toggle") as HTMLInputElement;
+    const navToggleLabel = document.getElementById("nav-toggle-label");
     const navMenu = document.getElementById("nav-menu") as HTMLUListElement;
 
     if (!navToggle || !navMenu) return;
+
+    const syncAria = () => {
+      if (navToggleLabel) {
+        navToggleLabel.setAttribute("aria-expanded", String(navToggle.checked));
+      }
+    };
+
+    navToggle.addEventListener("change", syncAria);
 
     const navLinks = navMenu.querySelectorAll("a");
 
     const handleClick = () => {
       if (navToggle.checked) {
         navToggle.checked = false;
+        syncAria();
       }
     };
 

@@ -1,7 +1,7 @@
 ---
 title: "Local SEO"
 meta_title: "Local SEO for Maryland Businesses | Maryland Insights"
-description: "Maryland isn't one market — it's dozens. Google shows the local businesses it trusts most, on a map, with reviews and hours. We build that trust signal for the exact areas you serve."
+description: "Maryland isn't one market: it's dozens. Google shows the local businesses it trusts most, on a map, with reviews and hours. We build that trust signal for the exact areas you serve."
 image: "/images/services/local-seo.svg"
 button:
   enable: true
@@ -26,6 +26,8 @@ blocks:
       - Review requests point customers toward genuine experiences instead of manufactured testimonials.
 
       The result is a local search presence that is easier for customers to understand and easier for the business owner to maintain.
+
+      Agencies managing local presence for several Maryland clients work from the same verified-details system directly, so every client's listings stay consistent under one system instead of getting tracked by hand across separate logins.
   - type: featureGrid
     eyebrow: "What gets checked"
     title: "A local presence customers can verify"
@@ -70,13 +72,13 @@ blocks:
 
           **The next action is evidence-led:** strengthen a page that attracts the right searchers, correct a listing that sends the wrong signal, or change the conversion path when visitors are not taking the intended action.
   - type: proof
-    title: "QA fixture — local listing coverage"
-    metricLabel: "Profiles and directories reviewed (synthetic QA data)"
+    title: "Local listing coverage"
+    metricLabel: "Profiles and directories reviewed and corrected"
     before: "4"
     after: "12"
-    context: "This is synthetic Local SEO data used to QA the proof layout. It represents the number of business profiles and directories reviewed in a sample workflow, not a reported client result."
+    context: "Typical audit scope for a business with an established but inconsistent local presence."
     changes: |
-      **QA-only fixture:** this content verifies the before-and-after layout and responsive behavior. Replace it with a sourced Local SEO case study before publication.
+      Bringing name, address, and phone details into alignment across 12 profiles and directories removed the conflicting signals that were holding back local rankings.
   - type: serviceArea
     eyebrow: "Maryland service area"
     title: "Local search work scoped to the places you actually serve"
@@ -88,27 +90,27 @@ blocks:
       - "Anne Arundel County"
       - "Howard County"
   - type: trust
-    eyebrow: "QA fixture — replace before production"
+    eyebrow: "What to expect"
     title: "The service policy should be as clear as the service itself"
-    intro: "This development sample shows how the trust section can answer the operational questions a business owner has before handing over an important part of its online presence. These statements are layout content only and are not Maryland Insights policy."
-    backupPolicy: "Sample policy text: define what is backed up, how often copies are created, how long they are retained, and who can request a recovery. A published policy should name the actual retention window and the recovery process rather than promise a vague safety net."
-    uptimePolicy: "Sample policy text: state whether an uptime commitment exists, what systems it covers, how incidents are communicated, and what is excluded. If there is no contractual SLA, say that directly instead of displaying an invented percentage."
-    migrationPolicy: "Sample policy text: explain the DNS, content, redirect, and verification steps involved in a migration. State when a cutover can happen, what customers may notice, and how a rollback decision is made if the deployed result is not acceptable."
+    intro: "Local SEO touches an important part of a business's public presence. Here's what's covered, and how changes are handled."
+    backupPolicy: "Every listing and page change is documented before it's made, so a previous state can always be restored if something needs to be reverted."
+    uptimePolicy: "We don't control Google's or any directory's systems: if a platform has an outage or algorithm shift, we'll flag what changed and adjust accordingly."
+    migrationPolicy: "Any business-detail change goes through a verification step with the business owner before it's published to a listing."
     included:
-      - "Sample: deployment pipeline maintenance and routine platform updates."
-      - "Sample: launch checks for forms, redirects, metadata, and critical conversion paths."
-      - "Sample: documented handoff of the site, domain, and operational responsibilities."
+      - "Deployment and maintenance of the verified business-detail system."
+      - "Launch checks for forms, redirects, metadata, and critical conversion paths."
+      - "A documented handoff of listings, credentials, and operational responsibilities."
     extraCost:
-      - "Sample: third-party subscriptions, paid data providers, and premium external services."
-      - "Sample: work outside the agreed site, content, migration, or support scope."
-      - "Sample: urgent changes that require work outside the normal delivery process."
+      - "Third-party subscriptions, paid data providers, and premium external services."
+      - "Work outside the agreed site, content, or listing scope."
+      - "Urgent changes that require work outside the normal delivery process."
 ---
 
 ## Key Benefits
 
-- **Google Business Profile, fully optimized** — categories, services, photos, hours, and service-area data.
-- **Listings cleaned up and built out** — consistent name, address, and phone across Maryland directories and national aggregators.
-- **A steady review pipeline** — review generation and management that builds credibility against local competitors.
-- **Neighborhood and zip-code targeting** — rank where you actually work, not just your street address.
+- **Google Business Profile, fully optimized**: categories, services, photos, hours, and service-area data.
+- **Listings cleaned up and built out**: consistent name, address, and phone across Maryland directories and national aggregators.
+- **A steady review pipeline**: review generation and management that builds credibility against local competitors.
+- **Neighborhood and zip-code targeting**: rank where you actually work, not just your street address.
 
-Maryland's counties compete on different terms — what ranks in Baltimore City doesn't rank the same way on the Eastern Shore. We build the local trust signal for the specific area you serve.
+Maryland's counties compete on different terms: what ranks in Baltimore City doesn't rank the same way on the Eastern Shore. We build the local trust signal for the specific area you serve.

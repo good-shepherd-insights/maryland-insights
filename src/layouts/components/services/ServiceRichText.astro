@@ -17,13 +17,6 @@ const sectionTone = tone === "muted" ? "bg-light" : "bg-body";
   <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
     <div class="grid items-start gap-8 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-5">
-        {
-          eyebrow && (
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-              {eyebrow}
-            </p>
-          )
-        }
         <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
       </div>
 

@@ -46,7 +46,6 @@ const combinedSchema = [faqSchema].filter(Boolean);
   <ChooseSwiper data={pageIndex.data.agents_swiper} />
   <Facts data={pageIndex.data.facts_section} enableAnimation={false} />
   <Features />
-  <Integrations />
   {
     comparison_section.enable && (
       <section class="section">
@@ -64,6 +63,7 @@ const combinedSchema = [faqSchema].filter(Boolean);
       </section>
     )
   }
+  <Integrations />
   {/* <PricingGrid haveDivider /> */}
   {/* <FeautresCarousel /> */}
   <Faqs data={faqs_section} prefix="home-faq" />

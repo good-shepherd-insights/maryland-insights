@@ -29,13 +29,6 @@ const headingId = `service-${slugify(title)}`;
   <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
     <div class="grid items-start gap-12 lg:grid-cols-12 lg:gap-20">
       <div class="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
-        {
-          eyebrow && (
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-              {eyebrow}
-            </p>
-          )
-        }
         <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
         <p class="mt-5 max-w-md text-text-dark/75" set:html={markdownify(intro)} />
       </div>

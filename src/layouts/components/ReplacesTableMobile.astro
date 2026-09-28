@@ -30,7 +30,7 @@ const VISIBLE_ROWS = 4;
         <div class="flex flex-col">
           {categories.map((category, catIndex) => (
             <div>
-              <div class="p-3 px-6 bg-light/50 border-b border-border text-xs font-bold uppercase tracking-wide text-text-light">
+              <div class="p-3 px-6 bg-light/50 border-b border-border text-xs font-bold tracking-wide text-text-light">
                 {category.category}
               </div>
               {category.rows.map((row, i) => {
@@ -44,17 +44,17 @@ const VISIBLE_ROWS = 4;
                     data-category-extra={isExtra ? key : undefined}
                   >
                     <div>
-                      <h6>{row.name}</h6>
+                      <h4>{row.name}</h4>
                       {row.description && (
                         <p class="mt-1 text-sm text-text-dark/70">{row.description}</p>
                       )}
                     </div>
                     {value === "active" ? (
-                      <img src="/images/icons/active.svg" alt="Included" />
+                      <img src="/images/icons/active.svg" alt={`${row.name}: Included`} />
                     ) : value === "cross" ? (
-                      <img src="/images/icons/cross.svg" alt="Not included" />
+                      <img src="/images/icons/cross.svg" alt={`${row.name}: Not included`} />
                     ) : (
-                      <span class="text-sm shrink-0">{value}</span>
+                      <span class="text-sm shrink-0"><span class="sr-only">{row.name}: </span>{value}</span>
                     )}
                   </div>
                 );

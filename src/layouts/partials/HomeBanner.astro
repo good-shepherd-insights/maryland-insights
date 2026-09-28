@@ -41,7 +41,7 @@ const {
         set:html={markdownify(title)}
       />
 
-      <p class="mt-5 xl:mt-8 max-w-2xl text-xl leading-relaxed" set:html={markdownify(content)} />
+      <p class="mt-5 xl:mt-8 max-w-prose text-xl leading-relaxed text-text-light" set:html={markdownify(content)} />
 
       <div class="mt-6 xl:mt-12 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-x-5">
         {
@@ -81,7 +81,7 @@ const {
                 <div class="font-secondary font-bold text-3xl tabular-nums text-dark">
                   {stat.value}
                 </div>
-                <div class="mt-5 xl:mt-3 text-sm font-bold uppercase tracking-[0.05em] text-text-light">
+                <div class="mt-5 xl:mt-3 text-sm font-semibold text-text-light">
                   {stat.label}
                 </div>
               </div>

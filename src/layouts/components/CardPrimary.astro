@@ -9,11 +9,13 @@ const {
   showImage = true,
   hasDarkArrow = false,
   smallImage = false,
+  equalHeight = false,
+  class: className = "",
 } = Astro.props;
 const { title, description, image, button, date, author } = data;
 ---
 
-<div class="bg-body rounded-2xl p-6 group relative">
+<div class={`bg-body rounded-2xl p-6 group relative ${equalHeight ? "flex flex-col h-full" : ""} ${className}`}>
   {
     showImage && (
       <div>
@@ -45,9 +47,9 @@ const { title, description, image, button, date, author } = data;
 
   <p class="text-sm" set:html={markdownify(description)} />
 
-  <a href={`${id ? id : button?.link}`} class="before:absolute before:inset-0">
+  <a href={`${id ? id : button?.link}`} class={`before:absolute before:inset-0 ${equalHeight ? "mt-auto" : ""}`} aria-label={`Read more about ${title}`}>
     <div
-      class={`flex justify-between relative mt-10 ${hasDarkArrow ? "text-dark" : "text-light"}`}
+      class={`flex justify-between relative pt-10 ${hasDarkArrow ? "text-dark" : "text-light"}`}
     >
       <span class="text-xs text-dark"
         >{button?.label ?? "Learn More"}</span

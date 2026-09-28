@@ -94,14 +94,14 @@ const collectionSchema: CollectionPage = {
                     set:html={markdownify(item.title)}
                   />
                   <p
-                    class="mt-2 text-text-light text-balance"
+                    class="mt-2 text-white/80 text-balance"
                     set:html={markdownify(item.description)}
                   />
 
                   {item.button.enable && (
                     <a
                       href={item.button.link}
-                      class="inline-block mt-6 btn btn-outline bg-body border-body text-text-dark"
+                      class="hero-cta-gold inline-block mt-6 px-8 py-4 font-secondary font-semibold text-base transition"
                     >
                       {item.button.label}
                     </a>

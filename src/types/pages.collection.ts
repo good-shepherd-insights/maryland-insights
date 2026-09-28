@@ -389,6 +389,11 @@ export const integrations = defineCollection({
   schema: z.any(),
 });
 
+export const tools = defineCollection({
+  loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/tools" }),
+  schema: z.any(),
+});
+
 export const pricing = defineCollection({
   loader: glob({ pattern: "**/-*.{md,mdx}", base: "src/content/pricing" }),
   schema: z.any(),

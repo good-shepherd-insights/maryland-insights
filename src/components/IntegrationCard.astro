@@ -46,6 +46,6 @@ const { integration } = Astro.props;
     set:html={markdownify(integration.description)}
   />
   {integration.link && (
-    <a href={integration.link} class="before:inset-0 before:absolute" />
+    <a href={integration.link} class="before:inset-0 before:absolute" aria-label={`Learn more about ${integration.title} integration`} />
   )}
 </div>

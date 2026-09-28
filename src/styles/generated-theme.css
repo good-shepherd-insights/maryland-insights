@@ -6,7 +6,7 @@
 
 @theme {
   /* === Colors === */
-  --color-primary: #FE9240;
+  --color-primary: #D9651A;
   --color-secondary: #FFC20E;
   --color-accent: #10B981;
   --color-body: #ffffff;
@@ -15,7 +15,7 @@
   --color-dark: #121212;
   --color-text: #555555;
   --color-text-dark: #121212;
-  --color-text-light: #999999;
+  --color-text-light: #555555;
 
   /* === Font Families === */
   --font-primary: Sora, sans-serif;

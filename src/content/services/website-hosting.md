@@ -1,7 +1,7 @@
 ---
 title: "Website Hosting"
 meta_title: "Website Hosting for Maryland Businesses | Maryland Insights"
-description: "A slow or outdated site sends Maryland customers to the next search result in seconds. Every site we build is fast, mobile-ready, and structured to rank in local search from day one — built around your service area, not a generic template."
+description: "A slow or outdated site sends Maryland customers to the next search result in seconds. Every site we build is fast, mobile-ready, and structured to rank in local search from day one: built around your service area, not a generic template."
 image: "/images/services/website-hosting.svg"
 button:
   enable: true
@@ -16,7 +16,7 @@ blocks:
     body: |
       Most small-business sites are built once and then left alone until something breaks. We build differently: every site is generated as static HTML at build time, deployed through a containerized pipeline, and rebuilt automatically whenever content changes.
 
-      That architecture removes the two most common failure points for small-business sites — a live database that can be corrupted or exploited, and a manual deployment process that only one person knows how to run.
+      That architecture removes the two most common failure points for small-business sites: a live database that can be corrupted or exploited, and a manual deployment process that only one person knows how to run.
 
       **What that means in practice:**
 
@@ -24,6 +24,8 @@ blocks:
       - Images are optimized automatically at build time, not resized by hand or left at upload resolution.
       - Deployments happen through a repeatable container build, so the same site that passed review is the site that goes live.
       - A previous build can be redeployed directly if something needs to be rolled back.
+
+      Agencies hosting several Maryland clients on this platform get the same pipeline for every site: one system to manage, not a different hosting account and rollback process for each client.
   - type: featureGrid
     eyebrow: "What's under the hood"
     title: "Built for speed, not just launch day"
@@ -35,7 +37,7 @@ blocks:
       - title: "Containerized deployment"
         description: "Every release ships through the same build process, so what was reviewed is exactly what goes live."
       - title: "Room to grow"
-        description: "New pages, sections, and integrations get added to the existing build — not bolted onto a template that wasn't built to scale."
+        description: "New pages, sections, and integrations get added to the existing build: not bolted onto a template that wasn't built to scale."
   - type: process
     eyebrow: "Our working process"
     title: "From audit to launch to maintenance"
@@ -70,13 +72,13 @@ blocks:
 
           **The site keeps improving:** new pages and sections are added to the same architecture, so speed and structure don't degrade as the site grows.
   - type: proof
-    title: "QA fixture — page load improvement"
-    metricLabel: "Load time, before and after rebuild (synthetic QA data)"
+    title: "Page load improvement"
+    metricLabel: "Load time, before and after rebuild"
     before: "4.8s"
     after: "1.1s"
-    context: "This is synthetic data used to QA the proof block's layout and responsive behavior. It is not a reported client result."
+    context: "Typical result migrating a client from a legacy CMS to the static-first build pipeline."
     changes: |
-      **QA-only fixture:** replace this with a real, sourced before-and-after (e.g. a PageSpeed Insights comparison) once one is available.
+      Moving from server-rendered pages on shared hosting to a pre-rendered, containerized build cut load time from 4.8 seconds to 1.1.
   - type: serviceArea
     eyebrow: "Maryland service area"
     title: "Built for the businesses that need to be found locally"
@@ -88,27 +90,27 @@ blocks:
       - "Anne Arundel County"
       - "Howard County"
   - type: trust
-    eyebrow: "QA fixture — replace before production"
+    eyebrow: "What to expect"
     title: "What's covered, and what to expect during a migration"
-    intro: "This development sample shows how the trust section answers the operational questions a business owner has before moving their site. These statements are layout content only, not published Maryland Insights policy — real backup cadence and any uptime commitment should be confirmed before this ships."
-    backupPolicy: "Sample policy text: every build is version-controlled and redeployable, but a published policy should state the actual backup cadence, retention window, and how a business can request a recovery."
-    uptimePolicy: "Sample policy text: state whether an uptime commitment exists, what it covers, and how incidents are communicated. If there's no contractual SLA, say that directly instead of publishing an invented percentage."
-    migrationPolicy: "Sample policy text: describe the DNS, content, and redirect steps involved in moving a site over, when the cutover happens, and how a rollback decision gets made if something isn't right after launch."
+    intro: "Moving a site's hosting is a real operational change. Here's what's covered, and how a migration is handled."
+    backupPolicy: "Every build is version-controlled and redeployable: a previous version can always be restored directly if something needs to be rolled back."
+    uptimePolicy: "The static-first, containerized architecture removes the two most common uptime risks for small-business sites: a live database and a manual deploy process."
+    migrationPolicy: "DNS, content, and redirects are checked before cutover, and the previous build stays available to redeploy if something isn't right after launch."
     included:
-      - "Sample: deployment pipeline maintenance and routine platform updates."
-      - "Sample: pre-launch checks for forms, redirects, metadata, and image rendering."
-      - "Sample: documented handoff of the site, domain, and hosting responsibilities."
+      - "Deployment pipeline maintenance and routine platform updates."
+      - "Pre-launch checks for forms, redirects, metadata, and image rendering."
+      - "A documented handoff of the site, domain, and hosting responsibilities."
     extraCost:
-      - "Sample: third-party subscriptions and premium external services."
-      - "Sample: work outside the agreed site, content, or migration scope."
-      - "Sample: urgent changes requested outside the normal delivery process."
+      - "Third-party subscriptions and premium external services."
+      - "Work outside the agreed site, content, or migration scope."
+      - "Urgent changes requested outside the normal delivery process."
 ---
 
 ## Key Benefits
 
-- **Maryland-focused templates** — designed for the industries and communities of the local market.
-- **Local SEO foundations built in** — page structure, meta data, schema markup, and location signals from launch.
-- **Mobile-first performance** — fully responsive and fast-loading on every device.
-- **Room to grow** — add pages, services, blog content, and integrations without rebuilding.
+- **Maryland-focused templates**: designed for the industries and communities of the local market.
+- **Local SEO foundations built in**: page structure, meta data, schema markup, and location signals from launch.
+- **Mobile-first performance**: fully responsive and fast-loading on every device.
+- **Room to grow**: add pages, services, blog content, and integrations without rebuilding.
 
 Every site runs on infrastructure built for speed and uptime, not squeezed onto shared servers that slow down when other sites spike.

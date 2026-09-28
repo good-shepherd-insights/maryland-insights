@@ -33,15 +33,12 @@ const { title, agents } = data;
                 <div class={i % 2 === 1 ? "lg:order-2" : ""}>
                   <div
                     class={agent.image_bg
-                      ? "rounded-2xl p-[3px]"
+                      ? "rounded-2xl p-[1px] bg-white/10"
                       : ""}
-                    style={agent.image_bg
-                      ? "background: linear-gradient(135deg, #C8102E, var(--color-secondary))"
-                      : undefined}
                   >
                     <div
                       class={agent.image_bg
-                        ? "bg-light rounded-[calc(var(--radius-2xl)-3px)] p-5 flex items-center justify-center h-full"
+                        ? "bg-light rounded-[calc(var(--radius-2xl)-1px)] p-5 flex items-center justify-center h-full"
                         : ""}
                     >
                       <ImageMod
@@ -60,7 +57,7 @@ const { title, agents } = data;
               )}
 
               <div>
-                <span class="text-sm font-medium uppercase tracking-wide text-white/50">
+                <span class="text-sm font-medium uppercase tracking-wide text-white/75">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3

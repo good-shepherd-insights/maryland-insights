@@ -16,11 +16,13 @@ if (data && data.enable === false) return null;
 
 let integrations_list = data?.integrations_list;
 let section_title = data?.section_title;
+let eyebrow = data?.eyebrow;
 
 if (!integrations_list) {
   const pageIndex = await getListPage("integrations", "-index");
   integrations_list = pageIndex.data.integrations_list;
   if (!section_title) section_title = pageIndex.data.section_title;
+  if (!eyebrow) eyebrow = pageIndex.data.eyebrow;
 }
 
 const swiperOptions: SwiperOptions = {
@@ -46,6 +48,7 @@ const swiperOptions: SwiperOptions = {
   integrations_list && (
     <section class="section-sm bg-light">
       <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
+
         {section_title && (
           <h2
             data-aos="fade-up-sm"
@@ -106,13 +109,22 @@ const swiperOptions: SwiperOptions = {
 <style>
   :global(.integrations-scrollbar) {
     position: relative !important;
-    width: 96px !important;
-    height: 4px !important;
+    width: 120px !important;
+    height: 6px !important;
     background-color: var(--color-border) !important;
     border-radius: 999px !important;
   }
   :global(.integrations-scrollbar .swiper-scrollbar-drag) {
     background-color: var(--color-primary) !important;
     border-radius: 999px !important;
+    position: relative;
+  }
+  :global(.integrations-scrollbar .swiper-scrollbar-drag::before) {
+    content: "";
+    position: absolute;
+    top: -19px;
+    bottom: -19px;
+    left: 0;
+    right: 0;
   }
 </style>

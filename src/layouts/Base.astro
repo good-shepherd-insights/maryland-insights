@@ -211,11 +211,27 @@ const graphItems: unknown[] = [
       )
     }
 
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none"
+    >
+      Skip to main content
+    </a>
     <TwSizeIndicator />
     <Header />
     <main id="main-content">
       <slot />
     </main>
+    <button
+      type="button"
+      id="back-to-top"
+      aria-label="Back to top"
+      class="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-primary text-white shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none"
+    >
+      <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+        <path d="M12 4l-8 8h5v8h6v-8h5z"/>
+      </svg>
+    </button>
     <Footer />
 
     <script>
@@ -303,6 +319,23 @@ const graphItems: unknown[] = [
         window.addEventListener("pageshow", (event) => {
           if (event.persisted) scrollToTop();
         });
+
+        // Back to top scroll button logic
+        const backToTopBtn = document.getElementById("back-to-top");
+        if (backToTopBtn) {
+          window.addEventListener("scroll", () => {
+            if (window.scrollY > 500) {
+              backToTopBtn.classList.remove("opacity-0", "pointer-events-none");
+              backToTopBtn.classList.add("opacity-100");
+            } else {
+              backToTopBtn.classList.remove("opacity-100");
+              backToTopBtn.classList.add("opacity-0", "pointer-events-none");
+            }
+          });
+          backToTopBtn.addEventListener("click", () => {
+            scrollToTop();
+          });
+        }
 
         // Cleanup before Astro swaps DOM
         document.addEventListener("astro:before-preparation", () => {

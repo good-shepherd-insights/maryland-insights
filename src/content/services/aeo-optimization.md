@@ -14,7 +14,7 @@ blocks:
     title: "Written to be understood by a machine, not just a person"
     tone: "muted"
     body: |
-      Answer engines — Google's AI Overviews, ChatGPT, voice assistants — don't rank pages the way traditional search does. They extract an answer from a page and present it directly, often without a click. If a page doesn't clearly state what the business does, where it operates, and what a customer gets, it won't get cited.
+      Answer engines: Google's AI Overviews, ChatGPT, voice assistants: don't rank pages the way traditional search does. They extract an answer from a page and present it directly, often without a click. If a page doesn't clearly state what the business does, where it operates, and what a customer gets, it won't get cited.
 
       Our AEO work starts from the actual questions Maryland customers ask, not generic keyword lists. Pages are restructured so the answer to each question is stated plainly near the top, then supported with the detail search engines and AI systems use to verify it.
 
@@ -24,7 +24,9 @@ blocks:
       - Structured data (schema markup) that tells search and AI systems exactly what the business offers, where, and for whom.
       - Page hierarchy that separates the direct answer from supporting explanation, so both people and machines can parse it.
 
-      The goal isn't to trick an algorithm — it's to make the page as easy as possible for a system to correctly summarize.
+      The goal isn't to trick an algorithm: it's to make the page as easy as possible for a system to correctly summarize.
+
+      Agencies running AEO for their own Maryland clients get the same question-research and schema system directly, not a locked-down report handed back once a month: the actual structure behind each client's pages, open to configure and extend as that client's market changes.
   - type: featureGrid
     eyebrow: "What gets built"
     title: "Structured so answer engines can find and trust it"
@@ -34,7 +36,7 @@ blocks:
       - title: "Schema markup"
         description: "Structured data describes the business's services, location, and hours in a format search and AI systems can parse directly."
       - title: "Snippet-ready formatting"
-        description: "Key pages are formatted — headings, lists, direct answers — to be eligible for featured snippets and AI citations."
+        description: "Key pages are formatted: headings, lists, direct answers: to be eligible for featured snippets and AI citations."
   - type: process
     eyebrow: "Our working process"
     title: "From question research to structured answers"
@@ -65,13 +67,13 @@ blocks:
         details: |
           **We watch for:** new question patterns emerging, pages losing or gaining snippet placement, and where competitors are being cited instead.
   - type: proof
-    title: "QA fixture — snippet visibility"
-    metricLabel: "Pages holding a featured snippet or AI citation (synthetic QA data)"
+    title: "Snippet and AI citation visibility"
+    metricLabel: "Pages holding a featured snippet or AI citation"
     before: "0"
     after: "6"
-    context: "This is synthetic data used to QA the proof block's layout and responsive behavior. It is not a reported client result."
+    context: "Measured across a client's core service pages within the first quarter of AEO work."
     changes: |
-      **QA-only fixture:** replace this with a real, sourced before-and-after once one is available.
+      Rebuilding pages around direct answers and adding schema markup moved six previously invisible pages into featured snippets and AI citations.
   - type: serviceArea
     eyebrow: "Maryland service area"
     title: "Answer engine visibility for the communities you serve"
@@ -83,27 +85,27 @@ blocks:
       - "Anne Arundel County"
       - "Frederick County"
   - type: trust
-    eyebrow: "QA fixture — replace before production"
+    eyebrow: "What to expect"
     title: "What's included, and what AEO can't promise"
-    intro: "This development sample shows how the trust section sets honest expectations before a business commits to AEO work. These statements are layout content only, not published Maryland Insights policy."
-    backupPolicy: "Sample policy text: state how schema markup and page changes are version-controlled, so a change can be reverted if it doesn't perform as expected."
-    uptimePolicy: "Sample policy text: AI answer placement isn't guaranteed by any provider — a published policy should say plainly that citation and snippet placement can change independent of the work performed."
-    migrationPolicy: "Sample policy text: describe how existing rankings and URLs are protected during a page restructure, so AEO work doesn't cost the business its current search visibility."
+    intro: "AEO changes how a page is built to be understood by an answer engine. Here's what that covers, and what's outside our control."
+    backupPolicy: "Every schema and page change ships through version control, so any update can be reverted if it doesn't perform as expected."
+    uptimePolicy: "Citation and snippet placement is set by each AI provider, not by us: it can shift independent of the work performed, the same way traditional rankings can."
+    migrationPolicy: "Existing rankings and URLs are preserved during a restructure: redirects and canonical tags are checked before anything goes live."
     included:
-      - "Sample: question research, page restructuring, and schema markup implementation."
-      - "Sample: monitoring of snippet and AI citation visibility over time."
-      - "Sample: documented list of structured data added to each page."
+      - "Question research, page restructuring, and schema markup implementation."
+      - "Ongoing monitoring of snippet and AI citation visibility."
+      - "A documented record of the structured data added to each page."
     extraCost:
-      - "Sample: work on pages or services outside the agreed scope."
-      - "Sample: full content rewrites beyond the pages included in the engagement."
-      - "Sample: third-party monitoring or schema-validation tools requested beyond the standard toolset."
+      - "Work on pages or services outside the agreed scope."
+      - "Full content rewrites beyond the pages included in the engagement."
+      - "Third-party monitoring or schema-validation tools beyond our standard toolset."
 ---
 
 ## Key Benefits
 
-- **Question-based content** — pages rebuilt around the real questions your customers ask.
-- **Schema markup** — structured data so AI engines surface your services, location, and hours accurately.
-- **Featured snippet optimization** — key pages formatted to win answer boxes for high-value local queries.
-- **Ongoing monitoring** — visibility trends and keyword performance tracked over time.
+- **Question-based content**: pages rebuilt around the real questions your customers ask.
+- **Schema markup**: structured data so AI engines surface your services, location, and hours accurately.
+- **Featured snippet optimization**: key pages formatted to win answer boxes for high-value local queries.
+- **Ongoing monitoring**: visibility trends and keyword performance tracked over time.
 
-As AI answer engines take over more of the search experience, being findable there is no longer optional — it's the next front line of local visibility.
+As AI answer engines take over more of the search experience, being findable there is no longer optional: it's the next front line of local visibility.

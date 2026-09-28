@@ -5,6 +5,7 @@ description: "Connect the CRM, analytics and marketing tools Maryland businesses
 image: ""
 draft: false
 
+eyebrow: "Constantly growing integrations"
 section_title: "Your tools, working together automatically"
 
 integrations_list:

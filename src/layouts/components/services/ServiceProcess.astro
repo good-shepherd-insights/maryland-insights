@@ -23,13 +23,6 @@ const headingId = `service-${slugify(title)}`;
   <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
     <div class="grid items-start gap-14 lg:grid-cols-12 lg:gap-20">
       <div class="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
-        {
-          eyebrow && (
-            <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-              {eyebrow}
-            </p>
-          )
-        }
         <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
         {intro && <p class="mt-5 max-w-md text-text-dark/75" set:html={markdownify(intro)} />}
       </div>
@@ -42,10 +35,10 @@ const headingId = `service-${slugify(title)}`;
                 {step.number}
               </div>
               <div class="service-process-detail max-w-xl">
-                <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-dark">
                   Stage {String(index + 1).padStart(2, "0")}
                 </p>
-                <h3 class="h4 mb-3 text-balance" set:html={markdownify(step.title)} />
+                <h3 class="h4 mt-4 mb-3 text-balance" set:html={markdownify(step.title)} />
                 <p class="text-text-dark/75" set:html={markdownify(step.description)} />
                 {step.details && (
                   <div class="content mt-5 border-l-2 border-primary/40 pl-5 text-sm" set:html={markdownify(step.details, true) as string} />
