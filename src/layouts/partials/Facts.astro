@@ -17,7 +17,7 @@ const { pathname } = Astro.url;
   <div class="container">
     <div class="grid md:grid-cols-2 lg:grid-cols-4">
       {
-        data.facts?.slice(0, 4).map((fact, i) => (
+        data.facts?.slice(0, 4).map((fact: any, i: number) => (
           <div
             class={`p-8 xl:p-10 group max-lg:text-center ${
               i === 0

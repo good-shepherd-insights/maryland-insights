@@ -1,6 +1,7 @@
 ---
-import CompanyLogo from "@/components/CompanyLogo.astro";
+import CompanyLogo from "../../components/CompanyLogo.astro";
 import config from "@/config/config.json";
+import { FaArrowRight } from "react-icons/fa6";
 
 type Plan = { label: string; logo?: string; isUs?: boolean };
 type Row = { name: string; description?: string; values: string[] };
@@ -18,7 +19,10 @@ const VISIBLE_ROWS = 4;
 <div data-comparison-table>
   <div class="comparison-lock">
     <div class="comparison-frame rounded-2xl border border-border p-4 sm:p-6">
-      <p class="comparison-hint mb-3 text-sm text-text-dark">Swipe sideways to compare platforms.</p>
+      <p class="comparison-hint mb-3 inline-flex items-center gap-2 text-sm font-medium text-text-dark">
+        Swipe
+        <FaArrowRight className="text-xs text-primary" />
+      </p>
       <div class="comparison-scroll overflow-hidden" role="region" tabindex="0" aria-label="Business platform comparison">
       <table class="comparison-table min-w-full text-left table-fixed">
         <thead>

@@ -22,11 +22,11 @@ const { blocks = [] } = Astro.props as Props;
   blocks.map((block) => {
     switch (block.type) {
       case "richText":
-        return <ServiceRichText eyebrow={block.eyebrow} title={block.title} body={block.body} tone={block.tone} />;
+        return <ServiceRichText title={block.title} body={block.body} tone={block.tone} />;
       case "featureGrid":
-        return <ServiceFeatureGrid eyebrow={block.eyebrow} title={block.title} items={block.items} />;
+        return <ServiceFeatureGrid title={block.title} items={block.items} />;
       case "process":
-        return <ServiceProcess eyebrow={block.eyebrow} title={block.title} intro={block.intro} steps={block.steps} />;
+        return <ServiceProcess title={block.title} intro={block.intro} steps={block.steps} />;
       case "proof":
         return (
           <ServiceProof
@@ -41,11 +41,10 @@ const { blocks = [] } = Astro.props as Props;
           />
         );
       case "serviceArea":
-        return <ServiceArea eyebrow={block.eyebrow} title={block.title} intro={block.intro} counties={block.counties} />;
+        return <ServiceArea title={block.title} intro={block.intro} counties={block.counties} />;
       case "trust":
         return (
           <ServiceTrust
-            eyebrow={block.eyebrow}
             title={block.title}
             intro={block.intro}
             backupPolicy={block.backupPolicy}

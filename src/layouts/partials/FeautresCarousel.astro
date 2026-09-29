@@ -55,7 +55,7 @@ const swiperOptions: SwiperOptions = {
         <div class="lg:w-[50%] mx-auto xl:w-[35%] flex flex-col justify-center">
           {
             list.length &&
-              list.map((item, index) => {
+              list.map((item: any, index: number) => {
                 return (
                   <div
                     class="feature-pagination-item first:rounded-ss-2xl first:rounded-se-2xl last:rounded-bl-2xl last:rounded-br-2xl bg-light border border-border not-last:border-b-0 p-6 flex items-start gap-5 cursor-pointer transition-colors duration-300"
@@ -106,7 +106,7 @@ const swiperOptions: SwiperOptions = {
               <SwiperWrapper>
                 {
                   list.length &&
-                    list.map((item) => (
+                    list.map((item: any) => (
                       <SwiperSlide class="flex items-center justify-center">
                         <ImageMod
                           src={item.image}

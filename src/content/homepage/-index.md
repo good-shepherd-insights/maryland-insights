@@ -1,7 +1,7 @@
 ---
 banner:
-  eyebrow: "Built for Maryland small business"
-  title: "Built, ranked and <span style='color:#C8102E'>grown</span> for Maryland. Measured, not guessed."
+  eyebrow: "Built for Maryland Small Businesses"
+  title: "Built, ranked and grown for Maryland. Measured, not guessed."
   content: "Every plan ships with Local SEO tracking, AEO-ready content, and analytics scoped to your Maryland service area."
   button_solid:
     enable: true
@@ -11,7 +11,6 @@ banner:
     enable: true
     label: "Learn More"
     link: "/about"
-  fine_print: "Get found. Get ranked. Get booked."
   subtitle: "Stand out locally and online."
   image: "/images/homepage/banner.png"
   tag_lines:
@@ -142,6 +141,6 @@ facts_section:
 
 featured_features_section:
   enable: true
-  title: "Key features to build, rank and grow your Maryland Business"
+  title: "Features that matter"
 
 ---

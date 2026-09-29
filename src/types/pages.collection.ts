@@ -1,15 +1,6 @@
 import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
 
-const commonFields = {
-  title: z.string(),
-  description: z.string(),
-  meta_title: z.string().optional(),
-  date: z.date().optional(),
-  image: z.string().optional(),
-  draft: z.boolean(),
-};
-
 export const button = z.object({
   enable: z.boolean(),
   label: z.string(),
@@ -211,7 +202,12 @@ export const careers = defineCollection({
 });
 
 export const blog = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "src/content/blog" }),
+  loader: glob({
+    pattern: "**/*.md",
+    base: "src/content/blog",
+    // keep URLs extension-free (e.g. /blog/my-post, not my-post.md)
+    generateId: ({ entry }) => entry.replace(/\.mdx?$/, ""),
+  }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -380,7 +376,12 @@ export const features = defineCollection({
 });
 
 export const services = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/services" }),
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "src/content/services",
+    // keep URLs extension-free (e.g. /services/local-seo, not local-seo.md)
+    generateId: ({ entry }) => entry.replace(/\.mdx?$/, ""),
+  }),
   schema: z.any(),
 });
 
@@ -405,7 +406,12 @@ export const faqs = defineCollection({
 });
 
 export const pages = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/pages" }),
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "src/content/pages",
+    // keep URLs extension-free (e.g. /privacy-policy, not privacy-policy.md)
+    generateId: ({ entry }) => entry.replace(/\.mdx?$/, ""),
+  }),
   schema: z.object({
     title: z.string(),
     description: z.string(),

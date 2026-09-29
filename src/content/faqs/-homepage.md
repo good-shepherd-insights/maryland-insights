@@ -1,6 +1,6 @@
 ---
 enable: true
-section_title: "Frequently Asked Questions About <mark>Growing in Maryland</mark>"
+section_title: "FAQs for Maryland Businesses"
 faqs_list:
   - question: "Why is a Maryland-specific website better than a generic site builder?"
     answer: "Generic site builders are designed for a global audience. Our platform is built specifically with Maryland local search intent, regional keywords, and community-level optimization in mind. This means your website works harder to attract customers who actually live in your service area, rather than generating irrelevant traffic."

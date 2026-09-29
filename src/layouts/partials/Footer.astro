@@ -152,7 +152,6 @@ function replaceYear(text: string) {
 <script>
   document.querySelectorAll<HTMLFormElement>("[data-newsletter-form]").forEach((newsletterForm) => {
     const consent = newsletterForm.querySelector<HTMLInputElement>("[data-newsletter-consent]");
-    const email = newsletterForm.querySelector<HTMLInputElement>("[name=email]");
     const submit = newsletterForm.querySelector<HTMLButtonElement>("[type=submit]");
     const submitIcon = newsletterForm.querySelector<HTMLElement>("[data-newsletter-submit-icon]");
     const successIcon = newsletterForm.querySelector<HTMLElement>("[data-newsletter-success-icon]");

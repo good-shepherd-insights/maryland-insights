@@ -1,5 +1,5 @@
 ---
-import CompanyLogo from "@/components/CompanyLogo.astro";
+import CompanyLogo from "./CompanyLogo.astro";
 import ImageMod from "@/components/ImageMod.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 
@@ -18,33 +18,35 @@ const { integration } = Astro.props;
 
 <div
   data-aos="fade-up-sm"
-  class="group bg-body rounded-xl border border-border p-6 flex flex-col text-left relative w-full h-full transition-colors duration-300 hover:border-primary/50"
+  class="group relative flex h-full w-full items-start gap-3 rounded-xl border border-border bg-body p-4 text-left transition-colors duration-300 hover:border-primary/50 sm:gap-4 lg:p-5"
 >
-  <div class="w-9 h-9 mb-4 shrink-0 flex items-center justify-center">
+  <div class="flex h-8 w-8 shrink-0 items-center justify-center sm:h-9 sm:w-9">
     {integration.logo_name ? (
       <CompanyLogo
         name={integration.logo_name}
         size={36}
-        class="w-9 h-9 object-contain"
+        class="h-8 w-8 object-contain sm:h-9 sm:w-9"
       />
-    ) : (
+    ) : integration.image ? (
       <ImageMod
         src={integration.image}
         alt={integration.title}
         width={36}
         height={36}
-        class="w-9 h-9 object-contain"
+        class="h-8 w-8 object-contain sm:h-9 sm:w-9"
       />
-    )}
+    ) : null}
   </div>
-  <h3
-    class="font-secondary font-bold text-base leading-snug text-text-dark mb-1"
-    set:html={markdownify(integration.title)}
-  />
-  <p
-    class="text-text-dark/70 text-sm leading-relaxed text-balance"
-    set:html={markdownify(integration.description)}
-  />
+  <div class="min-w-0">
+    <h3
+      class="mb-1 font-secondary text-sm font-bold leading-snug text-text-dark sm:text-base"
+      set:html={markdownify(integration.title)}
+    />
+    <p
+      class="text-xs leading-relaxed text-text-dark/70 sm:text-sm"
+      set:html={markdownify(integration.description)}
+    />
+  </div>
   {integration.link && (
     <a href={integration.link} class="before:inset-0 before:absolute" aria-label={`Learn more about ${integration.title} integration`} />
   )}

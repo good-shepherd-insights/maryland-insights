@@ -1,7 +1,6 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
 import { markdownify } from "@/lib/utils/textConverter";
-import { FaCheck } from "react-icons/fa6";
 import type { CollectionEntry } from "astro:content";
 
 type Props = {
@@ -11,89 +10,158 @@ type Props = {
 const { data } = Astro.props as Props;
 if (!data.enable) return null;
 const { title, agents } = data;
+
+const artGradients = [
+  "bg-gradient-to-br from-secondary via-primary/70 to-white/25",
+  "bg-gradient-to-bl from-primary via-secondary/75 to-white/25",
+  "bg-gradient-to-tr from-secondary via-accent/50 to-white/25",
+  "bg-gradient-to-r from-primary via-secondary/70 to-white/20",
+  "bg-gradient-to-tl from-secondary via-primary/60 to-white/25",
+  "bg-gradient-to-l from-accent/70 via-secondary/70 to-white/25",
+];
+
+const splitPoint = (point: string) => {
+  const match = point.match(/^\*\*(.+?)\*\*:\s*(.+)$/);
+
+  if (!match) {
+    return { label: undefined, detail: point };
+  }
+
+  return { label: match[1], detail: match[2] };
+};
 ---
 
 <section
   id="be-the-answer"
-  class="section bg-dark section-divider"
+  class="section bg-dark section-divider text-white"
   style="--section-divider-color: var(--color-dark)"
 >
   <div class="mx-0 md:mx-8">
-    <div class="container px-8">
-      <h2
-        class="text-center text-white text-balance"
-        set:html={markdownify(title)}
-      />
+    <div
+      class="container max-w-full overflow-x-hidden px-8 [--service-art-box:13.75rem] [--service-art-image:13rem] [--service-art-padding:1.625rem] lg:[--service-art-box:8.5rem] lg:[--service-art-image:7.5rem] lg:[--service-art-padding:0.875rem] xl:max-w-380! xl:[--service-art-box:13.75rem] xl:[--service-art-image:13rem] xl:[--service-art-padding:1.625rem]"
+    >
+      <div class="min-w-0">
+        <h2
+          class="max-w-4xl min-w-0 text-balance text-white"
+          set:html={markdownify(title)}
+        />
+      </div>
 
-      <div class="mt-12 lg:mt-20 flex flex-col gap-16 lg:gap-24">
+      <div class="mt-12 grid items-start gap-10 lg:mt-18 lg:grid-cols-[18rem_minmax(0,1fr)] xl:gap-20">
+        <aside class="lg:sticky lg:top-24">
+          <nav class="border-y border-white/25" aria-label="Services">
+            {
+              agents?.map((agent: any, i: number) => (
+                <a
+                  href={`#service-${i + 1}`}
+                  class="grid grid-cols-[2.25rem_1fr] gap-3 border-b border-white/15 py-4 text-white/70 transition last:border-b-0 hover:text-white focus:text-white focus:outline-none"
+                >
+                  <span class="pt-0.5 text-xs font-bold tracking-widest text-white/40">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span class="font-semibold leading-snug">{agent.label}</span>
+                </a>
+              ))
+            }
+          </nav>
+        </aside>
+
+        <div class="min-w-0 border-t border-white/25">
         {
-          agents?.map((agent, i) => (
-            <div class={`grid gap-8 lg:gap-16 items-center ${agent.image ? "lg:grid-cols-2" : "lg:max-w-3xl lg:mx-auto"}`}>
+          agents?.map((agent: any, i: number) => (
+            <article
+              id={`service-${i + 1}`}
+              class="service-clean-row grid min-w-0 scroll-mt-28 items-start gap-8 border-b border-white/15 py-10 md:py-12 lg:grid-cols-[minmax(0,1fr)_var(--service-art-box)] lg:gap-6 xl:gap-8 xl:py-14"
+            >
+              <div class="w-full min-w-0 max-w-full lg:max-w-3xl">
+                <div class="mb-4 text-xs font-bold tracking-widest text-white/45">
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <div class="grid w-full grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-3 md:grid-cols-[7rem_minmax(0,1fr)] md:gap-5 lg:block">
+                  {agent.image && (
+                    <figure class:list={[
+                      "shrink-0 rounded-2xl p-[2px] lg:hidden",
+                      artGradients[i % artGradients.length],
+                    ]}>
+                      <div class="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[calc(var(--radius-2xl)-2px)] bg-light p-2.5 md:h-28 md:w-28 md:p-4">
+                        <ImageMod
+                          src={agent.image}
+                          alt={agent.label}
+                          width={220}
+                          height={170}
+                          class="h-auto w-full"
+                          format={agent.image.endsWith(".svg") ? "svg" : "webp"}
+                        />
+                      </div>
+                    </figure>
+                  )}
+                  <h3 class="w-full min-w-0 text-[2rem] leading-[1.08] text-white md:text-h3 md:leading-tight">
+                    {agent.label}
+                  </h3>
+                </div>
+                <div
+                  class="mt-5 w-full min-w-0 max-w-full text-lg leading-relaxed text-white/80 lg:max-w-2xl"
+                  set:html={markdownify(agent.description, true)}
+                />
+              </div>
+
               {agent.image && (
-                <div class={i % 2 === 1 ? "lg:order-2" : ""}>
-                  <div
-                    class={agent.image_bg
-                      ? "rounded-2xl p-[1px] bg-white/10"
-                      : ""}
-                  >
-                    <div
-                      class={agent.image_bg
-                        ? "bg-light rounded-[calc(var(--radius-2xl)-1px)] p-5 flex items-center justify-center h-full"
-                        : ""}
-                    >
+                <figure class:list={[
+                  "service-art-box hidden rounded-2xl p-[2px] lg:block",
+                  artGradients[i % artGradients.length],
+                ]}>
+                  <div class="flex min-h-[var(--service-art-box)] items-center justify-center rounded-[calc(var(--radius-2xl)-1px)] bg-light p-[var(--service-art-padding)]">
                       <ImageMod
                         src={agent.image}
                         alt={agent.label}
-                        width={750}
-                        height={584}
-                        class={agent.image_bg
-                          ? "w-full h-auto max-w-sm mx-auto"
-                          : "w-full h-auto rounded-2xl"}
+                        width={420}
+                        height={320}
+                        class="mx-auto h-auto w-full max-w-[var(--service-art-image)]"
                         format={agent.image.endsWith(".svg") ? "svg" : "webp"}
                       />
-                    </div>
                   </div>
-                </div>
+                </figure>
               )}
 
-              <div>
-                <span class="text-sm font-medium uppercase tracking-wide text-white/75">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3
-                  class="mt-3 h3 text-white"
-                  set:html={markdownify(agent.label)}
-                />
-                <div
-                  class="mt-4 space-y-4 text-lg text-white/70 text-balance"
-                  set:html={markdownify(agent.description, true)}
-                />
+              <div class="min-w-0 lg:col-span-2">
+                {agent.points && agent.points.length > 0 && (
+                  <ul class="grid gap-x-12 gap-y-5 border-t border-white/15 pt-7 md:grid-cols-2 xl:gap-x-16">
+                    {agent.points.map((point: string) => {
+                      const { label, detail } = splitPoint(point);
 
-                {agent.points && (
-                  <ul class="mt-6 flex flex-col gap-3">
-                    {agent.points.map((point) => (
-                      <li class="flex items-start gap-3 text-white">
-                        <FaCheck className="mt-1 shrink-0 text-primary" />
-                        <span set:html={markdownify(point)} />
-                      </li>
-                    ))}
+                      return (
+                        <li class="min-w-0 text-[0.98rem] leading-relaxed text-white/82">
+                          {label ? (
+                            <span class="block space-y-1">
+                              <strong class="block font-semibold leading-snug text-white">
+                                {label}
+                              </strong>
+                              <span class="block text-white/78">{detail}</span>
+                            </span>
+                          ) : (
+                            <span set:html={markdownify(detail)} />
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
 
-                {agent.button.enable && (
+                {agent.button?.enable && (
                   <a
                     href={agent.button.link}
                     target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
-                    rel="noopener"
-                    class="hero-cta-gold mt-8 inline-block text-center font-secondary font-semibold text-base px-8 py-4 transition"
+                    rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
+                    class="mt-8 inline-flex font-secondary font-semibold text-secondary transition hover:text-white"
                   >
-                    {agent.button.label}
+                    {agent.button.label} →
                   </a>
                 )}
               </div>
-            </div>
+            </article>
           ))
         }
+        </div>
       </div>
     </div>
   </div>

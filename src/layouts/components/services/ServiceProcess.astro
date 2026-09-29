@@ -9,13 +9,12 @@ type Step = {
 };
 
 type Props = {
-  eyebrow?: string;
   title: string;
   intro?: string;
   steps: Step[];
 };
 
-const { eyebrow, title, intro, steps } = Astro.props as Props;
+const { title, intro, steps } = Astro.props as Props;
 const headingId = `service-${slugify(title)}`;
 ---
 
