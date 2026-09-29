@@ -49,6 +49,9 @@ const collectionSchema: CollectionPage = {
                 <CardPrimary
                   data={service.data}
                   id={`/services/${service.id}`}
+                  compactImage={true}
+                  imageFit="contain"
+                  imageSizes="(min-width: 1024px) 18rem, (min-width: 768px) 16rem, 14rem"
                 />
               </div>
             </div>
@@ -107,13 +110,13 @@ const collectionSchema: CollectionPage = {
                     </a>
                   )}
                 </div>
-                <div class="bg-white/80 p-5 rounded-3xl lg:w-[50%]">
+                <div class="bg-white/80 p-4 rounded-3xl lg:w-[44%]">
                   <ImageMod
                     src={item.image}
                     alt={item.title}
                     width={875}
                     height={597}
-                    class="w-full h-auto max-h-[597px] object-contain rounded-2xl"
+                    class="mx-auto w-full max-w-md h-auto max-h-[420px] object-contain rounded-2xl"
                   />
                 </div>
               </div>

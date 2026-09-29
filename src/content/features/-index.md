@@ -5,11 +5,11 @@ description: "Discover the AI-powered website and SEO features that help Marylan
 image: ""
 draft: false
 
-section_title: "Key features to build, rank and grow your <span class='gradient-orange'>Maryland Business</span>"
+section_title: "Key features to build, rank and grow your Maryland Business"
 
 use_cases:
   enable: true
-  title: "Tailored Solutions for <mark>Maryland Industries</mark>"
+  title: "Tailored Solutions for Maryland Industries"
   description: "We provide industry-specific website and marketing strategies designed to help Maryland businesses thrive in their local markets."
   cases:
     - title: "Local Retail"

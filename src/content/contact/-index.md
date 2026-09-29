@@ -4,10 +4,10 @@ meta_title: "Contact - Maryland Insights"
 description: "Questions about pricing or getting started? Our Maryland team is here to help."
 image: "/images/contact/contact-banner.png"
 draft: false
-section_title: "Have <mark>questions</mark>? We would hear from you"
+section_title: "Have questions? We would hear from you"
 contact_form:
   enable: true
-  title: "Get in <mark>touch</mark>"
+  title: "Get in touch"
   description: "Fill out the form below and we'll get back to you as soon as possible."
   form_action: "#"
   submit_button_label: "Get Started"
@@ -43,7 +43,7 @@ contact_info:
       icon: "FaRegEnvelope"
 gallery_section:
   enable: true
-  title: "Stop by and <mark>meet the team</mark> in Maryland"
+  title: "Stop by and meet the team in Maryland"
   image: "/images/contact/contact-banner.png"
   locations:
     - name: "Maryland Headquarters"

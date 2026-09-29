@@ -35,7 +35,7 @@ banner:
 
 agents_swiper:
   enable: true
-  title: "Your Maryland customers are searching. <mark>Be found.</mark>"
+  title: "Your Maryland customers are searching. Be found."
   agents:
     - label: "Website Hosting"
       description: "A slow or outdated site sends Maryland customers to the next search result in seconds. Every site we build is fast, mobile-ready, and structured to rank in local search from day one: built around your service area, not a generic template."

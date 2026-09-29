@@ -19,10 +19,12 @@ const VISIBLE_ROWS = 4;
 <div data-comparison-table>
   <div class="comparison-lock">
     <div class="comparison-frame rounded-2xl border border-border p-4 sm:p-6">
-      <p class="comparison-hint mb-3 inline-flex items-center gap-2 text-sm font-medium text-text-dark">
-        Swipe
-        <FaArrowRight className="text-xs text-primary" />
-      </p>
+      <div class="comparison-hint mb-3" aria-hidden="true">
+        <span class="comparison-hint-label">Swipe</span>
+        <span class="comparison-hint-track">
+          <FaArrowRight className="comparison-hint-arrow" />
+        </span>
+      </div>
       <div class="comparison-scroll overflow-hidden" role="region" tabindex="0" aria-label="Business platform comparison">
       <table class="comparison-table min-w-full text-left table-fixed">
         <thead>
@@ -136,6 +138,45 @@ const VISIBLE_ROWS = 4;
     display: none;
   }
 
+  .comparison-hint-label {
+    color: var(--color-text-dark);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .comparison-hint-track {
+    align-items: center;
+    background: color-mix(in srgb, var(--color-primary) 12%, var(--color-body));
+    border: 1px solid color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+    border-radius: 999px;
+    display: inline-flex;
+    height: 2rem;
+    justify-content: flex-end;
+    min-width: 4.75rem;
+    padding-inline: 0.5rem;
+    position: relative;
+  }
+
+  .comparison-hint-track::before {
+    background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+    border-radius: 999px;
+    content: "";
+    height: 1px;
+    left: 0.75rem;
+    position: absolute;
+    right: 1.65rem;
+    top: 50%;
+  }
+
+  .comparison-hint-arrow {
+    color: var(--color-primary);
+    height: 0.875rem;
+    position: relative;
+    width: 0.875rem;
+    z-index: 1;
+  }
+
   .comparison-frame {
     position: sticky;
     top: var(--comparison-nav-bottom, 100px);
@@ -174,7 +215,20 @@ const VISIBLE_ROWS = 4;
 
   @media (max-width: 767px) {
     .comparison-hint {
-      display: block;
+      align-items: center;
+      background: color-mix(in srgb, var(--color-body) 92%, transparent);
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      box-shadow: 0 10px 30px color-mix(in srgb, var(--color-dark) 8%, transparent);
+      display: flex;
+      gap: 0.625rem;
+      justify-content: flex-end;
+      margin-left: auto;
+      padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+      position: sticky;
+      top: calc(var(--comparison-nav-bottom, 72px) + 0.5rem);
+      width: max-content;
+      z-index: 35;
     }
 
     .comparison-lock {
