@@ -85,7 +85,7 @@ function replaceYear(text: string) {
                     class="pr-2 transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
                     type="submit"
                   >
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <svg data-newsletter-submit-icon width="18" height="18" viewBox="0 0 18 18" fill="none">
                       <path
                         fill-rule="evenodd"
                         clip-rule="evenodd"
@@ -93,9 +93,10 @@ function replaceYear(text: string) {
                         fill="#070127"
                       />
                     </svg>
+                    <span data-newsletter-success-icon class="hidden text-lg font-bold text-green-700" aria-hidden="true">✓</span>
                   </button>
                 </div>
-                <p data-newsletter-hint class="text-xs text-text-light/70 mb-2">
+                <p data-newsletter-hint class="text-xs text-text-light/70 mb-2" role="status" aria-live="polite">
                   Please accept the privacy policy to enable subscription.
                 </p>
 
@@ -153,28 +154,43 @@ function replaceYear(text: string) {
     const consent = newsletterForm.querySelector<HTMLInputElement>("[data-newsletter-consent]");
     const email = newsletterForm.querySelector<HTMLInputElement>("[name=email]");
     const submit = newsletterForm.querySelector<HTMLButtonElement>("[type=submit]");
+    const submitIcon = newsletterForm.querySelector<HTMLElement>("[data-newsletter-submit-icon]");
+    const successIcon = newsletterForm.querySelector<HTMLElement>("[data-newsletter-success-icon]");
 
     const hint = newsletterForm.querySelector<HTMLElement>("[data-newsletter-hint]");
+
+    const setHint = (message: string, state: "neutral" | "success" | "error" = "neutral") => {
+      if (!hint) return;
+      hint.style.display = "block";
+      hint.textContent = message;
+      hint.classList.toggle("text-green-700", state === "success");
+      hint.classList.toggle("text-red-700", state === "error");
+      hint.classList.toggle("font-semibold", state !== "neutral");
+    };
+
+    const setSuccessIcon = (enabled: boolean) => {
+      submitIcon?.classList.toggle("hidden", enabled);
+      successIcon?.classList.toggle("hidden", !enabled);
+    };
 
     const updateNewsletterState = () => {
       if (hint) {
         hint.style.display = consent?.checked === true ? "none" : "block";
       }
+      setSuccessIcon(false);
     };
 
     consent?.addEventListener("change", updateNewsletterState);
     newsletterForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (consent && !consent.checked) {
-        if (hint) {
-          hint.style.display = "block";
-          hint.textContent = "Please accept the privacy policy to enable subscription.";
-        }
+        setHint("Please accept the privacy policy to enable subscription.", "error");
         return;
       }
 
       if (submit) submit.disabled = true;
-      if (hint) hint.textContent = "Subscribing…";
+      setSuccessIcon(false);
+      setHint("Subscribing…");
 
       const res = await fetch("/api/newsletter", {
         method: "POST",
@@ -182,13 +198,15 @@ function replaceYear(text: string) {
         body: JSON.stringify({ email: new FormData(newsletterForm).get("email") }),
       }).catch(() => null);
 
-      if (hint) {
-        hint.style.display = "block";
-        hint.textContent = res?.ok ? "You're subscribed." : "Subscription failed. Please try again.";
+      if (res?.ok) {
+        newsletterForm.reset();
+        setSuccessIcon(true);
+        setHint("Subscribed — you're on the list.", "success");
+      } else {
+        setSuccessIcon(false);
+        setHint("Subscription failed. Please try again.", "error");
       }
-
-      if (res?.ok) newsletterForm.reset();
-      updateNewsletterState();
+      if (submit) submit.disabled = false;
     });
     updateNewsletterState();
   });
