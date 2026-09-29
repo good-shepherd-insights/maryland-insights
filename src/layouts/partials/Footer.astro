@@ -77,14 +77,12 @@ function replaceYear(text: string) {
                     type="email"
                     placeholder="Enter your email"
                     class="form-input w-full rounded-full border-transparent! bg-transparent! py-2! pl-2! placeholder:opacity-100! placeholder:font-normal disabled:cursor-not-allowed disabled:opacity-40"
-                    disabled
                     required
                     name="email"
                   />
                   <button
                     title="Subscribe"
                     class="pr-2 transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
-                    disabled
                     type="submit"
                   >
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -159,16 +157,21 @@ function replaceYear(text: string) {
     const hint = newsletterForm.querySelector<HTMLElement>("[data-newsletter-hint]");
 
     const updateNewsletterState = () => {
-      const enabled = consent?.checked === true;
-      if (email) email.disabled = !enabled;
-      if (submit) submit.disabled = !enabled;
-      if (hint) hint.style.display = enabled ? "none" : "block";
+      if (hint) {
+        hint.style.display = consent?.checked === true ? "none" : "block";
+      }
     };
 
     consent?.addEventListener("change", updateNewsletterState);
     newsletterForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      if (consent && !consent.checked) return;
+      if (consent && !consent.checked) {
+        if (hint) {
+          hint.style.display = "block";
+          hint.textContent = "Please accept the privacy policy to enable subscription.";
+        }
+        return;
+      }
 
       if (submit) submit.disabled = true;
       if (hint) hint.textContent = "Subscribing…";
