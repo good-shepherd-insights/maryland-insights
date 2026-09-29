@@ -202,12 +202,7 @@ export const careers = defineCollection({
 });
 
 export const blog = defineCollection({
-  loader: glob({
-    pattern: "**/*.md",
-    base: "src/content/blog",
-    // keep URLs extension-free (e.g. /blog/my-post, not my-post.md)
-    generateId: ({ entry }) => entry.replace(/\.mdx?$/, ""),
-  }),
+  loader: glob({ pattern: "**/*.md", base: "src/content/blog" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -376,12 +371,7 @@ export const features = defineCollection({
 });
 
 export const services = defineCollection({
-  loader: glob({
-    pattern: "**/*.{md,mdx}",
-    base: "src/content/services",
-    // keep URLs extension-free (e.g. /services/local-seo, not local-seo.md)
-    generateId: ({ entry }) => entry.replace(/\.mdx?$/, ""),
-  }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/services" }),
   schema: z.any(),
 });
 
@@ -406,12 +396,7 @@ export const faqs = defineCollection({
 });
 
 export const pages = defineCollection({
-  loader: glob({
-    pattern: "**/*.{md,mdx}",
-    base: "src/content/pages",
-    // keep URLs extension-free (e.g. /privacy-policy, not privacy-policy.md)
-    generateId: ({ entry }) => entry.replace(/\.mdx?$/, ""),
-  }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "src/content/pages" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
