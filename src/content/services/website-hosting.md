@@ -1,7 +1,7 @@
 ---
 title: "Website Hosting"
 meta_title: "Website Hosting for Maryland Businesses | Maryland Insights"
-description: "A slow or outdated site sends Maryland customers to the next search result in seconds. Every site we build is fast, mobile-ready, and structured to rank in local search from day one: built around your service area, not a generic template."
+description: "Maryland Insights hosts engineering-grade sites on the open-source stack the enterprises run on. Fast on mobile. Structured for local search. Ready to scale with the business."
 image: "/images/services/website-hosting.svg"
 button:
   enable: true
@@ -14,9 +14,11 @@ blocks:
     title: "A site is infrastructure, not a one-time project"
     tone: "muted"
     body: |
-      Most small-business sites are built once and then left alone until something breaks. We build differently: every site is generated as static HTML at build time, deployed through a containerized pipeline, and rebuilt automatically whenever content changes.
+      Most small-business sites are built once and then left alone until something breaks. We build differently. Every site is generated as static HTML at build time, deployed through a containerized pipeline, and rebuilt automatically when content changes.
 
-      That architecture removes the two most common failure points for small-business sites: a live database that can be corrupted or exploited, and a manual deployment process that only one person knows how to run.
+      That architecture removes the two most common failure points for small-business sites. A live database that can be corrupted or exploited. A manual deploy process that only one person knows how to run.
+
+      This is the engineering layer the enterprises have been running for years. Static-first rendering. Containerized deployment. Open-source tools, blazing-fast pipelines, real builders. The local layer never inherited any of it. Maryland Insights brings it to Maryland businesses and the agencies that serve them.
 
       **What that means in practice:**
 
@@ -104,13 +106,17 @@ blocks:
       - "Third-party subscriptions and premium external services."
       - "Work outside the agreed site, content, or migration scope."
       - "Urgent changes requested outside the normal delivery process."
+  - type: richText
+    eyebrow: "Why this matters"
+    title: "Engineering-grade hosting, at the local layer"
+    tone: "muted"
+    body: |
+      The enterprises had access to blazing-fast tools, real data pipelines, and open-source engineering for years. The local layer never inherited any of it. They had to evolve, or they would drown. Maryland Insights brings that engineering layer to Maryland businesses and the agencies that serve them.
+
+      - **Maryland-first, not generic.** Built for the industries and communities of the local market, from the schema markup to the location signals. The granular Maryland data the national brands cannot fake.
+      - **Local search from launch.** Page structure, meta data, and schema markup wired in from day one. The site earns its position by being structurally correct, not by renting traffic.
+      - **Mobile-first by default.** Fully responsive and fast-loading on every device, because that is where Maryland customers actually are.
+      - **Built to grow.** Add pages, services, blog content, and integrations without rebuilding. The same platform that gets the business started adapts when the business grows.
+
+      Every site runs on infrastructure built for speed and uptime. Not squeezed onto shared servers that slow down when other sites spike. Hosted on the same open-source stack the enterprises have been deploying for years, because they had to evolve, or they would drown.
 ---
-
-## Key Benefits
-
-- **Maryland-focused templates**: designed for the industries and communities of the local market.
-- **Local SEO foundations built in**: page structure, meta data, schema markup, and location signals from launch.
-- **Mobile-first performance**: fully responsive and fast-loading on every device.
-- **Room to grow**: add pages, services, blog content, and integrations without rebuilding.
-
-Every site runs on infrastructure built for speed and uptime, not squeezed onto shared servers that slow down when other sites spike.

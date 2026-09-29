@@ -20,6 +20,7 @@
     "@astrojs/partytown": "^2.1.6",
     "@astrojs/react": "4.4.2",
     "@astrojs/sitemap": "3.6.0",
+    "@astrojs/vercel": "9.0.5",
     "@digi4care/astro-google-tagmanager": "^1.6.0",
     "@justinribeiro/lite-youtube": "^1.9.0",
     "aos": "^2.3.4",
