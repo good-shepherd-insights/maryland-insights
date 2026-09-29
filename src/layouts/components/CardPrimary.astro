@@ -9,6 +9,7 @@ const {
   showImage = true,
   hasDarkArrow = false,
   smallImage = false,
+  compactImage = false,
   equalHeight = false,
   imageFit = "cover",
   imageSizes = "(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw",
@@ -20,15 +21,22 @@ const imageWidth = smallImage ? 172 : 696;
 const imageHeight = smallImage ? 40 : 528;
 const imageClass = smallImage
   ? "h-full w-full object-contain"
+  : compactImage
+    ? "mx-auto h-full max-h-40 w-full max-w-56 object-contain md:max-h-44 md:max-w-64"
   : imageFit === "contain"
     ? "h-full w-full object-contain"
     : "h-full w-full object-cover";
+const imageFrameClass = smallImage
+  ? "h-10"
+  : compactImage
+    ? "aspect-[4/3] bg-light/60 p-6 sm:p-8"
+  : `aspect-[696/528] ${imageFit === "contain" ? "bg-light/60 p-3" : ""}`;
 ---
 
 <div class={`bg-body rounded-2xl p-6 group relative ${equalHeight ? "flex flex-col h-full" : ""} ${className}`}>
   {
     showImage && (
-      <div class={`mb-6 overflow-hidden rounded-lg ${smallImage ? "h-10" : "aspect-[696/528]"} ${imageFit === "contain" ? "bg-light/60 p-3" : ""}`}>
+      <div class={`mb-6 overflow-hidden rounded-lg ${imageFrameClass}`}>
         <ImageMod
           src={image}
           width={imageWidth}

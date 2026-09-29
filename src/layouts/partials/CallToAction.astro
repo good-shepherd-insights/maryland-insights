@@ -88,7 +88,7 @@ const dots = Array.from({ length: 16 }, () => {
   <div class="nested-circles group-hover:scale-90">
     <div class="nested-circle inf-rotate">
       {
-        rotating_icons.slice(0, 4).map((image) => (
+        rotating_icons.slice(0, 4).map((image: any) => (
           <div class="nested-circle-icon">
             <ImageMod
               width={120}
@@ -103,7 +103,7 @@ const dots = Array.from({ length: 16 }, () => {
     </div>
     <div class="nested-circle inf-rotate">
       {
-        rotating_icons.slice(4, 8).map((image) => (
+        rotating_icons.slice(4, 8).map((image: any) => (
           <div class="nested-circle-icon">
             <ImageMod
               width={50}

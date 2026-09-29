@@ -5,7 +5,7 @@ description: "The services behind every Maryland Insights site: hosting, AEO, lo
 image: ""
 draft: false
 
-section_title: "The services built to make your Maryland business <span class='gradient-orange'>found</span>."
+section_title: "The services built to make your Maryland business found."
 
 use_cases:
   enable: false

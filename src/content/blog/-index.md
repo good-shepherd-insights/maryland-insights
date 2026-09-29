@@ -13,11 +13,11 @@ blog_library_guide:
 
 featured_posts:
   enable: true
-  title: "Featured <mark>updates & productivity</mark> tips"
+  title: "Featured updates & productivity tips"
   # Featured post has boolean flag on each blog post's frontmatter
 
 actual_posts:
   enable: true
-  title: "<mark>Explore the</mark> future of growth <mark>with Maryland Insights</mark>"
+  title: "Explore the future of growth with Maryland Insights"
   # All posts are in `src/content/blog/` directory
 ---

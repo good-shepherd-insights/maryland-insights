@@ -1,5 +1,5 @@
 ---
-import IntegrationCard from "@/components/IntegrationCard.astro";
+import IntegrationCard from "../../components/IntegrationCard.astro";
 import { FaArrowRight } from "react-icons/fa6";
 import { markdownify } from "@/lib/utils/textConverter";
 import { getListPage } from "@/lib/contentParser.astro";
@@ -26,10 +26,10 @@ if (!integrations_list) {
 }
 
 const swiperOptions: SwiperOptions = {
-  slidesPerView: 1.15,
-  spaceBetween: 14,
+  slidesPerView: 1.25,
+  spaceBetween: 10,
   grid: {
-    rows: 2,
+    rows: 3,
     fill: "column",
   },
   scrollbar: {
@@ -38,8 +38,8 @@ const swiperOptions: SwiperOptions = {
     hide: false,
   },
   breakpoints: {
-    480: { slidesPerView: 1.6 },
-    640: { slidesPerView: 2.3 },
+    480: { slidesPerView: 1.55, spaceBetween: 12 },
+    640: { slidesPerView: 2, spaceBetween: 14 },
   },
 };
 ---
@@ -60,7 +60,7 @@ const swiperOptions: SwiperOptions = {
         {/* Mobile / tablet: swipeable carousel — a 4-row grid was too noisy to scroll through on small screens */}
         <div class="lg:hidden">
           <div class="-mx-4 px-4 fade-overlay-carousel">
-            <Swiper options={swiperOptions} class="h-[560px]">
+            <Swiper options={swiperOptions} class="integrations-staggered-swiper h-[470px] sm:h-[500px] md:h-[500px]">
               <SwiperWrapper>
                 {integrations_list.map((integration: any) => (
                   <SwiperSlide>
@@ -70,13 +70,15 @@ const swiperOptions: SwiperOptions = {
                 <SwiperSlide>
                   <a
                     href="/integrations"
-                    class="group bg-body rounded-2xl p-6 flex flex-col items-center justify-center text-center duration-300 relative w-full h-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)]"
+                    class="group relative flex h-full w-full items-start gap-3 rounded-2xl bg-body p-4 text-left shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)] duration-300 sm:gap-4"
                   >
-                    <div class="mb-4 w-15 h-15 shrink-0 flex items-center justify-center rounded-full bg-light">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-light">
                       <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
                     </div>
-                    <h3 class="h6 mb-2 shrink-0">And more…</h3>
-                    <p class="text-text-dark/70 text-sm">See the full list of integrations</p>
+                    <div class="min-w-0">
+                      <h3 class="mb-1 font-secondary text-sm font-bold leading-snug text-text-dark sm:text-base">And more…</h3>
+                      <p class="text-xs leading-relaxed text-text-dark/70 sm:text-sm">See the full list of integrations</p>
+                    </div>
                   </a>
                 </SwiperSlide>
               </SwiperWrapper>
@@ -86,19 +88,21 @@ const swiperOptions: SwiperOptions = {
         </div>
 
         {/* Desktop: grid */}
-        <div class="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="hidden gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3">
           {integrations_list.map((integration: any) => (
             <IntegrationCard integration={integration} />
           ))}
           <a
             href="/integrations"
-            class="group bg-body rounded-2xl p-6 flex flex-col items-center justify-center text-center duration-300 relative w-full h-full shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)]"
+            class="group relative flex h-full w-full items-center gap-4 rounded-2xl bg-body p-6 text-left shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)] duration-300"
           >
-            <div class="mb-4 w-15 h-15 shrink-0 flex items-center justify-center rounded-full bg-light">
+            <div class="flex h-15 w-15 shrink-0 items-center justify-center rounded-full bg-light">
               <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
             </div>
-            <h3 class="h6 mb-2 shrink-0">And more…</h3>
-            <p class="text-text-dark/70 text-sm">See the full list of integrations</p>
+            <div class="min-w-0">
+              <h3 class="h6 mb-2 shrink-0">And more…</h3>
+              <p class="text-sm text-text-dark/70">See the full list of integrations</p>
+            </div>
           </a>
         </div>
       </div>
@@ -126,5 +130,15 @@ const swiperOptions: SwiperOptions = {
     bottom: -19px;
     left: 0;
     right: 0;
+  }
+
+  @media (max-width: 1023px) {
+    :global(.integrations-staggered-swiper .swiper-slide:nth-child(3n + 2)) {
+      transform: translateX(1.25rem);
+    }
+
+    :global(.integrations-staggered-swiper .swiper-slide:nth-child(3n)) {
+      transform: translateX(2.5rem);
+    }
   }
 </style>

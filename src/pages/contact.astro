@@ -75,7 +75,7 @@ if (pageIndex.data.draft) {
                 method="POST"
                 class="bg-body p-7 rounded-3xl card-shadow w-full h-full"
               >
-                {contact_form.fields?.map((field) => (
+                {contact_form.fields?.map((field: any) => (
                   <div class="mb-6">
                     <label for={field.name} class="form-label">
                       {field.label}
@@ -115,7 +115,7 @@ if (pageIndex.data.draft) {
           contact_info?.enable && (
             <div class="lg:w-[35%]">
               <div class="flex flex-wrap justify-center lg:flex-col gap-7.5 w-full">
-                {contact_info.informations?.map((info, i) => (
+                {contact_info.informations?.map((info: any) => (
                   <div
                     class="bg-body p-10 rounded-3xl card-shadow flex-1 min-w-80"
                   >
@@ -166,7 +166,7 @@ if (pageIndex.data.draft) {
           )}
 
           <div class="flex flex-wrap justify-center gap-7.5 w-full mt-7.5">
-            {gallery_section.locations?.map((location, i) => (
+            {gallery_section.locations?.map((location: any) => (
               <div
                 class="bg-body/5 p-7 rounded-2xl flex-1 min-w-62"
               >

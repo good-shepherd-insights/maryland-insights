@@ -2,13 +2,12 @@
 import { markdownify, slugify } from "@/lib/utils/textConverter";
 
 type Props = {
-  eyebrow?: string;
   title: string;
   intro: string;
   counties: string[];
 };
 
-const { eyebrow, title, intro, counties } = Astro.props as Props;
+const { title, intro, counties } = Astro.props as Props;
 const headingId = `service-${slugify(title)}`;
 ---
 

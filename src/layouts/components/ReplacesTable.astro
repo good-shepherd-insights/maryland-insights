@@ -1,6 +1,7 @@
 ---
-import CompanyLogo from "@/components/CompanyLogo.astro";
+import CompanyLogo from "../../components/CompanyLogo.astro";
 import config from "@/config/config.json";
+import { FaArrowRight } from "react-icons/fa6";
 
 type Plan = { label: string; logo?: string; isUs?: boolean };
 type Row = { name: string; description?: string; values: string[] };
@@ -18,7 +19,12 @@ const VISIBLE_ROWS = 4;
 <div data-comparison-table>
   <div class="comparison-lock">
     <div class="comparison-frame rounded-2xl border border-border p-4 sm:p-6">
-      <p class="comparison-hint mb-3 text-sm text-text-dark">Swipe sideways to compare platforms.</p>
+      <p class="comparison-hint mb-3 text-right">
+        <span class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-text-dark shadow-sm">
+          Swipe
+          <FaArrowRight className="text-xs text-primary" aria-hidden="true" />
+        </span>
+      </p>
       <div class="comparison-scroll overflow-hidden" role="region" tabindex="0" aria-label="Business platform comparison">
       <table class="comparison-table min-w-full text-left table-fixed">
         <thead>
@@ -173,19 +179,13 @@ const VISIBLE_ROWS = 4;
       display: block;
     }
 
-    .comparison-lock {
-      height: auto;
-    }
-
     .comparison-frame {
-      position: static;
       padding: 12px;
     }
 
     .comparison-scroll {
-      max-height: none;
+      max-height: calc(100dvh - var(--comparison-nav-bottom, 72px) - 24px);
       overflow-x: auto;
-      overflow-y: auto;
     }
 
     .comparison-table {
@@ -196,13 +196,21 @@ const VISIBLE_ROWS = 4;
       width: 176px;
     }
 
-    .comparison-table thead th,
-    .comparison-table .category-heading {
-      position: static;
+    .comparison-table thead th {
+      position: sticky;
+      top: 0;
     }
 
     .comparison-table thead .feature-column {
       position: sticky;
+      left: 0;
+      z-index: 30;
+    }
+
+    .comparison-table .category-heading {
+      position: sticky;
+      top: var(--comparison-header-height, 69px);
+      z-index: 15;
     }
 
     .comparison-table thead .feature-column > div {
@@ -245,12 +253,7 @@ const VISIBLE_ROWS = 4;
     const navbar = document.querySelector<HTMLElement>(".header");
     const scroller = root.querySelector<HTMLElement>(".comparison-scroll")!;
     const headings = root.querySelectorAll<HTMLElement>(".category-heading");
-    const mobile = window.matchMedia("(max-width: 767px)");
     const updateCategoryPositions = () => {
-      if (mobile.matches) {
-        headings.forEach((heading) => { heading.style.transform = ""; });
-        return;
-      }
       const stickyTop = scroller.getBoundingClientRect().top + header.getBoundingClientRect().height;
       headings.forEach((heading) => {
         const sectionBottom = heading.parentElement!.getBoundingClientRect().bottom;
@@ -263,7 +266,6 @@ const VISIBLE_ROWS = 4;
       updateCategoryPositions();
     };
     const syncTableToPageScroll = () => {
-      if (mobile.matches) return;
       const stickyTop = parseFloat(getComputedStyle(frame).top) || 0;
       const lockTop = lock.getBoundingClientRect().top + window.scrollY;
       const maxScroll = scroller.scrollHeight - scroller.clientHeight;
@@ -272,12 +274,6 @@ const VISIBLE_ROWS = 4;
       updateCategoryPositions();
     };
     const updateLockHeight = () => {
-      if (mobile.matches) {
-        root.style.removeProperty("--comparison-lock-height");
-        scroller.scrollTop = 0;
-        updateCategoryPositions();
-        return;
-      }
       root.style.setProperty("--comparison-nav-bottom", `${Math.max(0, navbar?.getBoundingClientRect().bottom ?? 0)}px`);
       root.style.setProperty("--comparison-lock-height", `${frame.getBoundingClientRect().height + scroller.scrollHeight - scroller.clientHeight}px`);
       syncTableToPageScroll();

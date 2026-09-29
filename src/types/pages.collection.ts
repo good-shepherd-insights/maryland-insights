@@ -1,15 +1,6 @@
 import { glob } from "astro/loaders";
 import { defineCollection, z } from "astro:content";
 
-const commonFields = {
-  title: z.string(),
-  description: z.string(),
-  meta_title: z.string().optional(),
-  date: z.date().optional(),
-  image: z.string().optional(),
-  draft: z.boolean(),
-};
-
 export const button = z.object({
   enable: z.boolean(),
   label: z.string(),

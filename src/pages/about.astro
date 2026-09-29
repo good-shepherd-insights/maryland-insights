@@ -62,7 +62,7 @@ if (pageIndex.data.draft) return Astro.redirect("/404");
           />
 
           <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {teams_section.members.map((member) => (
+            {teams_section.members.map((member: any) => (
               <div
                 class="text-center max-w-sm p-6 rounded-2xl bg-light/50"
                

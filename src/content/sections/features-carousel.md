@@ -1,6 +1,6 @@
 ---
 enable: true
-title: "Industries <span class='gradient-orange'>We Serve</span> in Maryland"
+title: "Industries We Serve in Maryland"
 subtitle: "We provide industry-specific solutions designed to help Maryland businesses succeed in their local markets. From Main Street retail to professional practices, every tool is built with your industry's unique needs in mind."
 
 list:

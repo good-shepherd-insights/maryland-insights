@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
@@ -70,7 +72,6 @@ if (faqs_list && faqs_list.length > 0) {
   {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `Frequently Asked Questions About ${title}` }} prefix="service-faq" />}
 
   <ServiceCTA
-    eyebrow="Work with Maryland Insights"
     title="Ready to make your next customer easier to find?"
     description="Bring your service area, customer journey, and growth goals into one conversation. We’ll start with what your business needs and make the next step clear."
     buttonLabel="Partner with Us"
