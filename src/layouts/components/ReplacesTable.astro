@@ -18,7 +18,8 @@ const VISIBLE_ROWS = 4;
 <div data-comparison-table>
   <div class="comparison-lock">
     <div class="comparison-frame rounded-2xl border border-border p-4 sm:p-6">
-      <div class="comparison-scroll overflow-hidden" role="region" aria-label="Business platform comparison, scroll vertically to compare features">
+      <p class="comparison-hint mb-3 text-sm text-text-dark">Swipe sideways to compare platforms.</p>
+      <div class="comparison-scroll overflow-hidden" role="region" tabindex="0" aria-label="Business platform comparison">
       <table class="comparison-table min-w-full text-left table-fixed">
         <thead>
           <tr>
@@ -127,6 +128,10 @@ const VISIBLE_ROWS = 4;
     height: var(--comparison-lock-height, 100dvh);
   }
 
+  .comparison-hint {
+    display: none;
+  }
+
   .comparison-frame {
     position: sticky;
     top: var(--comparison-nav-bottom, 100px);
@@ -164,13 +169,63 @@ const VISIBLE_ROWS = 4;
   }
 
   @media (max-width: 767px) {
+    .comparison-hint {
+      display: block;
+    }
+
+    .comparison-lock {
+      height: auto;
+    }
+
+    .comparison-frame {
+      position: static;
+      padding: 12px;
+    }
+
+    .comparison-scroll {
+      max-height: none;
+      overflow-x: auto;
+      overflow-y: auto;
+    }
+
+    .comparison-table {
+      width: 960px;
+    }
+
+    .feature-column {
+      width: 176px;
+    }
+
+    .comparison-table thead th,
+    .comparison-table .category-heading {
+      position: static;
+    }
+
+    .comparison-table thead .feature-column {
+      position: sticky;
+    }
+
+    .comparison-table thead .feature-column > div {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
     .comparison-table :is(h3, h6, p, td span) {
-      font-size: 12px;
-      line-height: 1.4;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .comparison-table h3 {
+      font-size: 16px;
     }
 
     .comparison-table :is(th, td) {
       padding-block: 12px;
+    }
+
+    .comparison-table button {
+      min-height: 44px;
+      min-width: 44px;
     }
   }
 
@@ -190,7 +245,12 @@ const VISIBLE_ROWS = 4;
     const navbar = document.querySelector<HTMLElement>(".header");
     const scroller = root.querySelector<HTMLElement>(".comparison-scroll")!;
     const headings = root.querySelectorAll<HTMLElement>(".category-heading");
+    const mobile = window.matchMedia("(max-width: 767px)");
     const updateCategoryPositions = () => {
+      if (mobile.matches) {
+        headings.forEach((heading) => { heading.style.transform = ""; });
+        return;
+      }
       const stickyTop = scroller.getBoundingClientRect().top + header.getBoundingClientRect().height;
       headings.forEach((heading) => {
         const sectionBottom = heading.parentElement!.getBoundingClientRect().bottom;
@@ -203,6 +263,7 @@ const VISIBLE_ROWS = 4;
       updateCategoryPositions();
     };
     const syncTableToPageScroll = () => {
+      if (mobile.matches) return;
       const stickyTop = parseFloat(getComputedStyle(frame).top) || 0;
       const lockTop = lock.getBoundingClientRect().top + window.scrollY;
       const maxScroll = scroller.scrollHeight - scroller.clientHeight;
@@ -211,6 +272,12 @@ const VISIBLE_ROWS = 4;
       updateCategoryPositions();
     };
     const updateLockHeight = () => {
+      if (mobile.matches) {
+        root.style.removeProperty("--comparison-lock-height");
+        scroller.scrollTop = 0;
+        updateCategoryPositions();
+        return;
+      }
       root.style.setProperty("--comparison-nav-bottom", `${Math.max(0, navbar?.getBoundingClientRect().bottom ?? 0)}px`);
       root.style.setProperty("--comparison-lock-height", `${frame.getBoundingClientRect().height + scroller.scrollHeight - scroller.clientHeight}px`);
       syncTableToPageScroll();

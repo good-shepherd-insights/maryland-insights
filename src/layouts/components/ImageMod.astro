@@ -10,6 +10,11 @@ interface Props {
   height: number;
   loading?: "eager" | "lazy" | null | undefined;
   decoding?: "async" | "auto" | "sync" | null | undefined;
+  layout?: "constrained" | "fixed" | "full-width" | "none";
+  fit?: "contain" | "cover" | "fill" | "none" | "scale-down";
+  sizes?: string;
+  widths?: number[];
+  densities?: (number | `${number}x`)[];
   format?: "auto" | "avif" | "jpeg" | "png" | "svg" | "webp";
   class?: string;
   style?: any;
@@ -23,6 +28,11 @@ let {
   height,
   loading,
   decoding,
+  layout,
+  fit,
+  sizes,
+  widths,
+  densities,
   class: className,
   format,
   style,
@@ -52,6 +62,11 @@ const isValidPath = images[src] ? true : false;
       height={height}
       loading={loading}
       decoding={decoding}
+      layout={layout}
+      fit={fit}
+      sizes={sizes}
+      widths={widths}
+      densities={densities}
       class={className}
       format={format}
       style={style}

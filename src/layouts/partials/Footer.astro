@@ -64,8 +64,7 @@ function replaceYear(text: string) {
               </div>
               <form
                 data-newsletter-form
-                action={config.subscription_in_footer.mailchimp_form_action}
-                target="_blank"
+                action="/api/newsletter"
                 method="post"
               >
                 <div
@@ -80,7 +79,7 @@ function replaceYear(text: string) {
                     class="form-input w-full rounded-full border-transparent! bg-transparent! py-2! pl-2! placeholder:opacity-100! placeholder:font-normal disabled:cursor-not-allowed disabled:opacity-40"
                     disabled
                     required
-                    name={config.subscription_in_footer.mailchimp_form_name}
+                    name="email"
                   />
                   <button
                     title="Subscribe"
@@ -152,11 +151,9 @@ function replaceYear(text: string) {
 </footer>
 
 <script>
-  const newsletterForm = document.querySelector<HTMLFormElement>("[data-newsletter-form]");
-
-  if (newsletterForm) {
+  document.querySelectorAll<HTMLFormElement>("[data-newsletter-form]").forEach((newsletterForm) => {
     const consent = newsletterForm.querySelector<HTMLInputElement>("[data-newsletter-consent]");
-    const email = newsletterForm.querySelector<HTMLInputElement>("#newsletter-email");
+    const email = newsletterForm.querySelector<HTMLInputElement>("[name=email]");
     const submit = newsletterForm.querySelector<HTMLButtonElement>("[type=submit]");
 
     const hint = newsletterForm.querySelector<HTMLElement>("[data-newsletter-hint]");
@@ -169,9 +166,27 @@ function replaceYear(text: string) {
     };
 
     consent?.addEventListener("change", updateNewsletterState);
-    newsletterForm.addEventListener("submit", (event) => {
-      if (!consent?.checked) event.preventDefault();
+    newsletterForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (consent && !consent.checked) return;
+
+      if (submit) submit.disabled = true;
+      if (hint) hint.textContent = "Subscribing…";
+
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: new FormData(newsletterForm).get("email") }),
+      }).catch(() => null);
+
+      if (hint) {
+        hint.style.display = "block";
+        hint.textContent = res?.ok ? "You're subscribed." : "Subscription failed. Please try again.";
+      }
+
+      if (res?.ok) newsletterForm.reset();
+      updateNewsletterState();
     });
     updateNewsletterState();
-  }
+  });
 </script>

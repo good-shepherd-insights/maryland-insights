@@ -292,8 +292,8 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                 </small>
 
                 <form
-                  action={config.subscription_in_footer.mailchimp_form_action}
-                  target="_blank"
+                  data-newsletter-form
+                  action="/api/newsletter"
                   method="post"
                 >
                   <div class="flex justify-between rounded-lg bg-light px-3 py-2 border border-border mb-5 mt-2">
@@ -302,7 +302,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                       placeholder="Enter your email"
                       class="form-input w-full rounded-full border-transparent! bg-transparent! py-2! pl-2! placeholder:opacity-100! placeholder:font-normal"
                       required
-                      name={config.subscription_in_footer.mailchimp_form_name}
+                      name="email"
                     />
                     <button
                       title="Subscribe"
@@ -324,16 +324,20 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                       </svg>
                     </button>
                   </div>
+                  <p data-newsletter-hint class="text-xs text-text-light/70 mb-2">
+                    Please accept the privacy policy to enable subscription.
+                  </p>
 
                   <label
-                    for="checkbox"
+                    for="blog-newsletter-consent"
                     class="text-xs block"
                     style="line-height:normal"
                   >
                     <input
                       type="checkbox"
                       name="checkbox"
-                      id="checkbox"
+                      id="blog-newsletter-consent"
+                      data-newsletter-consent
                       required
                       class="appearance-auto rounded-sm accent-primary ring-0"
                     />
