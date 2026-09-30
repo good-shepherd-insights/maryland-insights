@@ -7,36 +7,36 @@ draft: false
 
 company_narrative:
   enable: true
-  title: "Since 2015, we've been helping Maryland businesses get found, attract customers, and grow: because your success matters to us."
+  title: "Since 2015, we have been helping Maryland businesses get found, attract customers, and grow."
   image: "/images/about/about-banner.png"
   sections:
     - id: "since-2015"
       title: "Since 2015"
       paragraphs:
-        - "2015. We started with local Maryland businesses, learning what it takes to grow one in a state with dozens of distinct markets."
-        - "Businesses had the capability. Customers had the intent. The barrier was the tools."
-        - "Most agencies hand out WordPress or Go High Level, since they are fast to set up and never built for the operator running them. Plugin conflicts eat hours. Theme updates break layouts. The same platform that gets a business started becomes the thing holding it back a year later."
-        - "Enterprises had blazing-fast tooling, real data pipelines, and the open-source engineering that runs most of the internet. The local layer never inherited any of it. Maryland Insights closes that gap: pre-rendered static HTML on a containerized pipeline, the same open-source stack the enterprises run on, sized for the local layer."
+        - "We started in 2015 with local Maryland businesses, learning county by county what it actually takes to compete in a state with dozens of distinct markets, each with its own search behavior, its own customer base, and its own set of agencies trying to serve it."
+        - "The businesses had the capability. Customers had the intent. The barrier was always the tools. Most operators were handed WordPress or a hosted builder because those platforms are fast to set up, not because they were built for a business running on tight margins with no dedicated IT staff."
+        - "Plugin conflicts eat hours. Theme updates break layouts. Security patches get skipped because no one owns the maintenance. The same platform that gets a business started becomes the constraint holding it back eighteen months later, and the agency that sold it has moved on to the next client."
+        - "Enterprises had blazing-fast tooling, real data pipelines, and the open-source engineering that runs most of the internet. Pre-rendered static HTML. Containerized deployments. Decoupled content layers. The local layer never inherited any of it. Maryland Insights closes that gap, the same stack the enterprises run on, sized for the operator who cannot afford to hire four engineers to maintain it."
     - id: "who-we-are"
       title: "Who We Are"
       paragraphs:
-        - "We are the foundation layer, the engineering the national brands pay eight figures for, sized for what local operators actually run on."
-        - "A team of data science and go-to-market engineers who came to this from the engineering side, where tooling was blazing-fast and open-source was table stakes. The marketing layer never inherited any of it."
-        - "We build the infrastructure behind your digital marketing decision-making. On top sits the campaign management; above that, the AI agents, where they earn their keep. We are the builders under the hood."
-        - "For agency partners in Maryland, this is direct engineering access. Their clients already understand marketing and value clean data. When they need something new, they talk to the engineers who can build it, not a ticket queue. The agencies scale what they already do."
-        - "We push the national brands back while letting the Maryland brands bolster up, the storefronts on Main Street as much as the agencies on West Street. Empower a business, empower the community. Augmentation, not replacement."
+        - "We are not a marketing agency. We are not a SaaS platform. We are not a bespoke software agency. We are the foundation layer: the engineering the national brands pay eight figures for, sized for what local operators actually run on."
+        - "A team of data science and go-to-market engineers who came to this from the engineering side, where tooling was fast and open-source was table stakes. We watched the local layer get handed tools that were never built for local search, local intent, or local data. So we built the layer underneath."
+        - "The stack handles hosting, builds, deployments, image optimization, content management, and local schema. On top of that sits campaign management. Above that, the AI layer, where agents earn their keep by acting on clean data instead of guessing from noise. We are the builders under the hood. The engineers who make the rest of it work."
+        - "For Maryland agency partners, this is direct engineering access without a ticket queue. Their clients already understand marketing and trust the data they work from. When they need a new integration, a new pipeline, or a new structured data configuration, they talk to the engineers who built the platform, not a support escalation. The agencies scale what they already do well. We handle the foundation underneath it."
+        - "We build the infrastructure and stay out of the marketing decisions. Augmentation, not replacement. The agencies run the campaigns. The operators run the business. We make sure the layer underneath does not slow either of them down."
     - id: "mission"
       title: "Mission"
       paragraphs:
-        - "Every Maryland business on infrastructure the enterprises would recognize. County by county, until the local layer catches up."
-        - "The platform handles the infrastructure. The agencies and the operators get their time back, then spend it on the work that makes them different."
-        - "Our mission is to eliminate that friction so the work that cannot be automated gets done well."
+        - "Every Maryland business on infrastructure the enterprises would recognize. County by county, until the local layer catches up to what the national brands have had for a decade."
+        - "The platform carries the infrastructure overhead so the agencies and operators can put their time into the work that actually makes them different. Clean builds. Fast pages. Structured data the search engines can read. Lead routing that does not drop contacts. Booking integrations that do not break on a Thursday night."
+        - "Most of that work is invisible when it runs well. It only shows up when it fails. Our mission is to eliminate the failure modes so the work that cannot be automated gets done well, and the work that can be automated runs without anyone watching it."
     - id: "vision"
       title: "Vision"
       paragraphs:
-        - "A Maryland where every business knows to deploy Maryland Insights into their strategy."
-        - "Every Maryland business runs like a well-oiled machine, one that can multiply and scale county by county."
-        - "The data exists and Maryland residents are already searching for the businesses serving them, so the infrastructure needs to be there too."
+        - "A Maryland where every business knows to build on Maryland Insights before they build anything else. Where the foundation is not an afterthought and the infrastructure does not get bolted on after the problems start."
+        - "Every Maryland business running like a well-oiled machine. One that can multiply county by county without rebuilding from scratch each time. The same clean stack in Annapolis as in Frederick, in Bethesda as in Salisbury."
+        - "Maryland residents are already searching for the businesses that serve them. The data exists. The intent is there. The infrastructure needs to be there too, fast enough to earn the click, structured enough to earn the ranking, and reliable enough to earn the return visit."
 
 facts_section:
   enable: true

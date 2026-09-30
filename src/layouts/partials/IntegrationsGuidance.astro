@@ -1,0 +1,102 @@
+---
+const integrationPillars = [
+  {
+    number: "01",
+    title: "Direct lead routing within 60 seconds",
+    description: "Connect form fills and inbound calls straight to your CRM (GoHighLevel, HubSpot) with instant SMS alerts. Fast response times directly increase local closing rates."
+  },
+  {
+    number: "02",
+    title: "Search console and entity tracking",
+    description: "Sync your Google Business Profile, Google Search Console, and Analytics so you know which Maryland cities, counties, and search queries generate paying customers."
+  },
+  {
+    number: "03",
+    title: "Automated booking and deposit workflows",
+    description: "Connect Calendly, Stripe, and automated review triggers. Clients schedule appointments and pay deposits on your site without manual back-and-forth emails."
+  }
+];
+
+const technicalStandards = [
+  {
+    title: "Webhook Reliability & Retries",
+    description: "Every form submission uses asynchronous background processing with automatic retries so no customer inquiry is dropped if an external API has downtime."
+  },
+  {
+    title: "Data Ownership & Portability",
+    description: "Customer records, analytics events, and transaction logs belong to your business. We connect standard APIs with clean exports, avoiding proprietary lock-in."
+  },
+  {
+    title: "Local Schema & Graph Identity",
+    description: "Integrations are mapped directly to your structured organization data, ensuring Google and AI search engines connect your reviews, services, and locations accurately."
+  },
+  {
+    title: "Granular Access & Security",
+    description: "Role-based API scoping ensures external services only access the specific endpoints they need, protecting customer privacy and administrative credentials."
+  }
+];
+---
+
+<section class="section-sm bg-light border-y border-border/70" aria-labelledby="integrations-guidance-title">
+  <div class="container lg:w-[84%] xl:w-[80%] mx-auto">
+    <!-- Top Narrative & Step Flow -->
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-16 xl:gap-24 items-start">
+      <div>
+        <p class="font-secondary text-xs font-semibold uppercase tracking-[0.14em] text-text-light mb-3">
+          Integration Architecture
+        </p>
+        <h2 id="integrations-guidance-title" class="mb-5 text-balance">
+          Connect the tools that run your business instead of managing disconnected systems.
+        </h2>
+        <p class="text-lg leading-relaxed text-text-dark/80 mb-4 max-w-prose">
+          Most Maryland businesses juggle half a dozen standalone platforms: a website form that sends plain emails, an untracked scheduling link, and a spreadsheet for leads. When tools operate in silos, inquiries fall through the cracks and marketing spend becomes impossible to measure.
+        </p>
+        <p class="leading-relaxed text-text-light max-w-prose text-sm">
+          We treat integrations as foundational plumbing. We connect your website directly to your CRM, payment processors, analytics engines, and communication channels so data flows automatically.
+        </p>
+      </div>
+
+      <!-- Steps with refined rail styling -->
+      <div class="space-y-6 lg:border-l lg:border-border lg:pl-10">
+        {integrationPillars.map((pillar) => (
+          <div class="group relative pl-10">
+            <span class="absolute left-0 top-0.5 font-secondary text-xs font-bold tracking-wider text-primary">
+              {pillar.number}
+            </span>
+            <h3 class="h5 mb-1.5 text-text-dark font-medium text-balance">
+              {pillar.title}
+            </h3>
+            <p class="text-sm leading-relaxed text-text-dark/75">
+              {pillar.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Bottom Technical Standards Grid -->
+    <div class="mt-12 pt-10 border-t border-border lg:mt-16">
+      <div class="mb-8">
+        <h3 class="h4 font-medium text-balance text-text-dark">
+          How we build dependable integration pipelines
+        </h3>
+        <p class="mt-1 text-sm text-text-light max-w-2xl">
+          Core engineering standards we apply across every API connection and data pipeline.
+        </p>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {technicalStandards.map((item) => (
+          <div class="p-6 rounded-xl border border-border/80 bg-body/60 transition-colors hover:border-primary/40 hover:bg-body">
+            <strong class="block font-secondary text-sm font-semibold text-text-dark mb-2">
+              {item.title}
+            </strong>
+            <p class="text-xs leading-relaxed text-text-dark/70">
+              {item.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

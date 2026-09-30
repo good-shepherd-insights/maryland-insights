@@ -3,6 +3,7 @@ import Base from "@/layouts/Base.astro";
 import { getListPage } from "@/lib/contentParser.astro";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
+import IntegrationsGuidance from "@/partials/IntegrationsGuidance.astro";
 import Integrations from "@/partials/Integrations.astro";
 import type { CollectionPage } from "schema-dts";
 import config from "@/config/config.json";
@@ -28,6 +29,8 @@ const collectionSchema: CollectionPage = {
     title={pageIndex.data.title}
     description={pageIndex.data.description}
   />
+
+  <IntegrationsGuidance />
 
   <Integrations />
 
