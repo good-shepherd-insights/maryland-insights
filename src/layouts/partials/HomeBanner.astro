@@ -4,7 +4,6 @@ import { markdownify } from "@/lib/utils/textConverter";
 
 const pageIndex = await getListPage("homepage", "-index");
 const {
-  eyebrow,
   title,
   content,
   button_solid,
@@ -22,20 +21,51 @@ const {
   <div class="mx-0 md:mx-8">
   <div class="container px-8">
     <div class="xl:max-w-4xl mb-8 xl:mb-[81px]">
-      {
-        eyebrow && (
-          <div class="mb-3.5 xl:mb-6 flex items-center gap-2">
-            <img
-              src="/images/brands/maryland-flag.svg"
-              alt="Maryland flag"
-              class="h-4 w-auto shrink-0"
-            />
-            <span class="text-sm font-medium text-text-light">
-              {eyebrow}
-            </span>
-          </div>
-        )
-      }
+      <div
+        role="tablist"
+        aria-label="Audience"
+        class="home-persona-tablist mb-3.5 xl:mb-6 relative inline-flex h-10 items-center rounded-full border border-gray-200 bg-gray-50 p-1 text-sm font-bold text-gray-900"
+      >
+        <span
+          aria-hidden="true"
+          class="home-persona-slider absolute inset-y-1 left-0 rounded-full transition-[transform,width] duration-150 ease-in-out"
+          style="background-color: #C8102E; width: 0; transform: translateX(4px);"
+        ></span>
+        <button
+          type="button"
+          role="tab"
+          aria-selected="true"
+          data-home-persona-tab="businesses"
+          class="home-persona-tab relative z-10 inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-white transition-colors"
+        >
+          <svg
+            class="h-3.5 w-3.5 shrink-0"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0z" />
+          </svg>
+          For Businesses
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected="false"
+          data-home-persona-tab="agencies"
+          class="home-persona-tab relative z-10 inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-gray-900 transition-colors hover:text-gray-700"
+        >
+          <svg
+            class="h-3.5 w-3.5 shrink-0"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+          </svg>
+          For Agencies
+        </button>
+      </div>
       <h1
         class="text-5xl xl:text-6xl leading-[1.08] font-bold tracking-tight text-balance"
         set:html={markdownify(title)}
@@ -93,3 +123,57 @@ const {
   </div>
   </div>
 </section>
+
+<script>
+  const initHomePersonaToggle = () => {
+    const tabs = document.querySelectorAll<HTMLButtonElement>(
+      "[data-home-persona-tab]"
+    );
+    const slider = document.querySelector<HTMLElement>(".home-persona-slider");
+
+    if (tabs.length === 0 || !slider) return;
+
+    const positionSlider = (active: HTMLButtonElement) => {
+      slider.style.width = `${active.offsetWidth}px`;
+      slider.style.transform = `translateX(${active.offsetLeft}px)`;
+    };
+
+    const applyPersona = (tab: HTMLButtonElement) => {
+      tabs.forEach((t) => {
+        const isActive = t === tab;
+        t.setAttribute("aria-selected", String(isActive));
+        if (isActive) {
+          t.classList.add("text-white");
+          t.classList.remove("text-gray-900", "hover:text-gray-700");
+        } else {
+          t.classList.remove("text-white");
+          t.classList.add("text-gray-900", "hover:text-gray-700");
+        }
+      });
+
+      positionSlider(tab);
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => applyPersona(tab));
+    });
+
+    const activeTab =
+      Array.from(tabs).find((tab) => tab.getAttribute("aria-selected") === "true") ??
+      tabs[0];
+    applyPersona(activeTab);
+
+    window.addEventListener("resize", () => {
+      const currentTab =
+        Array.from(tabs).find((tab) => tab.getAttribute("aria-selected") === "true") ??
+        tabs[0];
+      positionSlider(currentTab);
+    });
+  };
+
+  initHomePersonaToggle();
+
+  document.addEventListener("astro:after-swap", () => {
+    initHomePersonaToggle();
+  });
+</script>

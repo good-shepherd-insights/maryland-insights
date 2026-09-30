@@ -116,19 +116,19 @@ const {
           {careerData.department && (
             <span class="text-sm flex flex-col gap-2 border-r border-border pr-3">
               Department
-              <h6>{careerData.department}</h6>
+              <span class="font-semibold text-text-dark">{careerData.department}</span>
             </span>
           )}
           {careerData.vacancy && (
             <span class="text-sm flex flex-col gap-2 border-r border-border pr-3">
               Vacancies
-              <h6>{careerData.vacancy}</h6>
+              <span class="font-semibold text-text-dark">{careerData.vacancy}</span>
             </span>
           )}
           {careerData.deadline && (
             <span class="text-sm flex flex-col gap-2">
               Deadline
-              <h6>{dateFormat(careerData.deadline)}</h6>
+              <span class="font-semibold text-text-dark">{dateFormat(careerData.deadline)}</span>
             </span>
           )}
         </div>

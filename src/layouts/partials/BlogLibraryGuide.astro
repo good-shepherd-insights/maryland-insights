@@ -7,33 +7,120 @@ type Props = {
 };
 
 const { title, introduction, reading_note, categories } = Astro.props as Props;
+
+const editorialPillars = [
+  {
+    number: "01",
+    title: "Entity & AI Search Architecture",
+    description: "Detailed breakdowns on structured JSON-LD schemas, Google Knowledge Graph nodes, and how LLMs extract local business data."
+  },
+  {
+    number: "02",
+    title: "Local Discovery & County Coverage",
+    description: "Field data on ranking in Maryland local map packs, geo-targeted service pages, and review velocity across distinct regional markets."
+  },
+  {
+    number: "03",
+    title: "Conversion & Attribution Pipelines",
+    description: "How to connect Google Analytics, Search Console, and CRM webhooks to measure which pages drive real pipeline revenue."
+  }
+];
+
+const topicHighlights = [
+  {
+    name: "Local SEO & Entity Graph",
+    detail: "County-specific schema, Google Business Profile optimization, and local citation architecture."
+  },
+  {
+    name: "AI Search & AEO",
+    detail: "Structuring content for Perplexity, ChatGPT, and Google AI Overviews to earn direct citations."
+  },
+  {
+    name: "Web Performance & Speed",
+    detail: "Static site generation, sub-second page loads, and mobile optimization on modern infrastructure."
+  },
+  {
+    name: "Maryland Business Operations",
+    detail: "Business entity registration, compliance checks, and regional go-to-market strategies."
+  }
+];
 ---
 
-<section class="section-sm bg-light" aria-labelledby="blog-library-guide-title">
+<section class="section-sm bg-light border-y border-border/70" aria-labelledby="blog-library-guide-title">
   <div class="container lg:w-[84%] xl:w-[80%] mx-auto">
-    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(15rem,0.65fr)] lg:gap-20 xl:gap-28">
-      <div class="max-w-3xl">
-        <h2 id="blog-library-guide-title" class="text-balance">{title}</h2>
-        <p class="mt-6 text-lg leading-relaxed lg:text-xl">{introduction}</p>
+    <!-- Top Narrative & Core Pillars Flow -->
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-16 xl:gap-24 items-start">
+      <div>
+        <p class="font-secondary text-xs font-semibold uppercase tracking-[0.14em] text-text-light mb-3">
+          Editorial Standards & Research
+        </p>
+        <h2 id="blog-library-guide-title" class="mb-5 text-balance">
+          {title}
+        </h2>
+        <p class="text-lg leading-relaxed text-text-dark/80 mb-4 max-w-prose">
+          {introduction}
+        </p>
+        <p class="leading-relaxed text-text-light max-w-prose text-sm">
+          {reading_note}
+        </p>
       </div>
 
-      <div class="lg:border-l lg:border-border lg:pl-10 xl:pl-14">
-        <h3 class="h5">What this library covers</h3>
-        <ul class="mt-5 flex flex-wrap gap-x-3 gap-y-2" aria-label="Topics covered">
-          {categories.map((category) => (
-            <li>
-              <a class="font-secondary text-sm font-semibold text-text-dark underline decoration-border underline-offset-4 transition-colors hover:decoration-text-dark" href="#all-articles">
-                {category}
-              </a>
-            </li>
-          ))}
-        </ul>
+      <!-- Editorial Pillars with refined rail styling -->
+      <div class="space-y-6 lg:border-l lg:border-border lg:pl-10">
+        {editorialPillars.map((pillar) => (
+          <div class="group relative pl-10">
+            <span class="absolute left-0 top-0.5 font-secondary text-xs font-bold tracking-wider text-primary">
+              {pillar.number}
+            </span>
+            <h3 class="h5 mb-1.5 text-text-dark font-medium text-balance">
+              {pillar.title}
+            </h3>
+            <p class="text-sm leading-relaxed text-text-dark/75">
+              {pillar.description}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
 
-    <div class="mt-12 grid gap-8 border-t border-border pt-8 lg:mt-16 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-16 lg:pt-10">
-      <h3 class="h4 text-balance">Read for the decision in front of you.</h3>
-      <p class="max-w-3xl leading-relaxed">{reading_note}</p>
+    <!-- Bottom Research Domains & Category Links -->
+    <div class="mt-12 pt-10 border-t border-border lg:mt-16">
+      <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <h3 class="h4 font-medium text-balance text-text-dark">
+            Research domains covered in this library
+          </h3>
+          <p class="mt-1 text-sm text-text-light max-w-2xl">
+            Practical playbooks categorized by technical discipline and business objective.
+          </p>
+        </div>
+
+        {categories.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <a
+                href="#all-articles"
+                class="font-secondary text-xs font-semibold px-3.5 py-1.5 rounded-full border border-border bg-body text-text-dark transition hover:border-primary hover:text-primary"
+              >
+                {category}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {topicHighlights.map((topic) => (
+          <div class="p-6 rounded-xl border border-border/80 bg-body/60 transition-colors hover:border-primary/40 hover:bg-body">
+            <strong class="block font-secondary text-sm font-semibold text-text-dark mb-2">
+              {topic.name}
+            </strong>
+            <p class="text-xs leading-relaxed text-text-dark/70">
+              {topic.detail}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </section>

@@ -57,11 +57,6 @@ This is a directory website for Maryland businesses, built using the Minted Dire
 - Sanitize user-generated content if added
 - Keep dependencies updated for security patches
 
-## Development Stipulations
-
-- All new changes must adhere to the whiteboarding skill.md and be approved by the user before implementation
-- No code modifications without first planning through whiteboarding and obtaining explicit user consent
-
 ## Best Practices
 
 - Use semantic HTML in Astro components
