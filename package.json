@@ -27,6 +27,7 @@
     "astro": "5.16.6",
     "astro-auto-import": "^0.5.1",
     "astro-font": "^1.1.0",
+    "astro-og-canvas": "0.13.2",
     "astro-seo": "^1.1.0",
     "astro-swiper": "^1.4.0",
     "date-fns": "^4.1.0",
