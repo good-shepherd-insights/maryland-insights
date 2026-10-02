@@ -159,6 +159,56 @@ const swiperOptions: SwiperOptions = {
                     data={feature.data}
                     id="/services"
                     equalHeight
+                    iconSlot
+                    iconSrcs={
+                      feature.data.title === "Total Search Visibility"
+                        ? [
+                            "/images/icons/facebook/facebook.svg",
+                            "/images/icons/google_business_profile.svg",
+                            "/images/icons/yelp.svg",
+                            "/images/icons/google_maps.svg",
+                            "/images/icons/apple.svg",
+                          ]
+                        : feature.data.title === "Capture Every Lead"
+                          ? [
+                              "/images/icons/hubspot.svg",
+                              "/images/icons/whatsapp.svg",
+                              "/images/icons/zapier.svg",
+                              "/images/icons/jobber.svg",
+                              "/images/icons/go_high_level.svg",
+                            ]
+                          : feature.data.title === "Real-Time Growth"
+                            ? [
+                                "/images/icons/yoast_seo.svg",
+                                "/images/icons/google_search_console.svg",
+                                "/images/icons/semrush.svg",
+                                "/images/icons/ahrefs.svg",
+                                "/images/icons/bing_webmaster_tools.svg",
+                              ]
+                            : feature.data.title === "24/7 Sales Website"
+                              ? [
+                                  "/images/icons/square.svg",
+                                  "/images/icons/shopify/shopify.svg",
+                                  "/images/icons/mailchimp.svg",
+                                ]
+                              : feature.data.title === "5-Star Review System"
+                                ? [
+                                    "/images/icons/angi.svg",
+                                    "/images/icons/trustpilot.svg",
+                                    "/images/icons/better_business_bureau.svg",
+                                    "/images/icons/homeadvisor.svg",
+                                    "/images/icons/thumbtack.svg",
+                                  ]
+                                : feature.data.title === "Automatic Customer Nurturing"
+                                  ? [
+                                      "/images/icons/active_campaign.svg",
+                                      "/images/icons/brevo.svg",
+                                      "/images/icons/klaviyo.svg",
+                                      "/images/icons/customer_io.svg",
+                                      "/images/icons/kit.svg",
+                                    ]
+                                  : []
+                    }
                     imageFit="contain"
                     class="js-equal-card"
                   />
@@ -177,6 +227,56 @@ const swiperOptions: SwiperOptions = {
             data={feature.data}
             id="/services"
             equalHeight
+            iconSlot
+            iconSrcs={
+              feature.data.title === "Total Search Visibility"
+                ? [
+                    "/images/icons/facebook/facebook.svg",
+                    "/images/icons/google_business_profile.svg",
+                    "/images/icons/yelp.svg",
+                    "/images/icons/google_maps.svg",
+                    "/images/icons/apple.svg",
+                  ]
+                : feature.data.title === "Capture Every Lead"
+                  ? [
+                      "/images/icons/hubspot.svg",
+                      "/images/icons/whatsapp.svg",
+                      "/images/icons/zapier.svg",
+                      "/images/icons/jobber.svg",
+                      "/images/icons/go_high_level.svg",
+                    ]
+                  : feature.data.title === "Real-Time Growth"
+                    ? [
+                        "/images/icons/yoast_seo.svg",
+                        "/images/icons/google_search_console.svg",
+                        "/images/icons/semrush.svg",
+                        "/images/icons/ahrefs.svg",
+                        "/images/icons/bing_webmaster_tools.svg",
+                      ]
+                    : feature.data.title === "24/7 Sales Website"
+                      ? [
+                          "/images/icons/square.svg",
+                          "/images/icons/shopify/shopify.svg",
+                          "/images/icons/mailchimp.svg",
+                        ]
+                      : feature.data.title === "5-Star Review System"
+                        ? [
+                            "/images/icons/angi.svg",
+                            "/images/icons/trustpilot.svg",
+                            "/images/icons/better_business_bureau.svg",
+                            "/images/icons/homeadvisor.svg",
+                            "/images/icons/thumbtack.svg",
+                          ]
+                        : feature.data.title === "Automatic Customer Nurturing"
+                          ? [
+                              "/images/icons/active_campaign.svg",
+                              "/images/icons/brevo.svg",
+                              "/images/icons/klaviyo.svg",
+                              "/images/icons/customer_io.svg",
+                              "/images/icons/kit.svg",
+                            ]
+                          : []
+            }
             imageFit="contain"
             class="js-equal-card"
           />

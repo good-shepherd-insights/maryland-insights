@@ -1,0 +1,295 @@
+---
+import { getListPage } from "@/lib/contentParser.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+
+const pageIndex = await getListPage("homepage", "-index");
+const {
+  title,
+  content,
+  button_solid,
+  button_underline,
+  stats,
+} = pageIndex.data.banner;
+---
+
+<section class="db-scope" id="designs-banner">
+  <div class="db-glow" aria-hidden="true"></div>
+  <div
+    class="relative z-10 mx-auto flex w-full max-w-[1147px] flex-col items-center px-4 pt-[133px] pb-10 md:px-6 md:pt-[171px] md:pb-12"
+  >
+    <!-- Persona toggle (scales down on small viewports, hit area stays ≥44px) -->
+    <div
+      class="db-persona relative mb-8 md:mb-10 inline-flex items-center rounded-full border border-border bg-body p-1 h-10 max-sm:h-9 sm:h-10"
+    >
+      <span
+        aria-hidden="true"
+        class="db-persona-slider absolute inset-y-1 left-0 rounded-full transition-[transform,width] duration-150 ease-in-out"
+        style="background-color: #121212; width: 0; transform: translateX(4px);"
+      ></span>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="true"
+        data-db-persona-tab="businesses"
+        class="db-persona-tab db-persona-tab--active relative z-10 inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[13px] leading-none transition-colors max-sm:h-7 max-sm:px-3.5"
+      >
+        <svg class="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0z" />
+        </svg>
+        For Businesses
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected="false"
+        data-db-persona-tab="agencies"
+        class="db-persona-tab relative z-10 inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full px-4 text-[13px] leading-none transition-colors max-sm:h-7 max-sm:px-3.5"
+      >
+        <svg class="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 1 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+        </svg>
+        For Agencies
+      </button>
+    </div>
+
+    <!-- H1: two lines, second block-highlighted (per-line fragment paint) -->
+    <h1 class="db-h1 text-center">
+      <span class="block">{title.split(".")[0]?.trim()}.</span>
+      {
+        title.split(".")[1]?.trim() && (
+          <span class="db-h1-highlight">{title.split(".")[1]?.trim()}.</span>
+        )
+      }
+    </h1>
+
+    <!-- Sub copy -->
+    <p class="db-sub mx-auto mt-6 max-w-[680px] text-center text-base leading-normal md:mt-7 md:text-lg">
+      {markdownify(content)}
+    </p>
+
+    <!-- CTA row -->
+    <div class="mt-8 flex items-center justify-center gap-3 px-2 md:mt-10">
+      {
+        button_solid.enable && (
+          <a
+            href={button_solid.link}
+            target={button_solid.link.startsWith("http") ? "_blank" : "_self"}
+            rel={button_solid.link.startsWith("http") ? "noopener noreferrer" : undefined}
+            class="db-cta-primary db-cta font-mono inline-flex items-center px-4 text-sm leading-none sm:px-6"
+          >
+            {button_solid.label}
+          </a>
+        )
+      }
+      {
+        button_underline.enable && (
+          <a
+            href={button_underline.link}
+            target={button_underline.link.startsWith("http") ? "_blank" : "_self"}
+            rel={button_underline.link.startsWith("http") ? "noopener noreferrer" : undefined}
+            class="db-cta-secondary db-cta font-mono inline-flex items-center px-4 text-sm leading-none sm:px-6 transition-colors"
+          >
+            {button_underline.label}
+          </a>
+        )
+      }
+    </div>
+
+    <!-- Stats band -->
+    {
+      stats && stats.length > 0 && (
+        <div class="mt-14 w-full max-w-[980px] border-t md:mt-20 db-stat-div">
+          <div class="grid grid-cols-2 lg:grid-cols-4">
+            {stats.map((stat: { value: string; label: string; accent?: string }, i: number) => (
+              <div class:list={["px-4 pt-7 xl:px-0", i > 0 ? "lg:border-l lg:pl-8 db-stat-div" : ""]}>
+                <div class="flex flex-col items-center text-center">
+                  <div class="db-stat-value font-mono text-3xl tabular-nums">{stat.value}</div>
+                  <div class="db-stat-label mt-3 text-sm font-semibold">{stat.label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  /* stat dividers match the darkest end of the navbar's tapered border gradient (var(--color-dark)) */
+  .db-scope .db-stat-div {
+    border-color: var(--color-dark);
+  }
+  .db-scope {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-light);
+    color: var(--color-text-dark);
+    font-family: "Geist", "Inter", var(--font-primary), sans-serif;
+  }
+  .db-scope :is(h1, h2, h3, p, span, a, button, strong, li) {
+    font-family: "Geist", "Inter", var(--font-primary), sans-serif;
+  }
+  .db-scope .font-mono,
+  .db-cta-primary,
+  .db-cta-secondary,
+  .db-stat-value {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace !important;
+  }
+
+  /* Radial brand glow bleeding down from top edge (composio pattern, project gold) */
+  .db-glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: radial-gradient(
+      ellipse 80% 45% at 50% 0%,
+      color-mix(in srgb, var(--color-secondary) 30%, transparent),
+      color-mix(in srgb, var(--color-secondary) 5%, transparent),
+      transparent
+    );
+    pointer-events: none;
+  }
+
+  /* Persona toggle */
+  .db-persona {
+    border-color: var(--color-border);
+    background-color: var(--color-body);
+  }
+  .db-persona-tab {
+    color: var(--color-text-dark);
+    font-weight: 600;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+  .db-persona-tab--active {
+    background-color: var(--color-dark);
+    color: #ffffff;
+  }
+  .db-persona-slider {
+    background-color: var(--color-dark);
+  }
+  /* touch target: pills look slim but taps land as if the tab were ≥44px tall */
+  @media (pointer: coarse) and (max-width: 639px) {
+    .db-persona-tab::after {
+      content: "";
+      position: absolute;
+      inset: -11px 0;
+    }
+  }
+
+  /* H1 — Geist, weight 700, tight tracking, two-line split with highlight */
+  .db-h1 {
+    font-size: clamp(2.25rem, 6.2vw, 3.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    text-wrap: balance;
+  }
+  .db-h1 .db-h1-highlight {
+    /* painted gold band sized independently of the font (line-height stays 1.3) */
+    background-image: linear-gradient(var(--color-secondary), var(--color-secondary));
+    background-size: 100% 1.06em;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: var(--color-dark);
+    line-height: 1.15;
+    padding: 0 0.2em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  /* line fragments must wrap WITH the paint — display: box so the pen never smears */
+  .db-h1,
+  .db-h1 .block {
+    /* keep normal block flow so inline fragment boxes size to their own words */
+  }
+
+  .db-sub {
+    color: var(--color-text-light);
+  }
+
+  /* CTAs — square block buttons (composio pattern), project palette */
+  .db-cta {
+    height: 45px;
+    border-radius: 0px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .db-cta-primary {
+    background-color: var(--color-dark);
+    color: #ffffff;
+  }
+  .db-cta-primary:hover {
+    background-color: color-mix(in srgb, var(--color-dark) 85%, var(--color-secondary));
+  }
+  .db-cta-secondary {
+    background-color: transparent;
+    color: var(--color-text-dark);
+    border: 1px solid color-mix(in srgb, var(--color-dark) 25%, transparent);
+  }
+  .db-cta-secondary:hover {
+    background-color: var(--color-dark);
+    color: #ffffff;
+  }
+
+  /* Stats band */
+  .db-stat-value {
+    color: var(--color-text-dark);
+    font-weight: 700;
+  }
+  .db-stat-label {
+    color: var(--color-text-light);
+  }
+</style>
+
+<script>
+  const initBannerPersonaToggle = () => {
+    const tabs = document.querySelectorAll<HTMLButtonElement>("[data-db-persona-tab]");
+    const slider = document.querySelector<HTMLElement>(".db-persona-slider");
+
+    if (tabs.length === 0 || !slider) return;
+
+    const positionSlider = (active: HTMLButtonElement) => {
+      slider.style.width = `${active.offsetWidth}px`;
+      slider.style.transform = `translateX(${active.offsetLeft}px)`;
+    };
+
+    const applyPersona = (tab: HTMLButtonElement) => {
+      tabs.forEach((t) => {
+        const isActive = t === tab;
+        t.setAttribute("aria-selected", String(isActive));
+        t.classList.toggle("db-persona-tab--active", isActive);
+      });
+      positionSlider(tab);
+    };
+
+    const activeTab =
+      Array.from(tabs).find((tab) => tab.getAttribute("aria-selected") === "true") ?? tabs[0];
+    applyPersona(activeTab);
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => applyPersona(tab));
+    });
+
+    const onResize = () => {
+      const current =
+        Array.from(tabs).find((tab) => tab.getAttribute("aria-selected") === "true") ?? tabs[0];
+      positionSlider(current);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      tabs.forEach((tab) => tab.replaceWith(tab.cloneNode(true)));
+      window.removeEventListener("resize", onResize);
+    };
+  };
+
+  let cleanupBannerPersonaToggle: (() => void) | undefined;
+  cleanupBannerPersonaToggle = initBannerPersonaToggle() ?? undefined;
+
+  document.addEventListener("astro:after-swap", () => {
+    cleanupBannerPersonaToggle?.();
+    cleanupBannerPersonaToggle = initBannerPersonaToggle() ?? undefined;
+  });
+</script>

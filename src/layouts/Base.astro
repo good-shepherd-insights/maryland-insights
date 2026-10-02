@@ -42,6 +42,7 @@ export interface Props {
   noindex?: boolean;
   canonical?: string;
   schema?: any[];
+  head_links?: { rel: string; href: string; crossorigin?: string }[];
   og_type?: "website" | "article";
   date_published?: string;
   date_modified?: string;
@@ -65,7 +66,8 @@ const resolvedLocale = config.metadata.locale ? config.metadata.locale.replace("
 const {
   title, meta_title, description, image, noindex, canonical,
   og_type = "website", date_published, date_modified, author_name,
-  author_twitter, article_tags, article_section, googlebot
+  author_twitter, article_tags, article_section, googlebot,
+  head_links = []
 } = Astro.props;
 
 const resolvedImage = image || config.metadata.meta_image;
@@ -156,7 +158,8 @@ const graphItems: unknown[] = [
         link: [
           { rel: "shortcut icon", href: config.site.favicon },
           { rel: "security", href: "/.well-known/security.txt" },
-          { rel: "search", type: "application/opensearchdescription+xml", title: "Maryland Insights", href: "/opensearch.xml" }
+          { rel: "search", type: "application/opensearchdescription+xml", title: "Maryland Insights", href: "/opensearch.xml" },
+          ...(head_links as any[])
         ]
       }}
     />
@@ -189,8 +192,25 @@ const graphItems: unknown[] = [
           cssVariable: "font-secondary",
           googleFontsURL: `https://fonts.googleapis.com/css2?family=${sf}&display=swap`,
         },
+        {
+          src: [],
+          preload: false,
+          display: "swap",
+          name: "JetBrains Mono",
+          fallback: "monospace",
+          cssVariable: "font-mono",
+          googleFontsURL:
+            "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap",
+        },
       ]}
     />
+
+    <!-- Site-wide mono token: JetBrains Mono (used by font-mono utilities) -->
+    <style is:global>
+      :root {
+        --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+    </style>
 
     <!-- responsive meta -->
     <meta

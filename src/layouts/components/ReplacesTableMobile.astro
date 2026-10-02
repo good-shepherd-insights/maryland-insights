@@ -1,5 +1,4 @@
 ---
-import CompanyLogo from "../../components/CompanyLogo.astro";
 import config from "@/config/config.json";
 
 type Plan = { label: string; logo?: string; isUs?: boolean };
@@ -23,7 +22,15 @@ const VISIBLE_ROWS = 4;
           {plan.isUs ? (
             <img src={config.site.logo} alt={plan.label} class="h-7 w-auto" />
           ) : plan.logo ? (
-            <CompanyLogo name={plan.label} domain={plan.logo} size={96} format="webp" class="h-7 w-auto" />
+            <img
+              src={plan.logo}
+              alt={`${plan.label} logo`}
+              class={`h-8 object-contain ${
+                ["Wix", "Webflow", "GoHighLevel"].includes(plan.label)
+                  ? "w-8 rounded-full"
+                  : "w-auto"
+              }`}
+            />
           ) : null}
         </div>
 
