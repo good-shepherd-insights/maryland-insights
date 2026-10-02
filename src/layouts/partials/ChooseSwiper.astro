@@ -5,20 +5,12 @@ import type { CollectionEntry } from "astro:content";
 
 type Props = {
   data: CollectionEntry<"homepage">["data"]["agents_swiper"];
+  id?: string;
 };
 
-const { data } = Astro.props as Props;
+const { data, id = "be-the-answer" } = Astro.props as Props;
 if (!data.enable) return null;
 const { title, agents } = data;
-
-const artGradients = [
-  "bg-gradient-to-br from-secondary via-primary/70 to-white/25",
-  "bg-gradient-to-bl from-primary via-secondary/75 to-white/25",
-  "bg-gradient-to-tr from-secondary via-accent/50 to-white/25",
-  "bg-gradient-to-r from-primary via-secondary/70 to-white/20",
-  "bg-gradient-to-tl from-secondary via-primary/60 to-white/25",
-  "bg-gradient-to-l from-accent/70 via-secondary/70 to-white/25",
-];
 
 const splitPoint = (point: string) => {
   const match = point.match(/^\*\*(.+?)\*\*:\s*(.+)$/);
@@ -29,140 +21,362 @@ const splitPoint = (point: string) => {
 
   return { label: match[1], detail: match[2] };
 };
+
+const tabs = agents?.map((agent: any, i: number) => ({
+  num: String(i + 1).padStart(2, "0"),
+  label: agent.label,
+  panelId: `service-${i + 1}`,
+})) ?? [];
 ---
 
-<section
-  id="be-the-answer"
-  class="section bg-dark section-divider text-white"
-  style="--section-divider-color: var(--color-dark)"
->
-  <div class="mx-0 md:mx-8">
-    <div
-      class="container max-w-full overflow-x-clip px-8 [--service-art-box:13.75rem] [--service-art-image:13rem] [--service-art-padding:1.625rem] lg:[--service-art-box:8.5rem] lg:[--service-art-image:7.5rem] lg:[--service-art-padding:0.875rem] xl:max-w-380! xl:[--service-art-box:13.75rem] xl:[--service-art-image:13rem] xl:[--service-art-padding:1.625rem]"
-    >
-      <div class="min-w-0">
-        <h2
-          class="max-w-4xl min-w-0 text-balance text-white"
-          set:html={markdownify(title)}
-        />
+<section class="ds-scope" id={id}>
+  <div class="ds-container mx-auto w-full max-w-[1147px] px-4 pt-10 pb-14 md:px-6 md:pt-12 md:pb-16 lg:pb-20">
+    <!-- Section header -->
+    <div class="flex flex-col items-start gap-6 text-left">
+      <h1 class="ds-h1" set:html={markdownify(title)} />
+    </div>
+
+    <!-- Split layout: sticky tab rail + stacked panels -->
+    <div class="mt-14 flex flex-col gap-6 md:mt-20 lg:flex-row lg:gap-10 xl:gap-16">
+      <!-- Tab strip (visible below lg: vertical list on phones, horizontal scroll strip sm–md) -->
+      <div
+        class="ds-tabs grid grid-cols-1 gap-2 sm:grid-flow-col sm:grid-cols-none sm:auto-cols-max sm:overflow-x-auto sm:pb-1 lg:hidden [scrollbar-width:thin] [scrollbar-gutter:stable] [-webkit-overflow-scrolling:touch]"
+        role="tablist"
+        aria-label="Services"
+      >
+        {
+          tabs.map((t) => (
+            <button
+              type="button"
+              role="tab"
+              data-ds-tab={t.panelId}
+              aria-controls={`ds-panel-${t.panelId}`}
+              class="ds-tab flex min-h-12 shrink-0 touch-manipulation items-center gap-2 px-3 py-2 text-left transition-colors duration-200"
+            >
+              <span class="ds-tab-num" aria-hidden="true">{t.num}</span>
+              <span class="ds-tab-label" aria-hidden="true">{t.label}</span>
+            </button>
+          ))
+        }
       </div>
 
-      <div class="mt-12 grid items-start gap-10 lg:mt-18 lg:grid-cols-[18rem_minmax(0,1fr)] xl:gap-20">
-        <aside class="lg:sticky lg:top-24">
-          <nav class="border-y border-white/25" aria-label="Services">
-            {
-              agents?.map((agent: any, i: number) => (
-                <a
-                  href={`#service-${i + 1}`}
-                  class="grid grid-cols-[2.25rem_1fr] gap-3 border-b border-white/15 py-4 text-white/70 transition last:border-b-0 hover:text-white focus:text-white focus:outline-none"
-                >
-                  <span class="pt-0.5 text-xs font-bold tracking-widest text-white/40">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span class="font-semibold leading-snug">{agent.label}</span>
-                </a>
-              ))
-            }
-          </nav>
-        </aside>
+      <!-- Desktop sticky rail -->
+      <div class="hidden lg:block lg:w-[226px] lg:shrink-0">
+        <div class="lg:sticky lg:top-36 self-start max-h-[calc(100dvh-10rem)] overflow-y-auto">
+          <div class="relative">
+            <div class="relative flex overflow-x-auto lg:flex-col" role="tablist" aria-label="Services">
+              {
+                tabs.map((t) => (
+                  <button
+                    type="button"
+                    role="tab"
+                    data-ds-tab={t.panelId}
+                    aria-controls={`ds-panel-${t.panelId}`}
+                    class="ds-tab relative z-10 flex min-w-[160px] shrink-0 items-center gap-[14px] border p-[10px] text-left transition-all duration-300 lg:w-full lg:min-w-0"
+                  >
+                    <span class="ds-tab-num" aria-hidden="true">{t.num}</span>
+                    <span class="ds-tab-label" aria-hidden="true">{t.label}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <div class="min-w-0 border-t border-white/25">
+      <!-- Panels stack -->
+      <div class="min-w-0 flex-1">
         {
-          agents?.map((agent: any, i: number) => (
-            <article
-              id={`service-${i + 1}`}
-              class="service-clean-row grid min-w-0 scroll-mt-28 items-start gap-8 border-b border-white/15 py-10 md:py-12 lg:grid-cols-[minmax(0,1fr)_var(--service-art-box)] lg:gap-6 xl:gap-8 xl:py-14"
-            >
-              <div class="w-full min-w-0 max-w-full lg:max-w-3xl">
-                <div class="mb-4 text-xs font-bold tracking-widest text-white/45">
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <div class="grid w-full grid-cols-[4.5rem_minmax(0,1fr)] items-center gap-3 md:grid-cols-[7rem_minmax(0,1fr)] md:gap-5 lg:block">
-                  {agent.image && (
-                    <figure class:list={[
-                      "shrink-0 rounded-2xl p-[2px] lg:hidden",
-                      artGradients[i % artGradients.length],
-                    ]}>
-                      <div class="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[calc(var(--radius-2xl)-2px)] bg-light p-2.5 md:h-28 md:w-28 md:p-4">
+          agents?.map((agent: any, i: number) => {
+            const panelId = `service-${i + 1}`;
+            const points = agent.points ?? [];
+            const last = i === agents.length - 1;
+            return (
+              <div id={`ds-panel-${panelId}`} data-ds-panel={panelId} class="lg:sticky lg:top-36 scroll-mt-40">
+                <div class="flex flex-col border border-dark bg-body lg:grid lg:grid-cols-[minmax(0,48%)_1fr] lg:items-stretch lg:min-h-[520px] lg:pl-[30px] lg:pr-[30px] lg:py-10 xl:pl-[40px] xl:pr-[40px]">
+                  <!-- Visual: vector centered on mobile/MD, full-size on desktop -->
+                  <div class="flex flex-col items-center gap-5 px-5 pt-7 pb-6 sm:px-8 sm:pt-10 sm:pb-8">
+                    {agent.image && (
+                      <figure class="service-art-figure">
                         <ImageMod
                           src={agent.image}
                           alt={agent.label}
-                          width={220}
-                          height={170}
-                          class="h-auto w-full"
+                          width={420}
+                          height={320}
+                          class="h-auto w-auto max-w-[180px] object-contain self-center sm:max-w-[240px] md:max-w-[280px] lg:max-w-[360px]"
                           format={agent.image.endsWith(".svg") ? "svg" : "webp"}
                         />
-                      </div>
-                    </figure>
-                  )}
-                  <h3 class="w-full min-w-0 text-[2rem] leading-[1.08] text-white md:text-h3 md:leading-tight">
-                    {agent.label}
-                  </h3>
-                </div>
-                <div
-                  class="mt-5 w-full min-w-0 max-w-full text-lg leading-relaxed text-white/80 lg:max-w-2xl"
-                  set:html={markdownify(agent.description, true)}
-                />
-              </div>
-
-              {agent.image && (
-                <figure class:list={[
-                  "service-art-box hidden rounded-2xl p-[2px] lg:block",
-                  artGradients[i % artGradients.length],
-                ]}>
-                  <div class="flex min-h-[var(--service-art-box)] items-center justify-center rounded-[calc(var(--radius-2xl)-1px)] bg-light p-[var(--service-art-padding)]">
-                      <ImageMod
-                        src={agent.image}
-                        alt={agent.label}
-                        width={420}
-                        height={320}
-                        class="mx-auto h-auto w-full max-w-[var(--service-art-image)]"
-                        format={agent.image.endsWith(".svg") ? "svg" : "webp"}
-                      />
+                      </figure>
+                    )}
                   </div>
-                </figure>
-              )}
 
-              <div class="min-w-0 lg:col-span-2">
-                {agent.points && agent.points.length > 0 && (
-                  <ul class="grid gap-x-12 gap-y-5 border-t border-white/15 pt-7 md:grid-cols-2 xl:gap-x-16">
-                    {agent.points.map((point: string) => {
-                      const { label, detail } = splitPoint(point);
-
-                      return (
-                        <li class="min-w-0 text-[0.98rem] leading-relaxed text-white/82">
-                          {label ? (
-                            <span class="block space-y-1">
-                              <strong class="block font-semibold leading-snug text-white">
-                                {label}
-                              </strong>
-                              <span class="block text-white/78">{detail}</span>
-                            </span>
-                          ) : (
-                            <span set:html={markdownify(detail)} />
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
-
-                {agent.button?.enable && (
-                  <a
-                    href={agent.button.link}
-                    target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
-                    rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
-                    class="mt-8 inline-flex font-secondary font-semibold text-secondary transition hover:text-white"
-                  >
-                    {agent.button.label} →
-                  </a>
-                )}
+                  <!-- Copy -->
+                  <div class="flex w-full min-w-0 flex-1 flex-col px-4 pt-6 pb-6 sm:px-6 lg:px-0 lg:pt-4 lg:pb-4 lg:pl-8 lg:pr-0 xl:pl-10">
+                    <div class="flex items-center gap-3">
+                      <span class="ds-num-chip font-mono text-sm" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                    </div>
+                    <h2 class="mt-3.5 text-[22px] leading-snug text-text-dark sm:text-[26px] lg:text-[28px]">{markdownify(agent.label)}</h2>
+                    <div
+                      class="ds-muted mt-4 max-w-none text-[13px] leading-normal opacity-90 sm:text-sm sm:leading-snug lg:mt-5 lg:max-w-[34rem] [&_p]:my-0"
+                      set:html={markdownify(agent.description, true)}
+                    />
+                    {points.length > 0 && (
+                      <div class="relative mt-8 flex flex-col gap-5 lg:mt-10 lg:gap-6">
+                        <div class="absolute top-0 bottom-0 left-0 w-[3px] rounded-full bg-primary/25" aria-hidden="true" />
+                        {points.map((point: string) => {
+                          const { label, detail } = splitPoint(point);
+                          return (
+                            <div class="ds-bullet pl-4">
+                              <div class="ds-bullet-marker" aria-hidden="true" />
+                              <p class="ds-muted text-[13px] leading-normal sm:text-sm sm:leading-snug">
+                                {label ? (
+                                  <strong class="font-semibold text-text-dark">{label}:</strong>
+                                ) : null}{" "}
+                                {detail}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {agent.button?.enable && (
+                      <a
+                        href={agent.button.link}
+                        target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
+                        rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
+                        class="ds-cta mt-auto inline-flex w-fit items-center gap-2 pt-10 font-mono text-xs tracking-[0.06em]"
+                      >
+                        {agent.button.label}
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                          <path d="M2 6h8M6.5 2.5L10 6l-3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                </div>
+                {
+                  !last && (
+                    <div class="h-10 flex items-center" aria-hidden="true">
+                      <div class="flex h-[14px] w-full">
+                        {[0, 1, 2, 3, 4].map(() => (
+                          <div class="h-full flex-1 border border-border border-l-0 first:border-l" />
+                        ))}
+                      </div>
+                    </div>
+                  )
+                }
               </div>
-            </article>
-          ))
+            );
+          })
         }
-        </div>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  .ds-scope {
+    /* Light scheme, project tokens (same palette as /services and homepage) */
+    background-color: var(--color-light);
+    /* composio type: Geist (display/body) + JetBrains Mono (mono micro-labels) */
+    --ds-font-sans: "Geist", "Inter", var(--font-primary), sans-serif;
+    --ds-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ds-line: var(--color-dark);
+    --ds-panel-border: var(--color-border);
+    --ds-accent: var(--color-primary);
+    --ds-accent-2: var(--color-accent);
+    --ds-fg: var(--color-text-light);
+    --ds-fg-strong: var(--color-text-dark);
+    font-family: var(--ds-font-sans);
+    color: var(--ds-fg-strong);
+  }
+
+  .ds-scope :is(h1, h2, h3, p, span, a, button, strong, li) {
+    font-family: var(--ds-font-sans);
+  }
+  .ds-scope .font-mono,
+  .ds-tab .ds-tab-label,
+  .ds-cta,
+  .ds-num-chip {
+    font-family: var(--ds-font-mono) !important;
+  }
+
+  .ds-scope h1.ds-h1 {
+    font-size: clamp(2rem, 5.4vw, 2.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    color: var(--ds-fg-strong);
+  }
+  .ds-muted {
+    color: var(--ds-fg);
+  }
+
+  /* Tabs */
+  .ds-tab {
+    background-color: var(--color-body);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--ds-line);
+  }
+  .ds-tab .ds-tab-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    border-radius: 2px;
+    background-color: color-mix(in srgb, var(--color-dark) 6%, #ffffff);
+    color: color-mix(in srgb, var(--color-dark) 64%, transparent);
+  }
+  .ds-tab .ds-tab-label {
+    color: var(--ds-fg-strong);
+    font-family: var(--ds-font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .ds-tab[aria-selected="true"] {
+    z-index: 20;
+    background-color: var(--color-body);
+    border-color: var(--ds-accent);
+  }
+  .ds-tab[aria-selected="true"] .ds-tab-num {
+    background-color: var(--ds-accent);
+    color: #ffffff;
+  }
+
+  @media (min-width: 1024px) {
+    .ds-tab + .ds-tab {
+      margin-top: -1px;
+    }
+  }
+
+  /* Bullets */
+  .ds-bullet-marker {
+    position: relative;
+    z-index: 10;
+    margin-top: 2px;
+    height: 14px;
+    width: 3px;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background-color: var(--ds-accent);
+  }
+  .ds-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  /* Number chip in copy column */
+  .ds-num-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 2px;
+    background-color: color-mix(in srgb, var(--ds-accent) 12%, transparent);
+    color: var(--ds-accent);
+  }
+
+  /* Link to the service page */
+  .ds-cta {
+    color: var(--ds-accent);
+  }
+  .ds-cta:hover {
+    color: #ffb612;
+  }
+</style>
+
+<script>
+  const initBeTheAnswer = () => {
+    const section = document.getElementById("be-the-answer");
+    if (!section) return;
+
+    const tabs = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-ds-tab]"),
+    );
+    const panels = Array.from(
+      section.querySelectorAll<HTMLElement>("[data-ds-panel]"),
+    );
+    if (tabs.length === 0 || panels.length === 0) return;
+
+    const setActive = (id: string) => {
+      tabs.forEach((t) => {
+        t.setAttribute("aria-selected", String(t.dataset.dsTab === id));
+      });
+    };
+
+    const STICK_OFFSET = 162; // must match the rendered sticky top (lg:top-36 = 162 incl. header); rail and scroll-mt use the same line
+
+    // Scroll-position-driven: the active panel is the last one whose top has
+    // crossed the stick line. Deterministic, always matches what the user sees.
+    let ticking = false;
+    const updateActive = () => {
+      ticking = false;
+      const line = STICK_OFFSET; // exact stick line: a stuck panel has top === STICK_OFFSET
+      let current = 0;
+      panels.forEach((p, idx) => {
+        if (p.getBoundingClientRect().top <= line) current = idx;
+      });
+      setActive(panels[current].dataset.dsPanel ?? "");
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateActive);
+      }
+    };
+
+    const isDesktop = () => window.matchMedia("(min-width: 1024px)").matches;
+    let wasDesktop = isDesktop();
+
+    const scrollHandler: EventListenerOrEventListenerObject = onScroll;
+    window.addEventListener("scroll", scrollHandler, { passive: true });
+    window.addEventListener("resize", () => {
+      const nowDesktop = isDesktop();
+      if (nowDesktop !== wasDesktop) {
+        wasDesktop = nowDesktop;
+        if (!nowDesktop) setActive(tabs[0].dataset.dsTab ?? "");
+      }
+      onScroll();
+    });
+    updateActive();
+
+    // Tab clicks: scroll with fixed-header offset (all viewports)
+    const clickHandlers: [HTMLElement, EventListener][] = [];
+    tabs.forEach((t) => {
+      const handler = () => {
+        const target = panels.find(
+          (p) => p.dataset.dsPanel === t.dataset.dsTab,
+        );
+        if (target) {
+          window.scrollTo({
+            top:
+              target.getBoundingClientRect().top +
+              window.scrollY -
+              STICK_OFFSET,
+            behavior: "smooth",
+          });
+        }
+      };
+      t.addEventListener("click", handler);
+      clickHandlers.push([t, handler]);
+    });
+
+    return () => {
+      window.removeEventListener("scroll", scrollHandler);
+      clickHandlers.forEach(([t, h]) => t.removeEventListener("click", h));
+    };
+  };
+
+  let cleanupBeTheAnswer: (() => void) | undefined;
+  cleanupBeTheAnswer = initBeTheAnswer() ?? undefined;
+
+  document.addEventListener("astro:after-swap", () => {
+    cleanupBeTheAnswer?.();
+    cleanupBeTheAnswer = initBeTheAnswer() ?? undefined;
+  });
+</script>

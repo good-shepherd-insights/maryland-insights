@@ -6,12 +6,12 @@
   background-color: #E6A410;
 }
 
-/* section style */
+/* section style — tightened rhythm: seams read as one pause, not a void */
 .section {
-  @apply py-16 xl:py-20;
+  @apply py-12 xl:py-14;
 }
 .section-sm {
-  @apply py-12 xl:py-16;
+  @apply py-10 xl:py-12;
 }
 /* container */
 .container {

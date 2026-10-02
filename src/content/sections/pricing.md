@@ -6,15 +6,15 @@ plan_names:
   - label: "Maryland Insights"
     isUs: true
   - label: "WordPress"
-    logo: "wordpress.org"
+    logo: "/images/icons/wordpress.svg"
   - label: "Wix"
-    logo: "wix.com"
+    logo: "/images/icons/wix.svg"
   - label: "GoDaddy"
-    logo: "godaddy.com"
+    logo: "/images/icons/godaddy.svg"
   - label: "Webflow"
-    logo: "webflow.com"
+    logo: "/images/icons/webflow.svg"
   - label: "GoHighLevel"
-    logo: "gohighlevel.com"
+    logo: "/images/icons/go_high_level.svg"
 
 categories:
   - category: "Website & Presence"

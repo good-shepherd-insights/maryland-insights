@@ -8,7 +8,8 @@ import ChooseSwiper from "@/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
 import Features from "@/partials/Features.astro";
 // import FeautresCarousel from "@/partials/FeautresCarousel.astro";
-import HomeBanner from "@/partials/HomeBanner.astro";
+import DesignsHeroV2 from "@/layouts/partials/DesignsHeroV2.astro";
+import TrustStrip from "@/layouts/partials/TrustStrip.astro";
 import Integrations from "@/partials/Integrations.astro";
 // import PricingGrid from "@/partials/PricingGrid.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
@@ -41,10 +42,10 @@ const combinedSchema = [faqSchema].filter(Boolean);
 ---
 
 <Base {...pageIndex.data} schema={combinedSchema}>
-  <HomeBanner />
+  <DesignsHeroV2 />
+  <TrustStrip />
   <TrustedBrands />
   <ChooseSwiper data={pageIndex.data.agents_swiper} />
-  <Facts data={pageIndex.data.facts_section} enableAnimation={false} />
   <Features />
   {
     comparison_section.enable && (
@@ -66,6 +67,7 @@ const combinedSchema = [faqSchema].filter(Boolean);
   <Integrations />
   {/* <PricingGrid haveDivider /> */}
   {/* <FeautresCarousel /> */}
+  <Facts data={pageIndex.data.facts_section} enableAnimation={false} />
   <Faqs data={faqs_section} prefix="home-faq" />
   <CallToAction />
 </Base>
