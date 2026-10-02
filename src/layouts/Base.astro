@@ -16,6 +16,7 @@ import { SEO } from "astro-seo";
 import JsonLd from "@/lib/seo/JsonLd.astro";
 import { buildWebSite, buildOrganization, buildBreadcrumbList, buildWebPage, buildNavigation } from "@/lib/seo/graph";
 import { canonicalUrl } from "@/lib/seo/ids";
+import { getOpenGraphImagePath } from "@/lib/seo/openGraphImagePath";
 
 // font families
 const pf = theme.fonts.font_family.primary;
@@ -64,13 +65,13 @@ const resolvedLocale = config.metadata.locale ? config.metadata.locale.replace("
 
 // destructure frontmatter
 const {
-  title, meta_title, description, image, noindex, canonical,
+  title, meta_title, description, noindex, canonical,
   og_type = "website", date_published, date_modified, author_name,
   author_twitter, article_tags, article_section, googlebot,
   head_links = []
 } = Astro.props;
 
-const resolvedImage = image || config.metadata.meta_image;
+const resolvedImage = getOpenGraphImagePath(Astro.url.pathname);
 
 // Combine all graph items — shared nodes come from typed builders in @/lib/seo/graph
 // so canonical/@id generation can't diverge per page (see @/lib/seo/ids canonicalUrl).
@@ -108,7 +109,7 @@ const graphItems: unknown[] = [
         basic: {
           title: plainify(meta_title ? meta_title : title ? title : config.site.title),
           type: og_type,
-          image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`,
+          image: `${config.site.base_url}${resolvedImage}`,
           url: canonical || canonicalUrl(Astro.url.pathname)
         },
         optional: {
@@ -135,7 +136,7 @@ const graphItems: unknown[] = [
         creator: author_twitter ? `@${author_twitter}` : twitterHandle,
         title: plainify(meta_title ? meta_title : title ? title : config.site.title),
         description: plainify(description ? description : config.metadata.meta_description),
-        image: `${config.site.base_url}${image ? image : config.metadata.meta_image}`,
+        image: `${config.site.base_url}${resolvedImage}`,
         imageAlt: plainify(meta_title ? meta_title : title ? title : config.site.title)
       }}
       extend={{
