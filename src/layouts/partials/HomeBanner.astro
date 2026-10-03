@@ -28,7 +28,7 @@ const {
       >
         <span
           aria-hidden="true"
-          class="home-persona-slider absolute inset-y-1 left-0 rounded-full transition-[transform,width] duration-150 ease-in-out"
+          class="home-persona-slider absolute inset-y-1 left-0 origin-left rounded-full transition-transform duration-150 ease-in-out"
           style="background-color: #C8102E; width: 0; transform: translateX(4px);"
         ></span>
         <button
@@ -135,7 +135,11 @@ const {
 
     const positionSlider = (active: HTMLButtonElement) => {
       slider.style.width = `${active.offsetWidth}px`;
-      slider.style.transform = `translateX(${active.offsetLeft}px)`;
+      const parent = slider.parentElement;
+      const parentWidth = parent ? parent.offsetWidth : active.offsetWidth;
+      const scaleX = parentWidth > 0 ? active.offsetWidth / parentWidth : 1;
+      slider.style.width = `${parentWidth}px`;
+      slider.style.transform = `translateX(${active.offsetLeft}px) scaleX(${scaleX})`;
     };
 
     const applyPersona = (tab: HTMLButtonElement) => {

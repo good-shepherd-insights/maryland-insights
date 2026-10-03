@@ -99,7 +99,7 @@ const { pathname } = Astro.url;
                 class="h5 font-semibold mb-2"
                 set:html={markdownify(fact.label)}
               />
-              <p class=" text-sm" set:html={markdownify(fact.description)} />
+              <p class="max-w-[68ch] text-sm" set:html={markdownify(fact.description)} />
             </div>
           </div>
         ))

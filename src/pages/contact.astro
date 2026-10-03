@@ -123,7 +123,7 @@ if (pageIndex.data.draft) {
                       icon={info.icon}
                       className="text-text-dark text-3xl"
                     />
-                    <h4 class="h4 font-primary mt-5 mb-3">{info.label}</h4>
+                    <h4 class="h4 mt-5 mb-3">{info.label}</h4>
                     <a
                       class="text-text-dark break-all text-xl font-semibold hover:text-primary transition-colors"
                       href={toContactHref(info.value)}
@@ -174,7 +174,7 @@ if (pageIndex.data.draft) {
                   icon={location.icon}
                   className="text-text-light text-4xl mb-6"
                 />
-                <h4 class="h5 font-primary mb-2 text-white">{location.name}</h4>
+                <h4 class="h5 mb-2 text-white">{location.name}</h4>
                 <a
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`}
                   target="_blank"
