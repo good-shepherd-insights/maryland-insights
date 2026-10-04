@@ -4,6 +4,8 @@ html {
 
 body {
   @apply bg-body text-base  font-primary font-normal leading-relaxed text-text selection:bg-primary/20 selection:text-primary;
+  /* Inter variable: let the opsz axis adapt by size */
+  font-optical-sizing: auto;
 }
 
 :focus-visible {
@@ -17,6 +19,8 @@ h4,
 h5,
 h6 {
   @apply font-secondary font-bold leading-tight text-text-dark;
+  /* Bricolage Grotesque variable font: opsz axis + display-grade tracking */
+  font-optical-sizing: auto;
   mark {
     @apply text-primary bg-transparent;
   }
@@ -24,17 +28,17 @@ h6 {
 
 h1,
 .h1 {
-  @apply text-h1-sm md:text-h1;
+  @apply text-h1-sm md:text-h1 tracking-[-0.025em];
 }
 
 h2,
 .h2 {
-  @apply text-h2-sm md:text-h2;
+  @apply text-h2-sm md:text-h2 tracking-[-0.02em];
 }
 
 h3,
 .h3 {
-  @apply text-h3-sm md:text-h3;
+  @apply text-h3-sm md:text-h3 tracking-[-0.01em];
 }
 
 h4,
@@ -55,6 +59,12 @@ h6,
 b,
 strong {
   @apply font-semibold;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
 }
 
 code {

@@ -16,16 +16,16 @@ const emblem: Emblem[] = [
 ---
 
 <section class="dts-scope" aria-label="Maryland government partners">
-  <div class="mx-auto w-full max-w-[1147px] px-4 py-10 md:px-6 md:py-12">
+  <div class="mx-auto w-full max-w-[1320px] px-4 py-10 md:px-6 md:py-12">
     <!-- STATIC strip: paired accent dots frame the responsive logo row -->
-    <div class="dts-strip relative flex flex-wrap items-center justify-between gap-x-10 gap-y-8 py-9 md:justify-center md:gap-x-0 md:py-10">
+    <div class="dts-strip relative grid grid-cols-3 items-center gap-x-3 gap-y-8 py-9 md:flex md:flex-wrap md:justify-center md:gap-x-0 md:py-10 lg:flex-nowrap">
       {
         emblem.map((e) => (
           <a
             href={e.url}
             target="_blank"
             rel="noopener"
-            class="dts-item flex shrink-0 items-center justify-center px-6 md:px-8 lg:px-10"
+            class="dts-item flex min-w-0 shrink-0 items-center justify-center px-2 md:px-8 lg:px-6 xl:px-8"
             title={e.name}
             aria-label={e.name}
           >
@@ -33,7 +33,7 @@ const emblem: Emblem[] = [
               src={e.file}
               alt={`${e.name} logo`}
               loading="lazy"
-              style={`height: ${e.h}px;`}
+              style={`--dts-logo-height: ${Math.round(e.h * 1.35)}px; --dts-logo-height-md: ${Math.round(e.h * 1.5)}px;`}
               class="dts-logo w-auto object-contain"
             />
           </a>
@@ -47,7 +47,7 @@ const emblem: Emblem[] = [
   .dts-scope {
     background-color: var(--color-light);
     color: var(--color-text-dark);
-    font-family: "Geist", "Inter", var(--font-primary), sans-serif;
+    font-family: var(--font-primary);
   }
   .dts-item {
     transition: opacity 0.25s ease;
@@ -72,8 +72,17 @@ const emblem: Emblem[] = [
     right: 4px;
   }
   .dts-logo {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: var(--dts-logo-height);
     filter: grayscale(1) opacity(0.55);
     transition: filter 0.3s ease;
+  }
+  @media (min-width: 768px) {
+    .dts-logo {
+      max-height: var(--dts-logo-height-md);
+    }
   }
   /* hover reveals the logo's full color */
   .dts-item:hover .dts-logo {

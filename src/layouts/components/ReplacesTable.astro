@@ -87,9 +87,9 @@ const VISIBLE_ROWS = 4;
                         scope="row"
                         class={`feature-column sticky left-0 z-10 bg-light p-5 font-normal border-r border-border ${!isLastInCategory ? "border-b border-border" : ""}`}
                       >
-                        <h3 class="text-base font-semibold">{row.name}</h3>
+                        <h3 class="font-primary text-base font-semibold">{row.name}</h3>
                         {row.description && (
-                          <p class="mt-1 text-sm text-text-dark/70">{row.description}</p>
+                          <p class="mt-1 max-w-[68ch] text-sm text-text-dark/70">{row.description}</p>
                         )}
                       </th>
                       {row.values.map((value, index) => {
@@ -99,9 +99,9 @@ const VISIBLE_ROWS = 4;
                             class={`p-5 text-center ${index !== planNames.length - 1 ? "border-r border-border" : ""} ${!isLastInCategory ? "border-b border-border" : ""} ${plan.isUs ? "bg-primary/5" : ""}`}
                           >
                             {value === "active" ? (
-                              <img class="mx-auto" src={plan.isUs ? "/images/icons/active-accent.svg" : "/images/icons/active.svg"} alt="Included" />
+                              <span class="cell-icon mx-auto" data-icon={plan.isUs ? "active-accent" : "active"} role="img" aria-label="Included" />
                             ) : value === "cross" ? (
-                              <img class="mx-auto" src="/images/icons/cross.svg" alt="Not included" />
+                              <span class="cell-icon mx-auto" data-icon="cross" role="img" aria-label="Not included" />
                             ) : (
                               <span class="text-sm">{value}</span>
                             )}
@@ -179,6 +179,37 @@ const VISIBLE_ROWS = 4;
 
   .comparison-table thead :global(img) {
     min-width: 0;
+  }
+
+  /* Comparison-cell icons: CSS mask of an SVG sprite keeps DOM light
+     (no <img> per cell) and lets the color track currentColor. */
+  .cell-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: currentColor;
+    vertical-align: middle;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+  .cell-icon[data-icon="cross"] {
+    -webkit-mask-image: url("/images/icons/cross.svg");
+    mask-image: url("/images/icons/cross.svg");
+    color: var(--color-dark);
+  }
+  .cell-icon[data-icon="active"] {
+    -webkit-mask-image: url("/images/icons/active.svg");
+    mask-image: url("/images/icons/active.svg");
+    color: var(--color-dark);
+  }
+  .cell-icon[data-icon="active-accent"] {
+    -webkit-mask-image: url("/images/icons/active-accent.svg");
+    mask-image: url("/images/icons/active-accent.svg");
+    color: var(--color-primary, #2563eb);
   }
 
   @media (max-width: 767px) {

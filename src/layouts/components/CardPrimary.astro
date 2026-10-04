@@ -70,7 +70,7 @@ const imageFrameClass = smallImage
     set:html={markdownify(title)}
   />
 
-  <p class="text-sm" set:html={markdownify(description)} />
+  <p class="max-w-[68ch] text-sm" set:html={markdownify(description)} />
 
   <a href={`${id ? id : button?.link}`} class={`before:absolute before:inset-0 ${equalHeight ? "mt-auto" : ""}`} aria-label={`Read more about ${title}`}>
     <div

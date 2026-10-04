@@ -141,4 +141,13 @@ const swiperOptions: SwiperOptions = {
       transform: translateX(2.5rem);
     }
   }
+
+  /* Swiper bundles `transition-property: transform, height` in its
+     autoheight rules and `transition-property: transform, opacity, height`
+     on .swiper-slide. We don't use autoheight, so we strip the height
+     transition to keep slides on the compositor and pass detector audits. */
+  :global(.swiper-autoheight .swiper-wrapper),
+  :global(.swiper-slide) {
+    transition-property: transform, opacity !important;
+  }
 </style>

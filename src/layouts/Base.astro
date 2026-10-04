@@ -21,18 +21,17 @@ import { getOpenGraphImagePath } from "@/lib/seo/openGraphImagePath";
 // font families
 const pf = theme.fonts.font_family.primary;
 const sf = theme.fonts.font_family.secondary;
+const mf = theme.fonts.font_family.mono || "JetBrains+Mono:wght@400;500";
 
-let fontPrimary, fontSecondary;
+let fontPrimary, fontSecondary, fontMono;
+const cleanName = (f: string) => f.split(":")[0].replace(/\+/g, " ");
 if (theme.fonts.font_family.primary) {
-  fontPrimary = theme.fonts.font_family.primary
-    .replace(/\+/g, " ")
-    .replace(/:[ital,]*[ital@]*[wght@]*[0-9,;.]+/gi, "");
+  fontPrimary = cleanName(theme.fonts.font_family.primary);
 }
 if (theme.fonts.font_family.secondary) {
-  fontSecondary = theme.fonts.font_family.secondary
-    .replace(/\+/g, " ")
-    .replace(/:[ital,]*[ital@]*[wght@]*[0-9,;.]+/gi, "");
+  fontSecondary = cleanName(theme.fonts.font_family.secondary);
 }
+fontMono = cleanName(mf);
 
 // types for frontmatters
 export interface Props {
@@ -165,11 +164,6 @@ const graphItems: unknown[] = [
       }}
     />
 
-    <!-- DM Sans font for logo -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
-      rel="stylesheet"
-    />
     <meta name="generator" content={Astro.generator} />
 
     <!-- google font css -->
@@ -197,21 +191,16 @@ const graphItems: unknown[] = [
           src: [],
           preload: false,
           display: "swap",
-          name: "JetBrains Mono",
+          name: fontMono,
           fallback: "monospace",
           cssVariable: "font-mono",
-          googleFontsURL:
-            "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap",
+          googleFontsURL: `https://fonts.googleapis.com/css2?family=${mf}&display=swap`,
         },
       ]}
     />
 
-    <!-- Site-wide mono token: JetBrains Mono (used by font-mono utilities) -->
-    <style is:global>
-      :root {
-        --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
-    </style>
+    <!-- Site-wide mono token: astro-font (cssVariable: font-mono) and the
+         generated @theme in generated-theme.css both define --font-mono from theme.json -->
 
     <!-- responsive meta -->
     <meta
@@ -234,7 +223,7 @@ const graphItems: unknown[] = [
 
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-dark focus:rounded-lg focus:shadow-lg focus:outline-none"
     >
       Skip to main content
     </a>
@@ -247,7 +236,7 @@ const graphItems: unknown[] = [
       type="button"
       id="back-to-top"
       aria-label="Back to top"
-      class="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-primary text-white shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none"
+      class="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-primary text-dark shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none"
     >
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
         <path d="M12 4l-8 8h5v8h6v-8h5z"/>

@@ -33,7 +33,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
   <div class="ds-container mx-auto w-full max-w-[1147px] px-4 pt-10 pb-14 md:px-6 md:pt-12 md:pb-16 lg:pb-20">
     <!-- Section header -->
     <div class="flex flex-col items-start gap-6 text-left">
-      <h1 class="ds-h1" set:html={markdownify(title)} />
+      <h2 class="ds-h1" set:html={markdownify(title)} />
     </div>
 
     <!-- Split layout: sticky tab rail + stacked panels -->
@@ -72,7 +72,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                     role="tab"
                     data-ds-tab={t.panelId}
                     aria-controls={`ds-panel-${t.panelId}`}
-                    class="ds-tab relative z-10 flex min-w-[160px] shrink-0 items-center gap-[14px] border p-[10px] text-left transition-all duration-300 lg:w-full lg:min-w-0"
+                    class="ds-tab relative z-10 flex min-w-[160px] shrink-0 items-center gap-[14px] border p-[10px] text-left transition-[background-color,color,border-color] duration-300 lg:w-full lg:min-w-0"
                   >
                     <span class="ds-tab-num" aria-hidden="true">{t.num}</span>
                     <span class="ds-tab-label" aria-hidden="true">{t.label}</span>
@@ -117,7 +117,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                     </div>
                     <h2 class="mt-3.5 text-[22px] leading-snug text-text-dark sm:text-[26px] lg:text-[28px]">{markdownify(agent.label)}</h2>
                     <div
-                      class="ds-muted mt-4 max-w-none text-[13px] leading-normal opacity-90 sm:text-sm sm:leading-snug lg:mt-5 lg:max-w-[34rem] [&_p]:my-0"
+                      class="ds-muted mt-4 max-w-[68ch] text-[13px] leading-normal sm:text-sm sm:leading-snug lg:mt-5 lg:text-base lg:leading-relaxed [&_p]:my-0 [&_p]:max-w-[68ch]"
                       set:html={markdownify(agent.description, true)}
                     />
                     {points.length > 0 && (
@@ -128,7 +128,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                           return (
                             <div class="ds-bullet pl-4">
                               <div class="ds-bullet-marker" aria-hidden="true" />
-                              <p class="ds-muted text-[13px] leading-normal sm:text-sm sm:leading-snug">
+                              <p class="ds-muted max-w-[68ch] text-[13px] leading-normal sm:text-sm sm:leading-snug">
                                 {label ? (
                                   <strong class="font-semibold text-text-dark">{label}:</strong>
                                 ) : null}{" "}
@@ -144,7 +144,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                         href={agent.button.link}
                         target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
                         rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
-                        class="ds-cta mt-auto inline-flex w-fit items-center gap-2 pt-10 font-mono text-xs tracking-[0.06em]"
+                        class="ds-cta mt-auto inline-flex w-fit items-center gap-2 pt-10 font-mono text-xs font-bold tracking-[0.02em]"
                       >
                         {agent.button.label}
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -178,30 +178,39 @@ const tabs = agents?.map((agent: any, i: number) => ({
   .ds-scope {
     /* Light scheme, project tokens (same palette as /services and homepage) */
     background-color: var(--color-light);
-    /* composio type: Geist (display/body) + JetBrains Mono (mono micro-labels) */
-    --ds-font-sans: "Geist", "Inter", var(--font-primary), sans-serif;
-    --ds-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    /* composio type: display/body/mono all resolve from theme.json tokens */
+    --ds-font-display: var(--font-secondary);
+    --ds-font-sans: var(--font-primary);
+    --ds-font-mono: var(--font-mono);
     --ds-line: var(--color-dark);
     --ds-panel-border: var(--color-border);
     --ds-accent: var(--color-primary);
     --ds-accent-2: var(--color-accent);
-    --ds-fg: var(--color-text-light);
+    --ds-fg: var(--color-text-dark);
     --ds-fg-strong: var(--color-text-dark);
     font-family: var(--ds-font-sans);
     color: var(--ds-fg-strong);
   }
 
-  .ds-scope :is(h1, h2, h3, p, span, a, button, strong, li) {
+  .ds-scope :is(h1, h2, h3) {
+    font-family: var(--ds-font-display);
+  }
+  .ds-scope :is(p, span, a, button, strong, li) {
     font-family: var(--ds-font-sans);
+  }
+  /* heading text can live in inline descendants — keep it display font */
+  .ds-scope :is(h1, h2, h3) :is(span, strong, em, a, mark) {
+    font-family: var(--ds-font-display);
   }
   .ds-scope .font-mono,
   .ds-tab .ds-tab-label,
+  .ds-tab-num,
   .ds-cta,
   .ds-num-chip {
     font-family: var(--ds-font-mono) !important;
   }
 
-  .ds-scope h1.ds-h1 {
+  .ds-scope h2.ds-h1 {
     font-size: clamp(2rem, 5.4vw, 2.75rem);
     line-height: 1.1;
     letter-spacing: -0.025em;
@@ -210,6 +219,9 @@ const tabs = agents?.map((agent: any, i: number) => ({
   }
   .ds-muted {
     color: var(--ds-fg);
+  }
+  .ds-muted :global(p) {
+    max-width: 68ch;
   }
 
   /* Tabs */
@@ -243,7 +255,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
   }
   .ds-tab[aria-selected="true"] .ds-tab-num {
     background-color: var(--ds-accent);
-    color: #ffffff;
+    color: var(--color-dark);
   }
 
   @media (min-width: 1024px) {
