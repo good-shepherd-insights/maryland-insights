@@ -1,0 +1,391 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type AggregateRating = {
+  /** Review platform the rating comes from, e.g. "Google Reviews". */
+  source: string;
+  /** The published rating value — only real, verifiable ratings are seeded (§3.4). */
+  ratingValue: string | number;
+  reviewCount?: number;
+  /** Scale top, e.g. 5. Stars render only on a 0–5 scale. */
+  bestRating?: number;
+  worstRating?: number;
+  /** Public page where the rating can be verified. */
+  url?: string;
+};
+
+type SubRating = {
+  name: string;
+  value: string | number;
+  /** Scale top; defaults to 5. */
+  max?: number;
+};
+
+type Props = {
+  aggregateRating?: AggregateRating;
+  subRatings?: SubRating[];
+  /** Honesty caption naming where the data comes from, e.g. "Sourced from Google Reviews". */
+  sourceDisclaimer?: string;
+  variant?: "inline" | "card" | "minimal";
+  eyebrow?: string;
+  /** Section heading; defaults to a neutral "Ratings and reviews". */
+  title?: string;
+  intro?: string;
+  headingLevel?: "h2" | "h3";
+  anchor?: string;
+};
+
+const {
+  aggregateRating,
+  subRatings = [],
+  sourceDisclaimer,
+  variant = "card",
+  eyebrow,
+  title,
+  intro,
+  headingLevel = "h2",
+  anchor,
+} = Astro.props as Props;
+
+// Nothing honest to show: render nothing rather than an empty band.
+if (!aggregateRating && subRatings.length === 0) return null;
+
+const heading = title ?? "Ratings and reviews";
+const headingId = `trust-${slugify(heading)}`;
+const Heading = headingLevel;
+
+const STAR_PATH =
+  "M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z";
+
+const toNumber = (v: string | number | undefined | null): number | null => {
+  if (v === undefined || v === null || v === "") return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+};
+
+const clampPct = (n: number, max: number): number =>
+  Math.min(100, Math.max(0, (n / max) * 100));
+
+const ratingValue = aggregateRating ? toNumber(aggregateRating.ratingValue) : null;
+const ratingText = aggregateRating ? String(aggregateRating.ratingValue) : "";
+const best = aggregateRating ? toNumber(aggregateRating.bestRating) : null;
+const worst = aggregateRating ? toNumber(aggregateRating.worstRating) : null;
+const scaleMax = best && best > 0 ? best : 5;
+// Stars are meaningful only on a 0–5 scale; anything else shows the number alone.
+const showStars = ratingValue !== null && scaleMax === 5;
+const starsPct = ratingValue !== null ? clampPct(ratingValue, 5) : 0;
+
+// String SVG markup (LocalNap ICONS pattern): base outline row + clipped fill row.
+const starsBlock = (size: string) => {
+  const row = Array.from(
+    { length: 5 },
+    () =>
+      `<svg class="${size} shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${STAR_PATH}"/></svg>`,
+  ).join("");
+  return (
+    `<span class="flex gap-1 text-border">${row}</span>` +
+    `<span class="absolute left-0 top-0 flex gap-1 overflow-hidden text-secondary" style="width:${starsPct}%">${row}</span>`
+  );
+};
+
+const externalRel = "noopener noreferrer nofollow";
+const isExternal = (url: string) => /^https?:\/\//.test(url);
+
+const countText =
+  aggregateRating && typeof aggregateRating.reviewCount === "number"
+    ? `${aggregateRating.reviewCount.toLocaleString()} review${aggregateRating.reviewCount === 1 ? "" : "s"}`
+    : null;
+---
+
+{
+  variant === "card" ? (
+    <section
+      id={anchor}
+      class="section-sm border-y border-border/70 bg-light overflow-x-hidden"
+      aria-labelledby={headingId}
+    >
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        <div class="mx-auto max-w-3xl rounded-xl border border-border bg-body p-6 pb-8 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-9 sm:pb-10">
+          {
+            eyebrow && (
+              <p class="mb-6 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
+                <span class="h-px w-8 bg-border" aria-hidden="true"></span>
+                {eyebrow}
+              </p>
+            )
+          }
+
+          <Heading id={headingId} class="max-w-[24ch] text-balance">
+            {heading}
+          </Heading>
+
+          {
+            intro && (
+              <p class="mt-4 max-w-[62ch] text-lg leading-relaxed text-text" set:html={markdownify(intro)} />
+            )
+          }
+
+          {
+            aggregateRating && (
+              <div class="mt-8 border-t border-border pt-8">
+                <div class="flex flex-wrap items-center gap-x-5 gap-y-3">
+                  <p class="font-secondary text-5xl font-normal tracking-[-0.06em] tabular-nums text-text-dark">
+                    {ratingText}
+                  </p>
+                  <div class="min-w-0">
+                    {showStars && <span class="relative inline-flex shrink-0" set:html={starsBlock("h-5 w-5")} />}
+                    <p class="mt-1.5 min-w-0 break-words text-sm text-text [overflow-wrap:anywhere]">
+                      out of {scaleMax}
+                      {worst !== null && best !== null ? ` (scale ${worst}–${best})` : ""}
+                    </p>
+                  </div>
+                </div>
+                <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-text-light">
+                  <span class="min-w-0 font-semibold break-words text-text-dark [overflow-wrap:anywhere]">
+                    {aggregateRating.source}
+                  </span>
+                  {countText && (
+                    <span class="min-w-0 break-words tabular-nums [overflow-wrap:anywhere]">
+                      · based on {countText}
+                    </span>
+                  )}
+                  {aggregateRating.url && (
+                    <a
+                      href={aggregateRating.url}
+                      target={isExternal(aggregateRating.url) ? "_blank" : undefined}
+                      rel={isExternal(aggregateRating.url) ? externalRel : undefined}
+                      class="inline-flex items-center gap-1.5 break-words underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary [overflow-wrap:anywhere]"
+                    >
+                      <span>Verify the source</span>
+                      <svg
+                        class="mt-0.5 h-3.5 w-3.5 shrink-0"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14L21 3" />
+                      </svg>
+                    </a>
+                  )}
+                </p>
+              </div>
+            )
+          }
+
+          {
+            subRatings.length > 0 && (
+              <ul class="mt-8 border-t border-border">
+                {subRatings.map((sub) => {
+                  const value = toNumber(sub.value);
+                  const subMax = sub.max && sub.max > 0 ? sub.max : 5;
+                  return (
+                    <li class="grid gap-x-8 gap-y-2 border-b border-border py-5 sm:grid-cols-[12rem_1fr]">
+                      <div class="min-w-0 self-center">
+                        <span class="break-words font-semibold text-text-dark [overflow-wrap:anywhere]">
+                          {sub.name}
+                        </span>
+                      </div>
+                      <div class="min-w-0 self-center">
+                        <p class="text-sm tabular-nums text-text">
+                          {String(sub.value)}
+                          {value !== null ? ` / ${subMax}` : ""}
+                        </p>
+                        {value !== null && (
+                          <span
+                            class="mt-2 block h-1.5 max-w-xs overflow-hidden rounded-full bg-border"
+                            aria-hidden="true"
+                          >
+                            <span
+                              class="block h-full rounded-full bg-primary"
+                              style={`width:${clampPct(value, subMax)}%`}
+                            ></span>
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )
+          }
+
+          {
+            sourceDisclaimer && (
+              <p
+                class="mt-7 max-w-[62ch] text-sm leading-relaxed text-text-light"
+                set:html={markdownify(sourceDisclaimer)}
+              />
+            )
+          }
+        </div>
+      </div>
+    </section>
+  ) : variant === "inline" ? (
+    <section
+      id={anchor}
+      class="border-y border-border/70 bg-body py-6 overflow-x-hidden"
+      aria-labelledby={headingId}
+    >
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        <Heading id={headingId} class="sr-only">
+          {heading}
+        </Heading>
+
+        <ul class="flex flex-col gap-3 text-sm md:flex-row md:flex-wrap md:items-center md:gap-x-8 md:gap-y-3">
+          {
+            aggregateRating && (
+              <li class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+                <span class="font-semibold tabular-nums text-text-dark">{ratingText}</span>
+                {showStars && <span class="relative inline-flex shrink-0" set:html={starsBlock("h-4 w-4")} />}
+              </li>
+            )
+          }
+
+          {
+            aggregateRating && (
+              <li class="min-w-0 break-words text-text [overflow-wrap:anywhere]">
+                <span class="font-semibold text-text-dark">{aggregateRating.source}</span>
+                {countText ? ` · based on ${countText}` : ""}
+              </li>
+            )
+          }
+
+          {
+            aggregateRating?.url && (
+              <li class="min-w-0">
+                <a
+                  href={aggregateRating.url}
+                  target={isExternal(aggregateRating.url) ? "_blank" : undefined}
+                  rel={isExternal(aggregateRating.url) ? externalRel : undefined}
+                  class="inline-flex min-w-0 items-center gap-1.5 break-words text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary [overflow-wrap:anywhere]"
+                >
+                  <span>Verify the source</span>
+                  <svg
+                    class="mt-0.5 h-3.5 w-3.5 shrink-0"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <path d="M15 3h6v6" />
+                    <path d="M10 14L21 3" />
+                  </svg>
+                </a>
+              </li>
+            )
+          }
+
+          {
+            subRatings.map((sub) => (
+              <li class="min-w-0 break-words text-text [overflow-wrap:anywhere]">
+                <span class="font-semibold text-text-dark">{sub.name}</span>
+                <span class="tabular-nums"> {String(sub.value)}</span>
+                {typeof sub.max === "number" && sub.max > 0 ? <span class="tabular-nums"> / {sub.max}</span> : null}
+              </li>
+            ))
+          }
+        </ul>
+
+        {
+          sourceDisclaimer && (
+            <p class="mt-4 max-w-[62ch] text-xs leading-relaxed text-text-light" set:html={markdownify(sourceDisclaimer)} />
+          )
+        }
+      </div>
+    </section>
+  ) : (
+    <section
+      id={anchor}
+      class="border-y border-border/70 bg-body py-6 overflow-x-hidden"
+      aria-labelledby={headingId}
+    >
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        <div class="max-w-sm">
+          <article class="min-w-0 rounded-xl border border-border bg-light p-5">
+            <Heading id={headingId} class="font-secondary text-h6 font-bold text-text-dark [overflow-wrap:anywhere]">
+              {heading}
+            </Heading>
+
+            {
+              aggregateRating && (
+                <div class="mt-3">
+                  <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <p class="break-words font-secondary text-h5 font-bold tabular-nums text-text-dark">
+                      {ratingText}
+                    </p>
+                    {showStars && <span class="relative inline-flex shrink-0" set:html={starsBlock("h-4 w-4")} />}
+                  </div>
+                  <p class="mt-2 min-w-0 break-words text-sm text-text [overflow-wrap:anywhere]">
+                    <span class="font-semibold text-text-dark">{aggregateRating.source}</span>
+                    {countText ? ` · based on ${countText}` : ""}
+                  </p>
+                </div>
+              )
+            }
+
+            {
+              subRatings.length > 0 && (
+                <ul class="mt-3 space-y-1.5 text-sm">
+                  {subRatings.map((sub) => (
+                    <li class="flex min-w-0 items-baseline justify-between gap-4">
+                      <span class="min-w-0 break-words text-text [overflow-wrap:anywhere]">{sub.name}</span>
+                      <span class="shrink-0 tabular-nums font-semibold text-text-dark">
+                        {String(sub.value)}
+                        {typeof sub.max === "number" && sub.max > 0 ? ` / ${sub.max}` : ""}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )
+            }
+
+            {
+              aggregateRating?.url && (
+                <p class="mt-3">
+                  <a
+                    href={aggregateRating.url}
+                    target={isExternal(aggregateRating.url) ? "_blank" : undefined}
+                    rel={isExternal(aggregateRating.url) ? externalRel : undefined}
+                    class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:text-text-dark"
+                  >
+                    <svg
+                      class="h-3.5 w-3.5 shrink-0"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                      <path d="M15 3h6v6" />
+                      <path d="M10 14L21 3" />
+                    </svg>
+                    Verify the source
+                  </a>
+                </p>
+              )
+            }
+
+            {
+              sourceDisclaimer && (
+                <p class="mt-4 border-t border-border/70 pt-3 text-xs leading-relaxed text-text-light" set:html={markdownify(sourceDisclaimer)} />
+              )
+            }
+          </article>
+        </div>
+      </div>
+    </section>
+  )
+}

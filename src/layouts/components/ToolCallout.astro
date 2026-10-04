@@ -1,0 +1,160 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Item = {
+  name: string;
+  purpose?: string;
+  link?: string;
+};
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  items?: Item[];
+  /** "aligned-with" frames the list as surfaces the work is aligned with, never endorsements. */
+  tone?: "neutral" | "aligned-with";
+  footerNote?: string;
+  anchor?: string;
+  headingLevel?: "h2" | "h3";
+};
+
+const {
+  eyebrow,
+  title,
+  intro,
+  items = [],
+  tone = "neutral",
+  footerNote,
+  anchor,
+  headingLevel = "h2",
+} = Astro.props as Props;
+
+const headingId = `tool-${slugify(title)}`;
+const label = eyebrow ?? (tone === "aligned-with" ? "Aligned with" : "Named on this page");
+const Heading = headingLevel;
+---
+
+<section
+  id={anchor}
+  class="section-sm border-y border-border/70 bg-light overflow-x-hidden"
+  aria-labelledby={headingId}
+>
+  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+    <div
+      class="mx-auto max-w-3xl rounded-xl border border-border bg-body p-6 pb-8 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-9 sm:pb-10"
+    >
+      {
+        tone === "aligned-with" ? (
+          <p class="mb-6 inline-flex items-center gap-3 border border-border bg-light px-3.5 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-text-dark">
+            <span class="h-px w-5 shrink-0 bg-primary" aria-hidden="true"></span>
+            {label}
+          </p>
+        ) : (
+          <p class="mb-6 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
+            <span class="h-px w-8 bg-border" aria-hidden="true"></span>
+            {label}
+          </p>
+        )
+      }
+
+      <Heading id={headingId} class="max-w-[24ch] text-balance">
+        {title}
+      </Heading>
+
+      {
+        intro && (
+          <p class="mt-4 max-w-[62ch] text-lg leading-relaxed text-text" set:html={markdownify(intro)} />
+        )
+      }
+
+      {
+        items.length > 0 && (
+          tone === "aligned-with" ? (
+            <ul class="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-7 border-y border-border py-7">
+              {items.map((item) => (
+                <li class="w-full min-w-0 text-center sm:w-[calc(50%_-_1rem)]">
+                  {item.link ? (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      class="inline-flex items-center gap-1.5 border border-border bg-light px-4 py-2 text-sm font-semibold text-text-dark transition-colors hover:border-primary hover:text-primary"
+                    >
+                      <span class="min-w-0 break-words">{item.name}</span>
+                      <svg
+                        class="h-3.5 w-3.5 shrink-0"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <path d="M15 3h6v6" />
+                        <path d="M10 14L21 3" />
+                      </svg>
+                    </a>
+                  ) : (
+                    <span class="inline-flex border border-border bg-light px-4 py-2 text-sm font-semibold text-text-dark">
+                      {item.name}
+                    </span>
+                  )}
+                  {item.purpose && (
+                    <p class="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-text" set:html={markdownify(item.purpose)} />
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <ul class:list={["mt-8", { "border-t border-border": intro }]}> 
+              {items.map((item) => (
+                <li class="grid gap-x-8 gap-y-1 border-b border-border py-5 sm:grid-cols-[12rem_1fr]">
+                  <div class="min-w-0">
+                    {item.link ? (
+                      <a
+                        href={item.link}
+                        target="_blank"
+                        rel="noopener noreferrer nofollow"
+                        class="inline-flex items-start gap-1.5 font-semibold text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary"
+                      >
+                        <span class="min-w-0 break-words">{item.name}</span>
+                        <svg
+                          class="mt-1 h-3.5 w-3.5 shrink-0"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                          <path d="M15 3h6v6" />
+                          <path d="M10 14L21 3" />
+                        </svg>
+                      </a>
+                    ) : (
+                      <span class="break-words font-semibold text-text-dark">{item.name}</span>
+                    )}
+                  </div>
+                  {item.purpose && (
+                    <p class="min-w-0 leading-relaxed text-text" set:html={markdownify(item.purpose)} />
+                  )}
+                </li>
+              ))}
+            </ul>
+          )
+        )
+      }
+
+      {
+        footerNote && (
+          <p class="mt-7 max-w-[62ch] text-sm leading-relaxed text-text-light" set:html={markdownify(footerNote)} />
+        )
+      }
+    </div>
+  </div>
+</section>

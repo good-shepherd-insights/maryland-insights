@@ -1,14 +1,18 @@
 ---
 import { markdownify, slugify } from "@/lib/utils/textConverter";
 
+type County = { name: string; edoUrl?: string };
+
 type Props = {
   title: string;
   intro: string;
-  counties: string[];
+  counties: (string | County)[];
 };
 
 const { title, intro, counties } = Astro.props as Props;
 const headingId = `service-${slugify(title)}`;
+const items = counties.map((c) => (typeof c === "string" ? { name: c } : c));
+const hasLinks = items.some((c) => c.edoUrl);
 ---
 
 <section class="section-sm border-y border-border/70 bg-body" aria-labelledby={headingId}>
@@ -23,16 +27,36 @@ const headingId = `service-${slugify(title)}`;
         <p class="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Areas named in our work</p>
         <ul class="grid border-t border-border sm:grid-cols-2">
           {
-            counties.map((county, index) => (
+            items.map((county, index) => (
               <li class="flex items-baseline gap-4 border-b border-border py-5 sm:pr-6">
                 <span class="text-xs font-semibold tracking-[0.12em] text-primary">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <span class="text-lg text-text-dark">{county}</span>
+                {county.edoUrl ? (
+                  <a
+                    href={county.edoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group inline-flex items-center gap-1.5 text-lg text-text-dark underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary"
+                  >
+                    {county.name}
+                    <svg class="h-3.5 w-3.5 shrink-0 text-text-light transition-colors group-hover:text-primary" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                      <path d="M3.5 2.5h6v6M9 3 3 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span class="sr-only">(opens the county's official economic development site in a new tab)</span>
+                  </a>
+                ) : (
+                  <span class="text-lg text-text-dark">{county.name}</span>
+                )}
               </li>
             ))
           }
         </ul>
+        {hasLinks && (
+          <p class="mt-4 text-sm text-text-light">
+            Each county links to its official economic development site, where business records and licensing are published.
+          </p>
+        )}
       </div>
     </div>
   </div>

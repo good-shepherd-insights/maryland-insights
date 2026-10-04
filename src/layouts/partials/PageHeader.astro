@@ -1,5 +1,6 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
+import UpdatedDateBadge from "@/components/UpdatedDateBadge.astro";
 import dateFormat from "@/lib/utils/dateFormat";
 import { humanize, markdownify } from "@/lib/utils/textConverter";
 
@@ -12,7 +13,7 @@ const {
 }: {
   title?: string;
   description?: string;
-  blogData?: { author: { name: string; image: string }; date: string };
+  blogData?: { author: { name: string; image: string }; date: string; lastmod?: string };
   caseData?: {
     author: { name: string; image: string; designation: string };
     date: string;
@@ -63,12 +64,12 @@ const {
             <span class="text-text-dark">{blogData.author?.name}</span>
           </p>
           {blogData.date && (
-            <p class="flex flex-col gap-1 text-left">
-              <span class="text-xs">Last updated</span>
-              <time class="text-text-dark" datetime={dateFormat(blogData.date)}>
-                {dateFormat(blogData.date)}
-              </time>
-            </p>
+            <UpdatedDateBadge
+              dateModified={String(blogData.lastmod || blogData.date)}
+              datePublished={blogData.date ? String(blogData.date) : undefined}
+              variant="badge"
+              label="Updated"
+            />
           )}
         </div>
       )

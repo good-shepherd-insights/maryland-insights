@@ -12,6 +12,19 @@ body {
   @apply outline-2 outline-offset-2 outline-primary;
 }
 
+/* anchor targets must clear the fixed site header when jumped to */
+section[id],
+:is(h2, h3)[id^="service-"],
+:is(h2, h3)[id^="nap-"],
+:is(h2, h3)[id^="honest-take"],
+:is(h2, h3)[id^="comparison-"],
+:is(h2, h3)[id^="pricing-"],
+:is(h2, h3)[id^="tool-"],
+:is(h2, h3)[id^="ai-"],
+:is(h2, h3)[id^="resources-"] {
+  scroll-margin-top: 6rem;
+}
+
 h1,
 h2,
 h3,
@@ -59,12 +72,6 @@ h6,
 b,
 strong {
   @apply font-semibold;
-}
-
-code,
-pre,
-kbd {
-  font-family: var(--font-mono);
 }
 
 code {

@@ -24,7 +24,8 @@ export async function getStaticPaths() {
 }
 
 const { service } = Astro.props;
-const { title, description, image, faqs_list, blocks = [] } = service.data;
+const { title, description, image, faqs_list, blocks = [], date_modified } = service.data;
+const hasLeadHero = blocks.some((block: { type: string }) => block.type === "leadCapture");
 
 const serviceSchema: SoftwareApplication = {
   "@type": "SoftwareApplication",
@@ -41,6 +42,7 @@ const serviceSchema: SoftwareApplication = {
   "publisher": {
     "@id": `${config.site.base_url}/#organization`,
   },
+  ...(date_modified ? { "dateModified": new Date(date_modified).toISOString() } : {}),
 };
 
 const pageSchemas: (SoftwareApplication | FAQPage)[] = [serviceSchema];
@@ -65,7 +67,7 @@ if (faqs_list && faqs_list.length > 0) {
 ---
 
 <Base {...service.data} schema={pageSchemas}>
-  <PageHeader title={title} description={description} />
+  {!hasLeadHero && <PageHeader title={title} description={description} />}
 
   <ServiceBlocks blocks={blocks} />
 

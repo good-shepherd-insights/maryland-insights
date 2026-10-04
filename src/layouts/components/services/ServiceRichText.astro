@@ -4,22 +4,55 @@ import { markdownify, slugify } from "@/lib/utils/textConverter";
 type Props = {
   title: string;
   body: string;
-  tone?: "default" | "muted";
+  tone?: "default" | "muted" | "dark";
+  eyebrow?: string;
+  headingLevel?: "h1" | "h2";
 };
 
-const { title, body, tone = "default" } = Astro.props as Props;
+const { title, body, tone = "default", eyebrow, headingLevel = "h2" } = Astro.props as Props;
+const Heading = headingLevel;
 const headingId = `service-${slugify(title)}`;
-const sectionTone = tone === "muted" ? "bg-light" : "bg-body";
+const isDark = tone === "dark";
 ---
 
-<section class={`section-sm ${sectionTone} border-y border-border/70`} aria-labelledby={headingId}>
-  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
-    <div class="grid items-start gap-8 lg:grid-cols-12 lg:gap-16">
-      <div class="lg:col-span-5">
-        <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
+{
+  isDark ? (
+    <section class="section bg-dark text-white border-y border-white/10" aria-labelledby={headingId}>
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        {eyebrow && <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">{eyebrow}</p>}
+        <Heading
+          id={headingId}
+          class="mt-5 max-w-[26ch] text-balance text-[32px] leading-[1.08] font-bold tracking-tight text-white sm:text-[40px] lg:text-[48px]"
+          set:html={markdownify(title)}
+        />
+        <div class="content dark-body mt-10 max-w-[46rem] border-l-2 border-secondary/60 pl-6 sm:text-[17px] sm:leading-relaxed lg:pl-8" set:html={markdownify(body, true) as string} />
       </div>
+    </section>
+  ) : (
+    <section class={`section-sm ${tone === "muted" ? "bg-light" : "bg-body"} border-y border-border/70`} aria-labelledby={headingId}>
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        <div class="grid items-start gap-8 lg:grid-cols-12 lg:gap-16">
+          <div class="lg:col-span-5">
+            {eyebrow && <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">{eyebrow}</p>}
+            <Heading id={headingId} class="text-balance" set:html={markdownify(title)} />
+          </div>
 
-      <div class="content lg:col-span-7" set:html={markdownify(body, true) as string} />
-    </div>
-  </div>
-</section>
+          <div class="content lg:col-span-7" set:html={markdownify(body, true) as string} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .dark-body :global(p),
+  .dark-body :global(li) {
+    color: rgb(255 255 255 / 0.78);
+  }
+  .dark-body :global(strong) {
+    color: #ffffff;
+  }
+  .dark-body :global(a) {
+    color: var(--color-secondary);
+  }
+</style>
