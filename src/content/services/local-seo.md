@@ -404,20 +404,11 @@ blocks:
   - type: pricingTiers
     eyebrow: "Pricing"
     title: "How pricing works here"
-    intro: "Two numbers frame this work: $0 to start, and a quote that matches the scope the audit found. Engagement pricing is agreed before any listing change is published."
+    intro: "Standard is $99/month. For work beyond that scope, contact us for a custom quote before any listing change is published."
     variant: "cards"
     tiers:
-      - name: "Starter"
-        priceRange: "$0, free forever"
-        description: "The foundation layer local SEO runs on. Hosting, data layer, and schema. The pipes behind the walls, free."
-        includes:
-          - "Our foundation layer: hosting, data layer, and schema"
-          - "What agencies and businesses run on"
-          - "No credit card required"
-        excludes:
-          - "Local SEO engagement work: the audit, alignment, and measurement steps on this page are scoped separately"
-      - name: "Local SEO engagement"
-        priceRange: "From $99/month, scoped to the work"
+      - name: "Standard"
+        priceRange: "$99/month"
         description: "The full verify-align-build-measure engagement described on this page."
         includes:
           - "Deployment and maintenance of the verified business-detail system."
@@ -427,7 +418,11 @@ blocks:
           - "Third-party subscriptions, paid data providers, and premium external services."
           - "Work outside the agreed site, content, or listing scope."
           - "Urgent changes that require work outside the normal delivery process."
-    disclaimer: "Starter terms are published in our [FAQs](/faqs). For market context: retainers for comparable agency work commonly run [$2,500 to $7,500 per month](/blog/why-ai-platforms-arent-sending-traffic-to-your-maryland-business-yet)."
+      - name: "Custom"
+        priceRange: "Contact us for pricing"
+        description: "For work beyond the Standard scope. Tell us what you need and we'll provide a quote."
+        ctaLabel: "Contact us"
+        ctaHref: "/contact"
   - type: relatedArticles
     title: "Keep reading"
     layout: "grid"

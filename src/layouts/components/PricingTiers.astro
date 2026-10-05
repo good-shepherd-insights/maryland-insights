@@ -9,6 +9,8 @@ type Tier = {
   description?: string;
   includes?: string[];
   excludes?: string[];
+  ctaLabel?: string;
+  ctaHref?: string;
   /** Highlight treatment carried over from the existing pricing surface: the ReplacesTable `isUs` tint adapted to a border tint plus the LeadCaptureForm pill. Pass a string to author the pill label; `true` renders "Recommended". */
   recommended?: boolean | string;
 };
@@ -178,6 +180,14 @@ const recommendedLabel = (tier: Tier): string =>
                       )}
                     </div>
                   )}
+
+                  {tier.ctaLabel && tier.ctaHref && (
+                    <div class="mt-auto pt-8">
+                      <a href={tier.ctaHref} class="btn btn-primary inline-flex min-h-12 w-full items-center justify-center px-6 py-3 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark sm:w-auto">
+                        {tier.ctaLabel}
+                      </a>
+                    </div>
+                  )}
                 </div>
               </li>
             ))}
@@ -240,6 +250,11 @@ const recommendedLabel = (tier: Tier): string =>
                       </div>
                     )}
                   </div>
+                  {tier.ctaLabel && tier.ctaHref && (
+                    <a href={tier.ctaHref} class="btn btn-primary mt-6 inline-flex min-h-12 items-center justify-center px-6 py-3 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark">
+                      {tier.ctaLabel}
+                    </a>
+                  )}
                 </dd>
               </div>
             ))}
