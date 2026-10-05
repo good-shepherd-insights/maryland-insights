@@ -51,11 +51,13 @@ const CONTROL_CHARS = /[\u0000-\u001f\u007f]/g;
 const LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const LIMIT_AUTOCOMPLETE = 30;
 const LIMIT_DETAILS = 10;
+const GOOGLE_TIMEOUT_MS = 5000;
 
 // Best-effort per-IP token bucket: serverless instances keep this in-memory state only per warm container,
 // so limits are approximate under scale-to-zero/multiple regions — never a security boundary.
 const buckets = new Map<string, { startedAt: number; autocomplete: number; details: number }>();
 
+/** Enforce a best-effort per-instance request limit for each lookup mode. */
 function takeRequest(ip: string, mode: "autocomplete" | "details"): boolean {
   const now = Date.now();
   for (const [key, bucket] of buckets) {
@@ -76,6 +78,7 @@ function takeRequest(ip: string, mode: "autocomplete" | "details"): boolean {
   return true;
 }
 
+/** Return a JSON response with the requested status code. */
 function json(status: number, payload: unknown): Response {
   return new Response(JSON.stringify(payload), {
     status,
@@ -83,12 +86,14 @@ function json(status: number, payload: unknown): Response {
   });
 }
 
+/** Trim and limit an external string without coercing other value types. */
 function cap(value: unknown, max: number): string | null {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
   return trimmed === "" ? null : trimmed.slice(0, max);
 }
 
+/** Keep only finite numeric values from an external response. */
 function numberOr(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
@@ -141,6 +146,7 @@ type Place = {
   iconBackgroundColor?: string;
 };
 
+/** Accept establishment predictions while excluding geographic places. */
 function isBusiness(types: unknown): boolean {
   if (!Array.isArray(types)) return false;
   const placeTypes = types.filter((type): type is string => typeof type === "string");
@@ -154,6 +160,7 @@ type OpeningHours = {
   nextCloseTime?: string;
 };
 
+/** Keep a bounded list of nonempty strings from a Places field. */
 function stringList(value: unknown, maxItems: number, maxLength: number): string[] {
   if (!Array.isArray(value)) return [];
   return value
@@ -163,6 +170,7 @@ function stringList(value: unknown, maxItems: number, maxLength: number): string
     .slice(0, maxItems);
 }
 
+/** Allow only Google's map icon host when building a category icon URL. */
 function googleIconUrl(value: unknown): string | null {
   const base = cap(value, 300);
   if (!base) return null;
@@ -175,11 +183,13 @@ function googleIconUrl(value: unknown): string | null {
   }
 }
 
+/** Accept a six-digit color value for the category icon background. */
 function hexColor(value: unknown): string | null {
   const color = cap(value, 7);
   return color && /^#[0-9a-f]{6}$/i.test(color) ? color : null;
 }
 
+/** Log a bounded Google error and return a public-safe failure response. */
 async function googleError(res: Response, mode: string): Promise<Response> {
   const body = await res.text().catch(() => "");
   let message = body.slice(0, 900);
@@ -196,6 +206,7 @@ async function googleError(res: Response, mode: string): Promise<Response> {
   return json(502, { error: "lookup-failed" });
 }
 
+/** Return a bounded set of business autocomplete predictions. */
 async function handleAutocomplete(apiKey: string, query: string): Promise<Response> {
   let data: { suggestions?: Suggestion[] };
   try {
@@ -211,6 +222,7 @@ async function handleAutocomplete(apiKey: string, query: string): Promise<Respon
         regionCode: "US",
         includePureServiceAreaBusinesses: true,
       }),
+      signal: AbortSignal.timeout(GOOGLE_TIMEOUT_MS),
     });
     if (!res.ok) return googleError(res, "autocomplete");
     data = (await res.json()) as { suggestions?: Suggestion[] };
@@ -238,11 +250,13 @@ async function handleAutocomplete(apiKey: string, query: string): Promise<Respon
   return json(200, results);
 }
 
+/** Fetch and whitelist the selected business's Places details. */
 async function handleDetails(apiKey: string, placeId: string): Promise<Response> {
   let place: Place;
   try {
     const res = await fetch(`${DETAILS_BASE}${encodeURIComponent(placeId)}`, {
       headers: { "X-Goog-Api-Key": apiKey, "X-Goog-FieldMask": DETAILS_FIELD_MASK },
+      signal: AbortSignal.timeout(GOOGLE_TIMEOUT_MS),
     });
     if (!res.ok) return googleError(res, "details");
     place = (await res.json()) as Place;
@@ -290,6 +304,7 @@ async function handleDetails(apiKey: string, placeId: string): Promise<Response>
   });
 }
 
+/** Validate and rate-limit incoming autocomplete or details requests. */
 export async function POST({ request, clientAddress }: APIContext): Promise<Response> {
   const contentType = request.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) {

@@ -215,7 +215,7 @@ const graphItems: unknown[] = [
     </a>
     <TwSizeIndicator />
     <Header />
-    <main id="main-content">
+    <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <button
@@ -224,7 +224,7 @@ const graphItems: unknown[] = [
       aria-label="Back to top"
       aria-hidden="true"
       tabindex="-1"
-      class="fixed bottom-6 left-6 z-40 p-3 rounded-full bg-primary text-dark shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none"
+      class="fixed bottom-6 left-6 z-40 p-3 rounded-full bg-primary text-dark shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2"
     >
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
         <path d="M12 4l-8 8h5v8h6v-8h5z"/>
@@ -324,6 +324,9 @@ const graphItems: unknown[] = [
         const setBackToTopVisible = (visible: boolean) => {
           const button = document.getElementById("back-to-top");
           if (!button) return;
+          if (!visible && document.activeElement === button) {
+            document.getElementById("main-content")?.focus({ preventScroll: true });
+          }
           button.classList.toggle("opacity-0", !visible);
           button.classList.toggle("pointer-events-none", !visible);
           button.classList.toggle("opacity-100", visible);

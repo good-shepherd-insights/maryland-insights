@@ -13,13 +13,15 @@ const {
 }: {
   title?: string;
   description?: string;
-  blogData?: { author: { name: string; image: string }; date: string; lastmod?: string };
+  blogData?: { author: { name: string; image?: string }; date?: Date | string; lastmod?: Date | string };
   caseData?: {
     author: { name: string; image: string; designation: string };
     date: string;
   };
   careerData?: { department: string; vacancy: string; deadline: string };
 } = Astro.props;
+
+const dateString = (value: Date | string): string => value instanceof Date ? value.toISOString() : value;
 ---
 
 <section
@@ -65,8 +67,8 @@ const {
           </p>
           {blogData.date && (
             <UpdatedDateBadge
-              dateModified={String(blogData.lastmod || blogData.date)}
-              datePublished={blogData.date ? String(blogData.date) : undefined}
+              dateModified={dateString(blogData.lastmod || blogData.date)}
+              datePublished={blogData.date ? dateString(blogData.date) : undefined}
               variant="badge"
               label="Updated"
             />

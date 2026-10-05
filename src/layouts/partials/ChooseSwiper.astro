@@ -302,6 +302,10 @@ const tabs = agents?.map((agent: any, i: number) => ({
   .ds-cta:hover {
     color: #ffb612;
   }
+  .ds-cta:focus-visible {
+    outline: 2px solid var(--ds-accent);
+    outline-offset: 3px;
+  }
 </style>
 
 <script>
@@ -331,18 +335,25 @@ const tabs = agents?.map((agent: any, i: number) => ({
     const cards = Array.from(section.querySelectorAll<HTMLElement>(".ds-card"));
     const fitCards = () => {
       const lg = window.matchMedia("(min-width: 1024px)").matches;
-      cards.forEach((c) => {
-        c.style.removeProperty("--ds-scale");
-        if (!lg) return;
-        // measure at natural width (no transform/width compensation applied)
-        // so the scale never feeds back on its own width compensation
-        const avail = window.innerHeight - STICK_OFFSET - 8;
-        const scale = Math.min(1, avail / c.offsetHeight);
-        if (scale < 1) c.style.setProperty("--ds-scale", String(scale));
+      // Clear every width-compensating scale before measuring natural heights.
+      cards.forEach((card) => card.style.removeProperty("--ds-scale"));
+      if (!lg) return;
+      const avail = window.innerHeight - STICK_OFFSET - 8;
+      const scales = cards.map((card) => Math.min(1, avail / card.offsetHeight));
+      cards.forEach((card, index) => {
+        if (scales[index] < 1) card.style.setProperty("--ds-scale", String(scales[index]));
       });
     };
     fitCards();
-    document.fonts.ready.then(fitCards);
+    let fitFrame = 0;
+    const scheduleFitCards = () => {
+      if (fitFrame) return;
+      fitFrame = requestAnimationFrame(() => {
+        fitFrame = 0;
+        fitCards();
+      });
+    };
+    document.fonts.ready.then(scheduleFitCards);
 
     // Scroll-position-driven: the active panel is the last one whose top has
     // crossed the stick line. Deterministic, always matches what the user sees.
@@ -369,7 +380,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
     const scrollHandler: EventListenerOrEventListenerObject = onScroll;
     window.addEventListener("scroll", scrollHandler, { passive: true });
     window.addEventListener("resize", () => {
-      fitCards();
+      scheduleFitCards();
       const nowDesktop = isDesktop();
       if (nowDesktop !== wasDesktop) {
         wasDesktop = nowDesktop;

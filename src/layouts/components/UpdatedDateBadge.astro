@@ -61,6 +61,8 @@ const showStaleNote = isStale && variant !== "minimal";
 {
   variant === "badge" ? (
     <span
+      data-updated-date-badge
+      data-stale-days={STALE_DAYS}
       class:list={[
         "inline-flex max-w-full min-w-0 flex-wrap items-center gap-x-2 gap-y-1 rounded-full border border-border bg-light px-3 py-1 text-xs font-semibold tracking-[0.14em] text-text-dark",
         className,
@@ -90,11 +92,9 @@ const showStaleNote = isStale && variant !== "minimal";
           <span aria-hidden="true">· </span>Published <time datetime={publishedDatetime} class="normal-case tracking-normal tabular-nums">{publishedText}</time>
         </span>
       )}
-      {showStaleNote && (
-        <span class="min-w-0 break-words normal-case tracking-normal text-text-light">
-          (this page may be out of date)
-        </span>
-      )}
+      <span data-stale-note hidden={!showStaleNote} class="min-w-0 break-words normal-case tracking-normal text-text-light">
+        (this page may be out of date)
+      </span>
     </span>
   ) : variant === "minimal" ? (
     <span
@@ -104,6 +104,8 @@ const showStaleNote = isStale && variant !== "minimal";
     </span>
   ) : (
     <div
+      data-updated-date-badge
+      data-stale-days={STALE_DAYS}
       class:list={["flex max-w-full min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5", className]}
     >
       <span class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
@@ -119,11 +121,25 @@ const showStaleNote = isStale && variant !== "minimal";
           <time datetime={publishedDatetime} class="tabular-nums">{publishedText}</time>
         </span>
       )}
-      {showStaleNote && (
-        <span class="min-w-0 break-words text-xs text-text-light">
-          (this page may be out of date)
-        </span>
-      )}
+      <span data-stale-note hidden={!showStaleNote} class="min-w-0 break-words text-xs text-text-light">
+        (this page may be out of date)
+      </span>
     </div>
   )
 }
+
+<script>
+  const syncStaleNotes = () => {
+    document.querySelectorAll<HTMLElement>("[data-updated-date-badge]").forEach((badge) => {
+      const date = badge.querySelector<HTMLTimeElement>("time[datetime]")?.dateTime;
+      const note = badge.querySelector<HTMLElement>("[data-stale-note]");
+      const modifiedAt = date ? new Date(date).getTime() : NaN;
+      const staleDays = Number(badge.dataset.staleDays);
+      if (!note || !Number.isFinite(modifiedAt) || !Number.isFinite(staleDays)) return;
+      note.hidden = Date.now() - modifiedAt <= staleDays * 86_400_000;
+    });
+  };
+
+  document.addEventListener("astro:page-load", syncStaleNotes);
+  syncStaleNotes();
+</script>

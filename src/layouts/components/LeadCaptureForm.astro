@@ -313,12 +313,12 @@ const listboxId = `lookup-list-${slugify(title)}`;
 </section>
 
 <script>
-  const form = document.querySelector<HTMLFormElement>(".lead-capture-form");
-  const card = form?.parentElement;
-  const status = form?.querySelector<HTMLElement>(".lead-capture-status");
-  const success = card?.querySelector<HTMLElement>(".lead-capture-success");
+  document.querySelectorAll<HTMLFormElement>(".lead-capture-form").forEach((form) => {
+    const card = form.parentElement;
+    const status = form.querySelector<HTMLElement>(".lead-capture-status");
+    const success = card?.querySelector<HTMLElement>(".lead-capture-success");
+    if (!status || !success) return;
 
-  if (form && status && success) {
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       status.hidden = false;
@@ -348,7 +348,7 @@ const listboxId = `lookup-list-${slugify(title)}`;
         if (button) button.textContent = originalLabel ?? "";
       }
     });
-  }
+  });
 
   // Optional lookup enhancement. Lookup-dependent fields stay unavailable until
   // the visitor explicitly selects a business suggestion.
@@ -380,6 +380,8 @@ const listboxId = `lookup-list-${slugify(title)}`;
       .filter((field): field is HTMLInputElement | HTMLTextAreaElement => field !== null);
     const baseCtaLabel = submitBtn?.textContent?.trim() ?? "";
     const ctaTemplate = form.dataset.lookupCta || "";
+    const endpoint = form.dataset.lookupEndpoint || "/api/business-lookup";
+    const minChars = Math.max(2, Number(form.dataset.lookupMin) || 3);
 
     type TransitionDocument = Document & {
       startViewTransition?: (update: () => void) => { finished: Promise<void> };
@@ -529,9 +531,6 @@ const listboxId = `lookup-list-${slugify(title)}`;
       li.appendChild(text);
       return li;
     }
-
-    const endpoint = form.dataset.lookupEndpoint || "/api/business-lookup";
-    const minChars = Math.max(2, Number(form.dataset.lookupMin) || 3);
 
     const titleTemplate = form.dataset.lookupTitle || "";
     const titleHeading = titleTemplate
