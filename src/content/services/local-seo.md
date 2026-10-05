@@ -382,6 +382,9 @@ blocks:
           - name: "Bing Places for Business"
             url: "https://www.bingplaces.com"
             type: "Microsoft"
+          - name: "Yelp for Business"
+            url: "https://biz.yelp.com/claim"
+            type: "Yelp"
     footerNote: "External links open in a new tab. We don't control these sites. We read and update against them."
   - type: trust
     eyebrow: "What to expect"
