@@ -1,0 +1,1178 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Field = {
+  name: string;
+  label: string;
+  type: "text" | "email" | "tel" | "textarea";
+  placeholder?: string;
+  required?: boolean;
+};
+
+type LookupPrefill = {
+  from: "name" | "phone" | "address" | "county" | "category" | "rating";
+  to: string;
+};
+
+type Lookup = {
+  endpoint?: string;
+  businessField: string;
+  prefill?: LookupPrefill[];
+  minChars?: number;
+  placeholder?: string;
+  /** Template with {business} placeholder; heading swaps to it once a suggestion is chosen. */
+  titleTemplate?: string;
+  /** Template with {business} placeholder; submit label swaps once a suggestion is chosen. */
+  ctaTemplate?: string;
+};
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  leadMagnetLabel?: string;
+  points?: string[];
+  fields: Field[];
+  submitLabel: string;
+  formAction: string;
+  disclaimer?: string;
+  anchor?: string;
+  headingLevel?: "h1" | "h2";
+  lookup?: Lookup;
+};
+
+const {
+  eyebrow,
+  title,
+  description,
+  leadMagnetLabel,
+  points = [],
+  fields,
+  submitLabel,
+  formAction,
+  disclaimer,
+  anchor,
+  headingLevel = "h2",
+  lookup,
+} = Astro.props as Props;
+
+const headingId = `lead-${slugify(title)}`;
+const fieldId = (name: string) => `lead-field-${slugify(name)}`;
+const lookupBusinessName = lookup?.businessField;
+const listboxId = `lookup-list-${slugify(title)}`;
+---
+
+<section
+  id={anchor}
+  class="bg-light bg-4col-grid overflow-x-clip border-b border-border/80"
+  aria-labelledby={headingId}
+>
+  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+    <div class="lead-layout grid gap-14 pt-30 pb-16 lg:grid-cols-12 lg:gap-16 lg:pt-40 lg:pb-24">
+      <div class="lead-main lg:col-span-7">
+        {
+          eyebrow && (
+            <p class="mb-5 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+              <span class="h-px w-8 bg-primary" aria-hidden="true"></span>
+              {eyebrow}
+            </p>
+          )
+        }
+
+        {
+          headingLevel === "h1" ? (
+            <h1 id={headingId} {...(lookup?.titleTemplate ? { "data-lead-title": true } : {})} class="lead-heading max-w-[18ch] text-balance">
+              {title}
+            </h1>
+          ) : (
+            <h2 id={headingId} {...(lookup?.titleTemplate ? { "data-lead-title": true } : {})} class="lead-heading max-w-[18ch] text-balance">
+              {title}
+            </h2>
+          )
+        }
+
+        <div class="lookup-intro">
+        {
+          description && (
+            <p
+              class="lead-hook mt-6 max-w-[54ch] font-secondary text-xl font-medium leading-snug text-text-dark sm:text-2xl"
+              set:html={markdownify(description)}
+            />
+          )
+        }
+
+        {
+          points.length > 0 && (
+            <ul class="lead-outcomes mt-9 max-w-[64ch] border-y border-dark">
+              {points.map((point) => (
+                <li class="grid grid-cols-[1.5rem_minmax(0,1fr)] items-start gap-3 border-b border-border py-4 last:border-b-0 sm:py-5">
+                  <span class="mt-[0.7em] h-px w-5 bg-primary" aria-hidden="true"></span>
+                  <span class="max-w-[58ch] leading-relaxed text-text" set:html={markdownify(point)} />
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        </div>
+
+        {
+          lookup && lookupBusinessName && (
+            <div class="lookup-profile mt-10" aria-live="polite" hidden>
+              <div class="lookup-profile-surface min-w-0 border-y border-dark bg-body py-6 sm:py-7">
+                <div class="lookup-profile-heading flex flex-col gap-4 px-5 sm:flex-row sm:items-start sm:justify-between sm:px-7">
+                  <div class="min-w-0">
+                    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Google Business Profile</p>
+                    <p class="lookup-profile-name mt-2 min-w-0 break-words font-secondary text-h4 font-bold leading-tight text-text-dark"></p>
+                  </div>
+                  <p class="lookup-profile-rating flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 border-t border-border pt-3 sm:border-t-0 sm:pt-0" hidden>
+                    <svg
+                      class="h-4 w-4 shrink-0 text-secondary"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4 4.2 13.4l.7-4.3-3.1-3 4.3-.6z" />
+                    </svg>
+                    <span class="lookup-profile-score text-sm font-bold tabular-nums text-text-dark"></span>
+                    <span class="lookup-profile-reviews text-sm text-text"></span>
+                  </p>
+                </div>
+                <ul class="lookup-profile-rows mt-6 border-t border-border"></ul>
+                <p class="mt-5 px-5 text-xs text-text-light sm:px-7">
+                  Data from Google
+                  <a class="lookup-profile-maps ml-1.5 text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" href="#" target="_blank" rel="noopener noreferrer nofollow" hidden>View on Maps</a>
+                </p>
+              </div>
+            </div>
+          )
+        }
+      </div>
+
+      <div class="lead-form-column lg:col-span-5">
+        <div class="lead-form-surface border border-border border-t-dark bg-body p-6 pb-7 sm:p-8">
+          {
+            leadMagnetLabel && (
+              <p class="lead-magnet-label mb-7 inline-flex items-center gap-3 border border-dark bg-secondary px-4 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-dark">
+                <span class="h-px w-6 shrink-0 bg-dark" aria-hidden="true"></span>
+                {leadMagnetLabel}
+              </p>
+            )
+          }
+
+          <form
+            class="lead-capture-form"
+            id={anchor ? `${anchor}-form` : undefined}
+            method="post"
+            action={formAction}
+            data-lookup-endpoint={lookup ? (lookup.endpoint ?? "/api/business-lookup") : undefined}
+            data-lookup-field={lookupBusinessName}
+            data-lookup-min={lookup?.minChars}
+            data-lookup-prefill={lookup ? JSON.stringify(lookup.prefill ?? []) : undefined}
+            data-lookup-title={lookup?.titleTemplate}
+            data-lookup-cta={lookup?.ctaTemplate}
+          >
+            {
+              lookup && (
+                <button
+                  type="button"
+                  class="lookup-change-business mb-5 hidden border-b border-border pb-0.5 text-sm font-semibold text-text-dark transition-colors hover:border-primary hover:text-primary"
+                >
+                  Change business
+                </button>
+              )
+            }
+
+            <div class="grid grid-cols-1 gap-x-5 gap-y-5">
+              {fields.map((field) => {
+                const isLookupInput = Boolean(
+                  lookupBusinessName && field.name === lookupBusinessName && field.type !== "textarea",
+                );
+                const isLookupDependent = Boolean(lookupBusinessName && !isLookupInput && field.type === "email");
+                return (
+                  <div
+                    class:list={["min-w-0", { relative: isLookupInput, "lookup-dependent": isLookupDependent }]}
+                    data-lookup-dependent={isLookupDependent ? true : undefined}
+                    data-lookup-business-group={isLookupInput ? true : undefined}
+                    hidden={isLookupDependent || undefined}
+                  >
+                    <label class="mb-2 block text-sm font-semibold text-text-dark" for={fieldId(field.name)}>
+                      {field.label}
+                      {field.required ? (
+                        <>
+                          <span class="text-primary" aria-hidden="true">
+                            {" "}*
+                          </span>
+                          <span class="sr-only"> (required)</span>
+                        </>
+                      ) : null}
+                    </label>
+                    {field.type === "textarea" ? (
+                      <textarea
+                        id={fieldId(field.name)}
+                        name={field.name}
+                        placeholder={field.placeholder}
+                        required={field.required}
+                        rows={3}
+                        class="w-full min-w-0 resize-y rounded-none border border-border bg-light/40 px-4 py-3.5 text-base text-text-dark placeholder:text-text-light transition-colors hover:border-text-light focus:border-primary focus:ring-1 focus:ring-primary/20"
+                      />
+                    ) : (
+                      <input
+                        id={fieldId(field.name)}
+                        name={field.name}
+                        type={field.type}
+                        placeholder={isLookupInput && lookup?.placeholder ? lookup.placeholder : field.placeholder}
+                        required={field.required}
+                        disabled={isLookupDependent || undefined}
+                        autocomplete={
+                          isLookupInput
+                            ? "off"
+                            : field.type === "email"
+                              ? "email"
+                              : field.type === "tel"
+                                ? "tel"
+                                : "on"
+                        }
+                        {...(isLookupInput
+                          ? {
+                              role: "combobox",
+                              "aria-expanded": "false",
+                              "aria-autocomplete": "list",
+                              "aria-controls": listboxId,
+                              "data-lookup-input": true,
+                            }
+                          : {})}
+                        class:list={[
+                          "w-full min-w-0 rounded-none border border-border px-4 py-3.5 text-base text-text-dark placeholder:text-text-light transition-colors hover:border-text-light focus:border-primary focus:ring-1 focus:ring-primary/20",
+                          isLookupDependent ? "bg-white" : "bg-light/40",
+                        ]}
+                      />
+                    )}
+                    {isLookupInput ? (
+                      <ul
+                        id={listboxId}
+                        role="listbox"
+                        aria-label="Business suggestions"
+                        hidden
+                        class="lookup-listbox absolute left-0 right-0 top-full z-20 mt-1 max-h-56 overflow-y-auto rounded-none border border-dark bg-body shadow-[0_12px_28px_-18px_rgba(18,18,18,0.3)]"
+                      ></ul>
+                    ) : null}
+                  </div>
+                );
+              })}
+
+              <div class="hidden" aria-hidden="true">
+                <label for="lead-hp-company-website">Company website</label>
+                <input id="lead-hp-company-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+            </div>
+
+            {lookup && <input type="hidden" name="googlePlaceId" class="lookup-placeid" />}
+
+            <button
+              type="submit"
+              disabled={Boolean(lookup)}
+              class="btn mt-7 min-h-14 w-full justify-center rounded-none border-primary bg-primary px-6 py-3.5 font-secondary font-semibold normal-case text-dark hover:border-dark hover:bg-dark hover:text-white disabled:cursor-not-allowed disabled:border-border disabled:bg-border disabled:text-text-light"
+            >
+              {submitLabel}
+            </button>
+
+            <p aria-live="polite" class="lead-capture-status mt-3 text-sm font-semibold text-primary" hidden></p>
+
+            {
+              disclaimer && (
+                <p class="mt-4 text-sm leading-relaxed text-text-light" set:html={markdownify(disclaimer)} />
+              )
+            }
+          </form>
+
+          <div class="lead-capture-success" hidden>
+            <svg
+              class="mb-5 h-10 w-10 text-primary"
+              viewBox="0 0 40 40"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="20" cy="20" r="18" class="opacity-30"></circle>
+              <path d="M12 20.5l5.5 5.5L28 15" />
+            </svg>
+            <h3 class="text-h5 font-secondary font-bold text-text-dark" tabindex="-1">
+              {leadMagnetLabel ?? "Request"} received
+            </h3>
+            <p class="mt-3 leading-relaxed text-text">
+              We have your details. A strategist will follow up personally — no automated drip.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>(".lead-capture-form").forEach((form) => {
+    const card = form.parentElement;
+    const status = form.querySelector<HTMLElement>(".lead-capture-status");
+    const success = card?.querySelector<HTMLElement>(".lead-capture-success");
+    if (!status || !success) return;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      status.hidden = false;
+      status.textContent = "";
+
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const data = Object.fromEntries(new FormData(form));
+      const body = JSON.stringify({ ...data, page: document.title, source: window.location.pathname });
+
+      button?.setAttribute("disabled", "");
+      const originalLabel = button?.textContent;
+      if (button) button.textContent = "Sending…";
+
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.hidden = true;
+        success.hidden = false;
+        success.querySelector<HTMLElement>("h3")?.focus();
+      } catch {
+        status.textContent = "Something went wrong sending your request. Check your connection and try again — nothing was submitted.";
+        button?.removeAttribute("disabled");
+        if (button) button.textContent = originalLabel ?? "";
+      }
+    });
+  });
+
+  // Optional lookup enhancement. Lookup-dependent fields stay unavailable until
+  // the visitor explicitly selects a business suggestion.
+  const PREFILL_CLASSES = ["lookup-prefilled", "border-primary/60", "ring-2", "ring-primary/15"];
+
+  document.querySelectorAll<HTMLFormElement>(".lead-capture-form[data-lookup-field]").forEach((form) => {
+    const inputEl = form.querySelector<HTMLInputElement>("[data-lookup-input]");
+    const listboxEl = form.querySelector<HTMLUListElement>(".lookup-listbox");
+    const sectionEl = form.closest("section");
+    const profileEl = sectionEl?.querySelector<HTMLElement>(".lookup-profile") ?? null;
+    if (!inputEl || !listboxEl || !profileEl) return;
+    const input: HTMLInputElement = inputEl;
+    const listbox: HTMLUListElement = listboxEl;
+    const profile: HTMLElement = profileEl;
+    const profileName = profile.querySelector<HTMLElement>(".lookup-profile-name");
+    const profileRows = profile.querySelector<HTMLElement>(".lookup-profile-rows");
+    const profileRating = profile.querySelector<HTMLElement>(".lookup-profile-rating");
+    const profileScore = profile.querySelector<HTMLElement>(".lookup-profile-score");
+    const profileReviews = profile.querySelector<HTMLElement>(".lookup-profile-reviews");
+    const profileMaps = profile.querySelector<HTMLAnchorElement>(".lookup-profile-maps");
+    const placeIdField = form.querySelector<HTMLInputElement>(".lookup-placeid");
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const formSurface = form.closest<HTMLElement>(".lead-form-surface");
+    const businessGroup = form.querySelector<HTMLElement>("[data-lookup-business-group]");
+    const changeBusinessBtn = form.querySelector<HTMLButtonElement>(".lookup-change-business");
+    const dependentGroups = Array.from(form.querySelectorAll<HTMLElement>("[data-lookup-dependent]"));
+    const dependentInputs = dependentGroups
+      .map((group) => group.querySelector<HTMLInputElement | HTMLTextAreaElement>("input, textarea"))
+      .filter((field): field is HTMLInputElement | HTMLTextAreaElement => field !== null);
+    const baseCtaLabel = submitBtn?.textContent?.trim() ?? "";
+    const ctaTemplate = form.dataset.lookupCta || "";
+    const endpoint = form.dataset.lookupEndpoint || "/api/business-lookup";
+    const minChars = Math.max(2, Number(form.dataset.lookupMin) || 3);
+
+    type TransitionDocument = Document & {
+      startViewTransition?: (update: () => void) => { finished: Promise<void> };
+    };
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    async function transitionState(
+      update: () => void,
+      movingElement?: HTMLElement | null,
+      enteringElement?: HTMLElement | null,
+    ): Promise<void> {
+      if (reducedMotion.matches) {
+        update();
+        return Promise.resolve();
+      }
+
+      const transitionDocument = document as TransitionDocument;
+      if (transitionDocument.startViewTransition) {
+        return transitionDocument.startViewTransition(update).finished.catch(() => undefined);
+      }
+
+      const first = movingElement?.getBoundingClientRect();
+      update();
+      const last = movingElement?.getBoundingClientRect();
+
+      if (movingElement && first && last) {
+        const deltaX = first.left - last.left;
+        const deltaY = first.top - last.top;
+        if (deltaX !== 0 || deltaY !== 0) {
+          movingElement.animate(
+            [
+              { transform: `translate(${deltaX}px, ${deltaY}px)`, opacity: 0.84 },
+              { transform: "translate(0, 0)", opacity: 1 },
+            ],
+            { duration: 520, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+          );
+        }
+      }
+
+      if (enteringElement && !enteringElement.hidden) {
+        enteringElement.animate(
+          [
+            { transform: "translateY(6px)", opacity: 0 },
+            { transform: "translateY(0)", opacity: 1 },
+          ],
+          { duration: 260, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+        );
+      }
+
+      return Promise.resolve();
+    }
+
+    function updateSubmitState() {
+      if (!submitBtn) return;
+      const dependentFieldsValid = dependentInputs.every((field) => !field.disabled && field.checkValidity());
+      const hasBusiness = input.value.trim().length >= minChars && input.checkValidity();
+      submitBtn.disabled = !hasBusiness || !dependentFieldsValid;
+    }
+
+    function revealDependentFields() {
+      dependentGroups.forEach((group) => {
+        group.hidden = false;
+      });
+      dependentInputs.forEach((field) => {
+        field.disabled = false;
+      });
+      updateSubmitState();
+    }
+
+    function concealDependentFields() {
+      dependentGroups.forEach((group) => {
+        group.hidden = true;
+      });
+      dependentInputs.forEach((field) => {
+        field.disabled = true;
+      });
+      updateSubmitState();
+    }
+
+    function applyCta(name: string) {
+      if (!submitBtn || ctaTemplate === "") return;
+      const clean = name.trim().slice(0, 60);
+      if (clean === "") return;
+      submitBtn.textContent = ctaTemplate.replace("{business}", clean);
+    }
+
+    function resetCta() {
+      if (submitBtn && ctaTemplate !== "") submitBtn.textContent = baseCtaLabel;
+    }
+
+    const PROFILE_ICONS: Record<string, string> = {
+      tag: '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><path d="M7 7h.01"/>',
+      pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
+      map: '<path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/>',
+      phone:
+        '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8.1 12.9a16 16 0 0 0 6 6l2.2-2.2a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.8.7A2 2 0 0 1 22 16.9z"/>',
+      globe:
+        '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+    };
+
+    // All text lands via textContent; only the icon path strings above are HTML — no Google data is ever injected as markup.
+    function profileRow(
+      iconKey: string,
+      value: string,
+      linkHref?: string,
+      googleIcon?: { url: string; background: string },
+    ): HTMLLIElement {
+      const li = document.createElement("li");
+      li.className = `lookup-profile-row lookup-profile-row-${iconKey} flex min-w-0 items-start gap-3 px-5 py-4 sm:px-7`;
+      if (googleIcon) {
+        const img = document.createElement("img");
+        img.className = "lookup-profile-google-icon";
+        img.src = googleIcon.url;
+        img.alt = "";
+        img.setAttribute("aria-hidden", "true");
+        img.style.backgroundColor = googleIcon.background;
+        li.appendChild(img);
+      } else {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("class", "mt-0.5 h-4 w-4 shrink-0 text-primary");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("fill", "none");
+        svg.setAttribute("stroke", "currentColor");
+        svg.setAttribute("stroke-width", "2");
+        svg.setAttribute("stroke-linecap", "round");
+        svg.setAttribute("stroke-linejoin", "round");
+        svg.setAttribute("aria-hidden", "true");
+        svg.innerHTML = PROFILE_ICONS[iconKey] ?? "";
+        li.appendChild(svg);
+      }
+      const text = document.createElement("span");
+      text.className = "min-w-0 text-sm text-text";
+      if (linkHref) {
+        const a = document.createElement("a");
+        a.href = linkHref;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer nofollow";
+        a.className =
+          "text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary [overflow-wrap:anywhere]";
+        a.textContent = value;
+        text.appendChild(a);
+      } else {
+        text.textContent = value;
+        text.classList.add("break-words");
+      }
+      li.appendChild(text);
+      return li;
+    }
+
+    const titleTemplate = form.dataset.lookupTitle || "";
+    const titleHeading = titleTemplate
+      ? (form.closest("section")?.querySelector<HTMLElement>("[data-lead-title]") ??
+         document.querySelector<HTMLElement>("[data-lead-title]"))
+      : null;
+    const originalTitle = titleHeading?.textContent?.trim() ?? "";
+    const introEl = titleTemplate ? (sectionEl?.querySelector<HTMLElement>(".lookup-intro") ?? null) : null;
+    function applyTitle(name: string) {
+      if (!titleHeading || !titleTemplate) return;
+      const clean = name.trim().slice(0, 80);
+      if (clean === "") return;
+      const [prefix = "", suffix = ""] = titleTemplate.split("{business}");
+      titleHeading.replaceChildren();
+      if (prefix.trim() !== "") {
+        titleHeading.append(document.createTextNode(prefix.trimEnd()), document.createElement("br"));
+      }
+      titleHeading.append(document.createTextNode(`${clean}${suffix}`));
+      titleHeading.setAttribute("data-lookup-title-selected", "true");
+      titleHeading.classList.remove("lead-title-enter");
+      void titleHeading.offsetWidth;
+      titleHeading.classList.add("lead-title-enter");
+      if (introEl) introEl.hidden = true;
+    }
+
+    function resetTitle() {
+      if (!titleHeading || !titleTemplate) return;
+      if (titleHeading.textContent?.trim() !== originalTitle) titleHeading.textContent = originalTitle;
+      titleHeading.removeAttribute("data-lookup-title-selected");
+      if (introEl) introEl.hidden = false;
+    }
+    let prefillMap: Array<{ from: string; to: string }> = [];
+    try {
+      const parsed: unknown = JSON.parse(form.dataset.lookupPrefill || "[]");
+      if (Array.isArray(parsed)) {
+        prefillMap = parsed.filter(
+          (mapping): mapping is { from: string; to: string } =>
+            !!mapping &&
+            typeof mapping === "object" &&
+            typeof (mapping as { from?: unknown }).from === "string" &&
+            typeof (mapping as { to?: unknown }).to === "string",
+        );
+      }
+    } catch {
+      prefillMap = [];
+    }
+
+    type SuggestionItem = { placeId: string; name: string; detail: string };
+
+    const editableFields = Array.from(
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input:not([type=hidden]), textarea"),
+    ).filter((el) => el.name !== "website");
+    const touched = new Set<string>();
+    const fieldByName = (name: string) => editableFields.find((el) => el.name === name) ?? null;
+
+    editableFields.forEach((el) => {
+      el.addEventListener("input", () => {
+        touched.add(el.name);
+        el.classList.remove(...PREFILL_CLASSES);
+      });
+    });
+
+    let items: SuggestionItem[] = [];
+    let optionEls: HTMLLIElement[] = [];
+    let activeIndex = -1;
+    let isOpen = false;
+    let debounceTimer = 0;
+    let blurTimer = 0;
+    let controller: AbortController | null = null;
+
+    function closeList() {
+      isOpen = false;
+      activeIndex = -1;
+      listbox.hidden = true;
+      input.setAttribute("aria-expanded", "false");
+      input.removeAttribute("aria-activedescendant");
+    }
+
+    function setActive(index: number) {
+      optionEls.forEach((el, i) => {
+        el.classList.toggle("bg-light", i === index);
+        el.setAttribute("aria-selected", i === index ? "true" : "false");
+      });
+      activeIndex = index;
+      const active = index >= 0 ? optionEls[index] : undefined;
+      if (active) {
+        input.setAttribute("aria-activedescendant", active.id);
+        active.scrollIntoView({ block: "nearest" });
+      } else {
+        input.removeAttribute("aria-activedescendant");
+      }
+    }
+
+    function renderList() {
+      listbox.textContent = "";
+      optionEls = [];
+      if (items.length === 0) {
+        const row = document.createElement("li");
+        row.id = `${listbox.id}-empty`;
+        row.setAttribute("role", "option");
+        row.setAttribute("aria-disabled", "true");
+        row.className = "px-4 py-2.5 text-sm text-text-light";
+        row.textContent = "No match — keep typing manually";
+        listbox.appendChild(row);
+        return;
+      }
+      items.forEach((item, i) => {
+        const li = document.createElement("li");
+        li.id = `${listbox.id}-opt-${i}`;
+        li.setAttribute("role", "option");
+        li.setAttribute("aria-selected", "false");
+        li.className = "cursor-pointer border-b border-border px-4 py-3 transition-colors last:border-b-0 hover:bg-light";
+        const nameEl = document.createElement("span");
+        nameEl.className = "block font-semibold text-text-dark";
+        nameEl.textContent = item.name;
+        li.appendChild(nameEl);
+        if (item.detail) {
+          const detailEl = document.createElement("span");
+          detailEl.className = "mt-0.5 block text-xs text-text-light";
+          detailEl.textContent = item.detail;
+          li.appendChild(detailEl);
+        }
+        li.addEventListener("mousedown", (event) => {
+          event.preventDefault();
+          void selectItem(item);
+        });
+        listbox.appendChild(li);
+        optionEls.push(li);
+      });
+    }
+
+    function openList() {
+      renderList();
+      isOpen = true;
+      listbox.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+      setActive(-1);
+    }
+
+    async function queryAutocomplete(rawQuery: string) {
+      controller?.abort();
+      controller = new AbortController();
+      try {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mode: "autocomplete", query: rawQuery }),
+          signal: controller.signal,
+        });
+        if (!res.ok) {
+          closeList();
+          return;
+        }
+        const data: unknown = await res.json();
+        if (!Array.isArray(data)) return;
+        items = data
+          .filter((entry): entry is Record<string, unknown> => !!entry && typeof entry === "object")
+          .map((entry) => ({
+            placeId: typeof entry.placeId === "string" ? entry.placeId : "",
+            name: typeof entry.name === "string" ? entry.name : "",
+            detail: typeof entry.detail === "string" ? entry.detail : "",
+          }))
+          .filter((entry) => entry.placeId !== "" && entry.name !== "")
+          .slice(0, 5);
+        openList();
+      } catch {
+        // Aborted or network failure: stay silent, manual typing remains available.
+      }
+    }
+
+    function applyDetails(place: Record<string, unknown>) {
+      const str = (key: string) => (typeof place[key] === "string" ? (place[key] as string).trim() : "");
+
+      for (const mapping of prefillMap) {
+        const value = place[mapping.from];
+        if (value === null || value === undefined) continue;
+        const text = String(value);
+        if (text === "") continue;
+        const target = fieldByName(mapping.to);
+        if (!target || touched.has(target.name)) continue;
+        target.value = text;
+        target.classList.add(...PREFILL_CLASSES);
+      }
+
+      const name = str("name");
+      if (name === "" || !profileName || !profileRows) return;
+
+      profileName.textContent = name;
+      profileRows.textContent = "";
+      if (str("category") !== "") {
+        const categoryIconUrl = str("categoryIconUrl");
+        const categoryIconBackground = str("categoryIconBackground");
+        const googleIcon =
+          categoryIconUrl !== "" && categoryIconBackground !== ""
+            ? { url: categoryIconUrl, background: categoryIconBackground }
+            : undefined;
+        profileRows.appendChild(profileRow("tag", str("category"), undefined, googleIcon));
+      }
+      if (str("county") !== "") profileRows.appendChild(profileRow("map", `Serves ${str("county")}`));
+      if (str("address") !== "") profileRows.appendChild(profileRow("pin", str("address")));
+      const phone = str("phone");
+      if (phone !== "") profileRows.appendChild(profileRow("phone", phone, `tel:${phone.replace(/[^\d+]/g, "")}`));
+      const website = str("website");
+      if (website !== "") {
+        try {
+          const url = new URL(website);
+          profileRows.appendChild(profileRow("globe", url.hostname.replace(/^www\./, ""), website));
+        } catch {
+          /* malformed url: skip the row */
+        }
+      }
+
+      if (profileRating && profileScore && profileReviews) {
+        const rating = typeof place.rating === "number" ? place.rating : null;
+        const reviews = typeof place.reviewCount === "number" ? place.reviewCount : null;
+        if (rating !== null && reviews !== null) {
+          profileScore.textContent = rating.toFixed(1);
+          profileReviews.textContent = `${reviews} Google review${reviews === 1 ? "" : "s"}`;
+          profileRating.hidden = false;
+        } else {
+          profileRating.hidden = true;
+        }
+      }
+
+      if (placeIdField) placeIdField.value = str("placeId");
+
+      const mapsUrl = str("mapsUrl");
+      if (profileMaps) {
+        if (mapsUrl !== "") {
+          profileMaps.href = mapsUrl;
+          profileMaps.hidden = false;
+        } else {
+          profileMaps.hidden = true;
+        }
+      }
+
+      profile.hidden = false;
+      sectionEl?.setAttribute("data-lookup-selected", "true");
+      if (businessGroup) businessGroup.hidden = true;
+      if (changeBusinessBtn) changeBusinessBtn.hidden = false;
+      revealDependentFields();
+      applyCta(name);
+    }
+
+    function hideProfile() {
+      profile.hidden = true;
+      sectionEl?.removeAttribute("data-lookup-selected");
+      if (businessGroup) businessGroup.hidden = false;
+      if (changeBusinessBtn) changeBusinessBtn.hidden = true;
+      if (profileName) profileName.textContent = "";
+      if (profileRows) profileRows.textContent = "";
+      if (profileRating) profileRating.hidden = true;
+      if (profileMaps) profileMaps.hidden = true;
+      if (placeIdField) placeIdField.value = "";
+      concealDependentFields();
+      resetCta();
+    }
+
+    dependentInputs.forEach((field) => {
+      field.addEventListener("input", updateSubmitState);
+      field.addEventListener("change", updateSubmitState);
+    });
+    updateSubmitState();
+
+    async function selectItem(item: SuggestionItem) {
+      closeList();
+      window.clearTimeout(debounceTimer);
+      // The selection itself is an explicit user action on this field: allow prefill to set it.
+      touched.delete(input.name);
+      input.value = item.name;
+      hideProfile();
+      const detailsRequest = fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "details", placeId: item.placeId }),
+      });
+
+      const fieldTransition = transitionState(
+        () => {
+          applyTitle(item.name);
+          if (businessGroup) businessGroup.hidden = true;
+          if (changeBusinessBtn) changeBusinessBtn.hidden = false;
+          revealDependentFields();
+        },
+        null,
+        dependentGroups[0],
+      );
+
+      try {
+        const [res] = await Promise.all([detailsRequest, fieldTransition]);
+        if (!res.ok) return;
+        const place: unknown = await res.json();
+        if (!place || typeof place !== "object") return;
+        await transitionState(
+          () => applyDetails(place as Record<string, unknown>),
+          formSurface,
+          profile,
+        );
+      } catch {
+        // Silent: the chosen name is already in the field; everything else stays manual.
+      }
+    }
+
+    input.addEventListener("input", () => {
+      window.clearTimeout(debounceTimer);
+      resetTitle();
+      if (!profile.hidden) hideProfile();
+      const query = input.value.trim();
+      if (query.length < minChars) {
+        controller?.abort();
+        concealDependentFields();
+        closeList();
+        return;
+      }
+      debounceTimer = window.setTimeout(() => void queryAutocomplete(query), 300);
+    });
+
+    changeBusinessBtn?.addEventListener("click", async () => {
+      await transitionState(() => {
+        hideProfile();
+        resetTitle();
+      }, formSurface, businessGroup);
+      input.focus();
+      input.select();
+    });
+
+    input.addEventListener("blur", () => {
+      window.clearTimeout(blurTimer);
+      blurTimer = window.setTimeout(closeList, 150);
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (!isOpen) return;
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        if (items.length === 0) return;
+        const delta = event.key === "ArrowDown" ? 1 : -1;
+        const next = Math.min(Math.max(activeIndex + delta, 0), items.length - 1);
+        setActive(next);
+        return;
+      }
+      if (event.key === "Enter") {
+        event.preventDefault();
+        const selected = activeIndex >= 0 ? items[activeIndex] : undefined;
+        if (selected) {
+          void selectItem(selected);
+        } else {
+          closeList();
+        }
+        return;
+      }
+      if (event.key === "Escape") {
+        closeList();
+        return;
+      }
+      if (event.key === "Tab") {
+        closeList();
+      }
+    });
+  });
+</script>
+
+<style>
+  @keyframes lead-title-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .lead-title-enter {
+    animation: lead-title-in 0.35s ease-out;
+  }
+
+  h1.lead-heading {
+    font-size: calc(var(--text-h1-sm) - 0.2rem);
+  }
+
+  h2.lead-heading {
+    font-size: calc(var(--text-h2-sm) - 0.175rem);
+  }
+
+  :global(.lead-hook strong) {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-dark);
+    font-weight: 700;
+  }
+
+  :global(.lead-outcomes strong) {
+    color: var(--color-text-dark);
+    font-family: var(--font-secondary);
+    font-weight: 700;
+  }
+
+  h1[data-lead-title][data-lookup-title-selected] {
+    font-size: calc(var(--text-h1-sm) - 0.275rem);
+  }
+
+  h2[data-lead-title][data-lookup-title-selected] {
+    font-size: calc(var(--text-h2-sm) - 0.22rem);
+  }
+
+  @keyframes lead-profile-view-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+      clip-path: inset(0 0 12% 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes lead-profile-view-out {
+    from {
+      opacity: 1;
+      transform: none;
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  [data-lead-title] {
+    view-transition-name: lead-title;
+  }
+
+  .lookup-intro {
+    view-transition-name: lead-intro;
+  }
+
+  .lookup-profile {
+    view-transition-name: lead-business-profile;
+  }
+
+  .lead-form-surface {
+    view-transition-name: lead-form-surface;
+  }
+
+  [data-lookup-business-group]:not([hidden]),
+  [data-lookup-dependent]:not([hidden]) {
+    view-transition-name: lead-active-field;
+  }
+
+  :global(::view-transition-old(root)),
+  :global(::view-transition-new(root)) {
+    animation: none;
+  }
+
+  :global(::view-transition-old(root)) {
+    display: none;
+  }
+
+  :global(::view-transition-group(lead-form-surface)),
+  :global(::view-transition-old(lead-form-surface)),
+  :global(::view-transition-new(lead-form-surface)) {
+    animation-duration: 520ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(::view-transition-group(lead-active-field)),
+  :global(::view-transition-old(lead-active-field)),
+  :global(::view-transition-new(lead-active-field)) {
+    animation-duration: 260ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(::view-transition-group(lead-title)),
+  :global(::view-transition-old(lead-title)),
+  :global(::view-transition-new(lead-title)) {
+    animation-duration: 420ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(::view-transition-old(lead-intro)) {
+    animation-duration: 180ms;
+    animation-timing-function: ease-in;
+  }
+
+  :global(::view-transition-new(lead-intro)) {
+    animation-duration: 320ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(::view-transition-group(lead-business-profile)) {
+    animation-duration: 520ms;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(::view-transition-new(lead-business-profile)) {
+    animation: lead-profile-view-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  :global(::view-transition-old(lead-business-profile)) {
+    animation: lead-profile-view-out 180ms ease-in both;
+  }
+
+  :global(.lookup-profile-row) {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  :global(.lookup-profile-row svg) {
+    margin-top: 0.125rem;
+    height: 1.125rem;
+    width: 1.125rem;
+  }
+
+  :global(.lookup-profile-google-icon) {
+    margin-top: 0.125rem;
+    box-sizing: border-box;
+    height: 1.125rem;
+    width: 1.125rem;
+    flex: none;
+    padding: 0.125rem;
+  }
+
+  :global(.lookup-profile-row span) {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 640px) {
+    .lookup-profile-rows {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    :global(.lookup-profile-row-tag),
+    :global(.lookup-profile-row-phone) {
+      border-right: 1px solid var(--color-border);
+    }
+
+    :global(.lookup-profile-row-pin) {
+      grid-column: 1 / -1;
+      border-right: 0;
+    }
+
+  }
+
+  @media (min-width: 768px) {
+    h1.lead-heading {
+      font-size: calc(var(--text-h1) - 0.25rem);
+    }
+
+    h2.lead-heading {
+      font-size: calc(var(--text-h2) - 0.2rem);
+    }
+
+    h1[data-lead-title][data-lookup-title-selected] {
+      font-size: calc(var(--text-h1) - 0.3125rem);
+    }
+
+    h2[data-lead-title][data-lookup-title-selected] {
+      font-size: calc(var(--text-h2) - 0.25rem);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    section:not([data-lookup-selected]) .lead-form-column {
+      align-self: stretch;
+    }
+
+    section:not([data-lookup-selected]) .lead-form-surface {
+      position: sticky;
+      top: 7rem;
+    }
+
+    section[data-lookup-selected] .lead-layout {
+      row-gap: 2rem;
+    }
+
+    section[data-lookup-selected] .lead-main {
+      grid-column: 1 / -1;
+    }
+
+    section[data-lookup-selected] .lead-form-column {
+      grid-column: 1 / -1;
+    }
+
+    section[data-lookup-selected] .lead-form-surface {
+      position: static;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    section[data-lookup-selected] .lead-magnet-label {
+      display: none;
+    }
+
+    section[data-lookup-selected] .lead-capture-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, auto);
+      align-items: end;
+      gap: 1rem;
+      border-bottom: 1px solid var(--color-dark);
+      padding-bottom: 2rem;
+    }
+
+    section[data-lookup-selected] .lookup-change-business {
+      grid-column: 1 / -1;
+      justify-self: start;
+      margin-bottom: 0;
+    }
+
+    section[data-lookup-selected] .lead-capture-form :is(input, textarea, button) {
+      border-radius: 0;
+    }
+
+    section[data-lookup-selected] .lead-form-surface form > button[type="submit"] {
+      min-height: 3.5rem;
+      margin-top: 0;
+    }
+
+    section[data-lookup-selected] .lead-capture-status,
+    section[data-lookup-selected] .lead-capture-form > p:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lead-title-enter {
+      animation: none;
+    }
+
+    [data-lead-title],
+    .lookup-intro,
+    .lookup-profile,
+    .lead-form-surface,
+    [data-lookup-business-group]:not([hidden]),
+    [data-lookup-dependent]:not([hidden]) {
+      view-transition-name: none;
+    }
+  }
+</style>

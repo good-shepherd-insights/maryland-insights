@@ -1,0 +1,201 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Outcome = {
+  metric: string;
+  value: string;
+  source?: string;
+};
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  /** Real client name, or an industry descriptor when the engagement is anonymized. */
+  client?: string;
+  /** Maryland county or market served. */
+  location?: string;
+  /** Engagement period, e.g. "Feb-May 2026". */
+  dateRange?: string;
+  situation?: string;
+  whatWeFound?: string;
+  whatChanged?: string;
+  outcomes?: Outcome[];
+  permissionLine?: string;
+  variant?: "compact" | "expanded";
+};
+
+const {
+  eyebrow,
+  title,
+  client,
+  location,
+  dateRange,
+  situation,
+  whatWeFound,
+  whatChanged,
+  outcomes = [],
+  permissionLine,
+  variant = "expanded",
+} = Astro.props as Props;
+
+const headingId = `service-${slugify(title)}`;
+
+const meta = [
+  { label: "Client", value: client },
+  { label: "Location", value: location },
+  { label: "Period", value: dateRange },
+].filter((entry) => Boolean(entry.value));
+
+const narrative: { label: string; body?: string }[] = [
+  { label: "Situation", body: situation },
+  { label: "What we found", body: whatWeFound },
+  { label: "What we did", body: whatChanged },
+].filter((entry) => Boolean(entry.body));
+---
+
+{
+  variant === "expanded" ? (
+    <section class="section border-y border-border/70 bg-light" aria-labelledby={headingId}>
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        {
+          eyebrow && (
+            <p class="mb-5 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+              <span class="h-px w-8 bg-primary" aria-hidden="true"></span>
+              {eyebrow}
+            </p>
+          )
+        }
+
+        <h2 id={headingId} class="max-w-[24ch] text-balance" set:html={markdownify(title)} />
+
+        {
+          meta.length > 0 && (
+            <dl class="mt-8 flex flex-wrap gap-x-12 gap-y-4">
+              {meta.map((entry) => (
+                <div class="min-w-0">
+                  <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{entry.label}</dt>
+                  <dd class="mt-1 break-words text-sm font-semibold tabular-nums text-text-dark">{entry.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
+
+        {
+          narrative.length > 0 && (
+            <dl class:list={["border-t border-border", meta.length > 0 ? "mt-10" : "mt-8"]}>
+              {narrative.map((entry) => (
+                <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-7">
+                  <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{entry.label}</dt>
+                  <dd class="max-w-[62ch] leading-relaxed text-text-dark/80" set:html={markdownify(entry.body)} />
+                </div>
+              ))}
+            </dl>
+          )
+        }
+
+        {
+          outcomes.length > 0 && (
+            <div class="mt-12">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Outcome</p>
+              <ul class="mt-4 grid border-t border-border sm:grid-cols-2 lg:grid-cols-3">
+                {outcomes.map((outcome) => (
+                  <li class="min-w-0 border-b border-border py-6 sm:pr-8">
+                    <p class="font-secondary text-4xl font-normal tracking-[-0.04em] text-balance tabular-nums text-text-dark">
+                      {outcome.value}
+                    </p>
+                    <p class="mt-2 max-w-[34ch] break-words text-sm font-semibold text-text-dark">{outcome.metric}</p>
+                    {outcome.source && (
+                      <p class="mt-1 max-w-[40ch] break-words text-xs leading-relaxed text-text-light">{outcome.source}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          permissionLine && (
+            <div class="mt-10 border-t border-border pt-6">
+              <p class="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary">Publishing note</p>
+              <p class="max-w-[62ch] text-sm leading-relaxed text-text" set:html={markdownify(permissionLine)} />
+            </div>
+          )
+        }
+      </div>
+    </section>
+  ) : (
+    <section class="section-sm border-y border-border/70 bg-light" aria-labelledby={headingId}>
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        <article class="rounded-xl border border-border bg-body p-6 pb-7 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-8">
+          {
+            eyebrow && (
+              <p class="mb-4 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                <span class="h-px w-8 bg-primary" aria-hidden="true"></span>
+                {eyebrow}
+              </p>
+            )
+          }
+
+          <h2 id={headingId} class="font-secondary text-h5 max-w-[22ch] font-bold text-balance" set:html={markdownify(title)} />
+
+          {
+            meta.length > 0 && (
+              <dl class="mt-5 flex flex-wrap items-baseline gap-x-8 gap-y-2">
+                {meta.map((entry) => (
+                  <div class="flex min-w-0 flex-wrap items-baseline gap-x-2">
+                    <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{entry.label}</dt>
+                    <dd class="break-words text-sm font-semibold tabular-nums text-text-dark">{entry.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )
+          }
+
+          <div class:list={["mt-6 grid gap-8", { "lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-12": outcomes.length > 0 }]}>
+            {
+              narrative.length > 0 && (
+                <div class="min-w-0 space-y-4">
+                  {narrative.map((entry) => (
+                    <p class="max-w-[62ch] text-sm leading-relaxed text-text-dark/80">
+                      <span class="font-semibold text-text-dark">{entry.label}: </span>
+                      <span set:html={markdownify(entry.body)} />
+                    </p>
+                  ))}
+                </div>
+              )
+            }
+
+            {
+              outcomes.length > 0 && (
+                <div class="min-w-0">
+                  <p class="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Outcome</p>
+                  <ul class="border-t border-border">
+                    {outcomes.map((outcome) => (
+                      <li class="flex items-baseline gap-4 border-b border-border py-4">
+                        <p class="shrink-0 font-secondary text-2xl font-normal tracking-[-0.04em] tabular-nums text-text-dark">
+                          {outcome.value}
+                        </p>
+                        <div class="min-w-0">
+                          <p class="break-words text-sm font-semibold text-text-dark">{outcome.metric}</p>
+                          {outcome.source && <p class="mt-1 break-words text-xs leading-relaxed text-text-light">{outcome.source}</p>}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            }
+          </div>
+
+          {
+            permissionLine && (
+              <p class="mt-6 border-t border-border pt-5 text-xs leading-relaxed text-text" set:html={markdownify(permissionLine)} />
+            )
+          }
+        </article>
+      </div>
+    </section>
+  )
+}

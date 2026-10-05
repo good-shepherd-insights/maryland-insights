@@ -1,0 +1,397 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Props = {
+  /** Business name shown with the address; falls back as the heading text when no title is given. */
+  name?: string;
+  street: string;
+  city: string;
+  /** Two-letter state/region code, e.g. "MD". */
+  region: string;
+  postal: string;
+  country?: string;
+  phone: string;
+  email: string;
+  hours?: string;
+  mapUrl?: string;
+  variant?: "inline" | "card" | "compact";
+  eyebrow?: string;
+  /** Section heading for the card/inline variants; defaults to `name`, then "Contact details". */
+  title?: string;
+  /** Short prose under the card heading. */
+  intro?: string;
+  /** Small honesty/context caption rendered below the details. */
+  note?: string;
+  headingLevel?: "h2" | "h3";
+  /** Jump-link id on the section. */
+  anchor?: string;
+};
+
+const {
+  name,
+  street,
+  city,
+  region,
+  postal,
+  country = "US",
+  phone,
+  email,
+  hours,
+  mapUrl,
+  variant = "card",
+  eyebrow,
+  title,
+  intro,
+  note,
+  headingLevel = "h2",
+  anchor,
+} = Astro.props as Props;
+
+const heading = title ?? name ?? "Contact details";
+const headingId = `nap-${slugify(heading)}`;
+
+const line2 = [`${city}, ${region} ${postal}`, country !== "US" ? country : null]
+  .filter(Boolean)
+  .join(", ");
+const inlineAddress = `${street}, ${line2}`;
+const telHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
+
+const ICONS: Record<string, string> = {
+  pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
+  phone:
+    '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8.1 12.9a16 16 0 0 0 6 6l2.2-2.2a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.8.7A2 2 0 0 1 22 16.9z"/>',
+  mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+  map: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/>',
+};
+
+type Row = { label: string; icon: string; value: string; href?: string; tabular?: boolean };
+
+const rows: Row[] = [
+  { label: "Address", icon: "pin", value: `${street}\n${line2}` },
+  { label: "Phone", icon: "phone", value: phone, href: telHref, tabular: true },
+  { label: "Email", icon: "mail", value: email, href: `mailto:${email}` },
+  ...(hours ? [{ label: "Hours", icon: "clock", value: hours }] : []),
+  ...(mapUrl ? [{ label: "Map", icon: "map", value: "View on Maps", href: mapUrl }] : []),
+];
+---
+
+{
+  variant === "card" ? (
+    <section
+      id={anchor}
+      class="section-sm border-y border-border/70 bg-light overflow-x-hidden"
+      aria-labelledby={headingId}
+    >
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        <div class="grid items-start gap-10 lg:grid-cols-12 lg:gap-16">
+          <div class="min-w-0 lg:col-span-6">
+            {
+              eyebrow && (
+                <p class="mb-5 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                  <span class="h-px w-8 bg-primary" aria-hidden="true"></span>
+                  {eyebrow}
+                </p>
+              )
+            }
+
+            {
+              headingLevel === "h2" ? (
+                <h2 id={headingId} class="max-w-[22ch] text-balance" set:html={markdownify(heading)} />
+              ) : (
+                <h3 id={headingId} class="max-w-[22ch] text-balance" set:html={markdownify(heading)} />
+              )
+            }
+
+            {
+              intro && (
+                <p class="mt-5 max-w-[62ch] leading-relaxed text-text" set:html={markdownify(intro)} />
+              )
+            }
+
+            {
+              note && (
+                <p class="mt-5 max-w-[62ch] text-sm leading-relaxed text-text-light" set:html={markdownify(note)} />
+              )
+            }
+          </div>
+
+          <div class="min-w-0 lg:col-span-6">
+            <div class="rounded-xl border border-border bg-body p-6 pb-7 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-8">
+              {
+                name && (
+                  <p class="mb-5 break-words font-secondary text-h5 font-bold text-text-dark [overflow-wrap:anywhere]">
+                    {name}
+                  </p>
+                )
+              }
+
+              <ul class="divide-y divide-border/70">
+                {rows.map((row) => (
+                  <li class="flex min-w-0 items-start gap-4 py-4 first:pt-0 last:pb-0">
+                    <svg
+                      class="mt-1 h-4 w-4 shrink-0 text-primary"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                      set:html={ICONS[row.icon]}
+                    />
+                    <div class="min-w-0">
+                      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{row.label}</p>
+                      {row.href ? (
+                        <a
+                          href={row.href}
+                          target={row.href.startsWith("http") ? "_blank" : undefined}
+                          rel={row.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                          class:list={[
+                            "mt-1 block text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary break-words [overflow-wrap:anywhere]",
+                            { "tabular-nums": Boolean(row.tabular) },
+                          ]}
+                        >
+                          {row.value}
+                        </a>
+                      ) : (
+                        <p
+                          class:list={[
+                            "mt-1 block break-words text-text-dark [overflow-wrap:anywhere]",
+                            { "tabular-nums": Boolean(row.tabular) },
+                          ]}
+                        >
+                          {row.value.includes("\n") ? (
+                            <>
+                              {row.value.split("\n")[0]}
+                              <br />
+                              {row.value.split("\n").slice(1).join("\n")}
+                            </>
+                          ) : (
+                            row.value
+                          )}
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  ) : variant === "inline" ? (
+    <section
+      id={anchor}
+      class="border-y border-border/70 bg-body py-6 overflow-x-hidden"
+      aria-labelledby={headingId}
+    >
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        {
+          headingLevel === "h2" ? (
+            <h2 id={headingId} class="sr-only" set:html={markdownify(heading)} />
+          ) : (
+            <h3 id={headingId} class="sr-only" set:html={markdownify(heading)} />
+          )
+        }
+
+        <ul class="flex flex-col gap-3 text-sm md:flex-row md:flex-wrap md:items-center md:gap-x-8 md:gap-y-3">
+          {
+            name && (
+              <li class="min-w-0 break-words font-semibold text-text-dark [overflow-wrap:anywhere]">
+                {name}
+              </li>
+            )
+          }
+
+          <li class="flex min-w-0 items-start gap-2.5">
+            <svg
+              class="mt-0.5 h-4 w-4 shrink-0 text-primary"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              set:html={ICONS.pin}
+            />
+            <span class="min-w-0 break-words text-text [overflow-wrap:anywhere]">{inlineAddress}</span>
+          </li>
+
+          <li class="flex min-w-0 items-start gap-2.5">
+            <svg
+              class="mt-0.5 h-4 w-4 shrink-0 text-primary"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              set:html={ICONS.phone}
+            />
+            <a
+              href={telHref}
+              class="min-w-0 break-words tabular-nums text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary [overflow-wrap:anywhere]"
+            >
+              {phone}
+            </a>
+          </li>
+
+          <li class="flex min-w-0 items-start gap-2.5">
+            <svg
+              class="mt-0.5 h-4 w-4 shrink-0 text-primary"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              set:html={ICONS.mail}
+            />
+            <a
+              href={`mailto:${email}`}
+              class="min-w-0 break-words text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary [overflow-wrap:anywhere]"
+            >
+              {email}
+            </a>
+          </li>
+
+          {
+            hours && (
+              <li class="flex min-w-0 items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  set:html={ICONS.clock}
+                />
+                <span class="min-w-0 break-words text-text [overflow-wrap:anywhere]">{hours}</span>
+              </li>
+            )
+          }
+
+          {
+            mapUrl && (
+              <li class="flex min-w-0 items-start gap-2.5">
+                <svg
+                  class="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  set:html={ICONS.map}
+                />
+                <a
+                  href={mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="min-w-0 break-words text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary [overflow-wrap:anywhere]"
+                >
+                  View on Maps
+                </a>
+              </li>
+            )
+          }
+        </ul>
+
+        {
+          note && (
+            <p class="mt-4 max-w-[62ch] text-xs leading-relaxed text-text-light" set:html={markdownify(note)} />
+          )
+        }
+      </div>
+    </section>
+  ) : (
+    <section
+      id={anchor}
+      class="border-y border-border/70 bg-body py-6 overflow-x-hidden"
+      aria-labelledby={headingId}
+    >
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        <div class="max-w-sm">
+          <article class="min-w-0 rounded-xl border border-border bg-light p-5">
+            {
+              headingLevel === "h2" ? (
+                <h2 id={headingId} class="font-secondary text-h6 font-bold text-text-dark [overflow-wrap:anywhere]" set:html={markdownify(heading)} />
+              ) : (
+                <h3 id={headingId} class="font-secondary text-h6 font-bold text-text-dark [overflow-wrap:anywhere]" set:html={markdownify(heading)} />
+              )
+            }
+
+            <address class="mt-3 space-y-2 text-sm not-italic">
+              <p class="break-words text-text [overflow-wrap:anywhere]">
+                {street}
+                <br />
+                <span class="tabular-nums">{line2}</span>
+              </p>
+              <p class="min-w-0 break-words [overflow-wrap:anywhere]">
+                <a
+                  href={telHref}
+                  class="tabular-nums text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary"
+                >
+                  {phone}
+                </a>
+              </p>
+              <p class="min-w-0 break-words [overflow-wrap:anywhere]">
+                <a
+                  href={`mailto:${email}`}
+                  class="text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary"
+                >
+                  {email}
+                </a>
+              </p>
+              {
+                hours && (
+                  <p class="break-words text-text-light [overflow-wrap:anywhere]">{hours}</p>
+                )
+              }
+              {
+                mapUrl && (
+                  <p>
+                    <a
+                      href={mapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition hover:text-text-dark"
+                    >
+                      <svg
+                        class="h-3.5 w-3.5 shrink-0"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                        set:html={ICONS.map}
+                      />
+                      View on Maps
+                    </a>
+                  </p>
+                )
+              }
+            </address>
+
+            {
+              note && (
+                <p class="mt-4 border-t border-border/70 pt-3 text-xs leading-relaxed text-text-light" set:html={markdownify(note)} />
+              )
+            }
+          </article>
+        </div>
+      </div>
+    </section>
+  )
+}

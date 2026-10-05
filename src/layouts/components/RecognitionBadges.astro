@@ -1,0 +1,162 @@
+---
+/**
+ * RecognitionBadges — third-party recognition surface (certifications, awards,
+ * partner listings the business actually holds).
+ *
+ * Structural base: src/layouts/partials/TrustedBrands.astro — hairline-divided
+ * logo-tile grid with micro-label above and h-fixed logo sizing, generalized
+ * to props. Section shell, eyebrow, card recipe and external-link treatment
+ * follow ToolCallout.astro.
+ *
+ * Content-truth rule (§3.4): seed only badges verifiably held — never invent
+ * recognitions. If none exist, do not seed this block.
+ */
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Badge = {
+  name: string;
+  source?: string;
+  year?: string | number;
+  url?: string;
+  image?: string;
+  alt?: string;
+};
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  badges?: Badge[];
+  variant?: "row" | "grid" | "card";
+  footerNote?: string;
+  anchor?: string;
+  headingLevel?: "h2" | "h3";
+};
+
+const {
+  eyebrow,
+  title,
+  intro,
+  badges = [],
+  variant = "row",
+  footerNote,
+  anchor,
+  headingLevel = "h2",
+} = Astro.props as Props;
+
+if (badges.length === 0) return null;
+
+const headingId = `recognition-${slugify(title)}`;
+const Heading = headingLevel;
+
+// metaLine: "Certifying org · Year" — either part optional.
+const metaLine = (badge: Badge) =>
+  [
+    badge.source,
+    badge.year === undefined || badge.year === null ? "" : String(badge.year),
+  ]
+    .filter((part) => part !== "")
+    .join(" · ");
+---
+
+<section
+  id={anchor}
+  class:list={[
+    "section-sm overflow-x-hidden border-y border-border/70",
+    variant === "card" ? "bg-body" : "bg-light",
+  ]}
+  aria-labelledby={headingId}
+>
+  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+    <div
+      class:list={{
+        "mx-auto max-w-3xl rounded-xl border border-border bg-light p-6 pb-8 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-9 sm:pb-10":
+          variant === "card",
+      }}
+    >
+      {
+        eyebrow && (
+          <p class="mb-6 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
+            <span class="h-px w-8 bg-border" aria-hidden="true"></span>
+            {eyebrow}
+          </p>
+        )
+      }
+
+      <Heading id={headingId} class="max-w-[24ch] text-balance">
+        {title}
+      </Heading>
+
+      {
+        intro && (
+          <p class="mt-4 max-w-[62ch] text-lg leading-relaxed text-text" set:html={markdownify(intro)} />
+        )
+      }
+
+      <ul
+        class:list={[
+          "mt-8",
+          variant === "grid"
+            ? "grid grid-cols-2 border-t border-l border-border sm:grid-cols-3 lg:grid-cols-4"
+            : variant === "card"
+              ? "grid gap-3 sm:grid-cols-2"
+              : "flex flex-wrap items-stretch justify-center gap-3",
+        ]}
+      >
+        {badges.map((badge) => {
+          const meta = metaLine(badge);
+          // "grid" reuses TrustedBrands' hairline cells; "row"/"card" use the
+          // incumbent chip: rounded-xl + hairline border on bg-body.
+          const skin =
+            variant === "grid"
+              ? "border-r border-b border-border px-5 py-8"
+              : "flex-1 rounded-xl border border-border bg-body px-5 py-5";
+          const hover = badge.url
+            ? variant === "grid"
+              ? "transition hover:bg-body"
+              : "transition hover:border-primary/60"
+            : "";
+          const base = "flex min-w-0 flex-col items-center gap-2.5 text-center";
+          const body = (
+            <>
+              {badge.image && (
+                <img
+                  src={badge.image}
+                  alt={badge.alt ?? `${badge.name}${badge.source ? ` — ${badge.source}` : ""}`}
+                  loading="lazy"
+                  class="h-12 w-auto max-w-full object-contain"
+                />
+              )}
+              <span class="min-w-0 break-words font-semibold text-text-dark">{badge.name}</span>
+              {meta && (
+                <span class="min-w-0 break-words text-sm leading-relaxed text-text">{meta}</span>
+              )}
+            </>
+          );
+          return (
+            <li class="flex min-w-0 max-w-full">
+              {badge.url ? (
+                <a
+                  href={badge.url}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  class:list={[base, skin, hover, "flex-1"]}
+                >
+                  {body}
+                </a>
+              ) : (
+                <div class:list={[base, skin]}>{body}</div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+
+      {
+        footerNote && (
+          <p class="mt-7 max-w-[62ch] text-sm leading-relaxed text-text-light" set:html={markdownify(footerNote)} />
+        )
+      }
+    </div>
+  </div>
+</section>

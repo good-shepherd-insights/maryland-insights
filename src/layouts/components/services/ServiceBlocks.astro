@@ -1,10 +1,24 @@
 ---
+import AiSearchSection from "@/components/AiSearchSection.astro";
+import AuthorByline from "@/components/AuthorByline.astro";
+import CaseStudy from "@/components/CaseStudy.astro";
+import ComparisonTable from "@/components/ComparisonTable.astro";
+import HonestTakeCallout from "@/components/HonestTakeCallout.astro";
+import LeadCaptureForm from "@/components/LeadCaptureForm.astro";
+import LocalNap from "@/components/LocalNap.astro";
+import PricingTiers from "@/components/PricingTiers.astro";
+import RecognitionBadges from "@/components/RecognitionBadges.astro";
+import RelatedArticles from "@/components/RelatedArticles.astro";
+import ResourcesDirectory from "@/components/ResourcesDirectory.astro";
 import ServiceArea from "@/components/services/ServiceArea.astro";
 import ServiceFeatureGrid from "@/components/services/ServiceFeatureGrid.astro";
 import ServiceProcess from "@/components/services/ServiceProcess.astro";
 import ServiceProof from "@/components/services/ServiceProof.astro";
 import ServiceRichText from "@/components/services/ServiceRichText.astro";
 import ServiceTrust from "@/components/services/ServiceTrust.astro";
+import TableOfContents from "@/components/TableOfContents.astro";
+import ToolCallout from "@/components/ToolCallout.astro";
+import TrustSignals from "@/components/TrustSignals.astro";
 
 type Block = {
   type: string;
@@ -21,8 +35,124 @@ const { blocks = [] } = Astro.props as Props;
 {
   blocks.map((block) => {
     switch (block.type) {
+      case "leadCapture":
+        return (
+          <LeadCaptureForm
+            eyebrow={block.eyebrow}
+            title={block.title}
+            description={block.description}
+            leadMagnetLabel={block.leadMagnetLabel}
+            points={block.points}
+            fields={block.fields}
+            submitLabel={block.submitLabel}
+            formAction={block.formAction ?? "/api/lead"}
+            disclaimer={block.disclaimer}
+            anchor={block.anchor}
+            headingLevel={block.headingLevel}
+            lookup={block.lookup}
+          />
+        );
+      case "authorByline":
+        return (
+          <section class="section-sm border-y border-border/70 bg-body">
+            <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+              <AuthorByline
+                name={block.name}
+                role={block.role}
+                image={block.image}
+                bio={block.bio}
+                socialLinks={block.socialLinks}
+                datePublished={block.datePublished}
+                dateModified={block.dateModified}
+                reviewer={block.reviewer}
+                variant={block.variant}
+                className={block.className}
+              />
+            </div>
+          </section>
+        );
+      case "tableOfContents":
+        return (
+          <section class="section-sm border-y border-border/70 bg-light">
+            <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+              <div class="w-full max-w-none">
+                <TableOfContents headings={block.headings} variant={block.variant} title={block.title} />
+              </div>
+            </div>
+          </section>
+        );
+      case "relatedArticles":
+        return (
+          <RelatedArticles
+            title={block.title}
+            articles={block.articles}
+            layout={block.layout}
+            maxItems={block.maxItems}
+          />
+        );
+      case "toolCallout":
+        return (
+          <ToolCallout
+            eyebrow={block.eyebrow}
+            title={block.title}
+            intro={block.intro}
+            items={block.items}
+            tone={block.tone}
+            footerNote={block.footerNote}
+            anchor={block.anchor}
+            headingLevel={block.headingLevel}
+          />
+        );
+      case "aiSearchSection":
+        return (
+          <AiSearchSection
+            eyebrow={block.eyebrow}
+            title={block.title}
+            intro={block.intro}
+            cards={block.cards}
+            engines={block.engines}
+            enginesLabel={block.enginesLabel}
+            honestTake={block.honestTake}
+            variant={block.variant}
+            anchor={block.anchor}
+            headingLevel={block.headingLevel}
+          />
+        );
+      case "honestTakeCallout":
+        return (
+          <HonestTakeCallout
+            eyebrow={block.eyebrow}
+            title={block.title}
+            body={block.body}
+            tone={block.tone}
+            variant={block.variant}
+            anchor={block.anchor}
+            headingLevel={block.headingLevel}
+          />
+        );
+      case "resourcesDirectory":
+        return (
+          <ResourcesDirectory
+            eyebrow={block.eyebrow}
+            title={block.title}
+            intro={block.intro}
+            groups={block.groups}
+            variant={block.variant}
+            footerNote={block.footerNote}
+            anchor={block.anchor}
+            headingLevel={block.headingLevel}
+          />
+        );
       case "richText":
-        return <ServiceRichText title={block.title} body={block.body} tone={block.tone} />;
+        return (
+          <ServiceRichText
+            title={block.title}
+            body={block.body}
+            tone={block.tone}
+            eyebrow={block.eyebrow}
+            headingLevel={block.headingLevel}
+          />
+        );
       case "featureGrid":
         return <ServiceFeatureGrid title={block.title} items={block.items} />;
       case "process":
@@ -40,6 +170,60 @@ const { blocks = [] } = Astro.props as Props;
             changes={block.changes}
           />
         );
+      case "localNap":
+        return (
+          <LocalNap
+            name={block.name}
+            street={block.street}
+            city={block.city}
+            region={block.region}
+            postal={block.postal}
+            country={block.country}
+            phone={block.phone}
+            email={block.email}
+            hours={block.hours}
+            mapUrl={block.mapUrl}
+            variant={block.variant}
+            eyebrow={block.eyebrow}
+            title={block.title}
+            intro={block.intro}
+            note={block.note}
+            headingLevel={block.headingLevel}
+            anchor={block.anchor}
+          />
+        );
+      case "caseStudy":
+        return (
+          <CaseStudy
+            eyebrow={block.eyebrow}
+            title={block.title}
+            client={block.client}
+            location={block.location}
+            dateRange={block.dateRange}
+            situation={block.situation}
+            whatWeFound={block.whatWeFound}
+            whatChanged={block.whatChanged}
+            outcomes={block.outcomes}
+            permissionLine={block.permissionLine}
+            variant={block.variant}
+          />
+        );
+      case "comparisonTable":
+        return (
+          <ComparisonTable
+            eyebrow={block.eyebrow}
+            title={block.title}
+            intro={block.intro}
+            columns={block.columns}
+            rows={block.rows}
+            footerNote={block.footerNote}
+            highlightRow={block.highlightRow}
+            variant={block.variant}
+            firstColumnLabel={block.firstColumnLabel}
+            anchor={block.anchor}
+            headingLevel={block.headingLevel}
+          />
+        );
       case "serviceArea":
         return <ServiceArea title={block.title} intro={block.intro} counties={block.counties} />;
       case "trust":
@@ -52,6 +236,46 @@ const { blocks = [] } = Astro.props as Props;
             migrationPolicy={block.migrationPolicy}
             included={block.included}
             extraCost={block.extraCost}
+          />
+        );
+      case "pricingTiers":
+        return (
+          <PricingTiers
+            eyebrow={block.eyebrow}
+            title={block.title}
+            intro={block.intro}
+            tiers={block.tiers}
+            disclaimer={block.disclaimer}
+            variant={block.variant}
+            anchor={block.anchor}
+            headingLevel={block.headingLevel}
+          />
+        );
+      case "recognitionBadges":
+        return (
+          <RecognitionBadges
+            eyebrow={block.eyebrow}
+            title={block.title}
+            intro={block.intro}
+            badges={block.badges}
+            variant={block.variant}
+            footerNote={block.footerNote}
+            anchor={block.anchor}
+            headingLevel={block.headingLevel}
+          />
+        );
+      case "trustSignals":
+        return (
+          <TrustSignals
+            eyebrow={block.eyebrow}
+            title={block.title}
+            intro={block.intro}
+            aggregateRating={block.aggregateRating}
+            subRatings={block.subRatings}
+            sourceDisclaimer={block.sourceDisclaimer}
+            variant={block.variant}
+            anchor={block.anchor}
+            headingLevel={block.headingLevel}
           />
         );
       default:

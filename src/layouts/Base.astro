@@ -21,9 +21,8 @@ import { getOpenGraphImagePath } from "@/lib/seo/openGraphImagePath";
 // font families
 const pf = theme.fonts.font_family.primary;
 const sf = theme.fonts.font_family.secondary;
-const mf = theme.fonts.font_family.mono || "JetBrains+Mono:wght@400;500";
 
-let fontPrimary, fontSecondary, fontMono;
+let fontPrimary, fontSecondary;
 const cleanName = (f: string) => f.split(":")[0].replace(/\+/g, " ");
 if (theme.fonts.font_family.primary) {
   fontPrimary = cleanName(theme.fonts.font_family.primary);
@@ -31,7 +30,6 @@ if (theme.fonts.font_family.primary) {
 if (theme.fonts.font_family.secondary) {
   fontSecondary = cleanName(theme.fonts.font_family.secondary);
 }
-fontMono = cleanName(mf);
 
 // types for frontmatters
 export interface Props {
@@ -187,20 +185,8 @@ const graphItems: unknown[] = [
           cssVariable: "font-secondary",
           googleFontsURL: `https://fonts.googleapis.com/css2?family=${sf}&display=swap`,
         },
-        {
-          src: [],
-          preload: false,
-          display: "swap",
-          name: fontMono,
-          fallback: "monospace",
-          cssVariable: "font-mono",
-          googleFontsURL: `https://fonts.googleapis.com/css2?family=${mf}&display=swap`,
-        },
       ]}
     />
-
-    <!-- Site-wide mono token: astro-font (cssVariable: font-mono) and the
-         generated @theme in generated-theme.css both define --font-mono from theme.json -->
 
     <!-- responsive meta -->
     <meta
@@ -229,14 +215,16 @@ const graphItems: unknown[] = [
     </a>
     <TwSizeIndicator />
     <Header />
-    <main id="main-content">
+    <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <button
       type="button"
       id="back-to-top"
       aria-label="Back to top"
-      class="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-primary text-dark shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none"
+      aria-hidden="true"
+      tabindex="-1"
+      class="fixed bottom-6 left-6 z-40 p-3 rounded-full bg-primary text-dark shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2"
     >
       <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
         <path d="M12 4l-8 8h5v8h6v-8h5z"/>
@@ -330,22 +318,49 @@ const graphItems: unknown[] = [
           if (event.persisted) scrollToTop();
         });
 
-        // Back to top scroll button logic
-        const backToTopBtn = document.getElementById("back-to-top");
-        if (backToTopBtn) {
-          window.addEventListener("scroll", () => {
-            if (window.scrollY > 500) {
-              backToTopBtn.classList.remove("opacity-0", "pointer-events-none");
-              backToTopBtn.classList.add("opacity-100");
-            } else {
-              backToTopBtn.classList.remove("opacity-100");
-              backToTopBtn.classList.add("opacity-0", "pointer-events-none");
-            }
-          });
-          backToTopBtn.addEventListener("click", () => {
-            scrollToTop();
-          });
-        }
+        // Show the back-to-top button only after the visitor scrolls upward.
+        let previousScrollY = window.scrollY;
+        let upwardTravel = 0;
+        const setBackToTopVisible = (visible: boolean) => {
+          const button = document.getElementById("back-to-top");
+          if (!button) return;
+          if (!visible && document.activeElement === button) {
+            document.getElementById("main-content")?.focus({ preventScroll: true });
+          }
+          button.classList.toggle("opacity-0", !visible);
+          button.classList.toggle("pointer-events-none", !visible);
+          button.classList.toggle("opacity-100", visible);
+          button.setAttribute("aria-hidden", String(!visible));
+          button.tabIndex = visible ? 0 : -1;
+        };
+
+        window.addEventListener("scroll", () => {
+          const currentScrollY = window.scrollY;
+          const delta = currentScrollY - previousScrollY;
+          previousScrollY = currentScrollY;
+
+          if (currentScrollY <= 500 || delta > 0) {
+            upwardTravel = 0;
+            setBackToTopVisible(false);
+          } else if (delta < 0) {
+            upwardTravel += -delta;
+            if (upwardTravel >= 12) setBackToTopVisible(true);
+          }
+        });
+
+        document.addEventListener("astro:page-load", () => {
+          previousScrollY = window.scrollY;
+          upwardTravel = 0;
+          setBackToTopVisible(false);
+        });
+
+        document.addEventListener("click", (event) => {
+          if (!(event.target instanceof Element) || !event.target.closest("#back-to-top")) return;
+          scrollToTop();
+          previousScrollY = window.scrollY;
+          upwardTravel = 0;
+          setBackToTopVisible(false);
+        });
 
         // Cleanup before Astro swaps DOM
         document.addEventListener("astro:before-preparation", () => {

@@ -1,0 +1,205 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type RelatedArticle = {
+  title: string;
+  url: string;
+  image?: string;
+  excerpt?: string;
+  date?: string | Date;
+};
+
+type Props = {
+  title?: string;
+  articles?: RelatedArticle[];
+  layout?: "grid" | "list" | "inline";
+  maxItems?: number;
+};
+
+const {
+  title = "Related",
+  articles = [],
+  layout = "grid",
+  maxItems = 4,
+} = Astro.props as Props;
+
+const headingId = `related-${slugify(title)}`;
+
+const shown = articles
+  .filter((article) => article && typeof article.title === "string" && article.title.trim() !== "" && typeof article.url === "string" && article.url.trim() !== "")
+  .slice(0, Math.max(1, Math.floor(maxItems)));
+
+// Column logic: never leave a single-item orphan row at the widest breakpoint.
+// 1-4 items fill one row exactly; beyond that prefer 3-up, fall back to 4-up or 2-up
+// depending on which leaves a fuller last row.
+const count = shown.length;
+const lgCols =
+  count <= 4
+    ? count
+    : count % 3 === 1
+      ? count % 4 !== 1
+        ? 4
+        : 2
+      : 3;
+const lgColClass: Record<number, string> = {
+  1: "lg:grid-cols-1",
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
+};
+
+// Dates may arrive as ISO strings or Date objects (YAML frontmatter) via props.
+const articleDate = (value?: string | Date): { iso: string; label: string } | undefined => {
+  if (!value) return undefined;
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return {
+    iso: date.toISOString().slice(0, 10),
+    label: new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(date),
+  };
+};
+
+const arrowClass =
+  "h-3.5 w-3.5 shrink-0 translate-x-0 text-text-light opacity-60 transition-[transform,color,opacity] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none motion-reduce:transform-none group-hover:translate-x-[3px] group-hover:text-primary group-hover:opacity-100";
+---
+
+{
+  count > 0 && (
+    <section class="section-sm border-y border-border/70 bg-body" aria-labelledby={headingId}>
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        <h2 id={headingId} class="max-w-[18ch] text-balance">
+          {title}
+        </h2>
+
+        {layout === "grid" && (
+          <ul
+            class:list={[
+              "mt-8 grid grid-cols-1 gap-5 sm:gap-6",
+              count > 1 && "sm:grid-cols-2",
+              lgColClass[lgCols],
+            ]}
+          >
+            {shown.map((article) => {
+              const date = articleDate(article.date);
+              return (
+                <li class="min-w-0">
+                  <a
+                    href={article.url}
+                    class="group block h-full min-w-0 overflow-hidden rounded-xl border border-border bg-body transition-[border-color,box-shadow] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-primary/70 motion-reduce:transition-none"
+                  >
+                    {article.image && (
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        loading="lazy"
+                        decoding="async"
+                        class="aspect-[16/9] w-full rounded-t-xl object-cover"
+                      />
+                    )}
+                    <span class:list={["block p-5 sm:p-6", { "pt-6": !article.image }]}>
+                      {date && (
+                        <time
+                          datetime={date.iso}
+                          class="mb-2.5 block text-xs font-semibold uppercase tracking-[0.14em] text-text-light tabular-nums"
+                        >
+                          {date.label}
+                        </time>
+                      )}
+                      <span class="flex items-start justify-between gap-3">
+                        <span class="min-w-0 break-words font-secondary text-h6 font-semibold text-text-dark transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:text-primary motion-reduce:transition-none line-clamp-2">
+                          {article.title}
+                        </span>
+                        <svg
+                          class={`mt-1.5 ${arrowClass}`}
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M2.5 8h11" />
+                          <path d="M9 3.5L13.5 8 9 12.5" />
+                        </svg>
+                      </span>
+                      {article.excerpt && (
+                        <span class="mt-2.5 block">
+                          <span
+                            class="block max-w-[62ch] break-words text-sm leading-relaxed text-text line-clamp-3"
+                            set:html={markdownify(article.excerpt)}
+                          />
+                        </span>
+                      )}
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        {layout === "list" && (
+          <ul class="mt-6">
+            {shown.map((article) => {
+              const date = articleDate(article.date);
+              return (
+                <li class="min-w-0 border-t border-border last:border-b">
+                  <a
+                    href={article.url}
+                    class="group flex min-w-0 items-baseline gap-4 py-4"
+                  >
+                    <span class="min-w-0 flex-1 break-words font-secondary text-base font-semibold text-text-dark transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:text-primary motion-reduce:transition-none sm:text-lg">
+                      {article.title}
+                    </span>
+                    <svg
+                      class={arrowClass}
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M2.5 8h11" />
+                      <path d="M9 3.5L13.5 8 9 12.5" />
+                    </svg>
+                    {date && (
+                      <time
+                        datetime={date.iso}
+                        class="shrink-0 text-right text-xs font-semibold uppercase tracking-[0.14em] text-text-light tabular-nums"
+                      >
+                        {date.label}
+                      </time>
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        {layout === "inline" && (
+          <ul class="mt-5 flex flex-wrap gap-x-6 gap-y-2.5">
+            {shown.map((article) => (
+              <li class="min-w-0">
+                <a
+                  href={article.url}
+                  class="break-words font-secondary font-medium text-text-dark underline decoration-border underline-offset-[3px] transition-[color,text-decoration-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-primary hover:decoration-primary motion-reduce:transition-none"
+                >
+                  {article.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  )
+}

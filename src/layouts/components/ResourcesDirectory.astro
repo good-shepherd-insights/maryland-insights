@@ -1,0 +1,294 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type ResourceItem = {
+  name: string;
+  url: string;
+  /** Short label chip (e.g. "EDO", "County site"). Keep it brief — it sits on one line. */
+  type?: string;
+};
+
+type ResourceGroup = {
+  category: string;
+  description?: string;
+  items?: ResourceItem[];
+};
+
+type Props = {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  groups?: ResourceGroup[];
+  /** grid: group cards; list: stacked directory rows; compact: inline pills for dense surfaces. */
+  variant?: "grid" | "list" | "compact";
+  footerNote?: string;
+  anchor?: string;
+  headingLevel?: "h2" | "h3";
+};
+
+const {
+  eyebrow,
+  title,
+  intro,
+  groups = [],
+  variant = "grid",
+  footerNote,
+  anchor,
+  headingLevel = "h2",
+} = Astro.props as Props;
+
+const headingId = `resources-${slugify(title)}`;
+const GroupHeading = headingLevel === "h2" ? "h3" : "h4";
+const Heading = headingLevel;
+
+// Defensive: drop malformed groups/items so the section can never render empty anchors or dead links.
+const shown = groups
+  .filter((group) => group && typeof group.category === "string" && group.category.trim() !== "")
+  .map((group) => ({
+    ...group,
+    items: (group.items ?? []).filter(
+      (item) =>
+        item &&
+        typeof item.name === "string" &&
+        item.name.trim() !== "" &&
+        typeof item.url === "string" &&
+        item.url.trim() !== "",
+    ),
+  }))
+  .filter((group) => group.items.length > 0);
+
+const count = shown.length;
+
+// Column logic mirrors RelatedArticles: single column below sm, never an orphan row at the widest step.
+// 1 -> 1, 2 -> 2, 3 -> 3, 4 -> 2x2, 5+ -> 3.
+const lgColClass: Record<number, string> = {
+  1: "lg:grid-cols-1",
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+};
+const lgCols = count === 4 ? 2 : count >= 3 ? 3 : count;
+
+// Root-relative paths are internal; everything else opens as an external reference.
+const isInternal = (url: string) => url.trim().startsWith("/") && !url.trim().startsWith("//");
+
+// Host is shown as a plain readable line so the destination is visible, not guessed.
+const hostOf = (url: string): string => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+};
+
+const arrowClass =
+  "h-3.5 w-3.5 shrink-0 text-text-light transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none group-hover:text-primary";
+
+const linkClass =
+  "block min-w-0 break-words font-semibold text-text-dark underline decoration-transparent underline-offset-2 transition-[color,text-decoration-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none group-hover:decoration-primary/60 group-hover:text-primary";
+
+const shellClass =
+  variant === "compact"
+    ? "section-sm bg-body overflow-x-hidden"
+    : "section-sm border-y border-border/70 bg-light overflow-x-hidden";
+---
+
+{
+  count > 0 && (
+    <section id={anchor} class={shellClass} aria-labelledby={headingId}>
+      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+        <header class="max-w-3xl">
+          {
+            eyebrow && (
+              <p class="mb-5 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                <span class="h-px w-8 bg-primary" aria-hidden="true"></span>
+                {eyebrow}
+              </p>
+            )
+          }
+
+          <Heading id={headingId} class="max-w-[18ch] text-balance">
+            {title}
+          </Heading>
+
+          {
+            intro && (
+              <p class="mt-4 max-w-[62ch] leading-relaxed text-text" set:html={markdownify(intro)} />
+            )
+          }
+        </header>
+
+        {variant === "grid" && (
+          <ul
+            class:list={[
+              "mt-8 grid grid-cols-1 gap-5 sm:gap-6",
+              count > 1 && "sm:grid-cols-2",
+              lgColClass[lgCols],
+            ]}
+          >
+            {shown.map((group) => (
+              <li class="min-w-0">
+                <div class="h-full min-w-0 rounded-xl border border-border bg-body p-6 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-7">
+                  <GroupHeading class="min-w-0 break-words text-h6 font-bold text-text-dark [overflow-wrap:anywhere]">
+                    {group.category}
+                  </GroupHeading>
+                  {group.description && (
+                    <p
+                      class="mt-2 max-w-[62ch] text-sm leading-relaxed text-text"
+                      set:html={markdownify(group.description)}
+                    />
+                  )}
+                  <ul class:list={["mt-4", { "border-t border-border": group.description }]}>
+                    {group.items.map((item) => (
+                      <li class="min-w-0 border-b border-border/70 last:border-b-0">
+                        <a
+                          href={item.url}
+                          target={isInternal(item.url) ? undefined : "_blank"}
+                          rel={isInternal(item.url) ? undefined : "noopener noreferrer nofollow"}
+                          class="group flex min-w-0 items-start gap-3 py-3.5"
+                        >
+                          <span class="min-w-0 flex-1">
+                            <span class={linkClass}>{item.name}</span>
+                            {!isInternal(item.url) && hostOf(item.url) !== "" && (
+                              <span class="mt-0.5 block min-w-0 text-xs text-text-light break-words [overflow-wrap:anywhere]">
+                                {hostOf(item.url)}
+                              </span>
+                            )}
+                            {item.type && (
+                              <span class="mt-1.5 inline-block text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
+                                {item.type}
+                              </span>
+                            )}
+                          </span>
+                          <svg
+                            class={`mt-1 ${arrowClass}`}
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M2.5 8h11" />
+                            <path d="M9 3.5L13.5 8 9 12.5" />
+                          </svg>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {variant === "list" && (
+          <div class="mt-8 space-y-10">
+            {shown.map((group) => (
+              <section class="min-w-0" aria-label={group.category}>
+                <GroupHeading class="max-w-[24ch] break-words text-h6 font-bold text-text-dark [overflow-wrap:anywhere]">
+                  {group.category}
+                </GroupHeading>
+                {group.description && (
+                  <p
+                    class="mt-2 max-w-[62ch] text-sm leading-relaxed text-text"
+                    set:html={markdownify(group.description)}
+                  />
+                )}
+                <ul class:list={["mt-3", { "border-t border-border": group.description }]}>
+                  {group.items.map((item) => (
+                    <li class="min-w-0 border-b border-border/70">
+                      <a
+                        href={item.url}
+                        target={isInternal(item.url) ? undefined : "_blank"}
+                        rel={isInternal(item.url) ? undefined : "noopener noreferrer nofollow"}
+                        class="group flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1 py-4"
+                      >
+                        <span class:list={["min-w-0 flex-1", linkClass]}>
+                          {item.name}
+                          {!isInternal(item.url) && hostOf(item.url) !== "" && (
+                            <span class="ml-2 align-baseline text-xs font-normal normal-case text-text-light [overflow-wrap:anywhere]">
+                              {hostOf(item.url)}
+                            </span>
+                          )}
+                        </span>
+                        {item.type && (
+                          <span class="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
+                            {item.type}
+                          </span>
+                        )}
+                        <svg
+                          class={arrowClass}
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M2.5 8h11" />
+                          <path d="M9 3.5L13.5 8 9 12.5" />
+                        </svg>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        )}
+
+        {variant === "compact" && (
+          <div class="mt-6 space-y-6">
+            {shown.map((group) => (
+              <div class="min-w-0">
+                <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
+                  {group.category}
+                </p>
+                <ul class="mt-2.5 flex flex-wrap gap-x-2 gap-y-2">
+                  {group.items.map((item) => (
+                    <li class="min-w-0 max-w-full">
+                      <a
+                        href={item.url}
+                        target={isInternal(item.url) ? undefined : "_blank"}
+                        rel={isInternal(item.url) ? undefined : "noopener noreferrer nofollow"}
+                        class="group inline-flex max-w-full min-w-0 items-center gap-2 rounded-full border border-border bg-body px-4 py-2 text-sm transition-[border-color,color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none hover:border-primary/70 hover:text-primary"
+                      >
+                        <span class="min-w-0 break-words font-semibold [overflow-wrap:anywhere]">
+                          {item.name}
+                          {item.type && (
+                            <span class="ml-1.5 font-normal text-text-light">{item.type}</span>
+                          )}
+                        </span>
+                        <svg
+                          class="h-3 w-3 shrink-0 opacity-70"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M2.5 8h11" />
+                          <path d="M9 3.5L13.5 8 9 12.5" />
+                        </svg>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {
+          footerNote && (
+            <p class="mt-10 max-w-[62ch] text-sm leading-relaxed text-text-light" set:html={markdownify(footerNote)} />
+          )
+        }
+      </div>
+    </section>
+  )
+}

@@ -1,5 +1,6 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
+import UpdatedDateBadge from "@/components/UpdatedDateBadge.astro";
 import dateFormat from "@/lib/utils/dateFormat";
 import { humanize, markdownify } from "@/lib/utils/textConverter";
 
@@ -12,13 +13,15 @@ const {
 }: {
   title?: string;
   description?: string;
-  blogData?: { author: { name: string; image: string }; date: string };
+  blogData?: { author: { name: string; image?: string }; date?: Date | string; lastmod?: Date | string };
   caseData?: {
     author: { name: string; image: string; designation: string };
     date: string;
   };
   careerData?: { department: string; vacancy: string; deadline: string };
 } = Astro.props;
+
+const dateString = (value: Date | string): string => value instanceof Date ? value.toISOString() : value;
 ---
 
 <section
@@ -63,12 +66,12 @@ const {
             <span class="text-text-dark">{blogData.author?.name}</span>
           </p>
           {blogData.date && (
-            <p class="flex flex-col gap-1 text-left">
-              <span class="text-xs">Last updated</span>
-              <time class="text-text-dark" datetime={dateFormat(blogData.date)}>
-                {dateFormat(blogData.date)}
-              </time>
-            </p>
+            <UpdatedDateBadge
+              dateModified={dateString(blogData.lastmod || blogData.date)}
+              datePublished={blogData.date ? dateString(blogData.date) : undefined}
+              variant="badge"
+              label="Updated"
+            />
           )}
         </div>
       )

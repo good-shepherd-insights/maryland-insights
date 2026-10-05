@@ -72,7 +72,7 @@ const {
             href={button_solid.link}
             target={button_solid.link.startsWith("http") ? "_blank" : "_self"}
             rel={button_solid.link.startsWith("http") ? "noopener noreferrer" : undefined}
-            class="db-cta-primary db-cta font-mono inline-flex items-center px-4 text-sm leading-none sm:px-6"
+            class="db-cta-primary db-cta inline-flex items-center px-4 text-sm leading-none sm:px-6"
           >
             {button_solid.label}
           </a>
@@ -84,7 +84,7 @@ const {
             href={button_underline.link}
             target={button_underline.link.startsWith("http") ? "_blank" : "_self"}
             rel={button_underline.link.startsWith("http") ? "noopener noreferrer" : undefined}
-            class="db-cta-secondary db-cta font-mono inline-flex items-center px-4 text-sm leading-none sm:px-6 transition-colors"
+            class="db-cta-secondary db-cta inline-flex items-center px-4 text-sm leading-none sm:px-6 transition-colors"
           >
             {button_underline.label}
           </a>
@@ -100,7 +100,7 @@ const {
             {stats.map((stat: { value: string; label: string; accent?: string }, i: number) => (
               <div class:list={["px-4 pt-7 xl:px-0", i > 0 ? "lg:border-l lg:pl-8 db-stat-div" : ""]}>
                 <div class="flex flex-col items-center text-center">
-                  <div class="db-stat-value font-mono text-3xl tabular-nums">{stat.value}</div>
+                  <div class="db-stat-value text-3xl tabular-nums">{stat.value}</div>
                   <div class="db-stat-label mt-3 text-sm font-semibold">{stat.label}</div>
                 </div>
               </div>
@@ -133,12 +133,6 @@ const {
   }
   .db-scope :is(p, span, a, button, strong, li) {
     font-family: var(--font-primary);
-  }
-  .db-scope .font-mono,
-  .db-cta-primary,
-  .db-cta-secondary,
-  .db-stat-value {
-    font-family: var(--font-mono) !important;
   }
 
   /* Radial brand glow bleeding down from top edge (composio pattern, project gold) */

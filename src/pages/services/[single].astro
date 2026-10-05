@@ -24,7 +24,17 @@ export async function getStaticPaths() {
 }
 
 const { service } = Astro.props;
-const { title, description, image, faqs_list, blocks = [] } = service.data;
+const { title, description, image, faqs_list, blocks = [], date_modified } = service.data;
+const hasLeadHero = blocks.some((block: { type: string }) => block.type === "leadCapture");
+const isLocalSeo = service.id === "local-seo";
+const mainBlocks = isLocalSeo ? blocks.filter((block: { type: string }) => block.type !== "relatedArticles") : blocks;
+const trailingArticleBlocks = isLocalSeo ? blocks.filter((block: { type: string }) => block.type === "relatedArticles") : [];
+const ctaProps = {
+  title: "Ready to make your next customer easier to find?",
+  description: "Bring your service area, customer journey, and growth goals into one conversation. We’ll start with what your business needs and make the next step clear.",
+  buttonLabel: "Partner with Us",
+  buttonLink: "/get-started",
+};
 
 const serviceSchema: SoftwareApplication = {
   "@type": "SoftwareApplication",
@@ -32,15 +42,18 @@ const serviceSchema: SoftwareApplication = {
   "description": plainify(description),
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
-  "offers": {
-    "@type": "Offer",
-    "price": 0,
-    "priceCurrency": "USD",
-  },
+  ...(!isLocalSeo ? {
+    "offers": {
+      "@type": "Offer" as const,
+      "price": 0,
+      "priceCurrency": "USD" as const,
+    },
+  } : {}),
   "image": image ? `${config.site.base_url}${image}` : undefined,
   "publisher": {
     "@id": `${config.site.base_url}/#organization`,
   },
+  ...(date_modified ? { "dateModified": new Date(date_modified).toISOString() } : {}),
 };
 
 const pageSchemas: (SoftwareApplication | FAQPage)[] = [serviceSchema];
@@ -65,16 +78,13 @@ if (faqs_list && faqs_list.length > 0) {
 ---
 
 <Base {...service.data} schema={pageSchemas}>
-  <PageHeader title={title} description={description} />
+  {!hasLeadHero && <PageHeader title={title} description={description} />}
 
-  <ServiceBlocks blocks={blocks} />
+  <ServiceBlocks blocks={mainBlocks} />
+
+  {isLocalSeo && <ServiceCTA {...ctaProps} />}
 
   {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `Frequently Asked Questions About ${title}` }} prefix="service-faq" />}
 
-  <ServiceCTA
-    title="Ready to make your next customer easier to find?"
-    description="Bring your service area, customer journey, and growth goals into one conversation. We’ll start with what your business needs and make the next step clear."
-    buttonLabel="Partner with Us"
-    buttonLink="/get-started"
-  />
+  {isLocalSeo ? <ServiceBlocks blocks={trailingArticleBlocks} /> : <ServiceCTA {...ctaProps} />}
 </Base>

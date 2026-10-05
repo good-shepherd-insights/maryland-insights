@@ -1,0 +1,760 @@
+---
+type TocHeading = {
+  id: string;
+  text: string;
+  level?: number;
+  /** Optional concise label; when present it is shown and the full text stays in title/aria-label. */
+  short?: string;
+  /** Starts a nested topic group; subsequent headings stay in the same group. */
+  topic?: string;
+};
+
+type Props = {
+  headings: TocHeading[];
+  variant?: "sticky" | "inline" | "collapsible";
+  title?: string;
+};
+
+const { headings = [], variant = "sticky", title = "On this page" } = Astro.props as Props;
+
+// Defensive: drop malformed entries so the component can never render empty anchors.
+const items = headings.filter((heading) => heading && heading.id && heading.text);
+const hasHeadings = items.length > 0;
+
+// Deterministic build-time trimming so headings without an authored `short` still read as a
+// concise, scannable index label. Pure string rules only — the target id is never touched.
+const wordsOf = (value: string) => value.split(/\s+/).filter(Boolean);
+const capWords = (value: string, max: number) => wordsOf(value).slice(0, max).join(" ");
+const deriveShort = (text: string): string => {
+  let value = text.replace(/\s+/g, " ").trim();
+  value = value.replace(/\s+for\s+(?:all\s+)?maryland\s+businesses\.?$/i, ""); // trailing audience clause
+  value = value.replace(/\s*(?:,|;|:)\s*(?:not|with|instead of|rather than)\b.*$/i, ""); // filler tail after a comma
+  value = value.replace(/^(?:how to|why|what is|the)\s+/i, ""); // leading filler
+  value = value.replace(/[.,;:]+$/, "").trim();
+  const count = wordsOf(value).length;
+  // If trimming left too little or still too much, fall back to the first five words of the text.
+  if (count < 2 || count > 5) value = capWords(text, 5);
+  value = capWords(value, 5);
+  if (value.length > 40) value = value.slice(0, 40).replace(/\s+\S*$/, ""); // ~40-char cap at a word boundary
+  return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+// One row per entry: the visible label is the authored short (preferred) or the derived concise form.
+const rows = items.map((heading) => {
+  const authored = typeof heading.short === "string" ? heading.short.replace(/\s+/g, " ").trim() : "";
+  return {
+    id: heading.id,
+    level: heading.level,
+    full: heading.text.replace(/\s+/g, " ").trim(),
+    label: authored.length > 0 ? authored : deriveShort(heading.text),
+    topic: heading.topic,
+  };
+});
+
+const groups: { title: string; rows: ((typeof rows)[number] & { index: number })[] }[] = [];
+for (const [index, row] of rows.entries()) {
+  if (row.topic || groups.length === 0) groups.push({ title: row.topic ?? title, rows: [] });
+  groups[groups.length - 1].rows.push({ ...row, index });
+}
+
+// Per-instance id so a page can carry a desktop sticky TOC and a mobile collapsible TOC
+// without colliding on the same aria-labelledby target.
+const uid = Math.random().toString(36).slice(2, 9);
+const labelId = `toc-label-${variant}-${uid}`;
+const floatingLabelId = `toc-floating-label-${uid}`;
+const floatingPanelId = `toc-floating-panel-${uid}`;
+
+const minLevel = hasHeadings ? Math.min(...items.map((heading) => heading.level ?? 2)) : 2;
+const indentClass = (level?: number) => {
+  const value = level ?? 2;
+  if (value > minLevel + 1) return "pl-8";
+  if (value > minLevel) return "pl-5";
+  return "";
+};
+
+// Field-guide index numbers, derived purely from list order.
+const num = (index: number) => String(index + 1).padStart(2, "0");
+const countLabel = `${num(rows.length - 1)} sections`;
+---
+
+{
+  hasHeadings && variant === "sticky" && (
+    <nav
+      data-toc
+      class="w-full min-w-0 lg:sticky lg:top-20 lg:self-start"
+      aria-labelledby={labelId}
+    >
+      <div class="flex min-w-0 items-baseline justify-between gap-4 border-b border-border pb-3">
+        <p id={labelId} class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
+          {title}
+        </p>
+        <p class="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] tabular-nums text-text-light">
+          {countLabel}
+        </p>
+      </div>
+      <ul class="mt-1 min-w-0">
+        {groups.map((group) => (
+          <li class="min-w-0 border-b border-border/70 py-3 last:border-b-0">
+            <p class="mb-1 text-xs font-semibold uppercase tracking-[0.12em] text-text-light">{group.title}</p>
+            <ol class="min-w-0">
+              {group.rows.map((row) => (
+                <li class:list={["min-w-0", indentClass((row.level ?? 2) + 1)]}>
+                  <a href={`#${row.id}`} title={row.full} aria-label={row.full} class="toc-link group grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 py-2 text-sm leading-snug text-text-dark hover:text-primary">
+                    <span class="flex items-start gap-2" aria-hidden="true"><span class="toc-index pt-px text-xs font-semibold tabular-nums">{num(row.index)}</span><span class="toc-row-rule mt-[0.55rem] h-px w-3 shrink-0 origin-left bg-border"></span></span>
+                    <span data-toc-link-label class="min-w-0 break-words">{row.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+{
+  hasHeadings && variant === "inline" && (
+    <div class="toc-inline-shell" data-toc>
+      <nav
+        data-toc-inline
+        class="toc-inline-panel w-full min-w-0 rounded-xl border border-border bg-body p-5 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-7"
+        aria-labelledby={labelId}
+      >
+        <div class="flex min-w-0 items-baseline justify-between gap-4 border-b border-border pb-4">
+          <p id={labelId} class="font-secondary text-lg font-bold tracking-tight text-text-dark">
+            {title}
+          </p>
+          <p class="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] tabular-nums text-text-light">
+            {countLabel}
+          </p>
+        </div>
+        <ol class="min-w-0">
+          {groups.map((group) => (
+            <li data-toc-inline-row class="min-w-0 border-b border-border/70 py-4 last:border-b-0">
+              <details data-toc-group>
+                <summary class="toc-topic-summary flex cursor-pointer items-center justify-between gap-3 font-secondary text-base font-bold text-text-dark">
+                  <span>{group.title}</span>
+                  <svg class="toc-topic-chevron h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 6 4.5 4.5L12.5 6" /></svg>
+                </summary>
+                <ol class="mt-1 min-w-0">
+                  {group.rows.map((row) => (
+                    <li class:list={["min-w-0", indentClass((row.level ?? 2) + 1)]}>
+                      <a href={`#${row.id}`} title={row.full} aria-label={row.full} class="toc-link group grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 py-2 text-[0.95rem] leading-snug text-text-dark hover:text-primary">
+                        <span class="flex items-start gap-2.5" aria-hidden="true"><span class="toc-index pt-px text-xs font-semibold tabular-nums">{num(row.index)}</span><span class="toc-row-rule mt-[0.65rem] h-px w-3 shrink-0 origin-left bg-border"></span></span>
+                        <span data-toc-link-label class="min-w-0 break-words">{row.label}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <div class="toc-floating" data-toc-floating aria-hidden="true" inert>
+        <nav
+          id={floatingPanelId}
+          data-toc-floating-panel
+          class="toc-floating-panel mb-3 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-dark bg-body"
+          aria-labelledby={floatingLabelId}
+          hidden
+        >
+          <div class="flex items-baseline justify-between gap-4 border-b border-border px-5 py-4">
+            <p id={floatingLabelId} class="font-secondary text-base font-bold text-text-dark">{title}</p>
+            <p class="shrink-0 text-xs font-semibold uppercase tracking-[0.14em] tabular-nums text-text-light">
+              {countLabel}
+            </p>
+          </div>
+          <ol class="toc-floating-list min-w-0 overflow-y-auto px-5 py-1">
+            {groups.map((group) => (
+              <li class="min-w-0 border-b border-border/70 py-3 last:border-b-0">
+                <details data-toc-group>
+                  <summary class="toc-topic-summary flex cursor-pointer items-center justify-between gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-text-dark">
+                    <span>{group.title}</span>
+                    <svg class="toc-topic-chevron h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 6 4.5 4.5L12.5 6" /></svg>
+                  </summary>
+                  <ol class="mt-1 min-w-0">{group.rows.map((row) => (
+                    <li class:list={["min-w-0", indentClass((row.level ?? 2) + 1)]}>
+                      <a href={`#${row.id}`} title={row.full} aria-label={row.full} class="toc-link group grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 py-2 text-sm leading-snug text-text-dark hover:text-primary">
+                        <span class="flex items-start gap-2.5" aria-hidden="true"><span class="toc-index pt-px text-xs font-semibold tabular-nums">{num(row.index)}</span><span class="toc-row-rule mt-[0.6rem] h-px w-3 shrink-0 origin-left bg-border"></span></span>
+                        <span data-toc-link-label class="min-w-0 break-words">{row.label}</span>
+                      </a>
+                    </li>
+                  ))}</ol>
+                </details>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <button
+          type="button"
+          data-toc-floating-trigger
+          class="toc-floating-trigger ml-auto flex min-h-14 max-w-[min(20rem,calc(100vw-2rem))] items-center gap-3 bg-dark px-4 py-3 text-left text-white shadow-[0_14px_34px_-16px_rgba(18,18,18,0.65)] transition-colors hover:bg-primary hover:text-dark"
+          aria-expanded="false"
+          aria-controls={floatingPanelId}
+        >
+          <svg
+            class="h-5 w-5 shrink-0"
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M3 5h2M8 5h9M3 10h2M8 10h9M3 15h2M8 15h9" />
+          </svg>
+          <span class="min-w-0 flex-1">
+            <span class="block text-[0.65rem] font-semibold uppercase tracking-[0.14em] opacity-70">{title}</span>
+            <span data-toc-current class="mt-0.5 block truncate font-secondary text-sm font-bold">{rows[0].label}</span>
+          </span>
+          <svg
+            class="toc-floating-chevron h-4 w-4 shrink-0"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3.5 10L8 5.5l4.5 4.5" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+{
+  hasHeadings && variant === "collapsible" && (
+    <nav data-toc class="w-full min-w-0" aria-labelledby={labelId}>
+      <details class="toc-details rounded-xl border border-border bg-body">
+        <summary class="flex cursor-pointer items-center justify-between gap-4 px-5 py-4">
+          <span id={labelId} class="font-secondary text-base font-bold tracking-tight text-text-dark">
+            {title}
+          </span>
+          <span class="flex shrink-0 items-center gap-3">
+            <span class="text-xs font-semibold uppercase tracking-[0.14em] tabular-nums text-text-light">
+              {countLabel}
+            </span>
+            <svg
+              class="toc-chevron h-3.5 w-3.5 shrink-0 text-primary transition-transform"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M6 3.5l4.5 4.5L6 12.5" />
+            </svg>
+          </span>
+        </summary>
+        <ol class="min-w-0 border-t border-border px-5 pb-2">
+          {groups.map((group) => (
+            <li class="min-w-0 border-b border-border/70 py-3 last:border-b-0">
+              <p class="mb-1 text-xs font-semibold uppercase tracking-[0.12em] text-text-light">{group.title}</p>
+              <ol class="min-w-0">{group.rows.map((row) => (
+                <li class:list={["min-w-0", indentClass((row.level ?? 2) + 1)]}>
+                  <a href={`#${row.id}`} title={row.full} aria-label={row.full} class="toc-link group grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-x-3 py-2 text-sm leading-snug text-text-dark hover:text-primary">
+                    <span class="flex items-start gap-2.5" aria-hidden="true"><span class="toc-index pt-px text-xs font-semibold tabular-nums">{num(row.index)}</span><span class="toc-row-rule mt-[0.6rem] h-px w-3 shrink-0 origin-left bg-border"></span></span>
+                    <span data-toc-link-label class="min-w-0 break-words">{row.label}</span>
+                  </a>
+                </li>
+              ))}</ol>
+            </li>
+          ))}
+        </ol>
+      </details>
+    </nav>
+  )
+}
+
+<style>
+  /* One authored motion system: exponential ease-out on rules and numbers only. */
+  .toc-row-rule {
+    transition:
+      transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .toc-index {
+    color: var(--color-text-light);
+    transition: color 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .toc-link {
+    transition: color 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Numbered index rows: the rule extends via transform, so hover never reflows text. */
+  .toc-link:hover .toc-row-rule,
+  .toc-link:focus-visible .toc-row-rule {
+    transform: scaleX(1.7);
+    background-color: var(--color-primary);
+  }
+
+  .toc-link:hover .toc-index,
+  .toc-link:focus-visible .toc-index {
+    color: var(--color-primary);
+  }
+
+  /* Active section (set by the enhancement script; degrades to plain anchors without JS). */
+  .toc-link.toc-active {
+    color: var(--color-primary);
+  }
+
+  .toc-link.toc-active .toc-row-rule {
+    transform: scaleX(1.7);
+    background-color: var(--color-primary);
+  }
+
+  .toc-link.toc-active .toc-index {
+    color: var(--color-primary);
+  }
+
+  .toc-details > summary {
+    list-style: none;
+  }
+
+  .toc-details > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .toc-details[open] .toc-chevron {
+    transform: rotate(90deg);
+  }
+
+  .toc-topic-summary {
+    list-style: none;
+  }
+
+  .toc-topic-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .toc-topic-chevron {
+    transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  [data-toc-group][open] .toc-topic-chevron {
+    transform: rotate(180deg);
+  }
+
+  [data-toc-group][data-toc-current] > .toc-topic-summary {
+    color: var(--color-primary);
+  }
+
+  @keyframes toc-panel-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+      clip-path: inset(18% 0 0 0 round 0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      clip-path: inset(0 round 0.75rem);
+    }
+  }
+
+  .toc-floating {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(14px) scale(0.98);
+    transform-origin: bottom right;
+    transition:
+      opacity 260ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s linear 420ms;
+  }
+
+  .toc-floating.toc-floating-visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+    transition-delay: 0s;
+  }
+
+  .toc-floating-panel {
+    max-height: min(36rem, calc(100dvh - 6rem));
+  }
+
+  .toc-floating-panel[hidden] {
+    display: none;
+  }
+
+  .toc-floating-panel:not([hidden]) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .toc-floating-list {
+    min-height: 0;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--color-primary) var(--color-light);
+    scrollbar-width: thin;
+  }
+
+  .toc-floating.toc-floating-open .toc-floating-panel {
+    animation: toc-panel-reveal 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .toc-floating-chevron {
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .toc-floating.toc-floating-open .toc-floating-chevron {
+    transform: rotate(180deg);
+  }
+
+  @media (min-width: 640px) {
+    .toc-floating {
+      right: max(2rem, env(safe-area-inset-right));
+      bottom: max(2rem, env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc-row-rule,
+    .toc-index,
+    .toc-link,
+    .toc-chevron,
+    .toc-topic-chevron,
+    .toc-floating,
+    .toc-floating-chevron {
+      transition: none;
+    }
+
+    .toc-floating.toc-floating-open .toc-floating-panel {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Enhancement only: synchronize the active section across inline, floating, sticky,
+  // and collapsible TOCs. Without JS, every TOC remains a usable list of anchors.
+  const tocRoots = document.querySelectorAll<HTMLElement>("[data-toc]");
+
+  for (const root of tocRoots) {
+    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>("a.toc-link"));
+    const mobileViewport = window.matchMedia("(max-width: 639px)");
+    const groupSets = [
+      Array.from(root.querySelectorAll<HTMLDetailsElement>("[data-toc-inline] [data-toc-group]")),
+      Array.from(root.querySelectorAll<HTMLDetailsElement>("[data-toc-floating-panel] [data-toc-group]")),
+    ];
+    const sectionMap = new Map<string, HTMLElement>();
+
+    for (const link of links) {
+      const href = link.getAttribute("href") ?? "";
+      if (!href.startsWith("#")) continue;
+      const id = decodeURIComponent(href.slice(1));
+      const target = document.getElementById(id);
+      if (target && !sectionMap.has(id)) sectionMap.set(id, target);
+    }
+
+    const sections = Array.from(sectionMap, ([id, target]) => ({ id, target })).sort((a, b) => {
+      const position = a.target.compareDocumentPosition(b.target);
+      if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+      if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+      return 0;
+    });
+    if (sections.length === 0) continue;
+
+    for (const link of links) {
+      link.addEventListener("click", (event) => {
+        const href = link.getAttribute("href") ?? "";
+        const target = sectionMap.get(decodeURIComponent(href.slice(1)));
+        if (!href.startsWith("#") || !target) return;
+        event.preventDefault();
+        if (window.location.hash !== href) window.history.pushState(window.history.state, "", href);
+        target.scrollIntoView({ behavior: "instant", block: "start" });
+        if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+        target.focus({ preventScroll: true });
+      });
+    }
+
+    const currentLabels = root.querySelectorAll<HTMLElement>("[data-toc-current]");
+    let activeId = "";
+    let frame = 0;
+
+    const syncGroups = (id: string) => {
+      for (const [setIndex, set] of groupSets.entries()) {
+        for (const group of set) {
+          const isCurrent = Array.from(group.querySelectorAll<HTMLAnchorElement>("a.toc-link")).some(
+            (link) => decodeURIComponent((link.getAttribute("href") ?? "").slice(1)) === id,
+          );
+          group.toggleAttribute("data-toc-current", isCurrent);
+          // The inline index is in document flow; changing its height while a
+          // hash link scrolls would move the destination underneath the reader.
+          if (setIndex === 1) group.open = isCurrent;
+        }
+      }
+    };
+
+    for (const set of groupSets) {
+      for (const group of set) {
+        group.querySelector("summary")?.addEventListener("click", () => {
+          if (group.open) return;
+          for (const other of set) if (other !== group) other.open = false;
+        });
+      }
+    }
+
+    const applyActive = (id: string) => {
+      if (id === activeId) return;
+      activeId = id;
+      let activeLabel = "";
+
+      for (const link of links) {
+        const isActive = decodeURIComponent((link.getAttribute("href") ?? "").slice(1)) === id;
+        link.classList.toggle("toc-active", isActive);
+        if (isActive) {
+          link.setAttribute("aria-current", "location");
+          if (activeLabel === "") {
+            activeLabel = link.querySelector<HTMLElement>("[data-toc-link-label]")?.textContent?.trim() ?? "";
+          }
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      }
+
+      if (activeLabel !== "") currentLabels.forEach((label) => (label.textContent = activeLabel));
+      syncGroups(id);
+    };
+
+    const updateActive = () => {
+      frame = 0;
+      const activationLine = Math.min(160, window.innerHeight * 0.24);
+      let next: (typeof sections)[number] | undefined;
+
+      for (const section of sections) {
+        if (section.target.getBoundingClientRect().top <= activationLine) next = section;
+        else break;
+      }
+
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
+        next = sections[sections.length - 1];
+      }
+
+      applyActive(next?.id ?? "");
+    };
+
+    const requestUpdate = () => {
+      if (frame !== 0) return;
+      frame = window.requestAnimationFrame(updateActive);
+    };
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate, { passive: true });
+    updateActive();
+
+    const floating = root.querySelector<HTMLElement>("[data-toc-floating]");
+    const inline = root.querySelector<HTMLElement>("[data-toc-inline]");
+    const trigger = root.querySelector<HTMLButtonElement>("[data-toc-floating-trigger]");
+    const panel = root.querySelector<HTMLElement>("[data-toc-floating-panel]");
+    if (!floating || !inline || !trigger || !panel) continue;
+
+    const closeFloating = (restoreFocus = false) => {
+      panel.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      floating.classList.remove("toc-floating-open");
+      if (restoreFocus) trigger.focus();
+    };
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const inlineShell = root.querySelector<HTMLElement>(".toc-inline-shell");
+    const inlineRows = Array.from(inline.querySelectorAll<HTMLElement>("[data-toc-inline-row]"));
+    let morphClone: HTMLElement | null = null;
+    let morphRows: HTMLElement[] = [];
+    let morphStartY = 0;
+    let morphDistance = 1;
+    let morphStartX = 0;
+    let morphStartTop = 0;
+    let morphStartWidth = 0;
+    let morphStartHeight = 0;
+    let scrollFrame = 0;
+
+    const setFloating = (visible: boolean) => {
+      root.toggleAttribute("data-toc-collapsed", visible);
+      floating.classList.toggle("toc-floating-visible", visible);
+      floating.setAttribute("aria-hidden", visible ? "false" : "true");
+      floating.toggleAttribute("inert", !visible);
+      if (!visible) closeFloating();
+    };
+
+    const removeMorph = () => {
+      morphClone?.remove();
+      morphClone = null;
+      morphRows = [];
+      inline.style.visibility = "";
+      inline.removeAttribute("aria-hidden");
+      inline.removeAttribute("inert");
+      inlineShell?.removeAttribute("data-toc-morphing");
+    };
+
+    const createMorph = (startY: number) => {
+      const rect = inline.getBoundingClientRect();
+      morphStartY = startY;
+      morphStartX = rect.left;
+      morphStartTop = rect.top + (window.scrollY - startY);
+      morphStartWidth = rect.width;
+      morphStartHeight = rect.height;
+      morphDistance = Math.max(1, rect.bottom - 112);
+
+      morphClone = inline.cloneNode(true) as HTMLElement;
+      morphClone.removeAttribute("id");
+      morphClone.setAttribute("aria-hidden", "true");
+      morphClone.setAttribute("inert", "");
+      morphClone.querySelectorAll<HTMLElement>("[id]").forEach((element) => element.removeAttribute("id"));
+      morphRows = Array.from(morphClone.querySelectorAll<HTMLElement>("[data-toc-inline-row]"));
+      morphRows.forEach((row) => row.removeAttribute("data-toc-inline-row"));
+      morphClone.style.position = "fixed";
+      morphClone.style.zIndex = "45";
+      morphClone.style.top = `${rect.top}px`;
+      morphClone.style.left = `${rect.left}px`;
+      morphClone.style.width = `${rect.width}px`;
+      morphClone.style.height = `${rect.height}px`;
+      morphClone.style.margin = "0";
+      morphClone.style.overflow = "hidden";
+      morphClone.style.pointerEvents = "none";
+      morphClone.style.transformOrigin = "top left";
+      morphClone.style.boxSizing = "border-box";
+      document.body.appendChild(morphClone);
+      inline.style.visibility = "hidden";
+      inline.setAttribute("aria-hidden", "true");
+      inline.setAttribute("inert", "");
+      inlineShell?.setAttribute("data-toc-morphing", "");
+    };
+
+    const updateMorph = (scrollY: number) => {
+      if (!morphClone) return;
+      const progress = Math.min(1, Math.max(0, (scrollY - morphStartY) / morphDistance));
+      const eased = 1 - Math.pow(1 - progress, 2.4);
+      const showTrigger = progress >= 0.92;
+      floating.style.transition = "none";
+      floating.classList.toggle("toc-floating-visible", showTrigger);
+      const target = trigger.getBoundingClientRect();
+      const left = morphStartX + (target.left - morphStartX) * eased;
+      const top = morphStartTop + (target.top - morphStartTop) * eased;
+      const width = morphStartWidth + (target.width - morphStartWidth) * eased;
+      const height = morphStartHeight + (target.height - morphStartHeight) * eased;
+
+      morphClone.style.left = `${left}px`;
+      morphClone.style.top = `${top}px`;
+      morphClone.style.width = `${width}px`;
+      morphClone.style.height = `${height}px`;
+      morphClone.style.borderRadius = `${12 * (1 - eased)}px`;
+      morphClone.style.opacity = String(Math.max(0, 1 - Math.max(0, progress - 0.88) / 0.12));
+
+      const rowCount = morphRows.length;
+      morphRows.forEach((row, index) => {
+        const rectHeight = inlineRows[index]?.getBoundingClientRect().height ?? 52;
+        const rowProgress = Math.min(
+          1,
+          Math.max(0, (progress - (index / rowCount) * 0.82) / (0.82 / rowCount)),
+        );
+        row.style.height = `${rectHeight * (1 - rowProgress)}px`;
+        row.style.maxHeight = `${rectHeight * (1 - rowProgress)}px`;
+        row.style.paddingBlock = `${0.875 * (1 - rowProgress)}rem`;
+        row.style.opacity = String(1 - rowProgress);
+        if (rowProgress === 1) row.style.borderBottomColor = "transparent";
+        row.style.overflow = "hidden";
+      });
+
+      floating.style.opacity = showTrigger ? String((progress - 0.92) / 0.08) : "0";
+      floating.style.visibility = showTrigger ? "visible" : "hidden";
+      floating.style.pointerEvents = "none";
+    };
+
+    const updateScrollCollapse = () => {
+      scrollFrame = 0;
+      // On a narrow screen the index itself is taller than the viewport. Keep it
+      // readable in the document until its last row has passed the header.
+      if (reducedMotion.matches || mobileViewport.matches) {
+        removeMorph();
+        floating.style.opacity = "";
+        floating.style.transition = "";
+        floating.style.visibility = "";
+        floating.style.pointerEvents = "";
+        const rect = inline.getBoundingClientRect();
+        setFloating(rect.bottom <= 112);
+        return;
+      }
+
+      const rect = inline.getBoundingClientRect();
+      const endY = rect.bottom + window.scrollY - 112;
+      if (window.scrollY >= endY) {
+        removeMorph();
+        floating.style.opacity = "";
+        floating.style.transition = "";
+        floating.style.visibility = "";
+        floating.style.pointerEvents = "";
+        setFloating(true);
+        return;
+      }
+
+      const startY = endY - Math.max(1, rect.height);
+      if (window.scrollY <= startY) {
+        removeMorph();
+        floating.style.opacity = "";
+        floating.style.transition = "";
+        floating.style.visibility = "";
+        floating.style.pointerEvents = "";
+        setFloating(false);
+        return;
+      }
+
+      if (floating.classList.contains("toc-floating-visible")) setFloating(false);
+      if (!morphClone) createMorph(startY);
+      morphStartY = startY;
+      morphDistance = Math.max(1, endY - startY);
+      updateMorph(window.scrollY);
+    };
+
+    const requestCollapseUpdate = () => {
+      if (scrollFrame !== 0) return;
+      scrollFrame = window.requestAnimationFrame(updateScrollCollapse);
+    };
+
+    for (const group of groupSets[0]) group.addEventListener("toggle", requestCollapseUpdate);
+
+    trigger.addEventListener("click", () => {
+      const willOpen = panel.hidden;
+      panel.hidden = !willOpen;
+      trigger.setAttribute("aria-expanded", String(willOpen));
+      floating.classList.toggle("toc-floating-open", willOpen);
+    });
+
+    floating.querySelectorAll<HTMLAnchorElement>("a.toc-link").forEach((link) => {
+      link.addEventListener("click", () => closeFloating());
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (!panel.hidden && event.target instanceof Node && !floating.contains(event.target)) closeFloating();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !panel.hidden) closeFloating(true);
+    });
+
+    window.addEventListener("scroll", requestCollapseUpdate, { passive: true });
+    window.addEventListener("resize", requestCollapseUpdate, { passive: true });
+    updateScrollCollapse();
+  }
+</script>

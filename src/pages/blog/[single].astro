@@ -37,6 +37,7 @@ const { Content, headings } = await render(post);
 const blogData = {
   author: post.data.author || { name: "Admin" },
   date: post.data.date,
+  lastmod: post.data.lastmod,
 };
 
 const validHeadings = headings.filter((heading) => heading.depth === 2);
