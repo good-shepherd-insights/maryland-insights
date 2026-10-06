@@ -21,7 +21,13 @@ export default defineConfig({
   image: { service: sharp() },
   vite: {
     plugins: [tailwindcss()],
-    server: { allowedHosts: ["mouthwatering-hettie-openairish.ngrok-free.dev"] },
+    server: {
+      allowedHosts: [
+        "mouthwatering-hettie-openairish.ngrok-free.dev",
+        "dev.marylandinsights.com",
+        ".dev.marylandinsights.com",
+      ],
+    },
   },
   integrations: [
     react(),
