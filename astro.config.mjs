@@ -10,6 +10,7 @@ import remarkCollapse from "remark-collapse";
 import remarkToc from "remark-toc";
 import sharp from "sharp";
 import config from "./src/config/config.json";
+import frontman from "@frontman-ai/astro";
 
 // https://astro.build/config
 export default defineConfig({
@@ -30,6 +31,11 @@ export default defineConfig({
     },
   },
   integrations: [
+    frontman({
+      projectRoot: import.meta.dirname,
+      host: "192.168.1.174:4000",
+      clientUrl: "https://app.frontman.sh/frontman.es.js?clientName=astro&host=192.168.1.174:4000",
+    }),
     react(),
     partytown({
       config: {
