@@ -4,6 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import partytown from "@astrojs/partytown";
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
+import basicSsl from "@vitejs/plugin-basic-ssl";
 import AutoImport from "astro-auto-import";
 import { defineConfig } from "astro/config";
 import remarkCollapse from "remark-collapse";
@@ -21,7 +22,15 @@ export default defineConfig({
   adapter: vercel(),
   image: { service: sharp() },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      ...(process.env.FRONTMAN_DEV_SSL ? [basicSsl()] : []),
+      tailwindcss(),
+    ],
+    // NOTE: FRONTMAN_DEV_SSL is a temporary workaround for local dev only.
+    // crypto.randomUUID() (used by the Frontman client) requires a secure context,
+    // so LAN QA over plain HTTP breaks. basic-ssl gives a dev cert to unblock
+    // QA (192.168.1.174:4321). Never set FRONTMAN_DEV_SSL outside local dev;
+    // real TLS termination belongs to the deploy adapter (Vercel/nginx), not here.
     server: {
       allowedHosts: [
         "mouthwatering-hettie-openairish.ngrok-free.dev",
