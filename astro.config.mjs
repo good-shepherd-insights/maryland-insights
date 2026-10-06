@@ -22,11 +22,6 @@ export default defineConfig({
   image: { service: sharp() },
   vite: {
     plugins: [tailwindcss()],
-    // NOTE: no HTTPS dev server here on purpose. Frontman QA needs a secure context
-    // (browser crypto.randomUUID, used by the frontman.es.js client), so LAN QA goes
-    // through a TEMPORARY local nginx TLS proxy on 192.168.1.174:9443 (mkcert cert)
-    // forwarding to this plain-HTTP dev server. Workaround for local dev ONLY -
-    // never a production path; real TLS stays with the deploy adapter (Vercel/nginx).
     server: {
       allowedHosts: [
         "mouthwatering-hettie-openairish.ngrok-free.dev",
@@ -38,12 +33,7 @@ export default defineConfig({
   integrations: [
     frontman({
       projectRoot: import.meta.dirname,
-      host: "192.168.1.174:4000",
-      // Serve the client bundle same-origin (public/frontman.es.js). The hosted
-      // app.frontman.sh bundle cross-origin-errors when the page is on another
-      // origin; same-origin keeps the QA page self-contained.
-      clientUrl: "https://192.168.1.174:9443/frontman.es.js?clientName=astro&host=192.168.1.174:4000",
-      clientCssUrl: "https://192.168.1.174:9443/frontman.css",
+      host: process.env.FRONTMAN_HOST || "api.frontman.sh",
     }),
     react(),
     partytown({
