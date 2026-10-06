@@ -17,9 +17,9 @@ faqs_list:
   - question: "Does my Maryland business need a physical location to benefit from Local SEO?"
     answer: "Not necessarily. Service-area businesses such as contractors, cleaners, and mobile service providers can rank prominently in local search without a storefront by properly configuring service area settings in their Google Business Profile and building location-specific content across their website. We work with both brick-and-mortar and service-area businesses across Maryland."
   - question: "Why does my Maryland business show up inconsistently across Google, Yelp, and other directories?"
-    answer: "Inconsistent listings: where your business name, address, or phone number appears differently across platforms: are one of the most common causes of suppressed local rankings. Search engines use these signals to verify your business is legitimate and trustworthy. We audit and correct these inconsistencies across all major platforms and Maryland-specific directories as part of our citation building process."
+    answer: "Inconsistent listings — where your business name, address, or phone number appears differently across platforms — are one of the most common causes of suppressed local rankings. Search engines use these signals to verify your business is legitimate and trustworthy. We audit and correct these inconsistencies across all major platforms and Maryland-specific directories as part of our citation building process."
   - question: "Can Local SEO help me rank in multiple Maryland cities or zip codes?"
-    answer: "Yes. Through a combination of service area pages, localized content, and proper Google Business Profile configuration, we can help your Maryland business build visibility across multiple cities, neighborhoods, and zip codes: not just the one where your office is located."
+    answer: "Yes. Through a combination of service area pages, localized content, and proper Google Business Profile configuration, we can help your Maryland business build visibility across multiple cities, neighborhoods, and zip codes — not just the one where your office is located."
 blocks:
   - type: leadCapture
     eyebrow: "Local SEO"
@@ -59,6 +59,9 @@ blocks:
     role: "SEO Strategy Team"
     datePublished: "2026-04-08"
     dateModified: "2026-10-04"
+    socialLinks:
+      - platform: "linkedin"
+        url: "https://www.linkedin.com/company/maryland-insights/"
     reviewer:
       name: "Editorial Review"
       role: "Maryland Insights Editorial"
