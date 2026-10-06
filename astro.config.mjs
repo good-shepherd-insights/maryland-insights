@@ -34,6 +34,12 @@ export default defineConfig({
     frontman({
       projectRoot: import.meta.dirname,
       host: process.env.FRONTMAN_HOST || "frontman-dev.marylandinsights.com",
+      // TLS terminates at the Cloudflare tunnel; the dev server itself is plain
+      // HTTP on 127.0.0.1:4400, so the client would otherwise derive a mixed-
+      // content entrypoint from the request origin. Pin the public https URL.
+      entrypointUrl: "https://dev.marylandinsights.com/frontman/",
+      clientUrl: "https://frontman-dev.marylandinsights.com/frontman-client/frontman.es.js?clientName=astro&host=frontman-dev.marylandinsights.com",
+      clientCssUrl: "https://frontman-dev.marylandinsights.com/frontman-client/frontman.css",
     }),
     react(),
     partytown({

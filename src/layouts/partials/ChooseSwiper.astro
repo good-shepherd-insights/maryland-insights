@@ -92,18 +92,18 @@ const tabs = agents?.map((agent: any, i: number) => ({
             const points = agent.points ?? [];
             const last = i === agents.length - 1;
             return (
-              <div id={`ds-panel-${panelId}`} data-ds-panel={panelId} class="ds-panel lg:sticky lg:top-32 scroll-mt-36">
+              <div id={`ds-panel-${panelId}`} data-ds-panel={panelId} class="ds-panel sticky">
                 <div class="ds-card flex flex-col border border-dark bg-body lg:grid lg:grid-cols-[minmax(0,28%)_1fr] lg:items-stretch lg:min-h-[520px] lg:pl-[30px] lg:pr-[30px] lg:py-7 xl:grid-cols-[minmax(0,34%)_1fr] xl:pl-[40px] xl:pr-[40px]">
                   <!-- Visual: vector centered on mobile/MD, full-size on desktop -->
                   <div class="flex flex-col items-center gap-5 px-5 pt-7 pb-6 sm:px-8 sm:pt-10 sm:pb-8">
                     {agent.image && (
-                      <figure class="service-art-figure">
+                      <figure class="service-art-figure w-full max-w-full overflow-hidden">
                         <ImageMod
                           src={agent.image}
                           alt={agent.label}
                           width={420}
                           height={320}
-                          class="h-auto w-auto max-w-[180px] object-contain self-center sm:max-w-[240px] md:max-w-[280px] lg:max-w-[360px]"
+                          class="h-auto w-full max-w-[180px] object-contain self-center sm:max-w-[240px] md:max-w-[280px] lg:max-w-[240px] xl:max-w-[360px]"
                           format={agent.image.endsWith(".svg") ? "svg" : "webp"}
                         />
                       </figure>
@@ -200,6 +200,23 @@ const tabs = agents?.map((agent: any, i: number) => ({
   /* heading text can live in inline descendants — keep it display font */
   .ds-scope :is(h1, h2, h3) :is(span, strong, em, a, mark) {
     font-family: var(--ds-font-display);
+  }
+
+  .ds-panel {
+    top: 6rem;
+    scroll-margin-top: 7rem;
+  }
+  @media (min-width: 768px) {
+    .ds-panel {
+      top: 7rem;
+      scroll-margin-top: 8rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .ds-panel {
+      top: 8rem;
+      scroll-margin-top: 9rem;
+    }
   }
 
   /* lg+: cards are scaled down only if they cannot fit the viewport while
@@ -327,7 +344,11 @@ const tabs = agents?.map((agent: any, i: number) => ({
       });
     };
 
-    const STICK_OFFSET = 146; // sticky line incl. breathing room (lg:top-32 = 128 + 18); rail, cards and fit math share it
+    const getStickOffset = () => {
+      if (window.matchMedia("(min-width: 1024px)").matches) return 146;
+      if (window.matchMedia("(min-width: 768px)").matches) return 128;
+      return 112;
+    }; // sticky line incl. breathing room; keep CSS top-* and scroll math aligned
 
     // Fit-to-viewport (lg+): scale cards down only when they cannot fit below
     // the pinned line. offsetHeight is the unscaled layout height (transform
@@ -338,7 +359,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
       // Clear every width-compensating scale before measuring natural heights.
       cards.forEach((card) => card.style.removeProperty("--ds-scale"));
       if (!lg) return;
-      const avail = window.innerHeight - STICK_OFFSET - 8;
+      const avail = window.innerHeight - getStickOffset() - 8;
       const scales = cards.map((card) => Math.min(1, avail / card.offsetHeight));
       cards.forEach((card, index) => {
         if (scales[index] < 1) card.style.setProperty("--ds-scale", String(scales[index]));
@@ -360,7 +381,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
     let ticking = false;
     const updateActive = () => {
       ticking = false;
-      const line = STICK_OFFSET; // exact stick line: a stuck panel has top <= STICK_OFFSET
+      const line = getStickOffset(); // exact stick line: a stuck panel has top <= this value
       let current = 0;
       panels.forEach((p, idx) => {
         if (p.getBoundingClientRect().top <= line) current = idx;
@@ -402,7 +423,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
             top:
               target.getBoundingClientRect().top +
               window.scrollY -
-              STICK_OFFSET,
+              getStickOffset(),
             behavior: "smooth",
           });
         }
