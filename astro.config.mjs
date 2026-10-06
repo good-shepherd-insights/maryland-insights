@@ -33,7 +33,7 @@ export default defineConfig({
   integrations: [
     frontman({
       projectRoot: import.meta.dirname,
-      host: process.env.FRONTMAN_HOST || "api.frontman.sh",
+      host: process.env.FRONTMAN_HOST || "frontman-dev.marylandinsights.com",
     }),
     react(),
     partytown({
