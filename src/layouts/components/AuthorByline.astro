@@ -86,6 +86,7 @@ const socialIconKey = (platform: string): string | undefined => {
 };
 
 const hasSocialLinks = socialLinks.length > 0;
+const linkedInUrl = socialLinks.find((l) => socialIconKey(l.platform) === "linkedin")?.url;
 const reviewerName = reviewer?.name;
 const reviewerLabelText = reviewerName
   ? `Reviewed by ${reviewerName}${reviewer?.role ? `, ${reviewer.role}` : ""}`
@@ -276,7 +277,18 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
             Written by
           </p>
           <p class="mt-1.5 break-words font-secondary text-base font-bold leading-snug text-text-dark">
-            {name}
+            {linkedInUrl ? (
+              <a
+                href={linkedInUrl}
+                target="_blank"
+                rel="me noopener noreferrer"
+                class="transition-colors hover:text-primary"
+              >
+                {name}
+              </a>
+            ) : (
+              name
+            )}
             {
               role && (
                 <span class="font-primary text-sm font-medium text-text-light">
@@ -286,6 +298,40 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
               )
             }
           </p>
+          {
+            hasSocialLinks && (
+              <ul class="mt-2 flex list-none flex-wrap items-center gap-2">
+                {socialLinks.map((link) => {
+                  const iconKey = socialIconKey(link.platform);
+                  return (
+                    <li class="min-w-0 list-none">
+                      {iconKey && socialIconPaths[iconKey] && (
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="me noopener noreferrer"
+                          aria-label={link.platform}
+                          class="grid size-7 place-items-center rounded-lg border border-border bg-light text-text transition-colors duration-200 hover:border-primary hover:text-primary"
+                        >
+                          <svg
+                            class="h-3.5 w-3.5 shrink-0"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                            set:html={socialIconPaths[iconKey]}
+                          />
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )
+          }
           {
             reviewerLabelText && (
               <p class="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-text">
