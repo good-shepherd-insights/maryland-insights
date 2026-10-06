@@ -337,7 +337,7 @@ blocks:
   - type: aiSearchSection
     eyebrow: "AI search"
     title: "How Maryland businesses show up in AI answers"
-    intro: "More customers get their answer before they click a result. Google summarizes the page, and assistants recommend businesses directly. We structure your business data so AI engines can find, trust, and cite it: schema on every page, question-based content built from what your Maryland customers actually ask, and citations to your local authority sources (county EDOs, Maryland Secretary of State, BBB) so the answer engines have something to point at when a customer asks for a plumber near Towson in business since 2008. We embed those signals into the page, not as an afterthought."
+    intro: "More customers get their answer before they click a result. Google summarizes the page, and assistants recommend businesses directly. We structure your business data so AI engines can find, trust, and cite it: schema on every page, question-based content built from what your Maryland customers actually ask, and citations to your local authority sources (county EDOs, Maryland SDAT (State Department of Assessments and Taxation), BBB) so the answer engines have something to point at when a customer asks for a plumber near Towson in business since 2008. We embed those signals into the page, not as an afterthought."
     cards:
       - title: "AEO: answer-engine optimization"
         body: "Pages are structured so a direct answer can be extracted: what the business does, where it works, and what a customer gets are stated plainly near the top, before supporting detail."
@@ -371,7 +371,7 @@ blocks:
             url: "https://opendata.maryland.gov"
             type: "State data"
           - name: "Maryland Department of Planning"
-            url: "https://dpd.maryland.gov"
+            url: "https://planning.maryland.gov"
             type: "State planning"
           - name: "U.S. Census Bureau data"
             url: "https://data.census.gov"
