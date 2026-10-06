@@ -39,7 +39,11 @@ export default defineConfig({
     frontman({
       projectRoot: import.meta.dirname,
       host: "192.168.1.174:4000",
-      clientUrl: "https://app.frontman.sh/frontman.es.js?clientName=astro&host=192.168.1.174:4000",
+      // Serve the client bundle same-origin (public/frontman.es.js). The hosted
+      // app.frontman.sh bundle cross-origin-errors when the page is on another
+      // origin; same-origin keeps the QA page self-contained.
+      clientUrl: "https://192.168.1.174:9443/frontman.es.js?clientName=astro&host=192.168.1.174:4000",
+      clientCssUrl: "https://192.168.1.174:9443/frontman.css",
     }),
     react(),
     partytown({
