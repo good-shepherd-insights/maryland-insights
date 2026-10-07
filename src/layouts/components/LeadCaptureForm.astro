@@ -253,7 +253,10 @@ const auditPlatformIcons = [
                       >
                         <li class="lookup-searching flex items-center gap-3 px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
                           <span class="h-4 w-4 shrink-0 rounded-full border-2 border-primary/25 border-t-primary motion-safe:animate-spin" aria-hidden="true"></span>
-                          Searching businesses...
+                          Searching Maryland Businesses
+                        </li>
+                        <li class="lookup-search-error px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
+                          Search is unavailable. Please try again.
                         </li>
                       </ul>
                     ) : null}
@@ -418,12 +421,14 @@ const auditPlatformIcons = [
     const inputEl = form.querySelector<HTMLInputElement>("[data-lookup-input]");
     const listboxEl = form.querySelector<HTMLUListElement>(".lookup-listbox");
     const searchingEl = form.querySelector<HTMLLIElement>(".lookup-searching");
+    const searchErrorEl = form.querySelector<HTMLLIElement>(".lookup-search-error");
     const sectionEl = form.closest("section");
     const profileEl = sectionEl?.querySelector<HTMLElement>(".lookup-profile") ?? null;
-    if (!inputEl || !listboxEl || !searchingEl || !profileEl) return;
+    if (!inputEl || !listboxEl || !searchingEl || !searchErrorEl || !profileEl) return;
     const input: HTMLInputElement = inputEl;
     const listbox: HTMLUListElement = listboxEl;
     const searching: HTMLLIElement = searchingEl;
+    const searchError: HTMLLIElement = searchErrorEl;
     const profile: HTMLElement = profileEl;
     const profileName = profile.querySelector<HTMLElement>(".lookup-profile-name");
     const profileRows = profile.querySelector<HTMLElement>(".lookup-profile-rows");
@@ -742,6 +747,18 @@ const auditPlatformIcons = [
       input.removeAttribute("aria-activedescendant");
     }
 
+    function showSearchError(rateLimited: boolean) {
+      isOpen = false;
+      activeIndex = -1;
+      searchError.textContent = rateLimited
+        ? "Too many searches. Please try again in a few minutes."
+        : "Search is unavailable. Please try again.";
+      listbox.replaceChildren(searchError);
+      listbox.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+      input.removeAttribute("aria-activedescendant");
+    }
+
     async function queryAutocomplete(rawQuery: string, selectSingleMatch = false) {
       controller?.abort();
       const requestController = new AbortController();
@@ -756,11 +773,15 @@ const auditPlatformIcons = [
         });
         if (controller !== requestController || input.value.trim() !== rawQuery) return;
         if (!res.ok) {
-          closeList();
+          showSearchError(res.status === 429);
           return;
         }
         const data: unknown = await res.json();
-        if (!Array.isArray(data) || input.value.trim() !== rawQuery) return;
+        if (input.value.trim() !== rawQuery) return;
+        if (!Array.isArray(data)) {
+          showSearchError(false);
+          return;
+        }
         items = data
           .filter((entry): entry is Record<string, unknown> => !!entry && typeof entry === "object")
           .map((entry) => ({
@@ -780,7 +801,7 @@ const auditPlatformIcons = [
           openList();
         }
       } catch {
-        // Aborted or network failure: stay silent, manual typing remains available.
+        if (controller === requestController && !requestController.signal.aborted) showSearchError(false);
       } finally {
         if (controller === requestController && listbox.contains(searching)) closeList();
         if (selectSingleMatch) finishInitialLookup();
