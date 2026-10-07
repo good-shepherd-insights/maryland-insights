@@ -98,15 +98,15 @@ const narrative: { label: string; body?: string }[] = [
           outcomes.length > 0 && (
             <div class="mt-12">
               <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Outcome</p>
-              <ul class="mt-4 grid border-t border-border sm:grid-cols-2 lg:grid-cols-3">
+              <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {outcomes.map((outcome) => (
-                  <li class="min-w-0 border-b border-border py-6 sm:pr-8">
-                    <p class="font-secondary text-4xl font-normal tracking-[-0.04em] text-balance tabular-nums text-text-dark">
+                  <li class="min-w-0 rounded-xl border border-border bg-body p-6 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-8">
+                    <p class="font-secondary text-5xl font-normal tracking-[-0.05em] text-balance tabular-nums text-primary sm:text-6xl lg:text-7xl">
                       {outcome.value}
                     </p>
-                    <p class="mt-2 max-w-[34ch] break-words text-sm font-semibold text-text-dark">{outcome.metric}</p>
+                    <p class="mt-4 max-w-[30ch] break-words text-base font-semibold leading-snug text-text-dark sm:text-lg">{outcome.metric}</p>
                     {outcome.source && (
-                      <p class="mt-1 max-w-[40ch] break-words text-xs leading-relaxed text-text-light">{outcome.source}</p>
+                      <p class="mt-3 max-w-[42ch] break-words text-sm leading-relaxed text-text-light">{outcome.source}</p>
                     )}
                   </li>
                 ))}

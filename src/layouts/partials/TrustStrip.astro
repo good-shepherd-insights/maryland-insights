@@ -16,9 +16,9 @@ const emblem: Emblem[] = [
 ---
 
 <section class="dts-scope" aria-label="Maryland government partners">
-  <div class="mx-auto w-full max-w-[1320px] px-4 py-10 md:px-6 md:py-12">
-    <!-- STATIC strip: paired accent dots frame the responsive logo row -->
-    <div class="dts-strip relative grid grid-cols-3 items-center gap-x-3 gap-y-8 py-9 md:flex md:flex-wrap md:justify-center md:gap-x-0 md:py-10 lg:flex-nowrap">
+  <div class="mx-auto w-full max-w-[1320px] px-4 py-5 md:px-6 md:py-6">
+    <!-- STATIC strip: responsive logo row -->
+    <div class="dts-strip relative grid grid-cols-3 items-center gap-x-3 gap-y-5 py-4 md:flex md:flex-wrap md:justify-center md:gap-x-0 md:py-5 lg:flex-nowrap">
       {
         emblem.map((e) => (
           <a
@@ -33,7 +33,7 @@ const emblem: Emblem[] = [
               src={e.file}
               alt={`${e.name} logo`}
               loading="lazy"
-              style={`--dts-logo-height: ${Math.round(e.h * 1.35)}px; --dts-logo-height-md: ${Math.round(e.h * 1.5)}px;`}
+              style={`--dts-logo-height: ${Math.round(e.h * 1.65)}px; --dts-logo-height-md: ${Math.round(e.h * 1.9)}px;`}
               class="dts-logo w-auto object-contain"
             />
           </a>
@@ -51,25 +51,6 @@ const emblem: Emblem[] = [
   }
   .dts-item {
     transition: opacity 0.25s ease;
-  }
-  .dts-strip::before,
-  .dts-strip::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #C8102E;
-    box-shadow: 0 0 0 4px color-mix(in srgb, #C8102E 24%, transparent);
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
-  .dts-strip::before {
-    left: 4px;
-  }
-  .dts-strip::after {
-    right: 4px;
   }
   .dts-logo {
     width: auto;
