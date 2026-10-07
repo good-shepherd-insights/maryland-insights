@@ -41,20 +41,79 @@ const headingId = `resources-${slugify(title)}`;
 const GroupHeading = headingLevel === "h2" ? "h3" : "h4";
 const Heading = headingLevel;
 
+const listingPlatformRenames = new Map([
+  ["Google Business Profile Help", "Google Business Profile"],
+  ["Bing Places for Business", "Bing"],
+  ["Yelp for Business", "Yelp"],
+]);
+
+const governmentDataRenames = new Map([
+  ["Maryland Open Data Portal", "Maryland Open Data"],
+  ["U.S. Census Bureau data", "U.S. Census Bureau"],
+]);
+
+const governmentDataAdditions: ResourceItem[] = [
+  { name: "Prince George's County", url: "https://data.princegeorgescountymd.gov/" },
+  { name: "Montgomery County", url: "https://data.montgomerycountymd.gov/" },
+  { name: "Baltimore City", url: "https://data.baltimorecity.gov/" },
+  { name: "Baltimore County", url: "https://opendata.baltimorecountymd.gov/" },
+  { name: "Howard County", url: "https://opendata.howardcountymd.gov/" },
+  { name: "Anne Arundel County", url: "https://opendata.aacounty.org/" },
+  { name: "Frederick County GIS", url: "https://gis-fcgmd.opendata.arcgis.com/" },
+  { name: "Maryland iMap", url: "https://data.imap.maryland.gov/" },
+  { name: "MDOT", url: "https://data-maryland.opendata.arcgis.com/pages/mdot" },
+  { name: "Montgomery County GIS", url: "https://www.montgomerycountymd.gov/geographic-information-systems/gis-data" },
+];
+
+const listingPlatformAdditions: ResourceItem[] = [
+  { name: "Facebook", url: "https://www.facebook.com/recommendations" },
+  { name: "Angi", url: "https://www.angi.com" },
+  { name: "Better Business Bureau", url: "https://www.bbb.org" },
+  { name: "Nextdoor", url: "https://nextdoor.com" },
+  { name: "Trustpilot", url: "https://www.trustpilot.com" },
+  { name: "ConsumerAffairs", url: "https://www.consumeraffairs.com" },
+];
+
 // Defensive: drop malformed groups/items so the section can never render empty anchors or dead links.
 const shown = groups
   .filter((group) => group && typeof group.category === "string" && group.category.trim() !== "")
-  .map((group) => ({
-    ...group,
-    items: (group.items ?? []).filter(
+  .map((group) => {
+    const items = (group.items ?? []).filter(
       (item) =>
         item &&
         typeof item.name === "string" &&
         item.name.trim() !== "" &&
         typeof item.url === "string" &&
         item.url.trim() !== "",
-    ),
-  }))
+    );
+
+    if (group.category === "Government data") {
+      for (let index = items.length - 1; index >= 0; index -= 1) {
+        if (items[index].name === "Maryland Department of Planning") {
+          items.splice(index, 1);
+          continue;
+        }
+        items[index].name = governmentDataRenames.get(items[index].name) ?? items[index].name;
+      }
+
+      const existing = new Set(items.map((item) => item.name));
+      items.push(...governmentDataAdditions.filter((item) => !existing.has(item.name)));
+    }
+
+    if (group.category === "Listing platforms") {
+      items.forEach((item) => {
+        item.name = listingPlatformRenames.get(item.name) ?? item.name;
+      });
+
+      const existing = new Set(items.map((item) => item.name));
+      items.push(...listingPlatformAdditions.filter((item) => !existing.has(item.name)));
+    }
+
+    return {
+      ...group,
+      items,
+    };
+  })
   .filter((group) => group.items.length > 0);
 
 const count = shown.length;
@@ -151,11 +210,6 @@ const shellClass =
                             {!isInternal(item.url) && hostOf(item.url) !== "" && (
                               <span class="mt-0.5 block min-w-0 text-xs text-text-light break-words [overflow-wrap:anywhere]">
                                 {hostOf(item.url)}
-                              </span>
-                            )}
-                            {item.type && (
-                              <span class="mt-1.5 inline-block text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-                                {item.type}
                               </span>
                             )}
                           </span>
