@@ -250,7 +250,12 @@ const auditPlatformIcons = [
                         aria-label="Business suggestions"
                         hidden
                         class="lookup-listbox absolute left-0 right-0 top-full z-20 mt-1 max-h-56 overflow-y-auto rounded-none border border-dark bg-body shadow-[0_12px_28px_-18px_rgba(18,18,18,0.3)]"
-                      ></ul>
+                      >
+                        <li class="lookup-searching flex items-center gap-3 px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
+                          <span class="h-4 w-4 shrink-0 rounded-full border-2 border-primary/25 border-t-primary motion-safe:animate-spin" aria-hidden="true"></span>
+                          Searching businesses...
+                        </li>
+                      </ul>
                     ) : null}
                   </div>
                 );
@@ -412,11 +417,13 @@ const auditPlatformIcons = [
   document.querySelectorAll<HTMLFormElement>(".lead-capture-form[data-lookup-field]").forEach((form) => {
     const inputEl = form.querySelector<HTMLInputElement>("[data-lookup-input]");
     const listboxEl = form.querySelector<HTMLUListElement>(".lookup-listbox");
+    const searchingEl = form.querySelector<HTMLLIElement>(".lookup-searching");
     const sectionEl = form.closest("section");
     const profileEl = sectionEl?.querySelector<HTMLElement>(".lookup-profile") ?? null;
-    if (!inputEl || !listboxEl || !profileEl) return;
+    if (!inputEl || !listboxEl || !searchingEl || !profileEl) return;
     const input: HTMLInputElement = inputEl;
     const listbox: HTMLUListElement = listboxEl;
+    const searching: HTMLLIElement = searchingEl;
     const profile: HTMLElement = profileEl;
     const profileName = profile.querySelector<HTMLElement>(".lookup-profile-name");
     const profileRows = profile.querySelector<HTMLElement>(".lookup-profile-rows");
@@ -726,16 +733,28 @@ const auditPlatformIcons = [
       setActive(-1);
     }
 
+    function showSearching() {
+      isOpen = false;
+      activeIndex = -1;
+      listbox.replaceChildren(searching);
+      listbox.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+      input.removeAttribute("aria-activedescendant");
+    }
+
     async function queryAutocomplete(rawQuery: string, selectSingleMatch = false) {
       controller?.abort();
-      controller = new AbortController();
+      const requestController = new AbortController();
+      controller = requestController;
+      showSearching();
       try {
         const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ mode: "autocomplete", query: rawQuery }),
-          signal: controller.signal,
+          signal: requestController.signal,
         });
+        if (controller !== requestController || input.value.trim() !== rawQuery) return;
         if (!res.ok) {
           closeList();
           return;
@@ -763,6 +782,7 @@ const auditPlatformIcons = [
       } catch {
         // Aborted or network failure: stay silent, manual typing remains available.
       } finally {
+        if (controller === requestController && listbox.contains(searching)) closeList();
         if (selectSingleMatch) finishInitialLookup();
       }
     }
@@ -939,16 +959,18 @@ const auditPlatformIcons = [
 
     input.addEventListener("input", () => {
       window.clearTimeout(debounceTimer);
+      controller?.abort();
+      controller = null;
       resetTitle();
       if (!profile.hidden) hideProfile();
       const query = input.value.trim();
       if (query.length < minChars) {
-        controller?.abort();
         concealDependentFields();
         closeList();
         return;
       }
-      debounceTimer = window.setTimeout(() => void queryAutocomplete(query), 100);
+      showSearching();
+      debounceTimer = window.setTimeout(() => void queryAutocomplete(query), 250);
     });
 
     changeBusinessBtn?.addEventListener("click", async () => {
