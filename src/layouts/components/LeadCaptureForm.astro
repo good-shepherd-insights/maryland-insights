@@ -990,7 +990,7 @@ const auditPlatformIcons = [
         closeList();
         return;
       }
-      showSearching();
+      closeList();
       debounceTimer = window.setTimeout(() => void queryAutocomplete(query), 250);
     });
 
