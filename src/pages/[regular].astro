@@ -6,6 +6,7 @@ import Base from "@/layouts/Base.astro";
 import { getSinglePage } from "@/lib/contentParser.astro";
 import { plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import type { Article } from "schema-dts";
 import { render } from "astro:content";
@@ -56,5 +57,6 @@ const pageSchema: Article = {
     </div>
   </section>
 
+  <Faqs prefix="regular-faq" />
   <CallToAction />
 </Base>

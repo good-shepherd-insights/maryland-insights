@@ -9,6 +9,7 @@ import AboutNarrative from "@/partials/AboutNarrative.astro";
 import CallToAction from "@/partials/CallToAction.astro";
 import ChooseSwiper from "@/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
@@ -85,5 +86,6 @@ if (pageIndex.data.draft) return Astro.redirect("/404");
   }
 
   <Testimonial />
+  <Faqs prefix="about-faq" />
   <CallToAction />
 </Base>
