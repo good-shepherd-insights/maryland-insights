@@ -35,6 +35,8 @@ type Props = {
   fields: Field[];
   submitLabel: string;
   formAction: string;
+  /** Page service slug. The lead API maps it onto the audit service enum. */
+  service?: string;
   disclaimer?: string;
   anchor?: string;
   headingLevel?: "h1" | "h2";
@@ -50,6 +52,7 @@ const {
   fields,
   submitLabel,
   formAction,
+  service,
   disclaimer,
   anchor,
   headingLevel = "h2",
@@ -148,10 +151,21 @@ const auditPlatformIcons = [
         <div class="lead-form-surface border border-border border-t-dark bg-body p-6 pb-7 sm:p-8">
           {
             leadMagnetLabel && (
-              <p class="lead-magnet-label mb-7 inline-flex items-center gap-3 border border-dark bg-secondary px-4 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-dark">
-                <span class="h-px w-6 shrink-0 bg-dark" aria-hidden="true"></span>
-                {leadMagnetLabel}
-              </p>
+              <div class="lead-magnet-row mb-7 flex flex-wrap items-center gap-3">
+                <p class="lead-magnet-label inline-flex items-center gap-3 border border-dark bg-secondary px-4 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-dark">
+                  <span class="h-px w-6 shrink-0 bg-dark" aria-hidden="true"></span>
+                  {leadMagnetLabel}
+                </p>
+                <button type="button" class="lead-page-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label="Share">
+                  <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 15V3" />
+                    <path d="M8.25 6.75 12 3l3.75 3.75" />
+                    <path d="M8 10.5H6.75A1.75 1.75 0 0 0 5 12.25v7A1.75 1.75 0 0 0 6.75 21h10.5A1.75 1.75 0 0 0 19 19.25v-7a1.75 1.75 0 0 0-1.75-1.75H16" />
+                  </svg>
+                </button>
+                <span class="lead-page-share-status text-sm text-text-light" role="status" hidden>Link copied</span>
+                <input class="lead-page-share-url basis-full bg-transparent text-xs text-text" type="text" readonly hidden />
+              </div>
             )
           }
 
@@ -186,7 +200,7 @@ const auditPlatformIcons = [
                 const isLookupDependent = Boolean(lookupBusinessName && !isLookupInput && field.type === "email");
                 return (
                   <div
-                    class:list={["min-w-0", { relative: isLookupInput, "lookup-dependent": isLookupDependent }]}
+                    class:list={["min-w-0", { "lookup-dependent": isLookupDependent }]}
                     data-lookup-dependent={isLookupDependent ? true : undefined}
                     data-lookup-business-group={isLookupInput ? true : undefined}
                     hidden={isLookupDependent || undefined}
@@ -211,32 +225,47 @@ const auditPlatformIcons = [
                         rows={3}
                         class="w-full min-w-0 resize-y rounded-none border border-border bg-light/40 px-4 py-3.5 text-base text-text-dark placeholder:text-text-light transition-colors hover:border-text-light focus:border-primary focus:ring-1 focus:ring-primary/20"
                       />
+                    ) : isLookupInput ? (
+                      <div class="relative">
+                        <input
+                          id={fieldId(field.name)}
+                          name={field.name}
+                          type={field.type}
+                          placeholder={lookup?.placeholder || field.placeholder}
+                          required={field.required}
+                          autocomplete="off"
+                          role="combobox"
+                          aria-expanded="false"
+                          aria-autocomplete="list"
+                          aria-controls={listboxId}
+                          data-lookup-input
+                          class="w-full min-w-0 rounded-none border border-border bg-light/40 px-4 py-3.5 text-base text-text-dark placeholder:text-text-light transition-colors hover:border-text-light focus:border-primary focus:ring-1 focus:ring-primary/20"
+                        />
+                        <ul
+                          id={listboxId}
+                          role="listbox"
+                          aria-label="Business suggestions"
+                          hidden
+                          class="lookup-listbox absolute left-0 right-0 top-full z-20 mt-1 max-h-56 overflow-y-auto rounded-none border border-dark bg-body shadow-[0_12px_28px_-18px_rgba(18,18,18,0.3)]"
+                        >
+                          <li class="lookup-searching flex items-center gap-3 px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
+                            <span class="h-4 w-4 shrink-0 rounded-full border-2 border-primary/25 border-t-primary motion-safe:animate-spin" aria-hidden="true"></span>
+                            Searching Maryland Businesses
+                          </li>
+                          <li class="lookup-search-error px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
+                            Search is unavailable. Please try again.
+                          </li>
+                        </ul>
+                      </div>
                     ) : (
                       <input
                         id={fieldId(field.name)}
                         name={field.name}
                         type={field.type}
-                        placeholder={isLookupInput && lookup?.placeholder ? lookup.placeholder : field.placeholder}
+                        placeholder={field.placeholder}
                         required={field.required}
                         disabled={isLookupDependent || undefined}
-                        autocomplete={
-                          isLookupInput
-                            ? "off"
-                            : field.type === "email"
-                              ? "email"
-                              : field.type === "tel"
-                                ? "tel"
-                                : "on"
-                        }
-                        {...(isLookupInput
-                          ? {
-                              role: "combobox",
-                              "aria-expanded": "false",
-                              "aria-autocomplete": "list",
-                              "aria-controls": listboxId,
-                              "data-lookup-input": true,
-                            }
-                          : {})}
+                        autocomplete={field.type === "email" ? "email" : field.type === "tel" ? "tel" : "on"}
                         class:list={[
                           "w-full min-w-0 rounded-none border border-border px-4 py-3.5 text-base text-text-dark placeholder:text-text-light transition-colors hover:border-text-light focus:border-primary focus:ring-1 focus:ring-primary/20",
                           isLookupDependent ? "bg-white" : "bg-light/40",
@@ -244,21 +273,7 @@ const auditPlatformIcons = [
                       />
                     )}
                     {isLookupInput ? (
-                      <ul
-                        id={listboxId}
-                        role="listbox"
-                        aria-label="Business suggestions"
-                        hidden
-                        class="lookup-listbox absolute left-0 right-0 top-full z-20 mt-1 max-h-56 overflow-y-auto rounded-none border border-dark bg-body shadow-[0_12px_28px_-18px_rgba(18,18,18,0.3)]"
-                      >
-                        <li class="lookup-searching flex items-center gap-3 px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
-                          <span class="h-4 w-4 shrink-0 rounded-full border-2 border-primary/25 border-t-primary motion-safe:animate-spin" aria-hidden="true"></span>
-                          Searching Maryland Businesses
-                        </li>
-                        <li class="lookup-search-error px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
-                          Search is unavailable. Please try again.
-                        </li>
-                      </ul>
+                      <p class="lookup-not-listed mt-3 text-sm font-semibold text-[#1B83E2]" hidden>Business not listed?</p>
                     ) : null}
                   </div>
                 );
@@ -271,6 +286,7 @@ const auditPlatformIcons = [
             </div>
 
             {lookup && <input type="hidden" name="googlePlaceId" class="lookup-placeid" />}
+            {service ? <input type="hidden" name="service" value={service} /> : null}
 
             <button
               type="submit"
@@ -279,6 +295,7 @@ const auditPlatformIcons = [
             >
               {submitLabel}
             </button>
+            <button type="button" class="lookup-wrong-listing border-0 bg-transparent p-0 text-left text-sm font-semibold text-[#1B83E2] transition hover:underline" hidden>Not your business listing?</button>
 
             <p aria-live="polite" class="lead-capture-status mt-3 text-sm font-semibold text-primary" hidden></p>
 
@@ -338,27 +355,44 @@ const auditPlatformIcons = [
             <div class="lookup-profile mt-10" aria-live="polite" hidden>
               <div class="lookup-profile-surface min-w-0 border-y border-dark bg-body py-6 sm:py-7">
                 <div class="lookup-profile-heading flex flex-col gap-4 px-5 sm:flex-row sm:items-start sm:justify-between sm:px-7">
-                  <div class="min-w-0">
-                    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Google Business Profile</p>
-                    <p class="lookup-profile-name mt-2 min-w-0 break-words font-secondary text-h4 font-bold leading-tight text-text-dark"></p>
+                  <div class="flex min-w-0 items-center gap-4">
+                    <span class="lookup-profile-logo-slot relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden border border-border bg-light" hidden>
+                      <span class="lookup-profile-logo-skeleton absolute inset-0" hidden aria-hidden="true"></span>
+                      <img class="lookup-profile-logo relative max-h-full max-w-full" alt="" referrerpolicy="no-referrer" hidden />
+                    </span>
+                    <div class="min-w-0">
+                      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Google Business Profile</p>
+                      <a class="lookup-profile-name mt-2 block min-w-0 break-words font-secondary text-h4 font-bold leading-tight text-text-dark underline decoration-border underline-offset-4 transition hover:text-primary hover:decoration-primary" target="_blank" rel="noopener noreferrer nofollow"></a>
+                    </div>
                   </div>
-                  <p class="lookup-profile-rating flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 border-t border-border pt-3 sm:border-t-0 sm:pt-0" hidden>
-                    <svg
-                      class="h-4 w-4 shrink-0 text-secondary"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4 4.2 13.4l.7-4.3-3.1-3 4.3-.6z" />
-                    </svg>
-                    <span class="lookup-profile-score text-sm font-bold tabular-nums text-text-dark"></span>
-                    <span class="lookup-profile-reviews text-sm text-text"></span>
-                  </p>
+                  <div class="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1 border-t border-border pt-3 sm:border-t-0 sm:pt-0">
+                    <p class="lookup-profile-rating flex items-center gap-x-2" hidden>
+                      <svg
+                        class="h-4 w-4 shrink-0 text-secondary"
+                        viewBox="0 0 16 16"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path d="M8 1.6l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.4 4.2 13.4l.7-4.3-3.1-3 4.3-.6z" />
+                      </svg>
+                      <span class="lookup-profile-score text-sm font-bold tabular-nums text-text-dark"></span>
+                      <a class="lookup-profile-reviews text-sm text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" target="_blank" rel="noopener noreferrer nofollow"></a>
+                    </p>
+                    <button type="button" class="lookup-profile-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label="Share">
+                      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 15V3" />
+                        <path d="M8.25 6.75 12 3l3.75 3.75" />
+                        <path d="M8 10.5H6.75A1.75 1.75 0 0 0 5 12.25v7A1.75 1.75 0 0 0 6.75 21h10.5A1.75 1.75 0 0 0 19 19.25v-7a1.75 1.75 0 0 0-1.75-1.75H16" />
+                      </svg>
+                    </button>
+                    <span class="lookup-profile-share-status text-sm text-text-light" role="status" hidden>Link copied</span>
+                    <input class="lookup-profile-share-url basis-full bg-transparent text-xs text-text" type="text" readonly hidden />
+                  </div>
                 </div>
                 <ul class="lookup-profile-rows mt-6 border-t border-border"></ul>
-                <p class="mt-5 px-5 text-xs text-text-light sm:px-7">
-                  Data from Google
-                  <a class="lookup-profile-maps ml-1.5 text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" href="#" target="_blank" rel="noopener noreferrer nofollow" hidden>View on Maps</a>
+                <p class="mt-5 flex items-center gap-3 px-5 sm:px-7">
+                  <img src="/images/brand/official/google.svg" alt="Google" width="272" height="92" class="h-[22px] w-auto" />
+                  <a class="lookup-profile-maps text-xs text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" href="#" target="_blank" rel="noopener noreferrer nofollow" hidden>View on Maps</a>
                 </p>
               </div>
             </div>
@@ -370,6 +404,70 @@ const auditPlatformIcons = [
 </section>
 
 <script>
+  function updateAuditQuery(query: string) {
+    const value = query.trim().slice(0, 90);
+    if (value === "") return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("q", value);
+    window.history.replaceState(window.history.state, "", url);
+  }
+
+  function bindShare(
+    button: HTMLButtonElement | null,
+    status: HTMLElement | null,
+    field: HTMLInputElement | null,
+    urlFor: () => string,
+  ): () => void {
+    const reset = () => {
+      if (status) status.hidden = true;
+      if (field) {
+        field.hidden = true;
+        field.value = "";
+      }
+    };
+    button?.addEventListener("click", async () => {
+      const url = urlFor();
+      const data = { url };
+      reset();
+      if (typeof navigator.canShare === "function" && navigator.canShare(data)) {
+        try {
+          await navigator.share(data);
+          return;
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") return;
+        }
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+        if (status) status.hidden = false;
+      } catch {
+        if (!field) return;
+        field.value = url;
+        field.hidden = false;
+        field.focus();
+        field.select();
+      }
+    });
+    return reset;
+  }
+
+  document.querySelectorAll<HTMLButtonElement>(".lead-page-share").forEach((button) => {
+    const row = button.parentElement;
+    bindShare(
+      button,
+      row?.querySelector<HTMLElement>(".lead-page-share-status") ?? null,
+      row?.querySelector<HTMLInputElement>(".lead-page-share-url") ?? null,
+      () => `${window.location.origin}${window.location.pathname}`,
+    );
+  });
+
+  function clearAuditQuery() {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has("q")) return;
+    url.searchParams.delete("q");
+    window.history.replaceState(window.history.state, "", url);
+  }
+
   document.querySelectorAll<HTMLFormElement>(".lead-capture-form").forEach((form) => {
     const card = form.parentElement;
     const status = form.querySelector<HTMLElement>(".lead-capture-status");
@@ -397,11 +495,15 @@ const auditPlatformIcons = [
         });
         if (!res.ok) throw new Error(String(res.status));
         const placeId = data.googlePlaceId;
-        if (typeof placeId === "string" && /^[A-Za-z0-9_-]{10,90}$/.test(placeId)) {
-          const url = new URL(window.location.href);
-          url.searchParams.set("q", placeId);
-          window.history.replaceState(window.history.state, "", url);
-        }
+        const lookupField = form.dataset.lookupField;
+        const businessName = lookupField ? data[lookupField] : "";
+        const query =
+          typeof placeId === "string" && /^[A-Za-z0-9_-]{10,90}$/.test(placeId)
+            ? placeId
+            : typeof businessName === "string"
+              ? businessName.trim().slice(0, 80)
+              : "";
+        if (query !== "") updateAuditQuery(query);
         form.hidden = true;
         success.hidden = false;
         success.querySelector<HTMLElement>("h3")?.focus();
@@ -435,7 +537,86 @@ const auditPlatformIcons = [
     const profileRating = profile.querySelector<HTMLElement>(".lookup-profile-rating");
     const profileScore = profile.querySelector<HTMLElement>(".lookup-profile-score");
     const profileReviews = profile.querySelector<HTMLElement>(".lookup-profile-reviews");
+    const shareButton = profile.querySelector<HTMLButtonElement>(".lookup-profile-share");
+    const shareStatus = profile.querySelector<HTMLElement>(".lookup-profile-share-status");
+    const shareUrlField = profile.querySelector<HTMLInputElement>(".lookup-profile-share-url");
+
+    const resetShareStatus = bindShare(shareButton, shareStatus, shareUrlField, () => window.location.href);
     const profileMaps = profile.querySelector<HTMLAnchorElement>(".lookup-profile-maps");
+    const profileLogoSlot = profile.querySelector<HTMLElement>(".lookup-profile-logo-slot");
+    const profileLogoSkeleton = profile.querySelector<HTMLElement>(".lookup-profile-logo-skeleton");
+    const profileLogo = profile.querySelector<HTMLImageElement>(".lookup-profile-logo");
+    let logoToken = 0;
+    let logoController: AbortController | null = null;
+
+    function hideLogoSlot() {
+      if (profileLogo) {
+        profileLogo.hidden = true;
+        profileLogo.removeAttribute("src");
+      }
+      if (profileLogoSkeleton) profileLogoSkeleton.hidden = true;
+      if (profileLogoSlot) profileLogoSlot.hidden = true;
+    }
+
+    function showLogoSkeleton() {
+      if (profileLogo) profileLogo.hidden = true;
+      if (profileLogoSkeleton) profileLogoSkeleton.hidden = false;
+      if (profileLogoSlot) profileLogoSlot.hidden = false;
+    }
+
+    profileLogo?.addEventListener("load", () => {
+      if (!profileLogo || profileLogo.dataset.logoToken !== String(logoToken)) return;
+      profileLogo.hidden = false;
+      if (profileLogoSkeleton) profileLogoSkeleton.hidden = true;
+    });
+
+    profileLogo?.addEventListener("error", () => {
+      if (!profileLogo || profileLogo.dataset.logoToken !== String(logoToken)) return;
+      hideLogoSlot();
+    });
+
+    function clearLogo() {
+      logoToken += 1;
+      logoController?.abort();
+      logoController = null;
+      hideLogoSlot();
+    }
+
+    async function loadLogo(website: string) {
+      if (!profileLogo) return;
+      clearLogo();
+      const token = logoToken;
+      const requestController = new AbortController();
+      logoController = requestController;
+      showLogoSkeleton();
+      try {
+        const res = await fetch("/api/business-logo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: website }),
+          signal: requestController.signal,
+        });
+        if (token !== logoToken) return;
+        if (!res.ok) {
+          hideLogoSlot();
+          return;
+        }
+        const data: unknown = await res.json();
+        const logoUrl =
+          data && typeof data === "object" && typeof (data as { logoUrl?: unknown }).logoUrl === "string"
+            ? (data as { logoUrl: string }).logoUrl
+            : "";
+        const parsed = new URL(logoUrl);
+        if (parsed.protocol !== "https:" || token !== logoToken) {
+          hideLogoSlot();
+          return;
+        }
+        profileLogo.dataset.logoToken = String(token);
+        profileLogo.src = parsed.toString();
+      } catch {
+        if (token === logoToken) hideLogoSlot();
+      }
+    }
     const placeIdField = form.querySelector<HTMLInputElement>(".lookup-placeid");
     const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     const formSurface = form.closest<HTMLElement>(".lead-form-surface");
@@ -449,6 +630,41 @@ const auditPlatformIcons = [
     const ctaTemplate = form.dataset.lookupCta || "";
     const endpoint = form.dataset.lookupEndpoint || "/api/business-lookup";
     const minChars = Math.max(2, Number(form.dataset.lookupMin) || 3);
+    const notListed = form.querySelector<HTMLElement>(".lookup-not-listed");
+    const wrongListing = form.querySelector<HTMLButtonElement>(".lookup-wrong-listing");
+    let notListedTimer = 0;
+    let searchSettled = true;
+
+    function placeWrongListing() {
+      if (!wrongListing || wrongListing.hidden || !submitBtn) return;
+      wrongListing.style.left = `${submitBtn.offsetLeft}px`;
+      wrongListing.style.top = `${submitBtn.offsetTop + submitBtn.offsetHeight + 12}px`;
+    }
+
+    function showWrongListing() {
+      if (!wrongListing) return;
+      wrongListing.hidden = false;
+      placeWrongListing();
+      requestAnimationFrame(placeWrongListing);
+    }
+
+    window.addEventListener("resize", placeWrongListing);
+
+    function hideNotListed() {
+      window.clearTimeout(notListedTimer);
+      notListedTimer = 0;
+      if (notListed) notListed.hidden = true;
+    }
+
+    function scheduleNotListed() {
+      window.clearTimeout(notListedTimer);
+      notListedTimer = window.setTimeout(() => {
+        notListedTimer = 0;
+        if (!notListed || !profile.hidden || input.value.trim().length < minChars) return;
+        if (searchSettled && items.length > 0) return;
+        notListed.hidden = false;
+      }, 5000);
+    }
     const finishInitialLookup = () => sectionEl?.removeAttribute("data-query-loading");
 
     type TransitionDocument = Document & {
@@ -763,6 +979,8 @@ const auditPlatformIcons = [
       controller?.abort();
       const requestController = new AbortController();
       controller = requestController;
+      searchSettled = false;
+      scheduleNotListed();
       showSearching();
       try {
         const res = await fetch(endpoint, {
@@ -772,12 +990,14 @@ const auditPlatformIcons = [
           signal: requestController.signal,
         });
         if (controller !== requestController || input.value.trim() !== rawQuery) return;
+        searchSettled = true;
         if (!res.ok) {
           showSearchError(res.status === 429);
           return;
         }
         const data: unknown = await res.json();
         if (input.value.trim() !== rawQuery) return;
+        searchSettled = true;
         if (!Array.isArray(data)) {
           showSearchError(false);
           return;
@@ -801,15 +1021,32 @@ const auditPlatformIcons = [
           openList();
         }
       } catch {
-        if (controller === requestController && !requestController.signal.aborted) showSearchError(false);
+        if (controller === requestController && !requestController.signal.aborted) {
+          searchSettled = true;
+          showSearchError(false);
+        }
       } finally {
         if (controller === requestController && listbox.contains(searching)) closeList();
         if (selectSingleMatch) finishInitialLookup();
       }
     }
 
+    function setExternalLink(el: HTMLElement | null, href: string) {
+      if (!(el instanceof HTMLAnchorElement)) return;
+      let safe = "";
+      try {
+        const url = new URL(href);
+        if (url.protocol === "https:" || url.protocol === "http:") safe = url.toString();
+      } catch {
+        safe = "";
+      }
+      if (safe === "") el.removeAttribute("href");
+      else el.href = safe;
+    }
+
     function applyDetails(place: Record<string, unknown>) {
       const str = (key: string) => (typeof place[key] === "string" ? (place[key] as string).trim() : "");
+      if (placeIdField && str("placeId") !== "") placeIdField.value = str("placeId");
 
       for (const mapping of prefillMap) {
         const value = place[mapping.from];
@@ -823,9 +1060,12 @@ const auditPlatformIcons = [
       }
 
       const name = str("name");
+      const mapsUrl = str("mapsUrl");
+      const reviewsUrl = str("reviewsUrl");
       if (name === "" || !profileName || !profileRows) return;
 
       profileName.textContent = name;
+      setExternalLink(profileName, mapsUrl);
       profileRows.textContent = "";
       if (str("category") !== "") {
         const categoryIconUrl = str("categoryIconUrl");
@@ -841,10 +1081,14 @@ const auditPlatformIcons = [
       const phone = str("phone");
       if (phone !== "") profileRows.appendChild(profileRow("phone", phone, `tel:${phone.replace(/[^\d+]/g, "")}`));
       const website = str("website");
+      clearLogo();
       if (website !== "") {
         try {
           const url = new URL(website);
-          profileRows.appendChild(profileRow("globe", url.hostname.replace(/^www\./, ""), website));
+          if (url.protocol === "https:" || url.protocol === "http:") {
+            profileRows.appendChild(profileRow("globe", url.hostname.replace(/^www\./, ""), website));
+            void loadLogo(url.toString());
+          }
         } catch {
           /* malformed url: skip the row */
         }
@@ -856,15 +1100,13 @@ const auditPlatformIcons = [
         if (rating !== null && reviews !== null) {
           profileScore.textContent = rating.toFixed(1);
           profileReviews.textContent = `${reviews} Google review${reviews === 1 ? "" : "s"}`;
+          setExternalLink(profileReviews, reviewsUrl || mapsUrl);
           profileRating.hidden = false;
         } else {
           profileRating.hidden = true;
         }
       }
 
-      if (placeIdField) placeIdField.value = str("placeId");
-
-      const mapsUrl = str("mapsUrl");
       if (profileMaps) {
         if (mapsUrl !== "") {
           profileMaps.href = mapsUrl;
@@ -876,6 +1118,7 @@ const auditPlatformIcons = [
 
       profile.hidden = false;
       sectionEl?.setAttribute("data-lookup-selected", "true");
+      requestAnimationFrame(placeWrongListing);
       if (businessGroup) businessGroup.hidden = true;
       if (changeBusinessBtn) changeBusinessBtn.hidden = false;
       revealDependentFields();
@@ -883,18 +1126,39 @@ const auditPlatformIcons = [
     }
 
     function hideProfile() {
+      if (wrongListing) wrongListing.hidden = true;
       profile.hidden = true;
       sectionEl?.removeAttribute("data-lookup-selected");
       if (businessGroup) businessGroup.hidden = false;
       if (changeBusinessBtn) changeBusinessBtn.hidden = true;
-      if (profileName) profileName.textContent = "";
+      if (profileName) {
+        profileName.textContent = "";
+        setExternalLink(profileName, "");
+      }
+      setExternalLink(profileReviews, "");
       if (profileRows) profileRows.textContent = "";
       if (profileRating) profileRating.hidden = true;
+      resetShareStatus();
       if (profileMaps) profileMaps.hidden = true;
+      clearLogo();
       if (placeIdField) placeIdField.value = "";
       concealDependentFields();
       resetCta();
     }
+
+    wrongListing?.addEventListener("click", () => {
+      controller?.abort();
+      controller = null;
+      window.clearTimeout(debounceTimer);
+      hideNotListed();
+      closeList();
+      input.value = "";
+      touched.delete(input.name);
+      clearAuditQuery();
+      hideProfile();
+      resetTitle();
+      input.focus();
+    });
 
     dependentInputs.forEach((field) => {
       field.addEventListener("input", updateSubmitState);
@@ -903,12 +1167,16 @@ const auditPlatformIcons = [
     updateSubmitState();
 
     async function selectItem(item: SuggestionItem) {
+      hideNotListed();
       closeList();
       window.clearTimeout(debounceTimer);
       // The selection itself is an explicit user action on this field: allow prefill to set it.
       touched.delete(input.name);
       input.value = item.name;
       hideProfile();
+      showWrongListing();
+      if (placeIdField) placeIdField.value = item.placeId;
+      updateAuditQuery(item.placeId);
       const detailsRequest = fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -957,6 +1225,7 @@ const auditPlatformIcons = [
         input.value = details.name;
         applyTitle(details.name);
         applyDetails(details);
+        showWrongListing();
         return true;
       } catch {
         return false;
@@ -979,6 +1248,7 @@ const auditPlatformIcons = [
     }
 
     input.addEventListener("input", () => {
+      clearAuditQuery();
       window.clearTimeout(debounceTimer);
       controller?.abort();
       controller = null;
@@ -986,6 +1256,7 @@ const auditPlatformIcons = [
       if (!profile.hidden) hideProfile();
       const query = input.value.trim();
       if (query.length < minChars) {
+        hideNotListed();
         concealDependentFields();
         closeList();
         return;
@@ -1135,8 +1406,26 @@ const auditPlatformIcons = [
     from { transform: translateX(-100%); }
     to { transform: translateX(265%); }
   }
+  .lookup-profile-logo-skeleton {
+    background: color-mix(in srgb, var(--color-border) 75%, var(--color-light));
+  }
+  .lookup-profile-logo-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 11px;
+    background: var(--color-light);
+    animation: logo-skeleton 1.6s ease-in-out infinite;
+  }
+  @keyframes logo-skeleton {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .lookup-loading-progress span { animation: none; }
+    .lookup-profile-logo-skeleton::after {
+      animation: none;
+      opacity: 0.7;
+    }
   }
 
   @keyframes lead-title-in {
@@ -1378,7 +1667,7 @@ const auditPlatformIcons = [
       padding: 0;
     }
 
-    section[data-lookup-selected] .lead-magnet-label {
+    section[data-lookup-selected] .lead-magnet-row {
       display: none;
     }
 
@@ -1406,9 +1695,36 @@ const auditPlatformIcons = [
       margin-top: 0;
     }
 
+    .lead-capture-form {
+      position: relative;
+    }
+
+    .lookup-wrong-listing {
+      position: absolute;
+      z-index: 1;
+      margin: 0;
+    }
+
     section[data-lookup-selected] .lead-capture-status,
     section[data-lookup-selected] .lead-capture-form > p:last-child {
       grid-column: 1 / -1;
+    }
+  }
+
+  /* Below the desktop grid the column stacks in source order, so the profile
+     follows the email form. Once a business is selected, put the profile above
+     that form. The 1024px areas already do this and stay as they are. */
+  @media (max-width: 1023px) {
+    section[data-lookup-selected] .lead-desc-block {
+      order: 1;
+    }
+
+    section[data-lookup-selected] .lead-rest {
+      order: 2;
+    }
+
+    section[data-lookup-selected] .lead-form-column {
+      order: 3;
     }
   }
 

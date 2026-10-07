@@ -50,6 +50,7 @@ blocks:
       minChars: 3
     submitLabel: "Request my free audit"
     formAction: "/api/lead"
+    service: "local-seo"
     anchor: "free-audit"
   # placeholder team byline — replace with a real named author, photo, dates,
   # and Person schema once editorial ownership is decided.
@@ -410,12 +411,15 @@ blocks:
   - type: pricingTiers
     eyebrow: "Pricing"
     title: "How pricing works here"
-    intro: "Standard is $99/month. For work beyond that scope, contact us for a custom quote before any listing change is published."
+    intro: "Standard is $199/month. For work beyond that scope, contact us for a custom quote before any listing change is published."
     variant: "cards"
     tiers:
       - name: "Standard"
-        priceRange: "$99/month"
+        priceRange: "$199/month"
         description: "The full verify-align-build-measure engagement described on this page."
+        ctaLabel: "Waitlist"
+        ctaHref: "#free-audit"
+        collectEmail: true
         includes:
           - "Deployment and maintenance of the verified business-detail system."
           - "Launch checks for forms, redirects, metadata, and critical conversion paths."
