@@ -175,7 +175,7 @@ blocks:
   - type: process
     eyebrow: "Our working process"
     title: "Local SEO work that can be checked at every stage"
-    intro: "Audit. Align. Build. Measure. Four stages. At each one, you see exactly what we see about your business — no black box."
+    intro: "Four stages — audit, align, build, measure — and at each one you see exactly what we see about your business. No black box."
     steps:
       - number: "01"
         title: "Audit"
