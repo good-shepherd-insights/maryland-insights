@@ -60,6 +60,15 @@ const headingId = `lead-${slugify(title)}`;
 const fieldId = (name: string) => `lead-field-${slugify(name)}`;
 const lookupBusinessName = lookup?.businessField;
 const listboxId = `lookup-list-${slugify(title)}`;
+
+const auditPlatformIcons = [
+  { name: "Google Business Profile", src: "/images/brand/official/google-business-profile.svg", class: "h-9" },
+  { name: "Yelp", src: "/images/icons/yelp.svg", class: "h-9" },
+  { name: "Bing", src: "/images/icons/bing_webmaster_tools.svg", class: "h-11", style: "margin-left: -0.8125rem; margin-right: -0.8125rem;" },
+  { name: "ChatGPT", src: "/images/brand/official/openai-chatgpt.svg", class: "h-7" },
+  { name: "Google Answers", src: "/images/brand/official/google-ai-overviews.svg", class: "h-7" },
+  { name: "Claude", src: "/images/brand/official/claude.svg", class: "h-7" },
+];
 ---
 
 <section
@@ -232,6 +241,12 @@ const listboxId = `lookup-list-${slugify(title)}`;
             </button>
 
             <p aria-live="polite" class="lead-capture-status mt-3 text-sm font-semibold text-primary" hidden></p>
+
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-5 pt-2 sm:justify-start" aria-label="Audit platforms">
+              {auditPlatformIcons.map((icon) => (
+                <img src={icon.src} alt={icon.name} title={icon.name} class:list={["w-auto object-contain", icon.class]} style={icon.style} loading="lazy" />
+              ))}
+            </div>
 
             {
               disclaimer && (

@@ -34,3 +34,4 @@ package-lock.json
 font-pairings/
 
 .fast-agent/fast-agent.secrets.yaml
+.untracked/

@@ -1,10 +1,17 @@
 ---
 import { markdownify, slugify } from "@/lib/utils/textConverter";
+const chatGptIcon = "/images/brand/official/openai-chatgpt.svg";
+const perplexityIcon = "/images/brand/official/perplexity.svg";
+const geminiIcon = "/images/brand/official/google-gemini.svg?v=3";
+const claudeIcon = "/images/brand/official/claude.svg";
+const googleBusinessProfileIcon = "/images/brand/official/google-business-profile.svg";
+const googleAiOverviewsIcon = "/images/brand/official/google-ai-overviews.svg?v=2";
 
 type Item = {
   name: string;
   purpose?: string;
   link?: string;
+  icon?: string;
 };
 
 type Props = {
@@ -32,6 +39,24 @@ const {
 
 const headingId = `tool-${slugify(title)}`;
 const label = eyebrow ?? (tone === "aligned-with" ? "Aligned with" : "Named on this page");
+const iconsByName: Record<string, string> = {
+  "Google Business Profile": googleBusinessProfileIcon,
+  "Google AI Overviews": googleAiOverviewsIcon,
+  ChatGPT: chatGptIcon,
+  Perplexity: perplexityIcon,
+  Gemini: geminiIcon,
+  Claude: claudeIcon,
+};
+const shownItems =
+  tone === "aligned-with" && !items.some((item) => item.name === "Claude")
+    ? [
+        ...items,
+        {
+          name: "Claude",
+          purpose: "Anthropic's assistant surface customers may use for local recommendations and business comparisons.",
+        },
+      ]
+    : items;
 const Heading = headingLevel;
 ---
 
@@ -69,10 +94,10 @@ const Heading = headingLevel;
       }
 
       {
-        items.length > 0 && (
+        shownItems.length > 0 && (
           tone === "aligned-with" ? (
             <ul class="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-7 border-y border-border py-7">
-              {items.map((item) => (
+              {shownItems.map((item) => (
                 <li class="w-full min-w-0 text-center sm:w-[calc(50%_-_1rem)]">
                   {item.link ? (
                     <a
@@ -98,9 +123,12 @@ const Heading = headingLevel;
                       </svg>
                     </a>
                   ) : (
-                    <span class="inline-flex border border-border bg-light px-4 py-2 text-sm font-semibold text-text-dark">
-                      {item.name}
-                    </span>
+                  <span class="inline-flex items-center gap-2 border border-border bg-light px-4 py-2 text-sm font-semibold text-text-dark">
+                    {(item.icon || iconsByName[item.name]) && (
+                      <img src={item.icon || iconsByName[item.name]} alt="" aria-hidden="true" class="h-5 w-5 shrink-0 object-contain" loading="lazy" />
+                    )}
+                    {item.name}
+                  </span>
                   )}
                   {item.purpose && (
                     <p class="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-text" set:html={markdownify(item.purpose)} />
@@ -110,7 +138,7 @@ const Heading = headingLevel;
             </ul>
           ) : (
             <ul class:list={["mt-8", { "border-t border-border": intro }]}> 
-              {items.map((item) => (
+              {shownItems.map((item) => (
                 <li class="grid gap-x-8 gap-y-1 border-b border-border py-5 sm:grid-cols-[12rem_1fr]">
                   <div class="min-w-0">
                     {item.link ? (
