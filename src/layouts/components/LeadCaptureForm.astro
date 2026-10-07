@@ -242,7 +242,7 @@ const auditPlatformIcons = [
 
             <p aria-live="polite" class="lead-capture-status mt-3 text-sm font-semibold text-primary" hidden></p>
 
-            <div class="mt-6 flex flex-wrap items-center justify-center gap-5 pt-2 sm:justify-start" aria-label="Audit platforms">
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-5 pt-2 sm:justify-start" aria-label="Audit platforms">
               {auditPlatformIcons.map((icon) => (
                 <img src={icon.src} alt={icon.name} title={icon.name} class:list={["w-auto object-contain", icon.class]} style={icon.style} loading="lazy" />
               ))}
