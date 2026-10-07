@@ -130,9 +130,9 @@ const countLabel = `${num(rows.length - 1)} sections`;
           </p>
         </div>
         <ol class="min-w-0">
-          {groups.map((group) => (
+          {groups.map((group, groupIndex) => (
             <li data-toc-inline-row class="min-w-0 border-b border-border/70 py-4 last:border-b-0">
-              <details data-toc-group>
+              <details data-toc-group open={groupIndex === 0}>
                 <summary class="toc-topic-summary flex cursor-pointer items-center justify-between gap-3 font-secondary text-base font-bold text-text-dark">
                   <span>{group.title}</span>
                   <svg class="toc-topic-chevron h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 6 4.5 4.5L12.5 6" /></svg>
@@ -168,9 +168,9 @@ const countLabel = `${num(rows.length - 1)} sections`;
             </p>
           </div>
           <ol class="toc-floating-list min-w-0 overflow-y-auto px-5 py-1">
-            {groups.map((group) => (
+            {groups.map((group, groupIndex) => (
               <li class="min-w-0 border-b border-border/70 py-3 last:border-b-0">
-                <details data-toc-group>
+                <details data-toc-group open={groupIndex === 0}>
                   <summary class="toc-topic-summary flex cursor-pointer items-center justify-between gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-text-dark">
                     <span>{group.title}</span>
                     <svg class="toc-topic-chevron h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.5 6 4.5 4.5L12.5 6" /></svg>
