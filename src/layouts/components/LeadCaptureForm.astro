@@ -64,7 +64,7 @@ const listboxId = `lookup-list-${slugify(title)}`;
 const auditPlatformIcons = [
   { name: "Google Business Profile", src: "/images/brand/official/google-business-profile.svg", class: "h-[30.6px]" },
   { name: "Yelp", src: "/images/icons/yelp.svg", class: "h-[30.6px]" },
-  { name: "Bing", src: "/images/icons/bing_webmaster_tools.svg", class: "h-[37.4px]" },
+  { name: "Bing", src: "/images/icons/bing_webmaster_tools.svg", class: "h-[27px]" },
   { name: "ChatGPT", src: "/images/brand/official/openai-chatgpt.svg", class: "h-[23.8px]" },
   { name: "Google Answers", src: "/images/brand/official/google-ai-overviews.svg", class: "h-[23.8px]" },
   { name: "Claude", src: "/images/brand/official/claude.svg", class: "h-[23.8px]" },
@@ -76,7 +76,39 @@ const auditPlatformIcons = [
   class="bg-light bg-4col-grid overflow-x-clip border-b border-border/80"
   aria-labelledby={headingId}
 >
+  {
+    lookup && (
+      <script is:inline>
+        const query = new URLSearchParams(window.location.search).get("q")?.trim() ?? "";
+        if ((query.length >= 3 && query.length <= 80) || /^[A-Za-z0-9_-]{10,90}$/.test(query)) {
+          document.currentScript?.closest("section")?.setAttribute("data-query-loading", "");
+        }
+      </script>
+    )
+  }
   <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+    {
+      lookup && (
+        <div class="lookup-loading" role="status" aria-live="polite">
+          <div class="lookup-loading-inner">
+            <div class="lookup-loading-progress" aria-hidden="true"><span></span></div>
+            <h2 class="lookup-loading-title font-secondary font-extrabold text-text-dark">
+              Loading your business profile audit<span class="lookup-loading-dots text-primary">...</span>
+            </h2>
+            <p class="lookup-loading-copy text-text">
+              Pulling live Google Business Profile details to prepare your free local SEO audit.
+            </p>
+            <div class="lookup-loading-record" aria-hidden="true">
+              <div class="lookup-loading-record-heading">Business profile</div>
+              <div class="lookup-loading-record-row"><span>Business</span><i class="lookup-loading-bar lookup-loading-bar-name"></i></div>
+              <div class="lookup-loading-record-row"><span>Location</span><i class="lookup-loading-bar lookup-loading-bar-location"></i></div>
+              <div class="lookup-loading-record-row"><span>Category</span><i class="lookup-loading-bar lookup-loading-bar-category"></i></div>
+            </div>
+            <p class="lookup-loading-foot text-text"><span aria-hidden="true"></span>Finding the right business profile</p>
+          </div>
+        </div>
+      )
+    }
     <div class="lead-layout grid gap-14 pt-30 pb-16 lg:gap-16 lg:pt-40 lg:pb-24">
       <div class="lead-desc-block">
         {
@@ -244,7 +276,7 @@ const auditPlatformIcons = [
 
             <div class="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-5 pt-2 sm:justify-start" aria-label="Audit platforms">
               {auditPlatformIcons.map((icon) => (
-                <img src={icon.src} alt={icon.name} title={icon.name} class:list={["w-auto object-contain", icon.class]} style={icon.style} loading="lazy" />
+                <img src={icon.src} alt={icon.name} title={icon.name} class:list={["w-auto object-contain", icon.class]} loading="lazy" />
               ))}
             </div>
 
@@ -356,6 +388,12 @@ const auditPlatformIcons = [
           body,
         });
         if (!res.ok) throw new Error(String(res.status));
+        const placeId = data.googlePlaceId;
+        if (typeof placeId === "string" && /^[A-Za-z0-9_-]{10,90}$/.test(placeId)) {
+          const url = new URL(window.location.href);
+          url.searchParams.set("q", placeId);
+          window.history.replaceState(window.history.state, "", url);
+        }
         form.hidden = true;
         success.hidden = false;
         success.querySelector<HTMLElement>("h3")?.focus();
@@ -399,6 +437,7 @@ const auditPlatformIcons = [
     const ctaTemplate = form.dataset.lookupCta || "";
     const endpoint = form.dataset.lookupEndpoint || "/api/business-lookup";
     const minChars = Math.max(2, Number(form.dataset.lookupMin) || 3);
+    const finishInitialLookup = () => sectionEl?.removeAttribute("data-query-loading");
 
     type TransitionDocument = Document & {
       startViewTransition?: (update: () => void) => { finished: Promise<void> };
@@ -687,7 +726,7 @@ const auditPlatformIcons = [
       setActive(-1);
     }
 
-    async function queryAutocomplete(rawQuery: string) {
+    async function queryAutocomplete(rawQuery: string, selectSingleMatch = false) {
       controller?.abort();
       controller = new AbortController();
       try {
@@ -702,7 +741,7 @@ const auditPlatformIcons = [
           return;
         }
         const data: unknown = await res.json();
-        if (!Array.isArray(data)) return;
+        if (!Array.isArray(data) || input.value.trim() !== rawQuery) return;
         items = data
           .filter((entry): entry is Record<string, unknown> => !!entry && typeof entry === "object")
           .map((entry) => ({
@@ -712,9 +751,19 @@ const auditPlatformIcons = [
           }))
           .filter((entry) => entry.placeId !== "" && entry.name !== "")
           .slice(0, 5);
-        openList();
+        if (
+          selectSingleMatch &&
+          items.length === 1 &&
+          items[0].name.toLowerCase().startsWith(rawQuery.toLowerCase())
+        ) {
+          await selectItem(items[0]);
+        } else {
+          openList();
+        }
       } catch {
         // Aborted or network failure: stay silent, manual typing remains available.
+      } finally {
+        if (selectSingleMatch) finishInitialLookup();
       }
     }
 
@@ -851,6 +900,43 @@ const auditPlatformIcons = [
       }
     }
 
+    async function loadPlaceId(placeId: string): Promise<boolean> {
+      try {
+        const res = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mode: "details", placeId }),
+        });
+        if (!res.ok) return false;
+        const place: unknown = await res.json();
+        if (!place || typeof place !== "object") return false;
+        const details = place as Record<string, unknown>;
+        if (typeof details.name !== "string" || details.name.trim() === "") return false;
+        if (input.value !== "") return false;
+        input.value = details.name;
+        applyTitle(details.name);
+        applyDetails(details);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    const initialQuery = new URLSearchParams(window.location.search).get("q")?.trim() ?? "";
+    if (/^[A-Za-z0-9_-]{10,90}$/.test(initialQuery)) {
+      void loadPlaceId(initialQuery).then((found) => {
+        if (!found && input.value === "" && initialQuery.length <= 80) {
+          input.value = initialQuery;
+          void queryAutocomplete(initialQuery, true);
+        } else {
+          finishInitialLookup();
+        }
+      });
+    } else if (initialQuery.length >= minChars && initialQuery.length <= 80) {
+      input.value = initialQuery;
+      void queryAutocomplete(initialQuery, true);
+    }
+
     input.addEventListener("input", () => {
       window.clearTimeout(debounceTimer);
       resetTitle();
@@ -862,7 +948,7 @@ const auditPlatformIcons = [
         closeList();
         return;
       }
-      debounceTimer = window.setTimeout(() => void queryAutocomplete(query), 300);
+      debounceTimer = window.setTimeout(() => void queryAutocomplete(query), 100);
     });
 
     changeBusinessBtn?.addEventListener("click", async () => {
@@ -911,6 +997,105 @@ const auditPlatformIcons = [
 </script>
 
 <style>
+  .lookup-loading {
+    display: none;
+    color: var(--color-text-dark);
+    min-height: 75svh;
+    align-items: center;
+    justify-content: center;
+    padding: 5rem 0;
+  }
+
+  section[data-query-loading] .lookup-loading { display: flex; }
+  section[data-query-loading] .lead-layout { display: none; }
+
+  .lookup-loading-inner { width: min(100%, 720px); }
+  .lookup-loading-progress {
+    height: 3px;
+    margin: -1px 0 27px;
+    overflow: hidden;
+    background: var(--color-border);
+  }
+  .lookup-loading-progress span {
+    display: block;
+    width: 38%;
+    height: 100%;
+    background: var(--color-primary);
+    animation: lookup-progress 1.7s cubic-bezier(0.16, 1, 0.3, 1) infinite alternate;
+  }
+  .lookup-loading-title {
+    margin: 0;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+  .lookup-loading-dots { margin-left: 0.18em; }
+  .lookup-loading-copy {
+    max-width: 52ch;
+    margin: 20px 0 30px;
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+  .lookup-loading-record {
+    border: 1px solid var(--color-border);
+    background: var(--color-light);
+  }
+  .lookup-loading-record-heading {
+    display: flex;
+    height: 36px;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0 14px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+  .lookup-loading-record-row {
+    display: grid;
+    min-height: 42px;
+    grid-template-columns: 78px 1fr;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0 14px;
+    color: var(--color-text);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .lookup-loading-record-row:last-child { border-bottom: 0; }
+  .lookup-loading-bar {
+    display: block;
+    height: 8px;
+    background: #e4dfd8;
+  }
+  .lookup-loading-bar-name { width: 78%; }
+  .lookup-loading-bar-location { width: 92%; }
+  .lookup-loading-bar-category { width: 58%; }
+  .lookup-loading-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 17px 0 0;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .lookup-loading-foot span {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 0 3px #f9e6d8;
+  }
+  @keyframes lookup-progress {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(265%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lookup-loading-progress span { animation: none; }
+  }
+
   @keyframes lead-title-in {
     from {
       opacity: 0;
