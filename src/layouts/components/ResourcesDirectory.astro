@@ -147,8 +147,8 @@ const shown = groups
     }
 
     items.forEach((item) => {
-      item.logo = resourceLogos[item.name];
-      item.wordmark = wordmarkNames.has(item.name);
+      item.logo = resourceLogos[item.name] ?? item.logo;
+      item.wordmark = wordmarkNames.has(item.name) || item.wordmark;
     });
 
     return {

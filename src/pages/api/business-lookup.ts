@@ -48,6 +48,35 @@ const DETAILS_FIELD_MASK =
 const PLACE_ID_PATTERN = /^[A-Za-z0-9_-]{10,90}$/;
 const CONTROL_CHARS = /[\u0000-\u001f\u007f]/g;
 
+const LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const LIMIT_AUTOCOMPLETE = 30;
+const LIMIT_DETAILS = 10;
+
+// Best-effort per-IP token bucket: serverless instances keep this in-memory state only per warm container,
+// so limits are approximate under scale-to-zero/multiple regions — never a security boundary.
+const buckets = new Map<string, { startedAt: number; autocomplete: number; details: number }>();
+
+/** Enforce a best-effort per-instance request limit for each lookup mode. */
+function takeRequest(ip: string, mode: "autocomplete" | "details"): boolean {
+  const now = Date.now();
+  for (const [key, bucket] of buckets) {
+    if (now - bucket.startedAt > LIMIT_WINDOW_MS) buckets.delete(key);
+  }
+  let bucket = buckets.get(ip);
+  if (!bucket || now - bucket.startedAt > LIMIT_WINDOW_MS) {
+    bucket = { startedAt: now, autocomplete: 0, details: 0 };
+    buckets.set(ip, bucket);
+  }
+  if (mode === "autocomplete") {
+    if (bucket.autocomplete >= LIMIT_AUTOCOMPLETE) return false;
+    bucket.autocomplete += 1;
+    return true;
+  }
+  if (bucket.details >= LIMIT_DETAILS) return false;
+  bucket.details += 1;
+  return true;
+}
+
 const GOOGLE_TIMEOUT_MS = 5000;
 
 /** Return a JSON response with the requested status code. */
@@ -236,7 +265,7 @@ async function handleDetails(apiKey: string, placeId: string): Promise<Response>
 }
 
 /** Validate incoming autocomplete or details requests. */
-export async function POST({ request }: APIContext): Promise<Response> {
+export async function POST({ request, clientAddress }: APIContext): Promise<Response> {
   const contentType = request.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) {
     return json(400, { error: "bad-request" });
@@ -268,6 +297,10 @@ export async function POST({ request }: APIContext): Promise<Response> {
   const apiKey = import.meta.env.GOOGLE_PLACES_API_KEY;
   if (typeof apiKey !== "string" || apiKey === "") {
     return json(503, { error: "not-configured" });
+  }
+
+  if (!takeRequest(clientAddress || "unknown", mode)) {
+    return json(429, { error: "rate-limited" });
   }
 
   return mode === "autocomplete" ? handleAutocomplete(apiKey, query) : handleDetails(apiKey, placeId);

@@ -7,7 +7,29 @@ export const prerender = false;
 // https://microlink.io/docs/api/basics/authentication
 const FREE_ENDPOINT = "https://api.microlink.io";
 const PRO_ENDPOINT = "https://pro.microlink.io";
+const DETAILS_BASE = "https://places.googleapis.com/v1/places/";
 const TIMEOUT_MS = 8000;
+const PLACE_ID_PATTERN = /^[A-Za-z0-9_-]{10,90}$/;
+const LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const LIMIT_LOGO = 10;
+
+const logoBuckets = new Map<string, { startedAt: number; count: number }>();
+
+/** Enforce a best-effort per-instance limit on logo lookups. */
+function takeLogoRequest(ip: string): boolean {
+  const now = Date.now();
+  for (const [key, bucket] of logoBuckets) {
+    if (now - bucket.startedAt > LIMIT_WINDOW_MS) logoBuckets.delete(key);
+  }
+  let bucket = logoBuckets.get(ip);
+  if (!bucket || now - bucket.startedAt > LIMIT_WINDOW_MS) {
+    bucket = { startedAt: now, count: 0 };
+    logoBuckets.set(ip, bucket);
+  }
+  if (bucket.count >= LIMIT_LOGO) return false;
+  bucket.count += 1;
+  return true;
+}
 
 type LogoPayload = {
   status?: string;
@@ -71,14 +93,38 @@ function httpsLogo(value: unknown): string | null {
   }
 }
 
-/** Look up the logo for a business website through Microlink's logo API. */
-export async function POST({ request }: APIContext): Promise<Response> {
+/** Read the website Google has stored for this Place. Callers cannot supply the URL. */
+async function websiteForPlace(apiKey: string, placeId: string): Promise<string | null> {
+  const res = await fetch(`${DETAILS_BASE}${encodeURIComponent(placeId)}`, {
+    headers: { "X-Goog-Api-Key": apiKey, "X-Goog-FieldMask": "websiteUri" },
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  if (!res.ok) throw new Error(String(res.status));
+  const place = (await res.json()) as { websiteUri?: unknown };
+  return publicWebsite(place.websiteUri);
+}
+
+/** Look up the logo for a selected Place through Microlink's logo API. */
+export async function POST({ request, clientAddress }: APIContext): Promise<Response> {
   const contentType = request.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) return json(400, { error: "bad-request" });
 
-  const body = (await request.json().catch(() => null)) as { url?: unknown } | null;
-  const website = publicWebsite(body?.url);
-  if (!website) return json(400, { error: "bad-request" });
+  const body = (await request.json().catch(() => null)) as { placeId?: unknown } | null;
+  const placeId = typeof body?.placeId === "string" ? body.placeId : "";
+  if (!PLACE_ID_PATTERN.test(placeId)) return json(400, { error: "bad-request" });
+
+  const placesKey = import.meta.env.GOOGLE_PLACES_API_KEY;
+  if (typeof placesKey !== "string" || placesKey === "") return json(503, { error: "not-configured" });
+
+  if (!takeLogoRequest(clientAddress || "unknown")) return json(429, { error: "rate-limited" });
+
+  let website: string | null;
+  try {
+    website = await websiteForPlace(placesKey, placeId);
+  } catch {
+    return json(502, { error: "logo-unavailable" });
+  }
+  if (!website) return json(200, { logoUrl: null });
 
   const apiKey = import.meta.env.MICROLINK_API_KEY;
   const hasKey = typeof apiKey === "string" && apiKey !== "";

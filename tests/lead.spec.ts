@@ -26,13 +26,23 @@ describe("lead API", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("keeps the business and Place ID with the email in the existing CRM fields", async () => {
+  it("rejects a missing or unknown service without calling the CRM", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    expect((await POST({ request: request({ email: "owner@example.com" }) })).status).toBe(400);
+    expect((await POST({ request: request({ email: "owner@example.com", service: "constructor" }) })).status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("posts the email array and local-seo service to the audits endpoint", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 201 }));
     vi.stubGlobal("fetch", fetchMock);
 
     const response = await POST({
       request: request({
         email: " Owner@Example.com ",
+        service: "local-seo",
         business: " Tehrani Law, LLC ",
         googlePlaceId: "ChIJ1234567890",
       }),
@@ -41,10 +51,10 @@ describe("lead API", () => {
     expect(response.status).toBe(200);
     expect(fetchMock).toHaveBeenCalledOnce();
     const [url, options] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe("https://crm.marylandinsights.com/rest/newsletter");
+    expect(url).toBe("https://crm.marylandinsights.com/rest/audits");
     expect(JSON.parse(options.body as string)).toEqual({
-      email: { primaryEmail: "owner@example.com" },
-      name: "Tehrani Law, LLC | Google Place ID: ChIJ1234567890",
+      email: ["owner@example.com"],
+      service: "local-seo",
     });
     expect(options.signal).toBeInstanceOf(AbortSignal);
   });
@@ -52,7 +62,7 @@ describe("lead API", () => {
   it("returns 502 when the CRM rejects or cannot complete the request", async () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(new Response(null, { status: 503 })).mockRejectedValueOnce(new Error("offline"));
     vi.stubGlobal("fetch", fetchMock);
-    const lead = { email: "owner@example.com" };
+    const lead = { email: "owner@example.com", service: "local-seo" };
 
     expect((await POST({ request: request(lead) })).status).toBe(502);
     expect((await POST({ request: request(lead) })).status).toBe(502);

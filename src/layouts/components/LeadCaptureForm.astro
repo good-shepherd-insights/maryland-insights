@@ -582,7 +582,7 @@ const auditPlatformIcons = [
       hideLogoSlot();
     }
 
-    async function loadLogo(website: string) {
+    async function loadLogo(placeId: string) {
       if (!profileLogo) return;
       clearLogo();
       const token = logoToken;
@@ -593,7 +593,7 @@ const auditPlatformIcons = [
         const res = await fetch("/api/business-logo", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url: website }),
+          body: JSON.stringify({ placeId }),
           signal: requestController.signal,
         });
         if (token !== logoToken) return;
@@ -1087,7 +1087,8 @@ const auditPlatformIcons = [
           const url = new URL(website);
           if (url.protocol === "https:" || url.protocol === "http:") {
             profileRows.appendChild(profileRow("globe", url.hostname.replace(/^www\./, ""), website));
-            void loadLogo(url.toString());
+            const placeId = str("placeId");
+            if (placeId !== "") void loadLogo(placeId);
           }
         } catch {
           /* malformed url: skip the row */

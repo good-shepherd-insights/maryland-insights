@@ -9,5 +9,5 @@ const serviceBySlug: Record<string, AuditService> = {
 
 /** Map a page service slug onto the audit service enum. Unknown slugs are rejected. */
 export function auditServiceFromSlug(slug: string): AuditService | undefined {
-  return serviceBySlug[slug];
+  return Object.hasOwn(serviceBySlug, slug) ? serviceBySlug[slug] : undefined;
 }
