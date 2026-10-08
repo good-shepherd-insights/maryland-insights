@@ -8,6 +8,7 @@ import { sortByDate } from "@/lib/utils/sortFunctions";
 import { markdownify, slugify, humanize, plainify } from "@/lib/utils/textConverter";
 import BlogLibraryGuide from "@/partials/BlogLibraryGuide.astro";
 import CallToAction from "@/partials/CallToAction.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import type { Blog, BlogPosting, Person } from "schema-dts";
 
@@ -199,6 +200,7 @@ const blogIndexSchema: Blog = {
       }
     </div>
   </section>
+  <Faqs prefix="blog-faq" />
   <CallToAction />
 </Base>
 

@@ -3,6 +3,7 @@ import Base from "@/layouts/Base.astro";
 import { getListPage } from "@/lib/contentParser.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import IntegrationCard from "../components/IntegrationCard.astro";
 import type { CollectionPage } from "schema-dts";
@@ -55,5 +56,6 @@ const collectionSchema: CollectionPage = {
     </div>
   </section>
 
+  <Faqs prefix="tools-faq" />
   <CallToAction />
 </Base>
