@@ -6,6 +6,10 @@ type ResourceItem = {
   url: string;
   /** Short label chip (e.g. "EDO", "County site"). Keep it brief — it sits on one line. */
   type?: string;
+  /** Official mark. Square SVG when the organization publishes one; PNG when they don't. */
+  logo?: string;
+  /** The mark already contains the name, so the row shows the logo with the link under it. */
+  wordmark?: boolean;
 };
 
 type ResourceGroup = {
@@ -65,6 +69,39 @@ const governmentDataAdditions: ResourceItem[] = [
   { name: "Montgomery County GIS", url: "https://www.montgomerycountymd.gov/geographic-information-systems/gis-data" },
 ];
 
+const wordmarkNames = new Set([
+  "Bing",
+  "Trustpilot",
+  "Maryland Open Data",
+  "Howard County",
+  "MDOT",
+  "Maryland iMap",
+]);
+
+const resourceLogos: Record<string, string> = {
+  "Google Business Profile": "/images/brand/official/google-business-profile.svg",
+  Bing: "/images/brand/official/directory/bing.svg",
+  Yelp: "/images/brand/official/directory/yelp.svg",
+  Facebook: "/images/brand/official/directory/facebook.svg",
+  Angi: "/images/brand/official/directory/angi.svg",
+  "Better Business Bureau": "/images/brand/official/directory/bbb.svg",
+  Nextdoor: "/images/brand/official/directory/nextdoor.svg",
+  Trustpilot: "/images/brand/official/directory/trustpilot.svg",
+  ConsumerAffairs: "/images/brand/official/directory/consumeraffairs.png",
+  "Maryland Open Data": "/images/brand/official/directory/maryland-open-data.png",
+  "U.S. Census Bureau": "/images/brand/official/directory/census.svg",
+  "Prince George's County": "/images/brand/official/directory/prince-georges.svg",
+  "Montgomery County": "/images/brand/official/directory/montgomery.svg",
+  "Baltimore City": "/images/brand/official/directory/baltimore-city.svg",
+  "Baltimore County": "/images/brand/official/directory/baltimore-county.svg",
+  "Howard County": "/images/brand/official/directory/howard.svg",
+  "Anne Arundel County": "/images/brand/official/directory/anne-arundel.svg",
+  "Frederick County GIS": "/images/brand/official/directory/frederick.png",
+  "Maryland iMap": "/images/brand/official/directory/maryland-imap.png",
+  MDOT: "/images/brand/official/directory/mdot.svg",
+  "Montgomery County GIS": "/images/brand/official/directory/montgomery.svg",
+};
+
 const listingPlatformAdditions: ResourceItem[] = [
   { name: "Facebook", url: "https://www.facebook.com/recommendations" },
   { name: "Angi", url: "https://www.angi.com" },
@@ -109,6 +146,11 @@ const shown = groups
       items.push(...listingPlatformAdditions.filter((item) => !existing.has(item.name)));
     }
 
+    items.forEach((item) => {
+      item.logo = resourceLogos[item.name] ?? item.logo;
+      item.wordmark = wordmarkNames.has(item.name) || item.wordmark;
+    });
+
     return {
       ...group,
       items,
@@ -138,6 +180,15 @@ const hostOf = (url: string): string => {
     return "";
   }
 };
+
+const logoClass =
+  "mt-0.5 h-8 w-auto max-w-44 shrink-0 object-contain object-left";
+
+const wordmarkLogoClass =
+  "h-8 w-auto max-w-44 shrink-0 object-contain object-left";
+
+const wordmarkLinkClass =
+  "min-w-0 flex-1 break-words text-xs text-text-light underline decoration-transparent underline-offset-2 transition-[color,text-decoration-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none group-hover:decoration-primary/60 group-hover:text-primary [overflow-wrap:anywhere]";
 
 const arrowClass =
   "h-3.5 w-3.5 shrink-0 text-text-light transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none group-hover:text-primary";
@@ -199,34 +250,68 @@ const shellClass =
                   <ul class:list={["mt-4", { "border-t border-border": group.description }]}>
                     {group.items.map((item) => (
                       <li class="min-w-0 border-b border-border/70 last:border-b-0">
-                        <a
-                          href={item.url}
-                          target={isInternal(item.url) ? undefined : "_blank"}
-                          rel={isInternal(item.url) ? undefined : "noopener noreferrer nofollow"}
-                          class="group flex min-w-0 items-start gap-3 py-3.5"
-                        >
-                          <span class="min-w-0 flex-1">
-                            <span class={linkClass}>{item.name}</span>
-                            {!isInternal(item.url) && hostOf(item.url) !== "" && (
-                              <span class="mt-0.5 block min-w-0 text-xs text-text-light break-words [overflow-wrap:anywhere]">
-                                {hostOf(item.url)}
-                              </span>
-                            )}
-                          </span>
-                          <svg
-                            class={`mt-1 ${arrowClass}`}
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            aria-hidden="true"
+                        {item.wordmark ? (
+                          <a
+                            href={item.url}
+                            target={isInternal(item.url) ? undefined : "_blank"}
+                            rel={isInternal(item.url) ? undefined : "noopener noreferrer nofollow"}
+                            class="group flex min-w-0 flex-col items-start py-3.5"
                           >
-                            <path d="M2.5 8h11" />
-                            <path d="M9 3.5L13.5 8 9 12.5" />
-                          </svg>
-                        </a>
+                            {item.logo && (
+                              <img src={item.logo} alt={item.name} loading="lazy" decoding="async" class={wordmarkLogoClass} />
+                            )}
+                            <span class="mt-1.5 flex w-full min-w-0 items-center gap-3">
+                              {!isInternal(item.url) && hostOf(item.url) !== "" && (
+                                <span class={wordmarkLinkClass}>{hostOf(item.url)}</span>
+                              )}
+                              <svg
+                                class={arrowClass}
+                                viewBox="0 0 16 16"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                              >
+                                <path d="M2.5 8h11" />
+                                <path d="M9 3.5L13.5 8 9 12.5" />
+                              </svg>
+                            </span>
+                          </a>
+                        ) : (
+                          <a
+                            href={item.url}
+                            target={isInternal(item.url) ? undefined : "_blank"}
+                            rel={isInternal(item.url) ? undefined : "noopener noreferrer nofollow"}
+                            class="group flex min-w-0 items-start gap-3 py-3.5"
+                          >
+                            {item.logo && (
+                              <img src={item.logo} alt="" aria-hidden="true" loading="lazy" decoding="async" class={logoClass} />
+                            )}
+                            <span class="min-w-0 flex-1">
+                              <span class={linkClass}>{item.name}</span>
+                              {!isInternal(item.url) && hostOf(item.url) !== "" && (
+                                <span class="mt-0.5 block min-w-0 text-xs text-text-light break-words [overflow-wrap:anywhere]">
+                                  {hostOf(item.url)}
+                                </span>
+                              )}
+                            </span>
+                            <svg
+                              class={`mt-1 ${arrowClass}`}
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              aria-hidden="true"
+                            >
+                              <path d="M2.5 8h11" />
+                              <path d="M9 3.5L13.5 8 9 12.5" />
+                            </svg>
+                          </a>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -256,8 +341,11 @@ const shellClass =
                         href={item.url}
                         target={isInternal(item.url) ? undefined : "_blank"}
                         rel={isInternal(item.url) ? undefined : "noopener noreferrer nofollow"}
-                        class="group flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1 py-4"
+                        class="group flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1 py-4"
                       >
+                        {item.logo && (
+                          <img src={item.logo} alt="" aria-hidden="true" loading="lazy" decoding="async" class={logoClass} />
+                        )}
                         <span class:list={["min-w-0 flex-1", linkClass]}>
                           {item.name}
                           {!isInternal(item.url) && hostOf(item.url) !== "" && (
@@ -309,6 +397,9 @@ const shellClass =
                         rel={isInternal(item.url) ? undefined : "noopener noreferrer nofollow"}
                         class="group inline-flex max-w-full min-w-0 items-center gap-2 rounded-full border border-border bg-body px-4 py-2 text-sm transition-[border-color,color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none hover:border-primary/70 hover:text-primary"
                       >
+                        {item.logo && (
+                          <img src={item.logo} alt="" aria-hidden="true" loading="lazy" decoding="async" class="h-5 w-auto max-w-16 shrink-0 object-contain object-left" />
+                        )}
                         <span class="min-w-0 break-words font-semibold [overflow-wrap:anywhere]">
                           {item.name}
                           {item.type && (

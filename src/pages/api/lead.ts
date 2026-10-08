@@ -1,9 +1,10 @@
+import { auditServiceFromSlug } from "@/lib/crm/auditService";
+
 export const prerender = false;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_FIELD_LEN = 2000;
 const CRM_TIMEOUT_MS = 8000;
-const PLACE_ID_PATTERN = /^[A-Za-z0-9_-]{10,90}$/;
 
 /** Trim and cap submitted text fields before sending lead data to the CRM. */
 function normalizeLead(body: Record<string, unknown>) {
@@ -16,7 +17,7 @@ function normalizeLead(body: Record<string, unknown>) {
   return clean;
 }
 
-/** Validate a lead and store its email and audit context in the CRM. */
+/** Validate a lead and store its email on an audit report. */
 export async function POST({ request }: { request: Request }) {
   const contentType = request.headers.get("content-type") ?? "";
   const parsed: unknown = contentType.includes("application/json")
@@ -35,7 +36,8 @@ export async function POST({ request }: { request: Request }) {
   }
 
   const email = (lead.email ?? "").toLowerCase();
-  if (!emailPattern.test(email)) {
+  const service = auditServiceFromSlug(lead.service ?? "");
+  if (!emailPattern.test(email) || !service) {
     return new Response(null, { status: 400 });
   }
 
@@ -43,22 +45,16 @@ export async function POST({ request }: { request: Request }) {
     return new Response(null, { status: 500 });
   }
 
-  // The existing newsletter object has `name` and `email`, but no separate
-  // business or Place ID fields. Keep both audit details in its text field.
-  const business = (lead.business ?? "").slice(0, 120);
-  const placeId = PLACE_ID_PATTERN.test(lead.googlePlaceId ?? "") ? lead.googlePlaceId : "";
-  const auditContext = [business, placeId ? `Google Place ID: ${placeId}` : ""].filter(Boolean).join(" | ");
-
   try {
-    const res = await fetch("https://crm.marylandinsights.com/rest/newsletter", {
+    const res = await fetch("https://crm.marylandinsights.com/rest/audits", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${import.meta.env.TWENTY_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: { primaryEmail: email },
-        ...(auditContext ? { name: auditContext } : {}),
+        email: [email],
+        service,
       }),
       signal: AbortSignal.timeout(CRM_TIMEOUT_MS),
     });

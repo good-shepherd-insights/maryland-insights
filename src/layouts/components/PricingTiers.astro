@@ -11,6 +11,8 @@ type Tier = {
   excludes?: string[];
   ctaLabel?: string;
   ctaHref?: string;
+  /** When set, the card CTA is an email field plus submit button instead of a link. */
+  collectEmail?: boolean;
   /** Highlight treatment carried over from the existing pricing surface: the ReplacesTable `isUs` tint adapted to a border tint plus the LeadCaptureForm pill. Pass a string to author the pill label; `true` renders "Recommended". */
   recommended?: boolean | string;
 };
@@ -71,6 +73,12 @@ const iconAttrs = {
   "stroke-linejoin": "round",
   "aria-hidden": "true",
 } as const;
+
+const ctaClass =
+  "btn btn-primary inline-flex min-h-12 w-full items-center justify-center px-6 py-3 text-center font-secondary font-semibold text-dark hover:border-dark hover:bg-dark hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark sm:w-auto";
+
+const emailInputClass =
+  "w-full min-w-0 rounded-none border border-border bg-light/40 px-4 py-3.5 text-base text-text-dark placeholder:text-text-light transition-colors hover:border-text-light focus:border-primary focus:ring-1 focus:ring-primary/20";
 
 const pillClass =
   "mb-4 inline-flex max-w-full items-center gap-2 rounded-full bg-secondary/25 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-text-dark";
@@ -181,9 +189,29 @@ const recommendedLabel = (tier: Tier): string =>
                     </div>
                   )}
 
-                  {tier.ctaLabel && tier.ctaHref && (
+                  {tier.collectEmail && tier.ctaLabel && (
+                    <form class="mt-auto w-full pt-8" data-waitlist-form action="/api/waitlist" method="post">
+                      <label class="mb-2 block text-sm font-semibold text-text-dark" for={`waitlist-email-${slugify(tier.name)}`}>
+                        Email address
+                      </label>
+                      <input
+                        id={`waitlist-email-${slugify(tier.name)}`}
+                        name="email"
+                        type="email"
+                        autocomplete="email"
+                        required
+                        class:list={[emailInputClass, "mb-3"]}
+                      />
+                      <button type="submit" class={ctaClass}>
+                        {tier.ctaLabel}
+                      </button>
+                      <p data-waitlist-status aria-live="polite" class="mt-3 text-sm font-semibold text-primary" hidden></p>
+                    </form>
+                  )}
+
+                  {!tier.collectEmail && tier.ctaLabel && tier.ctaHref && (
                     <div class="mt-auto pt-8">
-                      <a href={tier.ctaHref} class="btn inline-flex min-h-12 w-full items-center justify-center border-secondary bg-secondary px-6 py-3 text-center font-secondary font-semibold text-dark hover:border-dark hover:bg-dark hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark sm:w-auto">
+                      <a href={tier.ctaHref} class={ctaClass}>
                         {tier.ctaLabel}
                       </a>
                     </div>
@@ -270,3 +298,32 @@ const recommendedLabel = (tier: Tier): string =>
     </section>
   )
 }
+
+<script>
+  document.querySelectorAll<HTMLFormElement>("[data-waitlist-form]").forEach((form) => {
+    const status = form.querySelector<HTMLElement>("[data-waitlist-status]");
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (button) button.disabled = true;
+      if (status) {
+        status.hidden = false;
+        status.textContent = "Joining the waitlist…";
+      }
+
+      const email = String(new FormData(form).get("email") ?? "");
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      }).catch(() => null);
+
+      if (status) {
+        status.textContent = res?.ok ? "You're on the waitlist." : "Could not join the waitlist. Try again.";
+      }
+      if (res?.ok) form.reset();
+      if (button) button.disabled = false;
+    });
+  });
+</script>
