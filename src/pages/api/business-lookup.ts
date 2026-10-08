@@ -43,7 +43,7 @@ const NON_BUSINESS_TYPES = new Set([
   "political",
 ]);
 const DETAILS_FIELD_MASK =
-  "id,displayName,types,formattedAddress,nationalPhoneNumber,internationalPhoneNumber,primaryType,primaryTypeDisplayName,googleMapsTypeLabel,businessStatus,rating,userRatingCount,addressComponents,currentOpeningHours,regularOpeningHours,websiteUri,googleMapsUri,googleMapsLinks,pureServiceAreaBusiness,iconMaskBaseUri,iconBackgroundColor";
+  "id,displayName.text,types,formattedAddress,nationalPhoneNumber,primaryType,primaryTypeDisplayName.text,googleMapsTypeLabel.text,rating,userRatingCount,addressComponents.longText,addressComponents.types,websiteUri,googleMapsUri,googleMapsLinks.placeUri,googleMapsLinks.reviewsUri,iconMaskBaseUri,iconBackgroundColor";
 
 const PLACE_ID_PATTERN = /^[A-Za-z0-9_-]{10,90}$/;
 const CONTROL_CHARS = /[\u0000-\u001f\u007f]/g;
@@ -51,7 +51,6 @@ const CONTROL_CHARS = /[\u0000-\u001f\u007f]/g;
 const LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const LIMIT_AUTOCOMPLETE = 30;
 const LIMIT_DETAILS = 10;
-const GOOGLE_TIMEOUT_MS = 5000;
 
 // Best-effort per-IP token bucket: serverless instances keep this in-memory state only per warm container,
 // so limits are approximate under scale-to-zero/multiple regions — never a security boundary.
@@ -78,6 +77,8 @@ function takeRequest(ip: string, mode: "autocomplete" | "details"): boolean {
   return true;
 }
 
+const GOOGLE_TIMEOUT_MS = 5000;
+
 /** Return a JSON response with the requested status code. */
 function json(status: number, payload: unknown): Response {
   return new Response(JSON.stringify(payload), {
@@ -97,14 +98,6 @@ function cap(value: unknown, max: number): string | null {
 function numberOr(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
-
-const BUSINESS_STATUSES: Record<string, string> = {
-  BUSINESS_STATUS_UNSPECIFIED: "unspecified",
-  OPERATIONAL: "operational",
-  CLOSED_PERMANENTLY: "permanently closed",
-  CLOSED_TEMPORARILY: "temporarily closed",
-  FUTURE_OPENING: "opening soon",
-};
 
 type Suggestion = {
   placePrediction?: {
@@ -127,21 +120,15 @@ type Place = {
   primaryType?: string;
   primaryTypeDisplayName?: { text?: string };
   googleMapsTypeLabel?: { text?: string };
-  businessStatus?: string;
   rating?: number;
   userRatingCount?: number;
   addressComponents?: Array<{ longText?: string; types?: string[] }>;
-  currentOpeningHours?: OpeningHours;
-  regularOpeningHours?: OpeningHours;
   websiteUri?: string;
   googleMapsUri?: string;
   googleMapsLinks?: {
     placeUri?: string;
-    directionsUri?: string;
     reviewsUri?: string;
-    photosUri?: string;
   };
-  pureServiceAreaBusiness?: boolean;
   iconMaskBaseUri?: string;
   iconBackgroundColor?: string;
 };
@@ -151,23 +138,6 @@ function isBusiness(types: unknown): boolean {
   if (!Array.isArray(types)) return false;
   const placeTypes = types.filter((type): type is string => typeof type === "string");
   return placeTypes.includes("establishment") && !placeTypes.some((type) => NON_BUSINESS_TYPES.has(type));
-}
-
-type OpeningHours = {
-  weekdayDescriptions?: string[];
-  openNow?: boolean;
-  nextOpenTime?: string;
-  nextCloseTime?: string;
-};
-
-/** Keep a bounded list of nonempty strings from a Places field. */
-function stringList(value: unknown, maxItems: number, maxLength: number): string[] {
-  if (!Array.isArray(value)) return [];
-  return value
-    .filter((item): item is string => typeof item === "string")
-    .map((item) => item.trim().slice(0, maxLength))
-    .filter(Boolean)
-    .slice(0, maxItems);
 }
 
 /** Allow only Google's map icon host when building a category icon URL. */
@@ -271,7 +241,6 @@ async function handleDetails(apiKey: string, placeId: string): Promise<Response>
   const countyComponent = (Array.isArray(place.addressComponents) ? place.addressComponents : []).find(
     (component) => Array.isArray(component.types) && component.types.includes("administrative_area_level_2"),
   );
-  const openingHours = place.currentOpeningHours ?? place.regularOpeningHours;
   const mapsLinks = place.googleMapsLinks;
 
   // Whitelist only: pick each field explicitly and cap lengths; no raw Google data leaks through.
@@ -288,23 +257,14 @@ async function handleDetails(apiKey: string, placeId: string): Promise<Response>
     categoryIconUrl: googleIconUrl(place.iconMaskBaseUri),
     categoryIconBackground: hexColor(place.iconBackgroundColor),
     website: cap(place.websiteUri, 300),
-    hours: stringList(openingHours?.weekdayDescriptions, 7, 100),
-    openNow: typeof openingHours?.openNow === "boolean" ? openingHours.openNow : null,
-    nextOpenTime: cap(openingHours?.nextOpenTime, 40),
-    nextCloseTime: cap(openingHours?.nextCloseTime, 40),
     rating: numberOr(place.rating),
     reviewCount: numberOr(place.userRatingCount),
-    businessStatus: (typeof place.businessStatus === "string" && BUSINESS_STATUSES[place.businessStatus]) || null,
-    pureServiceAreaBusiness:
-      typeof place.pureServiceAreaBusiness === "boolean" ? place.pureServiceAreaBusiness : null,
     mapsUrl: cap(mapsLinks?.placeUri, 300) ?? cap(place.googleMapsUri, 300),
-    directionsUrl: cap(mapsLinks?.directionsUri, 300),
     reviewsUrl: cap(mapsLinks?.reviewsUri, 300),
-    photosUrl: cap(mapsLinks?.photosUri, 300),
   });
 }
 
-/** Validate and rate-limit incoming autocomplete or details requests. */
+/** Validate incoming autocomplete or details requests. */
 export async function POST({ request, clientAddress }: APIContext): Promise<Response> {
   const contentType = request.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) {
