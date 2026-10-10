@@ -57,10 +57,10 @@ agents_swiper:
       image: "/images/services/aeo-optimization.svg"
       image_bg: true
       points:
-        - "**Question-based content**: pages rebuilt around the real questions your customers ask."
-        - "**Schema markup**: structured data so AI engines surface your services, location, and hours accurately."
-        - "**Featured snippet optimization**: key pages formatted to win answer boxes for high-value local queries."
-        - "**Ongoing monitoring**: visibility trends and keyword performance tracked over time."
+        - "**AI search for Maryland**: cited as the answer across Google AI, ChatGPT, and voice."
+        - "**ChatGPT visibility**: Maryland customers get your business as the answer, with the facts straight."
+        - "**Question-based pages**: content built around the real questions your Maryland customers ask every day."
+        - "**Answer monitoring**: watch what AI says about your Maryland business, kept accurate."
       button:
         enable: true
         label: "Explore AEO Optimization"
@@ -71,10 +71,10 @@ agents_swiper:
       image: "/images/services/local-seo.svg"
       image_bg: true
       points:
-        - "**Google Business Profile, fully optimized**: categories, services, photos, hours, and service-area data."
-        - "**Listings cleaned up and built out**: consistent name, address, and phone across Maryland directories and national aggregators."
-        - "**A steady review pipeline**: review generation and management that builds credibility against local competitors."
-        - "**Neighborhood and zip-code targeting**: rank where you actually work, not just your street address."
+        - "**Google Business Profile Maryland**: categories, services, photos, and hours set to win your counties."
+        - "**Maryland directory listings**: name, address, and phone consistent across Maryland directories where customers look."
+        - "**Maryland customer reviews**: a steady flow from happy customers, building trust against nearby competitors."
+        - "**County and zip targeting**: rank across the Maryland counties you serve, down to the zip code."
       button:
         enable: true
         label: "Explore Local SEO"
