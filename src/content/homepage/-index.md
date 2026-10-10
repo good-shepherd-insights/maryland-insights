@@ -43,10 +43,10 @@ agents_swiper:
       image: "/images/services/website-hosting.svg"
       image_bg: true
       points:
-        - "**Maryland website hosting**: fast and secure, turning your county visitors into customer calls."
-        - "**Local SEO Maryland**: show up where your counties search from day one, with every page working to win the call."
-        - "**Fast hosting that sells**: loads quick on every phone, turning visits into calls."
-        - "**Room to grow**: add pages, services, and content any time, nothing ever needs rebuilding."
+        - "**Maryland website hosting**: Your site loads fast and stays secure on Maryland ground, turning county visitors into customer calls."
+        - "**Local SEO Maryland**: From day one your business stands where your counties search, every page built on ground that earns the call."
+        - "**Fast hosting that sells**: Pages load quick on every phone because the ground underneath is solid, and visits turn into calls."
+        - "**Room to grow**: Add pages, services, and content any time; the ground holds them all without ever needing a rebuild."
       button:
         enable: true
         label: "Explore Website Hosting"
@@ -57,10 +57,10 @@ agents_swiper:
       image: "/images/services/aeo-optimization.svg"
       image_bg: true
       points:
-        - "**AI search for Maryland**: cited as the answer across Google AI, ChatGPT, and voice."
-        - "**ChatGPT visibility**: Maryland customers get your business as the answer, with the facts straight."
-        - "**Question-based pages**: content built around the real questions your Maryland customers ask every day."
-        - "**Answer monitoring**: watch what AI says about your Maryland business, kept accurate."
+        - "**AI search for Maryland**: When Maryland customers ask ChatGPT or a voice assistant, yours is the business named, on facts kept straight and current."
+        - "**ChatGPT visibility**: Maryland customers hear your business named as the answer, because your facts are the clearest ones kept."
+        - "**Question-based pages**: Every page opens with the plain answer to a real Maryland customer question, then earns the detail after."
+        - "**Answer monitoring**: Every mention of your Maryland business is watched and every fact kept current, like a ledger that never goes stale."
       button:
         enable: true
         label: "Explore AEO Optimization"
@@ -71,10 +71,10 @@ agents_swiper:
       image: "/images/services/local-seo.svg"
       image_bg: true
       points:
-        - "**Google Business Profile Maryland**: categories, services, photos, and hours set to win your counties."
-        - "**Maryland directory listings**: name, address, and phone consistent across Maryland directories where customers look."
-        - "**Maryland customer reviews**: a steady flow from happy customers, building trust against nearby competitors."
-        - "**County and zip targeting**: rank across the Maryland counties you serve, down to the zip code."
+        - "**Google Business Profile Maryland**: Your categories, services, photos, and hours are set to win your counties, steady as a courthouse record."
+        - "**Maryland directory listings**: Your name, address, and phone stand as one true record, repeated identically in every Maryland directory customers check."
+        - "**Maryland customer reviews**: A steady stream of reviews from real Maryland customers becomes the public record competitors cannot buy."
+        - "**County and zip targeting**: You rank across the Maryland counties you serve, down to the zip code, on ground built for each."
       button:
         enable: true
         label: "Explore Local SEO"
@@ -85,10 +85,10 @@ agents_swiper:
       image: "/images/services/analytics-reporting.svg"
       image_bg: true
       points:
-        - "**Maryland marketing analytics**: see which counties bring your calls, which pages lose them, all in one place."
-        - "**Call tracking Maryland**: trace every single call back to the page that earned it."
-        - "**Marketing reports Maryland**: read the numbers, know the moves. Every report covers your counties in plain words and ends with your next steps."
-        - "**Monthly optimization**: every month, your real Maryland numbers point to the next win."
+        - "**Maryland marketing analytics**: One place shows which counties bring your calls and which pages lose them, translated into plain Maryland words."
+        - "**Call tracking Maryland**: Each call carries its origin with it, traced to the page that earned it, so the working parts stay visible."
+        - "**Marketing reports Maryland**: Reports speak plain Maryland about your counties and end with next steps, because a chart never made a decision."
+        - "**Monthly optimization**: Each month your real Maryland numbers point to the next win, and the ground adjusts underneath."
       button:
         enable: true
         label: "Explore Analytics and Reporting"
@@ -99,10 +99,10 @@ agents_swiper:
       image: "/images/services/marketing-automation.svg"
       image_bg: true
       points:
-        - "**Automated lead follow-up**: Maryland inquiries answered in minutes, chased until they buy."
-        - "**Email and SMS marketing**: texts and emails go out when Maryland customers act, or go quiet."
-        - "**Review generation Maryland**: happy customers asked when most likely to say yes."
-        - "**Lead management**: new inquiries flow straight into follow-up, nothing slips through."
+        - "**Automated lead follow-up**: No Maryland inquiry waits: each is answered in minutes and followed until it buys, on ground that never forgets."
+        - "**Email and SMS marketing**: The ground sends texts and emails when Maryland customers act or go quiet, timed to the moment itself."
+        - "**Review generation Maryland**: The ask goes out when goodwill runs highest, right after the work is done, and the ground keeps the timing."
+        - "**Lead management**: Every new inquiry is caught and walked into follow-up on solid ground, so none ever wait or vanish."
       button:
         enable: true
         label: "Explore Marketing Automation"
@@ -113,10 +113,10 @@ agents_swiper:
       image: "/images/services/ai-powered-content.svg"
       image_bg: true
       points:
-        - "**Maryland keyword research**: AI maps massive county search demand you'd never find by hand."
-        - "**Maryland search trends**: spot what your counties want before your competitors do."
-        - "**Data-driven content**: that research becomes pages targeting proven demand."
-        - "**Your approval first**: nothing goes live until you've read and approved it."
+        - "**Maryland keyword research**: It finds the county search demand you would never find by hand, and your pages stand on what it finds."
+        - "**Maryland search trends**: You spot what your counties want before your competitors do, because the ground watches every season."
+        - "**Data-driven content**: That research becomes pages your Maryland customers were already looking for, written in the voice they trust."
+        - "**Your approval first**: Nothing goes live until you have read and approved it; the ground works for you, not the reverse."
       button:
         enable: true
         label: "Explore AI-Powered Content"
