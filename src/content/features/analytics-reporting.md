@@ -1,7 +1,7 @@
 ---
 title: "Real-Time Growth"
 meta_title: "Analytics and Reporting for Maryland Small Businesses | Maryland Insights"
-description: "One clear view of website activity, leads, local visibility, and marketing performance—so you know where business is coming from and what deserves your next dollar."
+description: "One clear view of your calls, leads, and visibility. See where business comes from and where your next dollar goes."
 image: "/images/features/ai-powered-content.svg"
 button:
   enable: true

@@ -1,7 +1,7 @@
 ---
 title: "Total Search Visibility"
 meta_title: "AI Content for Maryland Small Businesses | Maryland Insights"
-description: "Keep your business information accurate and visible across the places Maryland customers search—Google, maps, directories, and emerging AI search tools."
+description: "Your hours, services, and reviews stay accurate everywhere Maryland customers look. Google, maps, directories, ChatGPT, and voice assistants."
 image: "/images/features/local-seo.svg"
 button:
   enable: true

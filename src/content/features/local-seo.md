@@ -1,7 +1,7 @@
 ---
 title: "Capture Every Lead"
 meta_title: "Local SEO for Maryland Small Businesses | Maryland Insights"
-description: "See new calls, form submissions, messages, and customer inquiries in one place, so your team can respond before a ready-to-buy prospect moves on."
+description: "Every call, form, message, and inquiry lands in one place, so you answer before a ready buyer moves on."
 image: "/images/features/aeo-optimization.svg"
 button:
   enable: true

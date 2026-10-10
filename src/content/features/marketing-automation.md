@@ -1,7 +1,7 @@
 ---
 title: "Automatic Customer Nurturing"
 meta_title: "Marketing Automation for Maryland Small Businesses | Maryland Insights"
-description: "Automatically keep new prospects and existing customers moving with timely texts, emails, reminders, and next steps—without your team having to chase every lead manually."
+description: "Every inquiry gets answered in minutes, then chased with texts and emails until it buys. You never lift a finger."
 image: "/images/features/marketing-automation.svg"
 button:
   enable: true
