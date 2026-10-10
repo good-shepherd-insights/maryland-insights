@@ -17,7 +17,7 @@ faqs_list:
   - question: "Does my Maryland business need a physical location to benefit from Local SEO?"
     answer: "Not necessarily. Service-area businesses such as contractors, cleaners, and mobile service providers can rank prominently in local search without a storefront by properly configuring service area settings in their Google Business Profile and building location-specific content across their website. We work with both brick-and-mortar and service-area businesses across Maryland."
   - question: "Why does my Maryland business show up inconsistently across Google, Yelp, and other directories?"
-    answer: "Inconsistent listings: where your business name, address, or phone number appears differently across platforms: are one of the most common causes of suppressed local rankings. Search engines use these signals to verify your business is legitimate and trustworthy. We audit and correct these inconsistencies across all major platforms and Maryland-specific directories as part of our citation building process."
+    answer: "Inconsistent listings: where your business name, address, and phone appear differently across platforms: are one of the most common causes of suppressed local rankings. Search engines use these signals to verify your business is legitimate and trustworthy. We audit and correct these inconsistencies across all major platforms and Maryland-specific directories as part of our citation building process."
   - question: "Can Local SEO help me rank in multiple Maryland cities or zip codes?"
     answer: "Yes. Through a combination of service area pages, localized content, and proper Google Business Profile configuration, we can help your Maryland business build visibility across multiple cities, neighborhoods, and zip codes: not just the one where your office is located."
 blocks:
@@ -137,38 +137,31 @@ blocks:
     title: "Local SEO visibility is built on infrastructure, not luck"
     tone: "dark"
     body: |
-      **What local SEO actually is:** Google's local results are an entity-verification system. Google doesn't rank the best plumber in Towson — it ranks the plumber it can verify: a real business, at a real location, doing what it claims, with customers who confirm it. Every local ranking factor — your Business Profile, your citations, your reviews, your proximity — is Google checking whether your business is who you say it is.
+      **What local SEO actually is:** Google's local results run a background check on every business. Google doesn't rank the best plumber in Towson — it ranks the plumber it can confirm is real: a real shop, at a real address, doing what it claims, with customers who back it up. Your Google listing, your directory listings, your reviews, your location — each one is Google making sure your business is who you say it is.
 
-      **Why most local SEO fails:** it treats symptoms. A template site with a ranking promise, a listing editor who never touches the systems underneath, a national agency running Maryland as one more spreadsheet row. None of them fix what Google actually verifies, because none of them own the data layer.
+      **Why most local SEO fails:** it treats symptoms. A template website with a ranking promise. A listing editor who never touches the ground underneath. A national agency running Maryland as one more row on a spreadsheet. None of them fix what Google actually checks, because none of them built the ground the business stands on.
 
-      **How we work instead:** we're the foundation layer. We build and host the pages, structure, schema, and listing signals that make a business findable — the pipes behind the walls, run before the drywall goes up. One canonical record of your business facts, pushed everywhere Google checks, structured so machines can read it. When Google changes its algorithm, a site built this way adapts instead of starting over.
+      **How we work instead:** we are the ground. We build and host the pages, the structure, and the listings that make a business findable — the pipes behind the walls, run before the drywall goes up. One true record of your business facts, pushed everywhere your customers look, kept in the format search engines read. When Google changes the rules, ground built this way holds instead of starting over.
 
-      Maryland Insights organizes at the county level because that's how Maryland economic development is organized — and because a Towson contractor is not a Bethesda contractor for the queries that matter. We work at county granularity across Maryland, not nationally. If the market is here, the foundation holds.
+      Maryland Insights organizes at the county level because that's how Maryland does business — and because a Towson contractor is not a Bethesda contractor for the searches that matter. We work county by county across Maryland, not nationally. If the market is here, the ground holds.
   - type: richText
     eyebrow: "How we work"
     title: "Local SEO visibility built on evidence, not broad promises"
     tone: "muted"
     body: |
-      **What we do, concretely:** your business data has one canonical source — name, address, phone, hours, categories, service areas. We establish that source, then push it to every directory your Maryland customers actually check: Google Business Profile first, then Bing Places, Yelp, Apple Maps, and the Maryland-specific directories the local finder surfaces. When your phone number changes, every listing follows the same afternoon. We don't hand-submit 50 forms and call it done; we keep the data layer clean and let the directories do their part.
+      **What we do, concretely:** your business facts live in one true record — name, address, phone, hours, categories, service areas — and your business stands on that record like a house on its foundation. We set the record, then push it to every directory your Maryland customers actually check: Google Business Profile first, then Bing Places, Yelp, Apple Maps, and the Maryland directories the local results surface. When your phone number changes, every listing follows the same afternoon. We don't hand-submit fifty forms and call it done; we keep the record clean and let the directories do their part, month after month.
 
-      **Why this is the work that matters:** Google cross-references your details across the web before it trusts your listing. One conflicting phone number, one outdated address, one wrong category — each is a failed verification that costs you map-pack position. The businesses outranking you usually aren't better optimized; they're just more consistent.
+      **Why this is the work that matters:** Google cross-checks your details across the web before it trusts your listing. One conflicting phone number, one outdated address, one wrong category — each is a failed check that costs you map position. The businesses outranking you usually aren't better at this; they're just standing on cleaner ground.
 
-      **How we build relevance on top of it:** consistency gets you verified, but relevance gets you ranked. We build service pages around the places you actually serve — separating Baltimore City from Montgomery County, keeping service-area language honest, never publishing a county list you can't support. Each page answers what you do, who you help, where you work, and what the customer should do next.
+      **How we build relevance on top of it:** a clean record gets you trusted, but relevance gets you ranked. We build service pages around the places you actually serve — keeping Baltimore City separate from Montgomery County, keeping service-area language honest, never publishing a county list you can't support. Each page answers what you do, who you help, where you work, and what the customer should do next.
 
-      **What we verify before calling it done:**
-
-      - Google Business Profile categories, services, hours, and service-area settings match the business as it actually operates.
-      - Directory listings carry identical core business details — no conflicting phones, addresses, or hours anywhere.
-      - Service pages describe real services for real Maryland communities, with a clear next step for the customer.
-      - Review requests point customers toward genuine experiences, not manufactured testimonials.
-
-      The result is a local presence customers can verify in seconds and search engines can trust without second-guessing — which is what ranking is.
+      **What we verify before calling it done:** your Business Profile categories, services, hours, and service-area settings match the business as it actually operates. Your directory listings carry identical business details — no conflicting phones, addresses, or hours anywhere. Your service pages describe real services for real Maryland communities, with a clear next step for the customer. Your review requests point customers toward genuine experiences, not manufactured testimonials. The result is a local presence customers can confirm in seconds and search engines can trust without second-guessing — which is what ranking actually is.
   - type: featureGrid
     eyebrow: "What gets checked"
     title: "A Local SEO presence customers can verify"
     items:
       - title: "Business details"
-        description: "Your name, address, hours, and phone read the same on every corner of the internet, the way a courthouse record reads the same to everyone who pulls it, and search engines trust that steadiness."
+        description: "Your name, address, phone, and hours read the same on every corner of the internet, the way a courthouse record reads the same to everyone who pulls it, and search engines trust that steadiness."
       - title: "Service relevance"
         description: "Each page serves a real Maryland community you actually work in, written for the people there, never a county name pasted into empty copy."
       - title: "Customer proof"
@@ -180,7 +173,7 @@ blocks:
     steps:
       - number: "01"
         title: "Audit"
-        description: "We pull your actual Google Business Profile, your actual directory listings, your actual site schema — and show you the gaps in plain English."
+        description: "We pull your real Google listing, your real directory listings, and the facts your own website states — then show you where they disagree, in plain English."
         details: |
           **We check:** categories, services, hours, service-area settings, address, phone, website URL, photos, duplicate listings, review history, and whether your site makes the same claims as your profile.
 
@@ -189,7 +182,7 @@ blocks:
           **What you get:** a prioritized record of every conflict, gap, and duplicate, ordered by likely impact on your local rankings.
       - number: "02"
         title: "Align"
-        description: "We reconcile every source so they stop disagreeing with each other."
+        description: "We bring every source into agreement, so your business stands on one true record instead of ten conflicting ones."
         details: |
           **We update:** name, address, phone, categories, hours, services, and service areas across your profile and listings until customers and search engines receive identical information everywhere.
 
@@ -198,7 +191,7 @@ blocks:
           **What you get:** a single canonical business record, documented before and after, verified with you before anything goes live.
       - number: "03"
         title: "Build"
-        description: "We publish the pages and signals that turn verification into relevance — including the structured data that feeds AI answers."
+        description: "We publish the pages that turn trust into rankings — written so plainly that when Maryland customers ask ChatGPT or a voice assistant, yours is the business named."
         details: |
           **Each page answers:** what the business does, who it helps, where it works, what experience backs the service, and what the customer should do next.
 
@@ -207,7 +200,7 @@ blocks:
           **We avoid:** thin pages built to repeat a city name, unsupported ranking claims, and generic copy that could describe any business in any county.
       - number: "04"
         title: "Measure"
-        description: "We track what changed in the metrics that matter: calls, direction requests, and rankings against the ZIP codes you actually serve."
+        description: "We track what changed in the numbers that matter — calls, direction requests, rankings in the ZIP codes you actually serve — and report it back in plain words."
         details: |
           **We review:** which search queries and locations bring attention, which pages earn meaningful visits, calls and forms attributed to the site, and where prospects drop off.
 
@@ -238,7 +231,7 @@ blocks:
     variant: expanded
     eyebrow: "Engagement scope"
     title: "Local SEO engagement scope"
-    situation: "A business with an established but inconsistent local presence: the name, address, phone number, hours, and categories customers use to verify the business conflict across its Google Business Profile, directory listings, and website."
+    situation: "A business with an established but inconsistent local presence: the name, address, phone, hours, and categories customers use to verify the business conflict across its Google Business Profile, directory listings, and website."
     whatWeFound: "A prioritized audit record: conflicting details, duplicate listings, missing information, and pages that needed evidence or clarification before optimization could begin."
     whatChanged: "Name, address, and phone details brought into alignment across the profiles and directories the business appears in. Every change was documented before it was made and verified with the business owner before it was published to a listing."
     outcomes:
@@ -272,7 +265,7 @@ blocks:
     tone: critical
     title: "Honest take on Local SEO"
     body: |
-      Local SEO moves slowly, and the systems it sits on are not ours to control. Google can change how map results rank without notice, and a competitor with a longer review history can outrank a better-optimized page for months.
+      Local SEO moves slowly, and the ground it sits on is not ours to control. Google can change how map results rank without notice, and a competitor with a longer review history can outrank a better-kept listing for months.
 
       What we do control is what customers and search engines can verify: consistent business details, honest service areas, and pages that describe the actual work. We report what changed and what didn't, and we don't promise rankings we can't control.
   - type: comparisonTable
@@ -321,7 +314,7 @@ blocks:
           verification: "Periodic"
           cost: false
       - key: "maryland-insights"
-        label: "Maryland Insights GTM platform"
+        label: "Maryland Insights"
         values:
           scope: true
           ownership: true
@@ -366,9 +359,9 @@ blocks:
     honestTake:
       title: "Honest take on Local SEO"
       body: |
-        No one can guarantee where an AI answer cites you. These systems change without notice, a citation is not a clickable ranking, and the customer may never reach your site.
+        No one can promise where an AI tool names you. These systems change without notice, a mention is not a clickable ranking, and the customer may never reach your site.
 
-        What we can do is make your business the clearest, most verifiable answer to the questions customers actually ask — which is also what wins traditional rankings. We track visibility on these surfaces, report what changes, and don't claim control we don't have.
+        What we can do is make your business the clearest, most verifiable answer to the questions Maryland customers actually ask — which is also what wins traditional rankings. We watch how you show up, report what changes, and don't claim control we don't have.
   - type: resourcesDirectory
     anchor: "resources-public-data-we-work-with"
     eyebrow: "Check our work"
