@@ -1,7 +1,7 @@
 ---
 title: "24/7 Sales Website"
 meta_title: "AEO Optimization for Maryland Small Businesses | Maryland Insights"
-description: "A professionally built Maryland business website designed to answer customer questions, build confidence, and make it easy to call, request a quote, or book."
+description: "Your Maryland website answers questions, builds confidence, and makes it easy to call, get a quote, or book. Day and night."
 image: "/images/features/website-hosting.svg"
 button:
   enable: true

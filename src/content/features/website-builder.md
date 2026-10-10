@@ -1,7 +1,7 @@
 ---
 title: "5-Star Review System"
 meta_title: "Website Builder for Maryland Small Businesses | Maryland Insights"
-description: "Turn customer feedback into a stronger reputation with a simple system for generating reviews, monitoring what people say, and protecting your name online."
+description: "Happy customers get asked at the right moment. Every review gets seen, answered, and put to work winning the next one."
 image: "/images/features/analytics-reporting.svg"
 button:
   enable: true
