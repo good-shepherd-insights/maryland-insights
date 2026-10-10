@@ -265,9 +265,9 @@ blocks:
     tone: critical
     title: "Honest take on Local SEO"
     body: |
-      Local SEO moves slowly, and the ground it sits on is not ours to control. Google can change how map results rank without notice, and a competitor with a longer review history can outrank a better-kept listing for months.
+      The uncomfortable truth: Local SEO moves slowly, and the ground beneath it belongs to Google. Map rankings shift without explanation. A competitor with five years of reviews can outrank a better run business for months.
 
-      What we do control is what customers and search engines can verify: consistent business details, honest service areas, and pages that describe the actual work. We report what changed and what didn't, and we don't promise rankings we can't control.
+      What stays controllable is narrower: consistent business details, defensible service areas, pages about real work, honest reporting on what moved. That is the whole promise. Anything beyond verification is speculation, and speculation is not for sale here.
   - type: comparisonTable
     eyebrow: "Comparison"
     title: "How the usual ways to get local SEO help compare"
