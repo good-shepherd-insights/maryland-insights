@@ -93,7 +93,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
             const last = i === agents.length - 1;
             return (
               <div id={`ds-panel-${panelId}`} data-ds-panel={panelId} class="ds-panel sticky">
-                <div class="ds-card flex flex-col border border-dark bg-body lg:grid lg:grid-cols-[minmax(0,28%)_1fr] lg:items-stretch lg:min-h-[520px] lg:pl-[30px] lg:pr-[30px] lg:py-7 xl:grid-cols-[minmax(0,34%)_1fr] xl:pl-[40px] xl:pr-[40px]">
+                <div class="ds-card relative flex flex-col border border-dark bg-body lg:grid lg:grid-cols-[minmax(0,28%)_1fr] lg:items-stretch lg:min-h-[520px] lg:pl-[30px] lg:pr-[30px] lg:py-7 xl:grid-cols-[minmax(0,34%)_1fr] xl:pl-[40px] xl:pr-[40px]">
                   <!-- Visual: vector centered on mobile/MD, full-size on desktop -->
                   <div class="flex flex-col items-center gap-5 px-5 pt-5 pb-4 sm:px-8 md:pt-10 md:pb-8">
                     {agent.image && (
@@ -111,11 +111,24 @@ const tabs = agents?.map((agent: any, i: number) => ({
                   </div>
 
                   <!-- Copy -->
-                  <div class="flex w-full min-w-0 flex-1 flex-col px-4 pt-4 pb-5 sm:px-6 md:pt-6 md:pb-6 lg:px-0 lg:pt-4 lg:pb-4 lg:pl-8 lg:pr-0 xl:pl-10">
+                  <div class="flex w-full min-w-0 flex-1 flex-col px-4 pt-4 pb-16 sm:px-6 md:pt-6 md:pb-6 lg:px-0 lg:pt-4 lg:pb-4 lg:pl-8 lg:pr-0 xl:pl-10">
                     <div class="flex items-center gap-3">
                       <span class="ds-num-chip text-sm" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
                     </div>
                     <h2 class="mt-3.5 text-[22px] leading-snug text-text-dark sm:text-[26px] lg:text-[28px]">{markdownify(agent.label)}</h2>
+                    {agent.button?.enable && (
+                      <a
+                        href={agent.button.link}
+                        target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
+                        rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
+                        class="ds-cta mt-3 inline-flex w-fit items-center gap-2 text-sm font-bold tracking-[0.02em] md:hidden"
+                      >
+                        {agent.button.label}
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                          <path d="M2 6h8M6.5 2.5L10 6l-3.5 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </a>
+                    )}
                     <div
                       class="ds-muted mt-4 max-w-[68ch] text-[13px] leading-normal sm:text-sm sm:leading-snug lg:mt-4 lg:max-w-[75ch] lg:text-[18px] lg:leading-snug [&_p]:my-0 [&_p]:max-w-[68ch] [&_p]:lg:max-w-[75ch]"
                       set:html={markdownify(agent.description, true)}
@@ -144,7 +157,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                         href={agent.button.link}
                         target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
                         rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
-                        class="ds-cta mt-auto inline-flex w-fit items-center gap-2 pt-6 md:pt-10 lg:pt-6 text-sm lg:text-[16px] font-bold tracking-[0.02em]"
+                        class="ds-cta mt-auto hidden w-fit items-center gap-2 pt-6 md:pt-10 lg:pt-6 text-sm lg:text-[16px] font-bold tracking-[0.02em] md:inline-flex"
                       >
                         {agent.button.label}
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="lg:h-[16px] lg:w-[16px]">
@@ -153,6 +166,19 @@ const tabs = agents?.map((agent: any, i: number) => ({
                       </a>
                     )}
                   </div>
+                  {agent.button?.enable && (
+                    <a
+                      href={agent.button.link}
+                      target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
+                      rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
+                      aria-label={`Explore ${agent.label}`}
+                      class="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-md md:hidden"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                        <path d="M3 9h12M10 4.5L14.5 9 10 13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </a>
+                  )}
                 </div>
                 {
                   !last && (
