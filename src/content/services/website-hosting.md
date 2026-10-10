@@ -1,7 +1,7 @@
 ---
 title: "Website Hosting"
 meta_title: "Website Hosting for Maryland Businesses | Maryland Insights"
-description: "Maryland Insights hosts engineering-grade sites on the open-source stack the enterprises run on. Fast on mobile. Structured for local search. Ready to scale with the business."
+description: "Most business websites are rented rooms on someone else's land. Yours stands on Maryland ground built to hold weight for decades. It loads fast on customer phones, shows up when neighbors search, and grows with the business — and you never think about what keeps it running, because Maryland people who answer to Maryland businesses handle that every month."
 image: "/images/services/website-hosting.svg"
 button:
   enable: true
@@ -33,13 +33,13 @@ blocks:
     title: "Built for speed, not just launch day"
     items:
       - title: "Static-first rendering"
-        description: "Pages are generated ahead of time instead of assembled on every request, so load speed doesn't depend on server load."
+        description: "Your site loads fast for the first customer of the day and the thousandth, because every page is built ahead of time on Maryland ground that does not buckle under traffic."
       - title: "Automatic image optimization"
-        description: "Every image is processed into the right size and format for the device requesting it, without a manual export step."
+        description: "Images are prepared automatically for every screen size, so your site stays fast for customers on phones without anyone touching an export setting, month after month on solid ground."
       - title: "Containerized deployment"
-        description: "Every release ships through the same build process, so what was reviewed is exactly what goes live."
+        description: "The site your customers see is the site you approved, because every release walks the same tested road from your sign-off to their screens, and Maryland ground does not shift between the two."
       - title: "Room to grow"
-        description: "New pages, sections, and integrations get added to the existing build: not bolted onto a template that wasn't built to scale."
+        description: "The site grows the way your business grows, with new pages joining solid ground instead of getting bolted onto a template that was never meant to hold them."
   - type: process
     eyebrow: "Our working process"
     title: "From audit to launch to maintenance"

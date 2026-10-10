@@ -1,7 +1,7 @@
 ---
 title: "AEO Optimization"
 meta_title: "AEO Optimization for Maryland Businesses | Maryland Insights"
-description: "Customers now ask Google AI Overviews, ChatGPT, and voice assistants instead of scrolling results. AEO structures your content so those engines can find, trust, and cite your business."
+description: "Your customers ask ChatGPT at the kitchen table instead of scrolling search results. Your business stands on Maryland ground that keeps its facts straight everywhere they get read. Hours, services, and service area stay accurate and current, so when Maryland customers ask, yours is the business those answers name, month after month."
 image: "/images/services/aeo-optimization.svg"
 button:
   enable: true
@@ -32,11 +32,11 @@ blocks:
     title: "Structured so answer engines can find and trust it"
     items:
       - title: "Question-first content"
-        description: "Pages are organized around the specific questions customers ask, with the answer stated clearly before supporting detail."
+        description: "Every page opens with the plain answer to a real Maryland customer question, so the answer is found first and the explanation earns its place after."
       - title: "Schema markup"
-        description: "Structured data describes the business's services, location, and hours in a format search and AI systems can parse directly."
+        description: "Your hours, services, and service areas are written so search engines read them straight, the way a neighbor would read a shop sign, with nothing left to guess."
       - title: "Snippet-ready formatting"
-        description: "Key pages are formatted: headings, lists, direct answers: to be eligible for featured snippets and AI citations."
+        description: "Headings, lists, and direct answers make key pages ready for the moment a search result needs a quick answer, and yours is the one it pulls."
   - type: process
     eyebrow: "Our working process"
     title: "From question research to structured answers"

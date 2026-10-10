@@ -1,7 +1,7 @@
 ---
 title: "Marketing Automation"
 meta_title: "Marketing Automation for Maryland Businesses | Maryland Insights"
-description: "Enterprise automation tools are complex and built for big marketing teams. We build and manage automation sized for a small business: running alongside your day, converting leads while you work."
+description: "Big-company automation is built for big marketing teams, and the complexity shows. Your business stands on Maryland ground where follow-up runs itself, because that is what the ground is for. Every inquiry gets answered within minutes while you do the work you started the business to do. There is nothing to learn and nothing to manage, and the ground stays solid underneath month after month."
 image: "/images/services/marketing-automation.svg"
 button:
   enable: true
@@ -32,11 +32,11 @@ blocks:
     title: "Built around your actual customer journey"
     items:
       - title: "Lead nurturing"
-        description: "Email and SMS sequences move a new inquiry toward a booked customer without requiring manual follow-up."
+        description: "No inquiry sits waiting for someone to remember it, because follow-up emails and texts go out on their own, walking each new name steadily toward a booking."
       - title: "Trigger-based timing"
-        description: "Messages fire off real events: a site visit, a form fill, a completed job, a period of silence: not a fixed calendar schedule."
+        description: "Messages go out when something actually happens, like a visit, a form fill, or a finished job, not on some fixed calendar nobody asked for."
       - title: "Review requests"
-        description: "Customers are asked for a review at the moment they're most likely to respond, right after the work is done."
+        description: "Nobody writes a thoughtful review three weeks later, so the request arrives when the job is fresh and the customer's goodwill is at its highest."
   - type: process
     eyebrow: "Our working process"
     title: "From mapping the journey to a running system"

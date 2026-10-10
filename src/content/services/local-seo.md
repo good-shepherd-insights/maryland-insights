@@ -1,7 +1,7 @@
 ---
 title: "Local SEO"
 meta_title: "Local SEO for Maryland Businesses | Maryland Insights"
-description: "Maryland isn't one market: it's dozens. Google shows the local businesses it trusts most, on a map, with reviews and hours. We build that trust signal for the exact areas you serve."
+description: "Maryland is not one market but dozens, from the mountains to the shore, and your business stands on ground tuned for the exact counties you serve. When neighbors search, yours is the name the map shows, with reviews and hours right there, because the ground underneath keeps your standing solid month after month."
 image: "/images/services/local-seo.svg"
 button:
   enable: true
@@ -168,11 +168,11 @@ blocks:
     title: "A Local SEO presence customers can verify"
     items:
       - title: "Business details"
-        description: "One canonical record — name, address, phone, hours, categories, service areas — kept identical everywhere customers find you. This is what Google cross-references before it trusts your listing."
+        description: "Your name, address, hours, and phone read the same on every corner of the internet, the way a courthouse record reads the same to everyone who pulls it, and search engines trust that steadiness."
       - title: "Service relevance"
-        description: "Pages built around the services you actually offer and the Maryland communities you actually serve. No keyword-stuffed county lists, no thin pages repeating a city name."
+        description: "Each page serves a real Maryland community you actually work in, written for the people there, never a county name pasted into empty copy."
       - title: "Customer proof"
-        description: "A review pipeline that generates genuine customer experiences and routes them to Google — because review velocity and recency are ranking factors, and manufactured testimonials are a liability."
+        description: "Reviews are requested while the work is still fresh, and the honest accounts that return stand like testimony on the record, which is the only kind that moves a Maryland customer to call."
   - type: process
     eyebrow: "Our working process"
     title: "Local SEO work that can be checked at every stage"

@@ -1,7 +1,7 @@
 ---
 title: "AI-Powered Content"
 meta_title: "AI-Powered Content for Maryland Businesses | Maryland Insights"
-description: "Generic AI tools produce generic copy, and local customers notice. Our content tools start from local market context so what you publish sounds like it was written by someone who knows your area."
+description: "Anyone can tell when words came from a machine that has never been to Maryland. This ground publishes from local knowledge of the counties and the seasons, so readers hear a neighbor instead of a template, and your business gets found by customers who are looking. That is how trust gets earned here: steadily, in your own voice, month after month."
 image: "/images/services/ai-powered-content.svg"
 button:
   enable: true
@@ -32,11 +32,11 @@ blocks:
     title: "Drafted fast, grounded in your market"
     items:
       - title: "Fast first drafts"
-        description: "Blog posts, service pages, emails, and social content get a working first draft in seconds instead of a blank page."
+        description: "The blank page is gone: blog posts, service pages, and emails start as working drafts in seconds, already pointed at your Maryland customers."
       - title: "Local market resonance"
-        description: "Drafts reference the communities and customer needs of this business's actual service area, not generic placeholder copy."
+        description: "Drafts come out already talking about your Maryland communities and customers, not generic filler waiting to be fixed."
       - title: "Consistent brand voice"
-        description: "Every piece is checked against the business's established tone, so content sounds like one business across every channel."
+        description: "Every piece carries the same seal, whether blog post or service email, because each is checked against the voice your customers have already learned to trust as yours."
   - type: process
     eyebrow: "Our working process"
     title: "From brand setup to a repeatable content workflow"
