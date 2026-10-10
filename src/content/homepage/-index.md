@@ -2,7 +2,7 @@
 banner:
   eyebrow: "Built for Maryland Small Businesses"
   title: "Built, ranked and grown for Maryland. Measured, not guessed."
-  content: "Every plan ships with Local SEO tracking, AEO-ready content, and analytics scoped to your Maryland service area."
+  content: "Maryland customers are searching. We make sure they find you, and keep finding you until they call."
   button_solid:
     enable: true
     label: "Partner with Us"
@@ -38,7 +38,7 @@ agents_swiper:
   title: "Your Maryland customers are searching. Be found."
   agents:
     - label: "Website Hosting"
-      description: "A slow or outdated site sends Maryland customers to the next search result in seconds. Every site we build is fast, mobile-ready, and structured to rank in local search from day one: built around your service area, not a generic template."
+      description: "A slow site sends Maryland customers to the next result in seconds. We build yours around the Maryland counties you serve to win customers from day one, so you can keep it that way."
       icon: "/images/icons/message.svg"
       image: "/images/services/website-hosting.svg"
       image_bg: true
@@ -52,7 +52,7 @@ agents_swiper:
         label: "Explore Website Hosting"
         link: "/services/website-hosting"
     - label: "AEO Optimization"
-      description: "Customers now ask Google AI Overviews, ChatGPT, and voice assistants instead of scrolling results. AEO structures your content so those engines can find, trust, and cite your business."
+      description: "Google's AI, ChatGPT, and voice assistants all answer from whoever has the clearest facts. Keep yours clearest, and Maryland customers find you in every answer."
       icon: "/images/icons/ai.svg"
       image: "/images/services/aeo-optimization.svg"
       image_bg: true
@@ -66,7 +66,7 @@ agents_swiper:
         label: "Explore AEO Optimization"
         link: "/services/aeo-optimization"
     - label: "Local SEO"
-      description: "Maryland isn't one market: it's dozens. Google shows the local businesses it trusts most, on a map, with reviews and hours. We build that trust signal for the exact areas you serve."
+      description: "Maryland's counties hold dozens of markets. Show up trusted in every one you serve, with reviews, hours, and photos doing the talking for you, so customers choose you before they ever call."
       icon: "/images/icons/decision.svg"
       image: "/images/services/local-seo.svg"
       image_bg: true
@@ -80,7 +80,7 @@ agents_swiper:
         label: "Explore Local SEO"
         link: "/services/local-seo"
     - label: "Analytics and Reporting"
-      description: "Most platforms hand you a dashboard of charts and leave you to decode it. We translate your data into clear decisions: which channels to invest in, which pages to fix, which customers to target."
+      description: "Know which Maryland counties bring your calls, which pages lose them, and exactly what to do next. Every number earns its place, and the picture gets sharper for your business every month."
       icon: "/images/icons/gear.svg"
       image: "/images/services/analytics-reporting.svg"
       image_bg: true
@@ -94,7 +94,7 @@ agents_swiper:
         label: "Explore Analytics and Reporting"
         link: "/services/analytics-reporting"
     - label: "Marketing Automation"
-      description: "Enterprise automation tools are complex and built for big marketing teams. We build and manage automation sized for a small business: running alongside your day, converting leads while you work."
+      description: "Your Maryland business follows up even when you cannot. Inquiries answered, estimates chased, reviews requested, all while you are on the job. It is the employee you never had to hire."
       icon: "/images/icons/define.svg"
       image: "/images/services/marketing-automation.svg"
       image_bg: true
@@ -108,7 +108,7 @@ agents_swiper:
         label: "Explore Marketing Automation"
         link: "/services/marketing-automation"
     - label: "AI-Powered Content"
-      description: "Generic AI tools produce generic copy, and local customers notice. Our content tools start from local market context so what you publish sounds like it was written by someone who knows your area."
+      description: "Rank for more of what Maryland customers search. Fresh pages go up regularly, each one written from local market context in your business's voice, pulling in customers across your counties."
       icon: "/images/icons/image.svg"
       image: "/images/services/ai-powered-content.svg"
       image_bg: true
