@@ -103,7 +103,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                           alt={agent.label}
                           width={420}
                           height={320}
-                          class="h-auto w-full max-w-[120px] object-contain self-center sm:max-w-[160px] md:max-w-[280px] lg:max-w-[240px] xl:max-w-[360px]"
+                          class="h-auto w-full max-w-[96px] object-contain self-center sm:max-w-[128px] md:max-w-[280px] lg:max-w-[240px] xl:max-w-[360px]"
                           format={agent.image.endsWith(".svg") ? "svg" : "webp"}
                         />
                       </figure>
@@ -144,7 +144,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                         href={agent.button.link}
                         target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
                         rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
-                        class="ds-cta mt-auto inline-flex w-fit items-center gap-2 pt-6 md:pt-10 lg:pt-6 text-xs lg:text-[16px] font-bold tracking-[0.02em]"
+                        class="ds-cta mt-auto inline-flex w-fit items-center gap-2 pt-6 md:pt-10 lg:pt-6 text-sm lg:text-[16px] font-bold tracking-[0.02em]"
                       >
                         {agent.button.label}
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="lg:h-[16px] lg:w-[16px]">
