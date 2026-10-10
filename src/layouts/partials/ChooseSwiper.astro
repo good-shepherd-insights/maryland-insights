@@ -95,7 +95,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
               <div id={`ds-panel-${panelId}`} data-ds-panel={panelId} class="ds-panel sticky">
                 <div class="ds-card flex flex-col border border-dark bg-body lg:grid lg:grid-cols-[minmax(0,28%)_1fr] lg:items-stretch lg:min-h-[520px] lg:pl-[30px] lg:pr-[30px] lg:py-7 xl:grid-cols-[minmax(0,34%)_1fr] xl:pl-[40px] xl:pr-[40px]">
                   <!-- Visual: vector centered on mobile/MD, full-size on desktop -->
-                  <div class="flex flex-col items-center gap-5 px-5 pt-7 pb-6 sm:px-8 sm:pt-10 sm:pb-8">
+                  <div class="flex flex-col items-center gap-5 px-5 pt-5 pb-4 sm:px-8 md:pt-10 md:pb-8">
                     {agent.image && (
                       <figure class="service-art-figure w-full max-w-full overflow-hidden">
                         <ImageMod
@@ -103,7 +103,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                           alt={agent.label}
                           width={420}
                           height={320}
-                          class="h-auto w-full max-w-[180px] object-contain self-center sm:max-w-[240px] md:max-w-[280px] lg:max-w-[240px] xl:max-w-[360px]"
+                          class="h-auto w-full max-w-[120px] object-contain self-center sm:max-w-[160px] md:max-w-[280px] lg:max-w-[240px] xl:max-w-[360px]"
                           format={agent.image.endsWith(".svg") ? "svg" : "webp"}
                         />
                       </figure>
@@ -111,7 +111,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                   </div>
 
                   <!-- Copy -->
-                  <div class="flex w-full min-w-0 flex-1 flex-col px-4 pt-6 pb-6 sm:px-6 lg:px-0 lg:pt-4 lg:pb-4 lg:pl-8 lg:pr-0 xl:pl-10">
+                  <div class="flex w-full min-w-0 flex-1 flex-col px-4 pt-4 pb-5 sm:px-6 md:pt-6 md:pb-6 lg:px-0 lg:pt-4 lg:pb-4 lg:pl-8 lg:pr-0 xl:pl-10">
                     <div class="flex items-center gap-3">
                       <span class="ds-num-chip text-sm" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
                     </div>
@@ -121,7 +121,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                       set:html={markdownify(agent.description, true)}
                     />
                     {points.length > 0 && (
-                      <div class="relative mt-8 flex flex-col gap-5 lg:mt-7 lg:gap-4">
+                      <div class="relative mt-6 flex flex-col gap-4 md:mt-8 md:gap-5 lg:mt-7 lg:gap-4">
                         <div class="absolute top-0 bottom-0 left-0 w-[3px] rounded-full bg-primary/25" aria-hidden="true" />
                         {points.map((point: string) => {
                           const { label, detail } = splitPoint(point);
@@ -144,7 +144,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                         href={agent.button.link}
                         target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
                         rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
-                        class="ds-cta mt-auto inline-flex w-fit items-center gap-2 pt-10 lg:pt-6 text-xs lg:text-[16px] font-bold tracking-[0.02em]"
+                        class="ds-cta mt-auto inline-flex w-fit items-center gap-2 pt-6 md:pt-10 lg:pt-6 text-xs lg:text-[16px] font-bold tracking-[0.02em]"
                       >
                         {agent.button.label}
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="lg:h-[16px] lg:w-[16px]">
