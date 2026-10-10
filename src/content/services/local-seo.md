@@ -137,13 +137,13 @@ blocks:
     title: "Local SEO visibility is built on infrastructure, not luck"
     tone: "dark"
     body: |
-      **What local SEO actually is:** Google runs a background check on every local business before it ranks. Google does not rank the best plumber in Towson. It ranks the plumber it can confirm is real, with a real address, real hours, and customers who back it up. Your Google listing, your directory entries, your reviews, your location: each one is Google verifying your business is who you claim to be.
+      **What local SEO actually is:** Google runs a background check on every local business before it ranks. Google does not rank the best plumber in Towson. It ranks the plumber it can confirm is real: a real address, real hours, customers who back it up. Your Google listing, your directory entries, your reviews, your location: each one is Google verifying your business is who you claim to be.
 
-      **Why most local SEO fails:** it treats symptoms instead of the cause. A template website with a ranking promise. A listing editor who never touches the foundation underneath. A national agency running Maryland as one more row on a spreadsheet. None of them fix what Google actually checks, because none of them built the ground the business stands on.
+      **Why most local SEO fails:** it treats symptoms instead of the cause: a template website with a ranking promise, a listing editor who never touches the foundation underneath, a national agency running Maryland as one more row on a spreadsheet. None of them fix what Google actually checks, because none of them built the ground the business stands on.
 
-      **How we work instead:** we are that ground. We build and host the pages, the structure, and the listings that make a Maryland business findable. One verified record of your business facts, published everywhere your customers look, kept in the format search engines read. When Google changes its rules, ground built this way holds.
+      **How we work instead:** we are that ground. We build and host the pages, the structure, and the listings that make a Maryland business findable. One verified record of your business facts, published everywhere your customers look and kept in the format search engines read. When Google changes its rules, ground built this way holds.
 
-      **Why county by county:** Maryland Insights organizes at the county level because that is how Maryland does business. A Towson contractor is not a Bethesda contractor for the searches that matter. We work county by county across Maryland, not nationally. Where the market is, the ground holds.
+      **Why county by county:** Maryland Insights organizes at the county level because that is how Maryland does business. A Towson contractor is not a Bethesda contractor for the searches that matter. We work county by county across Maryland, not nationally.
   - type: richText
     eyebrow: "How we work"
     title: "Local SEO visibility built on evidence, not broad promises"
