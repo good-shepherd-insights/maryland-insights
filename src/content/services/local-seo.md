@@ -231,9 +231,9 @@ blocks:
     variant: expanded
     eyebrow: "Engagement scope"
     title: "Local SEO engagement scope"
-    situation: "A business with an established but inconsistent local presence: the name, address, phone, hours, and categories customers use to verify the business conflict across its Google Business Profile, directory listings, and website."
-    whatWeFound: "A prioritized audit record: conflicting details, duplicate listings, missing information, and pages that needed evidence or clarification before optimization could begin."
-    whatChanged: "Name, address, and phone details brought into alignment across the profiles and directories the business appears in. Every change was documented before it was made and verified with the business owner before it was published to a listing."
+    situation: "Most engagements start with a Maryland business that has customers but a contradictory footprint. Google shows one phone number, Yelp another, the website lists old hours. Local search cannot verify a business that contradicts itself."
+    whatWeFound: "The audit maps every conflict: disagreeing details, duplicate listings, missing information, pages lacking evidence."
+    whatChanged: "Name, address, and phone are aligned across each profile and directory. Every fix is documented, then confirmed with the owner before going live."
     outcomes:
       - metric: "Profiles and directories reviewed and corrected"
         value: "12"
@@ -244,7 +244,7 @@ blocks:
       - metric: "Audit record created before optimization"
         value: "1"
         source: "A single prioritized record documents conflicts, duplicate listings, missing details, and owner-approved changes for the engagement."
-    permissionLine: "We publish named clients, locations, dates, and outcome metrics only with the client's written permission. This record describes the standard engagement scope documented on this page. It is not one client's reported results."
+    permissionLine: "Client names, locations, and metrics publish only with written permission. This describes the standard scope, not one client's results."
   - type: serviceArea
     eyebrow: "Maryland service area"
     title: "Local SEO work scoped to the places you actually serve"
