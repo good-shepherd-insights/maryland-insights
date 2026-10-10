@@ -85,10 +85,10 @@ agents_swiper:
       image: "/images/services/analytics-reporting.svg"
       image_bg: true
       points:
-        - "**Tracking tailored to your goals**: visitor behavior, traffic sources, and the conversion events that matter."
-        - "**Conversion journey mapping**: where customers convert, and where they drop off."
-        - "**Plain-language reports**: what happened, and what to do next."
-        - "**Continuous optimization**: strategy refined with real numbers from your audience."
+        - "**Maryland marketing analytics**: see which counties bring your calls, which pages lose them, all in one place."
+        - "**Call tracking Maryland**: trace every single call back to the page that earned it."
+        - "**Marketing reports Maryland**: read the numbers, know the moves. Every report covers your counties in plain words and ends with your next steps."
+        - "**Monthly optimization**: every month, your real Maryland numbers point to the next win."
       button:
         enable: true
         label: "Explore Analytics and Reporting"
