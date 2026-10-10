@@ -1,7 +1,7 @@
 ---
 title: "About Us"
 meta_title: "About - Maryland Insights"
-description: "Maryland Insights helps Maryland businesses turn visitors into customers and growth into something measurable."
+description: "Maryland businesses don't rent their reputation. Maryland Insights is ground they own — a website bringing business, staying up, Google Business Profile, reviews, and listings as one system, from Eastern Shore crab houses to I-270 biotech, built for decades not quarters. For fourth-generation watermen and first-year agencies alike. Bedrock, not a vendor: courthouse-solid, answerable to the neighbors it serves."
 image: ""
 draft: false
 

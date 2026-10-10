@@ -1,7 +1,7 @@
 ---
 title: "Analytics and Reporting"
 meta_title: "Analytics and Reporting for Maryland Businesses | Maryland Insights"
-description: "Most platforms hand you a dashboard of charts and leave you to decode it. We translate your data into clear decisions: which channels to invest in, which pages to fix, which customers to target."
+description: "Charts never made a decision for anyone. Your business stands on Maryland ground that sends the numbers back as plain words about where to put your effort, what to fix, and who to reach next. There is nothing to learn and nothing to decode, because the translating happens underneath, month after month, for as long as you stand here."
 image: "/images/services/analytics-reporting.svg"
 button:
   enable: true
@@ -32,11 +32,11 @@ blocks:
     title: "Built around decisions, not vanity metrics"
     items:
       - title: "Goal-specific tracking"
-        description: "We track the visitor behavior and conversion events that actually matter for this business's goals, not a generic default event list."
+        description: "Tracking centers on the visits and actions that grow your business, measured plainly, while the metrics that flatter but never matter are left out."
       - title: "Conversion journey mapping"
-        description: "We trace where customers convert and where they drop off, so the fix targets the actual point of friction."
+        description: "We find the exact spot where customers hesitate or leave, so the fix goes where the problem lives instead of where the guesswork points."
       - title: "Plain-language reporting"
-        description: "Reports state what happened and what to do next, without requiring the business owner to interpret a raw dashboard."
+        description: "The numbers come back as plain Maryland talk about what worked and what needs fixing, because a report that needs a translator has already failed its job."
   - type: process
     eyebrow: "Our working process"
     title: "From setup to a recurring decision cycle"
