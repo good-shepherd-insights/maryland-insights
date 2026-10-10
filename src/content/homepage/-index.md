@@ -99,10 +99,10 @@ agents_swiper:
       image: "/images/services/marketing-automation.svg"
       image_bg: true
       points:
-        - "**Automated lead nurturing**: email and SMS sequences from first inquiry to paying customer."
-        - "**Smart timing**: messages triggered by site visits, form fills, purchases, or 60 days of silence."
-        - "**Automatic review requests**: asked at the moment customers are most likely to respond."
-        - "**Connected to your site and CRM**: leads captured and campaigns triggered instantly."
+        - "**Automated lead follow-up**: Maryland inquiries answered in minutes, chased until they buy."
+        - "**Email and SMS marketing**: texts and emails go out when Maryland customers act, or go quiet."
+        - "**Review generation Maryland**: happy customers asked when most likely to say yes."
+        - "**Lead management**: new inquiries flow straight into follow-up, nothing slips through."
       button:
         enable: true
         label: "Explore Marketing Automation"
