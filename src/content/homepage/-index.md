@@ -113,10 +113,10 @@ agents_swiper:
       image: "/images/services/ai-powered-content.svg"
       image_bg: true
       points:
-        - "**Drafts in seconds**: blog posts, service pages, emails, and social content."
-        - "**Local market resonance**: copy that references the communities and needs of your market."
-        - "**Consistent brand voice**: one professional tone across every channel."
-        - "**Search-ready structure**: built to rank for Maryland-specific terms."
+        - "**Maryland keyword research**: AI maps massive county search demand you'd never find by hand."
+        - "**Maryland search trends**: spot what your counties want before your competitors do."
+        - "**Data-driven content**: that research becomes pages targeting proven demand."
+        - "**Your approval first**: nothing goes live until you've read and approved it."
       button:
         enable: true
         label: "Explore AI-Powered Content"
