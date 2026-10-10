@@ -43,10 +43,10 @@ agents_swiper:
       image: "/images/services/website-hosting.svg"
       image_bg: true
       points:
-        - "**Maryland-focused templates**: designed for the industries and communities of the local market."
-        - "**Local SEO foundations built in**: page structure, meta data, schema markup, and location signals from launch."
-        - "**Mobile-first performance**: fully responsive and fast-loading on every device."
-        - "**Room to grow**: add pages, services, blog content, and integrations without rebuilding."
+        - "**Maryland website hosting**: fast and secure, turning your county visitors into customer calls."
+        - "**Local SEO Maryland**: show up where your counties search from day one, with every page working to win the call."
+        - "**Fast hosting that sells**: loads quick on every phone, turning visits into calls."
+        - "**Room to grow**: add pages, services, and content any time, nothing ever needs rebuilding."
       button:
         enable: true
         label: "Explore Website Hosting"
