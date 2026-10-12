@@ -94,7 +94,7 @@ const VISIBLE_ROWS = 4;
       const rows = document.querySelectorAll<HTMLElement>(`[data-category-extra="${id}"]`);
       const expanded = rows[0]?.classList.contains("hidden") === false;
       rows.forEach((row) => row.classList.toggle("hidden", expanded));
-      btn.textContent = expanded ? btn.dataset.moreLabel ?? "View more" : btn.dataset.lessLabel ?? "View less";
+      btn.textContent = expanded ? btn.dataset.moreLabel ?? "" : btn.dataset.lessLabel ?? "";
     });
   });
 </script>

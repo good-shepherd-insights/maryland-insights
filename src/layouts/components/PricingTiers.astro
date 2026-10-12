@@ -27,6 +27,7 @@ type Props = {
   variant?: "cards" | "table";
   anchor?: string;
   headingLevel?: "h2" | "h3";
+  ui?: { recommendedLabel?: string };
 };
 
 const {
@@ -38,6 +39,7 @@ const {
   variant = "cards",
   anchor,
   headingLevel = "h2",
+  ui,
 } = Astro.props as Props;
 
 const headingId = `pricing-${slugify(title)}`;
@@ -88,7 +90,7 @@ const recommendedLabel = (tier: Tier): string =>
   typeof tier.recommended === "string" && tier.recommended.trim() !== ""
     ? tier.recommended.trim()
     : tier.recommended === true
-      ? "Recommended"
+      ? ui?.recommendedLabel ?? ""
       : "";
 ---
 

@@ -15,7 +15,7 @@ type Props = {
   title?: string;
 };
 
-const { headings = [], variant = "sticky", title = "On this page" } = Astro.props as Props;
+const { headings = [], variant = "sticky", title } = Astro.props as Props;
 
 // Defensive: drop malformed entries so the component can never render empty anchors.
 const items = headings.filter((heading) => heading && heading.id && heading.text);
@@ -51,7 +51,7 @@ const rows = items.map((heading) => {
   };
 });
 
-const groups: { title: string; rows: ((typeof rows)[number] & { index: number })[] }[] = [];
+const groups: { title: string | undefined; rows: ((typeof rows)[number] & { index: number })[] }[] = [];
 for (const [index, row] of rows.entries()) {
   if (row.topic || groups.length === 0) groups.push({ title: row.topic ?? title, rows: [] });
   groups[groups.length - 1].rows.push({ ...row, index });

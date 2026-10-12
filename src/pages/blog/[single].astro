@@ -35,7 +35,7 @@ const { title } = post.data;
 const { Content, headings } = await render(post);
 
 const blogData = {
-  author: post.data.author || { name: "Admin" },
+  author: post.data.author,
   date: post.data.date,
   lastmod: post.data.lastmod,
 };

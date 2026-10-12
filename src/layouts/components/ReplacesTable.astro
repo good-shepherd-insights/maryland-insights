@@ -334,7 +334,7 @@ const VISIBLE_ROWS = 4;
       const expanded = rows[0]?.classList.contains("hidden") === false;
       rows.forEach((row) => row.classList.toggle("hidden", expanded));
       btn.setAttribute("aria-expanded", String(!expanded));
-      btn.textContent = expanded ? btn.dataset.moreLabel ?? "View more" : btn.dataset.lessLabel ?? "View less";
+      btn.textContent = expanded ? btn.dataset.moreLabel ?? "" : btn.dataset.lessLabel ?? "";
     });
   });
 
@@ -347,7 +347,7 @@ const VISIBLE_ROWS = 4;
       allExtraRows.forEach((row) => row.classList.toggle("hidden", isCurrentlyExpanded));
       allButtons.forEach((b) => {
         b.setAttribute("aria-expanded", String(!isCurrentlyExpanded));
-        b.textContent = isCurrentlyExpanded ? b.dataset.moreLabel ?? "View more" : b.dataset.lessLabel ?? "View less";
+        b.textContent = isCurrentlyExpanded ? b.dataset.moreLabel ?? "" : b.dataset.lessLabel ?? "";
       });
       btn.textContent = isCurrentlyExpanded ? "Expand All" : "Collapse All";
     });

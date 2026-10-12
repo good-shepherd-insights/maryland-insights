@@ -45,7 +45,7 @@ const { blocks = [] } = Astro.props as Props;
             points={block.points}
             fields={block.fields}
             submitLabel={block.submitLabel}
-            formAction={block.formAction ?? "/api/lead"}
+            formAction={block.formAction}
             service={block.service}
             disclaimer={block.disclaimer}
             anchor={block.anchor}

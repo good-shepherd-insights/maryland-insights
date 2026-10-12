@@ -47,7 +47,7 @@ const {
   anchor,
 } = Astro.props as Props;
 
-const heading = title ?? name ?? "Contact details";
+const heading = title ?? name;
 const headingId = `nap-${slugify(heading)}`;
 
 const line2 = [`${city}, ${region} ${postal}`, country !== "US" ? country : null]

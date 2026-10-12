@@ -92,7 +92,7 @@ const imageFrameClass = smallImage
             ))}
           </div>
         ) : (
-          <span class="text-xs text-dark">{button?.label ?? "Learn More"}</span>
+          <span class="text-xs text-dark">{button?.label}</span>
         )
       }
 
@@ -110,7 +110,7 @@ const imageFrameClass = smallImage
             fill="currentColor"></path>
         </svg>
 
-        {!iconSlot && <span class="sr-only">{button?.label ?? "Learn More"}</span>}
+        {!iconSlot && <span class="sr-only">{button?.label}</span>}
         <span
           class="absolute left-[60%] top-[60%] h-9.5 w-9.5 -translate-x-1/2 -translate-y-1/2 overflow-hidden"
         >

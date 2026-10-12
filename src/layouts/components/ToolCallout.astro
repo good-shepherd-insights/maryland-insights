@@ -38,7 +38,7 @@ const {
 } = Astro.props as Props;
 
 const headingId = `tool-${slugify(title)}`;
-const label = eyebrow ?? (tone === "aligned-with" ? "Aligned with" : "Named on this page");
+const label = eyebrow;
 const iconsByName: Record<string, string> = {
   "Google Business Profile": googleBusinessProfileIcon,
   "Google AI Overviews": googleAiOverviewsIcon,
