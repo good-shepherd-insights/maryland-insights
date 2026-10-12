@@ -13,41 +13,24 @@ type Props = {
   headings: TocHeading[];
   variant?: "sticky" | "inline" | "collapsible";
   title?: string;
-  ui?: { sectionsWord?: string };
+  sectionsWord?: string;
 };
 
-const { headings = [], variant = "sticky", title, ui } = Astro.props as Props;
+const { headings = [], variant = "sticky", title, sectionsWord } = Astro.props as Props;
 
 // Defensive: drop malformed entries so the component can never render empty anchors.
 const items = headings.filter((heading) => heading && heading.id && heading.text);
 const hasHeadings = items.length > 0;
 
-// Deterministic build-time trimming so headings without an authored `short` still read as a
-// concise, scannable index label. Pure string rules only — the target id is never touched.
-const wordsOf = (value: string) => value.split(/\s+/).filter(Boolean);
-const capWords = (value: string, max: number) => wordsOf(value).slice(0, max).join(" ");
-const deriveShort = (text: string): string => {
-  let value = text.replace(/\s+/g, " ").trim();
-  value = value.replace(/\s+for\s+(?:all\s+)?maryland\s+businesses\.?$/i, ""); // trailing audience clause
-  value = value.replace(/\s*(?:,|;|:)\s*(?:not|with|instead of|rather than)\b.*$/i, ""); // filler tail after a comma
-  value = value.replace(/^(?:how to|why|what is|the)\s+/i, ""); // leading filler
-  value = value.replace(/[.,;:]+$/, "").trim();
-  const count = wordsOf(value).length;
-  // If trimming left too little or still too much, fall back to the first five words of the text.
-  if (count < 2 || count > 5) value = capWords(text, 5);
-  value = capWords(value, 5);
-  if (value.length > 40) value = value.slice(0, 40).replace(/\s+\S*$/, ""); // ~40-char cap at a word boundary
-  return value.charAt(0).toUpperCase() + value.slice(1);
-};
-
-// One row per entry: the visible label is the authored short (preferred) or the derived concise form.
+// Label is the authored short (preferred) or the full heading text. Never rewritten.
 const rows = items.map((heading) => {
   const authored = typeof heading.short === "string" ? heading.short.replace(/\s+/g, " ").trim() : "";
+  const full = heading.text.replace(/\s+/g, " ").trim();
   return {
     id: heading.id,
     level: heading.level,
-    full: heading.text.replace(/\s+/g, " ").trim(),
-    label: authored.length > 0 ? authored : deriveShort(heading.text),
+    full,
+    label: authored.length > 0 ? authored : full,
     topic: heading.topic,
   };
 });
@@ -59,8 +42,11 @@ for (const [index, row] of rows.entries()) {
 }
 
 // Per-instance id so a page can carry a desktop sticky TOC and a mobile collapsible TOC
-// without colliding on the same aria-labelledby target.
-const uid = Math.random().toString(36).slice(2, 9);
+// without colliding on the same aria-labelledby target. Deterministic counter, not random.
+let tocInstance = (globalThis as { __tocInstance?: number }).__tocInstance ?? 0;
+tocInstance += 1;
+(globalThis as { __tocInstance?: number }).__tocInstance = tocInstance;
+const uid = `toc${tocInstance}`;
 const labelId = `toc-label-${variant}-${uid}`;
 const floatingLabelId = `toc-floating-label-${uid}`;
 const floatingPanelId = `toc-floating-panel-${uid}`;
@@ -75,7 +61,7 @@ const indentClass = (level?: number) => {
 
 // Field-guide index numbers, derived purely from list order.
 const num = (index: number) => String(index + 1).padStart(2, "0");
-const countLabel = `${num(rows.length - 1)} ${ui?.sectionsWord ?? ""}`;
+const countLabel = `${String(rows.length).padStart(2, "0")} ${sectionsWord ?? ""}`.trim();
 ---
 
 {

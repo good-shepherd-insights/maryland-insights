@@ -66,6 +66,7 @@ blocks:
   - type: tableOfContents
     variant: inline
     title: "On this page"
+    sectionsWord: "sections"
     headings:
       - id: "service-local-seo-visibility-is-built-on-infrastructure-not-luck"
         text: "Local SEO visibility is built on infrastructure, not luck"

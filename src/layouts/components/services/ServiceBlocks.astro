@@ -78,7 +78,7 @@ const { blocks = [] } = Astro.props as Props;
           <section class="section-sm border-y border-border/70 bg-light">
             <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
               <div class="w-full max-w-none">
-                <TableOfContents headings={block.headings} variant={block.variant} title={block.title} />
+                <TableOfContents headings={block.headings} variant={block.variant} title={block.title} sectionsWord={block.sectionsWord} />
               </div>
             </div>
           </section>
