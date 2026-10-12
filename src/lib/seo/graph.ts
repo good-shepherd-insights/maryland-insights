@@ -46,23 +46,23 @@ export function buildOrganization(): LocalBusiness {
     description: config.metadata.meta_description,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "7375 Executive Pl. Suite 400",
-      addressLocality: "Lanham",
-      addressRegion: "MD",
-      postalCode: "20706",
-      addressCountry: "US",
+      streetAddress: config.business.street_address,
+      addressLocality: config.business.address_locality,
+      addressRegion: config.business.address_region,
+      postalCode: config.business.postal_code,
+      addressCountry: config.business.address_country,
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 38.98,
-      longitude: -76.85,
+      latitude: config.business.latitude,
+      longitude: config.business.longitude,
     },
-    telephone: "+1-240-441-5259",
+    telephone: config.business.telephone,
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: "+1-240-441-5259",
+      telephone: config.business.telephone,
       contactType: "customer service",
-      areaServed: "Maryland",
+      areaServed: config.business.area_served,
     },
     ...(sameAsLinks.length > 0 ? { sameAs: sameAsLinks } : {}),
   };
@@ -77,7 +77,7 @@ export function buildBreadcrumbList(pathname: string): BreadcrumbList {
       {
         "@type": "ListItem",
         position: 1,
-        name: "Home",
+        name: config.business.breadcrumb_home_label,
         item: config.site.base_url,
       },
       ...pathArr.map((segment, index) => ({
@@ -125,7 +125,7 @@ export function buildNavigation(): ItemList {
   return {
     "@type": "ItemList",
     "@id": navigationId(),
-    name: "Main Menu",
+    name: config.business.navigation_list_name,
     itemListElement: menu.main.map((item, index) => ({
       "@type": "SiteNavigationElement" as const,
       position: index + 1,
