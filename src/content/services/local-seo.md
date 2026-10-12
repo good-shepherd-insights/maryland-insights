@@ -9,6 +9,7 @@ button:
   link: "/get-started"
 draft: false
 date_modified: "2026-10-07"
+is_local_seo: true
 faqs_list:
   - question: "What is the difference between regular SEO and Local SEO?"
     answer: "Traditional SEO focuses on ranking for broad search terms on a national or global level. Local SEO is specifically designed to help your business rank in location-based searches: the kind Maryland customers perform when they are looking for a nearby service provider. This includes Google Maps results, the local three-pack, and searches that include terms like \"near me\" or specific Maryland city and zip code references."

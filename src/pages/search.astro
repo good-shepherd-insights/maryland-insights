@@ -3,8 +3,15 @@ import Base from "@/layouts/Base.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import type { SearchResultsPage } from "schema-dts";
 
-const title = "Search Results";
-const description = "Search results for your Maryland business needs.";
+type Props = {
+  title?: string;
+  description?: string;
+  heading?: string;
+  body?: string;
+  homeLinkText?: string;
+};
+
+const { title, description, heading, body, homeLinkText } = Astro.props as Props;
 
 const searchSchema: SearchResultsPage = {
   "@type": "SearchResultsPage",
@@ -17,11 +24,11 @@ const searchSchema: SearchResultsPage = {
   <PageHeader title={title} />
   <section class="section">
     <div class="container text-center">
-      <h2 class="h3 mb-6">Search Functionality Coming Soon</h2>
+      <h2 class="h3 mb-6">{heading}</h2>
       <p class="text-lg mb-8">
-        We are currently indexing the Maryland business directory. Please check back soon for full search capabilities.
+        {body}
       </p>
-      <a href="/" class="btn btn-primary">Return Home</a>
+      <a href="/" class="btn btn-primary">{homeLinkText}</a>
     </div>
   </section>
 </Base>
