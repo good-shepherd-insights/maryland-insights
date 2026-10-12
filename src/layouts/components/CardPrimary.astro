@@ -16,6 +16,7 @@ const {
   imageFit = "cover",
   imageSizes = "(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw",
   class: className = "",
+  ui,
 } = Astro.props;
 const { title, description, image, button, date, author } = data;
 const isSvg = typeof image === "string" && image.endsWith(".svg");
@@ -72,7 +73,7 @@ const imageFrameClass = smallImage
 
   <p class="max-w-[68ch] text-sm" set:html={markdownify(description)} />
 
-  <a href={`${id ? id : button?.link}`} class={`before:absolute before:inset-0 ${equalHeight ? "mt-auto" : ""}`} aria-label={`Read more about ${title}`}>
+  <a href={`${id ? id : button?.link}`} class={`before:absolute before:inset-0 ${equalHeight ? "mt-auto" : ""}`} aria-label={ui?.readMorePrefix ? `${ui.readMorePrefix} ${title}` : undefined}>
     <div
       class={`flex justify-between relative pt-10 ${hasDarkArrow ? "text-dark" : "text-light"}`}
     >

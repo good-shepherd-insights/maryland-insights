@@ -12,7 +12,7 @@ import config from "@/config/config.json";
 const pageIndex = await getListPage("tools", "-index");
 if (pageIndex.data.draft) return Astro.redirect("/404");
 
-const { title, description, eyebrow, section_title, tools_list } = pageIndex.data;
+const { title, description, eyebrow, section_title, tools_list, ui } = pageIndex.data;
 
 const collectionSchema: CollectionPage = {
   "@type": "CollectionPage",
@@ -50,7 +50,7 @@ const collectionSchema: CollectionPage = {
         </div>
       ) : (
         <div class="text-center text-text-dark/70 max-w-md mx-auto">
-          <p>New tools are on the way. Check back soon, or get in touch if there's something specific your Maryland business needs.</p>
+          <p>{ui?.emptyStateText}</p>
         </div>
       )}
     </div>
