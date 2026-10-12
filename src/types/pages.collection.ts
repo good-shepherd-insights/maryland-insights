@@ -32,6 +32,8 @@ export const homepage = defineCollection({
         )
         .optional(),
       audience_aria_label: z.string().optional(),
+      persona_businesses_label: z.string().optional(),
+      persona_agencies_label: z.string().optional(),
     }),
     agents_swiper: z.object({
       enable: z.boolean(),

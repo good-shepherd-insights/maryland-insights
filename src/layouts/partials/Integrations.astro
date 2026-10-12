@@ -69,7 +69,7 @@ const swiperOptions: SwiperOptions = {
                 ))}
                 <SwiperSlide>
                   <a
-                    href="/integrations"
+                    href={ui?.viewAllUrl}
                     class="group relative flex h-full w-full items-start gap-3 rounded-2xl bg-body p-4 text-left shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)] duration-300 sm:gap-4"
                   >
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-light">
@@ -93,7 +93,7 @@ const swiperOptions: SwiperOptions = {
             <IntegrationCard integration={integration} />
           ))}
           <a
-            href="/integrations"
+            href={ui?.viewAllUrl}
             class="group relative flex h-full w-full items-center gap-4 rounded-2xl bg-body p-6 text-left shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)] duration-300"
           >
             <div class="flex h-15 w-15 shrink-0 items-center justify-center rounded-full bg-light">

@@ -15,7 +15,8 @@ interface Props {
   fallback?: "monogram" | "404";
   class?: string;
   showAttribution?: boolean;
-  ui?: { attributionPrefix?: string; attributionLinkText?: string };
+  altTemplate?: string;
+  ui?: { attributionPrefix?: string; attributionLinkText?: string; attributionUrl?: string };
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   fallback,
   class: className,
   showAttribution = false,
+  altTemplate,
   ui,
 } = Astro.props;
 
@@ -47,7 +49,7 @@ const src = domain
 <figure class="inline-flex flex-col items-center gap-1 m-0">
   <img
     src={src}
-    alt={`${name} logo`}
+    alt={altTemplate ? altTemplate.replace("{name}", name) : undefined}
     width={size}
     height={size}
     loading="lazy"
@@ -55,7 +57,7 @@ const src = domain
   />
   {showAttribution && (
     <figcaption class="text-[10px] text-text-light">
-      {ui?.attributionPrefix} <a href="https://logo.dev" class="underline">{ui?.attributionLinkText}</a>
+      {ui?.attributionPrefix} <a href={ui?.attributionUrl} class="underline">{ui?.attributionLinkText}</a>
     </figcaption>
   )}
 </figure>

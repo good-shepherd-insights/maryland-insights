@@ -18,10 +18,12 @@ type Props = {
     consentLinkText?: string;
     logoAttribution?: string;
     logoAttributionLink?: string;
+    logoAttributionUrl?: string;
     acceptingHint?: string;
     subscribingHint?: string;
     subscribedHint?: string;
     failedHint?: string;
+    privacyUrl?: string;
   };
 };
 
@@ -140,7 +142,7 @@ function replaceYear(text: string) {
                   />
                   <span>{newsletter?.consentLabel} </span>
                   <a
-                    href="/privacy-policy"
+                    href={newsletter?.privacyUrl}
                     class="text-text-dark font-semibold hover:text-primary transition duration-300"
                   >
                     {newsletter?.consentLinkText}
@@ -164,7 +166,7 @@ function replaceYear(text: string) {
           set:html={markdownify(replaceYear(config.params.copyright))}
         />
         <p class="text-text-light text-xs">
-          {newsletter?.logoAttribution} <a href="https://logo.dev" target="_blank" rel="noopener noreferrer" class="underline">{newsletter?.logoAttributionLink}</a>
+          {newsletter?.logoAttribution} <a href={newsletter?.logoAttributionUrl} target="_blank" rel="noopener noreferrer" class="underline">{newsletter?.logoAttributionLink}</a>
         </p>
       </div>
     </div>

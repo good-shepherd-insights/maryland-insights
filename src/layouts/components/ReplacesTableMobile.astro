@@ -15,6 +15,7 @@ type Props = {
     viewLessLabel?: string;
     includedAltTemplate?: string;
     notIncludedAltTemplate?: string;
+    logoAltTemplate?: string;
     roundedLogoLabels?: string[];
   };
 };
@@ -33,7 +34,7 @@ const VISIBLE_ROWS = 4;
           ) : plan.logo ? (
             <img
               src={plan.logo}
-              alt={`${plan.label} logo`}
+              alt={ui?.logoAltTemplate ? ui.logoAltTemplate.replace("{label}", plan.label) : undefined}
               class={`h-8 object-contain ${
                 (ui?.roundedLogoLabels ?? []).includes(plan.label)
                   ? "w-8 rounded-full"
