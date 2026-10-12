@@ -1,6 +1,6 @@
 {
   "site": {
-    "title": "Maryland Insights \u2014 Build Your Maryland Business Website | Free",
+    "title": "Maryland Insights — Build Your Maryland Business Website | Free",
     "base_url": "https://marylandinsights.com",
     "base_path": "/",
     "trailing_slash": false,
@@ -12,7 +12,7 @@
   },
   "params": {
     "footer_description": "The new way for Maryland small businesses to build professional websites with AI-powered tools.",
-    "copyright": "\u00a9 {year} Maryland Insights. All Rights Reserved."
+    "copyright": "© {year} Maryland Insights. All Rights Reserved."
   },
   "navigation_button": {
     "enable": true,
@@ -53,5 +53,11 @@
     "area_served": "Maryland",
     "breadcrumb_home_label": "Home",
     "navigation_list_name": "Main Menu"
+  },
+  "service_cta": {
+    "title": "Ready to make your next customer easier to find?",
+    "description": "Bring your service area, customer journey, and growth goals into one conversation. We’ll start with what your business needs and make the next step clear.",
+    "button_label": "Partner with Us",
+    "button_link": "/get-started"
   }
 }

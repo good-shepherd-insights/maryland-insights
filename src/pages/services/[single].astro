@@ -24,16 +24,13 @@ export async function getStaticPaths() {
 }
 
 const { service } = Astro.props;
-const { title, description, image, faqs_list, blocks = [], date_modified, is_local_seo, cta_title, cta_description, cta_button_label, cta_button_link, faq_title_prefix } = service.data;
+const { title, description, image, faqs_list, blocks = [], date_modified, faq_title_prefix } = service.data;
 const hasLeadHero = blocks.some((block: { type: string }) => block.type === "leadCapture");
-const isLocalSeo = Boolean(is_local_seo);
-const mainBlocks = isLocalSeo ? blocks.filter((block: { type: string }) => block.type !== "relatedArticles") : blocks;
-const trailingArticleBlocks = isLocalSeo ? blocks.filter((block: { type: string }) => block.type === "relatedArticles") : [];
 const ctaProps = {
-  title: cta_title,
-  description: cta_description,
-  buttonLabel: cta_button_label,
-  buttonLink: cta_button_link,
+  title: config.service_cta.title,
+  description: config.service_cta.description,
+  buttonLabel: config.service_cta.button_label,
+  buttonLink: config.service_cta.button_link,
 };
 
 const serviceSchema: SoftwareApplication = {
@@ -42,13 +39,11 @@ const serviceSchema: SoftwareApplication = {
   "description": plainify(description),
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
-  ...(!isLocalSeo ? {
-    "offers": {
-      "@type": "Offer" as const,
-      "price": 0,
-      "priceCurrency": "USD" as const,
-    },
-  } : {}),
+  "offers": {
+    "@type": "Offer" as const,
+    "price": 0,
+    "priceCurrency": "USD" as const,
+  },
   "image": image ? `${config.site.base_url}${image}` : undefined,
   "publisher": {
     "@id": `${config.site.base_url}/#organization`,
@@ -80,11 +75,9 @@ if (faqs_list && faqs_list.length > 0) {
 <Base {...service.data} schema={pageSchemas}>
   {!hasLeadHero && <PageHeader title={title} description={description} />}
 
-  <ServiceBlocks blocks={mainBlocks} />
-
-  {isLocalSeo && <ServiceCTA {...ctaProps} />}
+  <ServiceBlocks blocks={blocks} />
 
   {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `${faq_title_prefix ?? ""}${title}` }} prefix="service-faq" />}
 
-  {isLocalSeo ? <ServiceBlocks blocks={trailingArticleBlocks} /> : <ServiceCTA {...ctaProps} />}
+  <ServiceCTA {...ctaProps} />
 </Base>
