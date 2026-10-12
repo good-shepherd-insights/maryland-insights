@@ -50,7 +50,7 @@ const {
 // Nothing honest to show: render nothing rather than an empty band.
 if (!aggregateRating && subRatings.length === 0) return null;
 
-const heading = title ?? "Ratings and reviews";
+const heading = title;
 const headingId = `trust-${slugify(heading)}`;
 const Heading = headingLevel;
 
