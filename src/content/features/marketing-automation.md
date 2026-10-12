@@ -21,6 +21,13 @@ faqs_list:
     answer: "Absolutely. Even a small customer base benefits significantly from consistent, well-timed follow-up. In fact, Maryland small businesses with modest lists often see the highest returns from automation because every lead and every customer relationship carries more individual weight. Automation ensures no opportunity in your Maryland market gets overlooked simply because you ran out of time."
   - question: "How does marketing automation work alongside my existing Maryland business website?"
     answer: "Your automation connects directly to your website through form integrations, tracking pixels, and CRM connections. Every time a Maryland customer submits a contact form, signs up for a promotion, or triggers a behavioral event on your site, the appropriate automated sequence launches immediately: ensuring fast, relevant follow-up every single time."
+icon_srcs:
+  - "/images/icons/active_campaign.svg"
+  - "/images/icons/brevo.svg"
+  - "/images/icons/klaviyo.svg"
+  - "/images/icons/customer_io.svg"
+  - "/images/icons/kit.svg"
+
 ---
 
 ## What Is Marketing Automation: and Why Does It Matter for Maryland Small Businesses?

@@ -19,6 +19,11 @@ faqs_list:
     answer: "Absolutely. AI engines prioritize the most relevant, well-structured answer: not the biggest brand. A well-optimized small business in Annapolis can outperform a large national chain in local AI search results."
   - question: "What Maryland areas do you serve?"
     answer: "We work with small businesses across all of Maryland, including Baltimore City, Baltimore County, Montgomery County, Prince George's County, Anne Arundel County, Howard County, Frederick County, Harford County, and the Eastern Shore."
+icon_srcs:
+  - "/images/icons/square.svg"
+  - "/images/icons/shopify/shopify.svg"
+  - "/images/icons/mailchimp.svg"
+
 ---
 
 ### What Is AEO: and Why Does It Matter for Maryland Small Businesses?

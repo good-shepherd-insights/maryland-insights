@@ -28,9 +28,10 @@ const toOpenGraphPage = (data: {
   ),
 });
 
-export const getOpenGraphPages = async (): Promise<
-  Record<string, OpenGraphPage>
-> => {
+export const getOpenGraphPages = async (options?: {
+  notFound?: OpenGraphPage;
+  search?: OpenGraphPage;
+}): Promise<Record<string, OpenGraphPage>> => {
   const [
     homepage,
     about,
@@ -86,15 +87,8 @@ export const getOpenGraphPages = async (): Promise<
           description: shorten(plainify(homepage.data.banner.content)),
         }
       : toOpenGraphPage({}),
-    "404": {
-      title: "Page Not Found",
-      description:
-        "Return to Maryland Insights to keep building your business.",
-    },
-    search: {
-      title: "Search Results",
-      description: "Search results for your Maryland business needs.",
-    },
+    "404": options?.notFound ?? { title: "", description: "" },
+    search: options?.search ?? { title: "", description: "" },
   };
 
   for (const [route, entry] of Object.entries(requiredIndexes)) {

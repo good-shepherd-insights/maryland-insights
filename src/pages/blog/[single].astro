@@ -44,6 +44,7 @@ type BlogUi = {
   consentLabel?: string;
   privacyLinkText?: string;
   privacyLinkUrl?: string;
+  subscribeButtonTitle?: string;
   faqSectionTitle?: string;
 };
 
@@ -331,7 +332,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                       name="email"
                     />
                     <button
-                      title="Subscribe"
+                      title={ui?.subscribeButtonTitle}
                       class="transition hover:opacity-80 pr-2"
                       type="submit"
                     >
