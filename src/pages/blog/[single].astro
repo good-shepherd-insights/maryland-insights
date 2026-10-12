@@ -29,7 +29,30 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { post } = Astro.props;
+type BlogUi = {
+  tocHeading?: string;
+  tocMobileHeading?: string;
+  ctaButtonLabel?: string;
+  ctaButtonLink?: string;
+  consultUrl?: string;
+  consultButtonLabel?: string;
+  recentPostsHeading?: string;
+  shareHeading?: string;
+  newsletterHeading?: string;
+  newsletterPlaceholder?: string;
+  newsletterHint?: string;
+  consentLabel?: string;
+  privacyLinkText?: string;
+  privacyLinkUrl?: string;
+  faqSectionTitle?: string;
+};
+
+type Props = {
+  post: any;
+  ui?: BlogUi;
+};
+
+const { post, ui } = Astro.props as Props;
 const { title } = post.data;
 
 const { Content, headings } = await render(post);
@@ -152,7 +175,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
           <aside class="bg-body rounded-2xl p-6 shrink-0 max-w-62 lg:sticky top-30 hidden lg:block border border-border/50 shadow-sm">
             <nav>
               <small class="block mb-4 font-semibold text-text-dark font-primary text-[10px] uppercase tracking-wider">
-                In this article
+                {ui?.tocHeading}
               </small>
               <div class="toc-desktop-container">
                 <div class="toc-desktop-line" />
@@ -177,7 +200,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
           validHeadings.length > 0 && (
             <nav class="lg:hidden my-8 p-5 bg-light/50 border border-border rounded-2xl">
               <small class="block mb-3 font-semibold text-text-dark font-primary text-[10px] uppercase tracking-wider">
-                Quick Navigation
+                {ui?.tocMobileHeading}
               </small>
               <ul class="space-y-1">
                 {validHeadings.map((heading) => (
@@ -221,12 +244,12 @@ if (post.data.faqs && post.data.faqs.length > 0) {
         <div
           class="flex flex-wrap items-center justify-center gap-4 mt-12 py-10 border-t border-border/50"
         >
-          <a href="/get-started" class="btn btn-primary px-10">Get Started</a>
+          <a href={ui?.ctaButtonLink} class="btn btn-primary px-10">{ui?.ctaButtonLabel}</a>
           <a
-            href="https://cal.id/maryland-insights/business-growth-consult?overlayCalendar=true"
+            href={ui?.consultUrl}
             class="btn btn-outline px-10"
           >
-            Book a Growth Consultation
+            {ui?.consultButtonLabel}
           </a>
         </div>
       </article>
@@ -236,7 +259,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
           sortedPosts.length > 0 && (
             <nav class="bg-body rounded-2xl p-4">
               <small class="font-semibold text-text-dark font-primary text-sm">
-                Recent Posts
+                {ui?.recentPostsHeading}
               </small>
               <ul>
                 {sortedPosts.map((post) => (
@@ -275,7 +298,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
         <!-- Social Share  -->
         <div class="bg-body rounded-2xl p-4 mt-5">
           <small class="font-semibold text-text-dark font-primary text-sm">
-            Share This Blog
+            {ui?.shareHeading}
           </small>
           <Share
             slug={post.id}
@@ -291,7 +314,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
             config.subscription_in_footer.enable && (
               <div class="bg-body rounded-2xl p-4 mt-5 hidden lg:block">
                 <small class="font-semibold text-text-dark font-primary text-sm">
-                  Subscribe to Newsletter
+                  {ui?.newsletterHeading}
                 </small>
 
                 <form
@@ -302,7 +325,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                   <div class="flex justify-between rounded-lg bg-light px-3 py-2 border border-border mb-5 mt-2">
                     <input
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={ui?.newsletterPlaceholder}
                       class="form-input w-full rounded-full border-transparent! bg-transparent! py-2! pl-2! placeholder:opacity-100! placeholder:font-normal"
                       required
                       name="email"
@@ -328,7 +351,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                     </button>
                   </div>
                   <p data-newsletter-hint class="text-xs text-text-light/70 mb-2">
-                    Please accept the privacy policy to enable subscription.
+                    {ui?.newsletterHint}
                   </p>
 
                   <label
@@ -344,12 +367,12 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                       required
                       class="appearance-auto rounded-sm accent-primary ring-0"
                     />
-                    <span>I agree with </span>
+                    <span>{ui?.consentLabel}</span>
                     <a
-                      href="/privacy-policy"
+                      href={ui?.privacyLinkUrl}
                       class="text-text-dark font-semibold hover:text-primary transition duration-300"
                     >
-                      privacy policy.
+                      {ui?.privacyLinkText}
                     </a>
                   </label>
                 </form>
@@ -390,7 +413,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
   </section>
 
   {post.data.faqs && post.data.faqs.length > 0 && (
-    <Faqs data={{ faqs_list: post.data.faqs, section_title: "Frequently Asked Questions" }} prefix="blog-faq" />
+    <Faqs data={{ faqs_list: post.data.faqs, section_title: ui?.faqSectionTitle }} prefix="blog-faq" />
   )}
 
   <CallToAction />
