@@ -25,6 +25,7 @@ const {
     departmentLabel?: string;
     vacanciesLabel?: string;
     deadlineLabel?: string;
+    caseLastUpdatedLabel?: string;
   };
 } = Astro.props;
 
@@ -106,7 +107,7 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
           </p>
           {caseData.date && (
             <p class="flex flex-col gap-1 text-left">
-              <span class="text-xs">Last updated</span>
+              <span class="text-xs">{ui?.caseLastUpdatedLabel}</span>
               <time class="text-text-dark" datetime={dateFormat(caseData.date)}>
                 {dateFormat(caseData.date)}
               </time>

@@ -31,6 +31,7 @@ export const homepage = defineCollection({
           }),
         )
         .optional(),
+      audience_aria_label: z.string().optional(),
     }),
     agents_swiper: z.object({
       enable: z.boolean(),
@@ -275,6 +276,7 @@ export const blog = defineCollection({
         title: z.string(),
       })
       .optional(),
+    all_filter_label: z.string().optional(),
   }),
 });
 

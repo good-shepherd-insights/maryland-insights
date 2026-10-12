@@ -17,7 +17,7 @@ const BLOG_FOLDER = "blog";
 const postIndex = await getListPage(BLOG_FOLDER, "-index");
 if (postIndex.data.draft) return Astro.redirect("/404");
 
-const { title, description, blog_library_guide, featured_posts, actual_posts } = postIndex.data;
+const { title, description, blog_library_guide, featured_posts, actual_posts, all_filter_label } = postIndex.data;
 const blogGuide = blog_library_guide;
 const posts = await getSinglePage(BLOG_FOLDER);
 const featuredPosts = posts.filter(
@@ -141,7 +141,7 @@ const blogIndexSchema: Blog = {
                   type="button"
                   class={`btn btn-primary btn-sm border-2 hover:-translate-y-0.75 transition-transform m-3 inline-block capitalize py-3 rounded-full`}
                 >
-                  All Together
+                  {all_filter_label}
                 </button>
               </li>
               {categoryGroups.map((group) => (
