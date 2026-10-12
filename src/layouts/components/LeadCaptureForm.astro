@@ -70,7 +70,10 @@ type Props = {
     servesPrefix?: string;
     reviewSingular?: string;
     reviewPlural?: string;
+    businessSuggestionsAriaLabel?: string;
+    auditPlatformsAriaLabel?: string;
   };
+  platforms?: { name: string; src: string; class?: string }[];
 };
 
 const {
@@ -88,6 +91,7 @@ const {
   headingLevel = "h2",
   lookup,
   ui,
+  platforms = [],
 } = Astro.props as Props;
 
 const headingId = `lead-${slugify(title)}`;
@@ -95,14 +99,7 @@ const fieldId = (name: string) => `lead-field-${slugify(name)}`;
 const lookupBusinessName = lookup?.businessField;
 const listboxId = `lookup-list-${slugify(title)}`;
 
-const auditPlatformIcons = [
-  { name: "Google Business Profile", src: "/images/brand/official/google-business-profile.svg", class: "h-[30.6px]" },
-  { name: "Yelp", src: "/images/icons/yelp.svg", class: "h-[30.6px]" },
-  { name: "Bing", src: "/images/icons/bing_webmaster_tools.svg", class: "h-[27px]" },
-  { name: "ChatGPT", src: "/images/brand/official/openai-chatgpt.svg", class: "h-[23.8px]" },
-  { name: "Google Answers", src: "/images/brand/official/google-ai-overviews.svg", class: "h-[23.8px]" },
-  { name: "Claude", src: "/images/brand/official/claude.svg", class: "h-[23.8px]" },
-];
+const auditPlatformIcons = platforms;
 ---
 
 <section
@@ -289,7 +286,7 @@ const auditPlatformIcons = [
                         <ul
                           id={listboxId}
                           role="listbox"
-                          aria-label="Business suggestions"
+                          aria-label={ui?.businessSuggestionsAriaLabel}
                           hidden
                           class="lookup-listbox absolute left-0 right-0 top-full z-20 mt-1 max-h-56 overflow-y-auto rounded-none border border-dark bg-body shadow-[0_12px_28px_-18px_rgba(18,18,18,0.3)]"
                         >
@@ -344,7 +341,7 @@ const auditPlatformIcons = [
 
             <p aria-live="polite" class="lead-capture-status mt-3 text-sm font-semibold text-primary" hidden></p>
 
-            <div class="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-5 pt-2 sm:justify-start" aria-label="Audit platforms">
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-5 pt-2 sm:justify-start" aria-label={ui?.auditPlatformsAriaLabel}>
               {auditPlatformIcons.map((icon) => (
                 <img src={icon.src} alt={icon.name} title={icon.name} class:list={["w-auto object-contain", icon.class]} loading="lazy" />
               ))}
@@ -406,7 +403,7 @@ const auditPlatformIcons = [
                       <img class="lookup-profile-logo relative max-h-full max-w-full" alt="" referrerpolicy="no-referrer" hidden />
                     </span>
                     <div class="min-w-0">
-                      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Google Business Profile</p>
+                      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.profileHeadingLabel}</p>
                       <a class="lookup-profile-name mt-2 block min-w-0 break-words font-secondary text-h4 font-bold leading-tight text-text-dark underline decoration-border underline-offset-4 transition hover:text-primary hover:decoration-primary" target="_blank" rel="noopener noreferrer nofollow"></a>
                     </div>
                   </div>

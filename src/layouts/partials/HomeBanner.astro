@@ -10,6 +10,7 @@ const {
   button_underline,
   fine_print,
   stats,
+  audience_aria_label,
 } = pageIndex.data.banner;
 
 ---
@@ -23,7 +24,7 @@ const {
     <div class="xl:max-w-4xl mb-8 xl:mb-[81px]">
       <div
         role="tablist"
-        aria-label="Audience"
+        aria-label={audience_aria_label}
         class="home-persona-tablist mb-3.5 xl:mb-6 relative inline-flex h-10 items-center rounded-full border border-gray-200 bg-gray-50 p-1 text-sm font-bold text-gray-900"
       >
         <span

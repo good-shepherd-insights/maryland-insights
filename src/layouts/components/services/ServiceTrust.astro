@@ -9,6 +9,13 @@ type Props = {
   migrationPolicy: string;
   included: string[];
   extraCost: string[];
+  ui?: {
+    backupsLabel?: string;
+    uptimeLabel?: string;
+    migrationLabel?: string;
+    includedHeading?: string;
+    additionalCostHeading?: string;
+  };
 };
 
 const {
@@ -19,6 +26,7 @@ const {
   migrationPolicy,
   included,
   extraCost,
+  ui,
 } = Astro.props as Props;
 const headingId = `service-${slugify(title)}`;
 ---
@@ -34,28 +42,28 @@ const headingId = `service-${slugify(title)}`;
       <div class="lg:col-span-8">
         <dl class="border-t border-border">
           <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-8">
-            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Backups</dt>
+            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.backupsLabel}</dt>
             <dd class="text-text-dark/80" set:html={markdownify(backupPolicy)} />
           </div>
           <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-8">
-            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Uptime</dt>
+            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.uptimeLabel}</dt>
             <dd class="text-text-dark/80" set:html={markdownify(uptimePolicy)} />
           </div>
           <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-8">
-            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Migration</dt>
+            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.migrationLabel}</dt>
             <dd class="text-text-dark/80" set:html={markdownify(migrationPolicy)} />
           </div>
         </dl>
 
         <div class="mt-10 grid gap-8 md:grid-cols-2">
           <div>
-            <h3 class="h6 mb-4">Included</h3>
+            <h3 class="h6 mb-4">{ui?.includedHeading}</h3>
             <ul class="space-y-3 border-t border-border pt-4">
               {included.map((item) => <li class="border-b border-border pb-3 text-sm text-text-dark/80" set:html={markdownify(item)} />)}
             </ul>
           </div>
           <div>
-            <h3 class="h6 mb-4">Additional cost</h3>
+            <h3 class="h6 mb-4">{ui?.additionalCostHeading}</h3>
             <ul class="space-y-3 border-t border-border pt-4">
               {extraCost.map((item) => <li class="border-b border-border pb-3 text-sm text-text-dark/80" set:html={markdownify(item)} />)}
             </ul>
