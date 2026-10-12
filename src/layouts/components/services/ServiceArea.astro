@@ -7,7 +7,7 @@ type Props = {
   title: string;
   intro: string;
   counties: (string | County)[];
-  ui?: { areasEyebrowLabel?: string };
+  ui?: { areasEyebrowLabel?: string; newTabSuffix?: string; countyLinksNote?: string };
 };
 
 const { title, intro, counties, ui } = Astro.props as Props;
@@ -44,7 +44,7 @@ const hasLinks = items.some((c) => c.edoUrl);
                     <svg class="h-3.5 w-3.5 shrink-0 text-text-light transition-colors group-hover:text-primary" viewBox="0 0 12 12" fill="none" aria-hidden="true">
                       <path d="M3.5 2.5h6v6M9 3 3 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <span class="sr-only">(opens the county's official economic development site in a new tab)</span>
+                    <span class="sr-only">{ui?.newTabSuffix}</span>
                   </a>
                 ) : (
                   <span class="text-lg text-text-dark">{county.name}</span>
@@ -55,7 +55,7 @@ const hasLinks = items.some((c) => c.edoUrl);
         </ul>
         {hasLinks && (
           <p class="mt-4 text-sm text-text-light">
-            Each county links to its official economic development site, where business records and licensing are published.
+            {ui?.countyLinksNote}
           </p>
         )}
       </div>

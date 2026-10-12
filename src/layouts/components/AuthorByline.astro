@@ -170,7 +170,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
                 publishedText && (
                   <div class="min-w-0">
                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-                      Published
+                      {ui?.publishedLabel}
                     </p>
                     <p class="mt-1 break-words font-secondary text-sm font-semibold tabular-nums text-text-dark">
                       <time datetime={datePublished}>{publishedText}</time>
@@ -182,7 +182,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
                 modifiedText && (
                   <div class="min-w-0">
                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-                      Updated
+                      {ui?.updatedLabel}
                     </p>
                     <p class="mt-1 break-words font-secondary text-sm font-semibold tabular-nums text-text-dark">
                       <time datetime={dateModified}>{modifiedText}</time>
@@ -382,7 +382,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
                 <span aria-hidden="true">{" · "}</span>
                 {publishedText && (
                   <span class="text-text-light">
-                    Published{" "}
+                    {ui?.publishedLabel}{" "}
                     <time datetime={datePublished} class="font-medium tabular-nums text-text-dark">
                       {publishedText}
                     </time>
@@ -391,7 +391,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
                 {publishedText && modifiedText && <span aria-hidden="true">{" · "}</span>}
                 {modifiedText && (
                   <span class="text-text-light">
-                    Updated{" "}
+                    {ui?.updatedLabel}{" "}
                     <time datetime={dateModified} class="font-medium tabular-nums text-text-dark">
                       {modifiedText}
                     </time>
