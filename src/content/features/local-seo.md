@@ -22,6 +22,13 @@ faqs_list:
     answer: "Yes. Through a combination of service area pages, localized content, and proper Google Business Profile configuration, we can help your Maryland business build visibility across multiple cities, neighborhoods, and zip codes: not just the one where your office is located."
   - question: "How important are customer reviews for Local SEO in Maryland?"
     answer: "Reviews are one of the most significant ranking factors in local search. Google uses review quantity, quality, recency, and response rate to determine local ranking position. Beyond rankings, reviews are also the primary trust signal Maryland customers use when choosing between local businesses: making reputation management a core part of any effective Local SEO strategy."
+icon_srcs:
+  - "/images/icons/hubspot.svg"
+  - "/images/icons/whatsapp.svg"
+  - "/images/icons/zapier.svg"
+  - "/images/icons/jobber.svg"
+  - "/images/icons/go_high_level.svg"
+
 ---
 
 ## What Is Local SEO: and Why Does It Matter for Maryland Small Businesses?

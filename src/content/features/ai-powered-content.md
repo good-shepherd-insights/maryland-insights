@@ -19,6 +19,13 @@ faqs_list:
     answer: "Most Maryland businesses find they need only light edits: adding a specific detail about their service area, adjusting for a preferred tone, or inserting a timely local reference. The AI handles the heavy lifting so you spend minutes reviewing instead of hours writing, and you always maintain full control over what goes live."
   - question: "Is AI content right for my industry in Maryland?"
     answer: "Our content tools work across the industries that make up Maryland's small business community, including home services, retail, professional services, healthcare, hospitality, real estate, legal, financial services, and more. If your business serves Maryland customers, our AI content tools are built to help you reach them."
+icon_srcs:
+  - "/images/icons/facebook/facebook.svg"
+  - "/images/icons/google_business_profile.svg"
+  - "/images/icons/yelp.svg"
+  - "/images/icons/google_maps.svg"
+  - "/images/icons/apple.svg"
+
 ---
 
 ## What Is AI-Powered Content: and Why Does It Matter for Maryland Small Businesses?

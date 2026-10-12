@@ -21,6 +21,13 @@ faqs_list:
     answer: "Our platform is built to replace underperforming websites quickly and cost-effectively. Many Maryland small businesses migrate from outdated or generic sites and immediately see improvements in local search visibility, mobile performance, and lead conversion: simply by switching to a site built with local intent in mind."
   - question: "Can the website integrate with my other Maryland Insights tools?"
     answer: "Yes. Your website connects seamlessly with every other tool in the Maryland Insights platform: including Local SEO, AEO Optimization, Analytics and Reporting, Marketing Automation, and AI-Powered Content: creating a unified growth system built specifically for your Maryland small business."
+icon_srcs:
+  - "/images/icons/angi.svg"
+  - "/images/icons/trustpilot.svg"
+  - "/images/icons/better_business_bureau.svg"
+  - "/images/icons/homeadvisor.svg"
+  - "/images/icons/thumbtack.svg"
+
 ---
 
 ## What Is a Maryland Business Website Builder: and Why Does It Matter?

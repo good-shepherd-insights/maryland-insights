@@ -19,6 +19,13 @@ faqs_list:
     answer: "Reporting frequency is tailored to your needs, but most Maryland businesses receive monthly performance summaries along with real-time dashboard access for day-to-day monitoring. You will always have visibility into what is happening in your market without waiting for a scheduled call."
   - question: "Can analytics help me understand which of my Maryland services are most in demand?"
     answer: "Absolutely. By tracking which service pages attract the most traffic, the longest engagement, and the highest conversion rates from Maryland visitors, you can identify your most valuable offerings and make informed decisions about where to focus your marketing and operational efforts."
+icon_srcs:
+  - "/images/icons/yoast_seo.svg"
+  - "/images/icons/google_search_console.svg"
+  - "/images/icons/semrush.svg"
+  - "/images/icons/ahrefs.svg"
+  - "/images/icons/bing_webmaster_tools.svg"
+
 ---
 
 ## What Is Analytics and Reporting: and Why Does It Matter for Maryland Small Businesses?
