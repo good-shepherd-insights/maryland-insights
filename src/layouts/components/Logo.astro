@@ -8,12 +8,14 @@ const {
   width,
   height,
   style,
+  homeUrl,
 }: {
   src?: string;
   className?: string;
   width?: number;
   height?: number;
   style?: any;
+  homeUrl?: string;
 } = Astro.props;
 
 const {
@@ -31,7 +33,7 @@ const {
 } = config.site;
 ---
 
-<a href="/" class={`navbar-brand inline-block flex items-center gap-2`}>
+<a href={homeUrl} class={`navbar-brand inline-block flex items-center gap-2`}>
   {
     src || logo ? (
       <>
