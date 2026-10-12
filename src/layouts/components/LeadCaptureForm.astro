@@ -254,7 +254,7 @@ const auditPlatformIcons = platforms;
                           <span class="text-primary" aria-hidden="true">
                             {" "}*
                           </span>
-                          <span class="sr-only"> (required)</span>
+                          <span class="sr-only">{ui?.requiredSuffix}</span>
                         </>
                       ) : null}
                     </label>
@@ -295,7 +295,7 @@ const auditPlatformIcons = platforms;
                             {ui?.searchingLabel}
                           </li>
                           <li class="lookup-search-error px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
-                            Search is unavailable. Please try again.
+                            {ui?.searchUnavailableLabel}
                           </li>
                         </ul>
                       </div>

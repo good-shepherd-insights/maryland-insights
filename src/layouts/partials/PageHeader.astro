@@ -26,6 +26,7 @@ const {
     vacanciesLabel?: string;
     deadlineLabel?: string;
     caseLastUpdatedLabel?: string;
+    badgeUpdatedLabel?: string;
   };
 } = Astro.props;
 
@@ -78,7 +79,7 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
               dateModified={dateString(blogData.lastmod || blogData.date)}
               datePublished={blogData.date ? dateString(blogData.date) : undefined}
               variant="badge"
-              label="Updated"
+              label={ui?.badgeUpdatedLabel}
             />
           )}
         </div>
