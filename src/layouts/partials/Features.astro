@@ -7,7 +7,9 @@ import type { SwiperOptions } from "swiper/types";
 
 const pageIndex = await getListPage("homepage", "-index");
 if (!pageIndex.data.featured_features_section.enable) return null;
-const { title } = pageIndex.data.featured_features_section;
+const { title, ui } = pageIndex.data.featured_features_section as typeof pageIndex.data.featured_features_section & {
+  ui?: { prevLabel?: string; nextLabel?: string; pauseLabel?: string };
+};
 
 const features = await getSinglePage("features");
 
@@ -48,7 +50,7 @@ const swiperOptions: SwiperOptions = {
         <button
           type="button"
           class="features-slider-prev group transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
-          aria-label="Previous features"
+          aria-label={ui?.prevLabel}
         >
           <svg
             class="text-dark transition-transform duration-300 ease-out"
@@ -95,7 +97,7 @@ const swiperOptions: SwiperOptions = {
         <button
           type="button"
           class="features-slider-next group transition-transform duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
-          aria-label="Next features"
+          aria-label={ui?.nextLabel}
         >
           <svg
             class="text-text-dark transition-transform duration-300 ease-out"
@@ -138,7 +140,7 @@ const swiperOptions: SwiperOptions = {
           type="button"
           data-features-toggle-play
           class="features-slider-toggle p-3 rounded-full bg-light border border-border text-text-dark transition hover:bg-body hover:border-primary"
-          aria-label="Pause features carousel"
+          aria-label={ui?.pauseLabel}
         >
           <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
             <path class="pause-icon" d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>

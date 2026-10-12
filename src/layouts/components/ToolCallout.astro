@@ -1,11 +1,5 @@
 ---
 import { markdownify, slugify } from "@/lib/utils/textConverter";
-const chatGptIcon = "/images/brand/official/openai-chatgpt.svg";
-const perplexityIcon = "/images/brand/official/perplexity.svg";
-const geminiIcon = "/images/brand/official/google-gemini.svg?v=3";
-const claudeIcon = "/images/brand/official/claude.svg";
-const googleBusinessProfileIcon = "/images/brand/official/google-business-profile.svg";
-const googleAiOverviewsIcon = "/images/brand/official/google-ai-overviews.svg?v=2";
 
 type Item = {
   name: string;
@@ -39,24 +33,7 @@ const {
 
 const headingId = `tool-${slugify(title)}`;
 const label = eyebrow;
-const iconsByName: Record<string, string> = {
-  "Google Business Profile": googleBusinessProfileIcon,
-  "Google AI Overviews": googleAiOverviewsIcon,
-  ChatGPT: chatGptIcon,
-  Perplexity: perplexityIcon,
-  Gemini: geminiIcon,
-  Claude: claudeIcon,
-};
-const shownItems =
-  tone === "aligned-with" && !items.some((item) => item.name === "Claude")
-    ? [
-        ...items,
-        {
-          name: "Claude",
-          purpose: "Anthropic's assistant surface customers may use for local recommendations and business comparisons.",
-        },
-      ]
-    : items;
+const shownItems = items;
 const Heading = headingLevel;
 ---
 
@@ -124,8 +101,8 @@ const Heading = headingLevel;
                     </a>
                   ) : (
                   <span class="inline-flex items-center gap-2 border border-border bg-light px-4 py-2 text-sm font-semibold text-text-dark">
-                    {(item.icon || iconsByName[item.name]) && (
-                      <img src={item.icon || iconsByName[item.name]} alt="" aria-hidden="true" class="h-5 w-5 shrink-0 object-contain" loading="lazy" />
+                    {item.icon && (
+                      <img src={item.icon} alt="" aria-hidden="true" class="h-5 w-5 shrink-0 object-contain" loading="lazy" />
                     )}
                     {item.name}
                   </span>

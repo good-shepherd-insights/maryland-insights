@@ -27,7 +27,15 @@ type Props = {
   variant?: "cards" | "table";
   anchor?: string;
   headingLevel?: "h2" | "h3";
-  ui?: { recommendedLabel?: string };
+  ui?: {
+    recommendedLabel?: string;
+    includedLabel?: string;
+    notIncludedLabel?: string;
+    emailLabel?: string;
+    joiningLabel?: string;
+    joinedLabel?: string;
+    joinFailedLabel?: string;
+  };
 };
 
 const {
@@ -174,7 +182,7 @@ const recommendedLabel = (tier: Tier): string =>
                       {tier.excludes.length > 0 && (
                         <>
                           <p class:list={["text-xs font-semibold uppercase tracking-[0.14em] text-text-light", { "mt-6": tier.includes.length > 0 }]}>
-                            Not included
+                            {ui?.notIncludedLabel}
                           </p>
                           <ul class="mt-3 space-y-3">
                             {tier.excludes.map((item) => (
@@ -192,9 +200,13 @@ const recommendedLabel = (tier: Tier): string =>
                   )}
 
                   {tier.collectEmail && tier.ctaLabel && (
-                    <form class="mt-auto w-full pt-8" data-waitlist-form action="/api/waitlist" method="post">
+                    <form class="mt-auto w-full pt-8" data-waitlist-form action="/api/waitlist" method="post"
+                      data-ui-joining={ui?.joiningLabel}
+                      data-ui-joined={ui?.joinedLabel}
+                      data-ui-failed={ui?.joinFailedLabel}
+                    >
                       <label class="mb-2 block text-sm font-semibold text-text-dark" for={`waitlist-email-${slugify(tier.name)}`}>
-                        Email address
+                        {ui?.emailLabel}
                       </label>
                       <input
                         id={`waitlist-email-${slugify(tier.name)}`}
@@ -251,7 +263,7 @@ const recommendedLabel = (tier: Tier): string =>
                   <div class:list={["grid gap-8", { "sm:grid-cols-2": tier.excludes.length > 0 }]}>
                     {tier.includes.length > 0 && (
                       <div class="min-w-0">
-                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Included</p>
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.includedLabel}</p>
                         <ul class="mt-3 space-y-3 border-t border-border pt-3">
                           {tier.includes.map((item) => (
                             <li class="flex items-start gap-3">
@@ -266,7 +278,7 @@ const recommendedLabel = (tier: Tier): string =>
                     )}
                     {tier.excludes.length > 0 && (
                       <div class="min-w-0">
-                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Not included</p>
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.notIncludedLabel}</p>
                         <ul class="mt-3 space-y-3 border-t border-border pt-3">
                           {tier.excludes.map((item) => (
                             <li class="flex items-start gap-3">
@@ -311,7 +323,7 @@ const recommendedLabel = (tier: Tier): string =>
       if (button) button.disabled = true;
       if (status) {
         status.hidden = false;
-        status.textContent = "Joining the waitlist…";
+        status.textContent = form.dataset.uiJoining ?? "";
       }
 
       const email = String(new FormData(form).get("email") ?? "");
@@ -322,7 +334,7 @@ const recommendedLabel = (tier: Tier): string =>
       }).catch(() => null);
 
       if (status) {
-        status.textContent = res?.ok ? "You're on the waitlist." : "Could not join the waitlist. Try again.";
+        status.textContent = res?.ok ? form.dataset.uiJoined ?? "" : form.dataset.uiFailed ?? "";
       }
       if (res?.ok) form.reset();
       if (button) button.disabled = false;

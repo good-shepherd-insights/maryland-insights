@@ -65,8 +65,8 @@ const {
   title, meta_title, description, noindex, canonical,
   og_type = "website", date_published, date_modified, author_name,
   author_twitter, article_tags, article_section, googlebot,
-  head_links = []
-} = Astro.props;
+  head_links = [], ui
+} = Astro.props as any;
 
 const resolvedImage = getOpenGraphImagePath(Astro.url.pathname);
 
@@ -211,17 +211,17 @@ const graphItems: unknown[] = [
       href="#main-content"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-dark focus:rounded-lg focus:shadow-lg focus:outline-none"
     >
-      Skip to main content
+      {ui?.skipLinkLabel}
     </a>
     <TwSizeIndicator />
-    <Header />
+    <Header ui={ui?.header} />
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <button
       type="button"
       id="back-to-top"
-      aria-label="Back to top"
+      aria-label={ui?.backToTopLabel}
       aria-hidden="true"
       tabindex="-1"
       class="fixed bottom-6 left-6 z-40 p-3 rounded-full bg-primary text-dark shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2"

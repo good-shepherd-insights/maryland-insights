@@ -13,9 +13,10 @@ type Props = {
   headings: TocHeading[];
   variant?: "sticky" | "inline" | "collapsible";
   title?: string;
+  ui?: { sectionsWord?: string };
 };
 
-const { headings = [], variant = "sticky", title } = Astro.props as Props;
+const { headings = [], variant = "sticky", title, ui } = Astro.props as Props;
 
 // Defensive: drop malformed entries so the component can never render empty anchors.
 const items = headings.filter((heading) => heading && heading.id && heading.text);
@@ -74,7 +75,7 @@ const indentClass = (level?: number) => {
 
 // Field-guide index numbers, derived purely from list order.
 const num = (index: number) => String(index + 1).padStart(2, "0");
-const countLabel = `${num(rows.length - 1)} sections`;
+const countLabel = `${num(rows.length - 1)} ${ui?.sectionsWord ?? ""}`;
 ---
 
 {

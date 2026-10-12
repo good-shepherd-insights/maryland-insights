@@ -46,7 +46,7 @@ const posts = await getSinglePage("blog");
 const sortedPosts = sortByDate(posts).slice(0, 5);
 const similarPosts = similarItems(post, posts).slice(0, 3);
 
-const schemaType = post.data.schema_type || "BlogPosting";
+const schemaType = post.data.schema_type;
 const dateModifiedRaw = post.data.lastmod || post.data.date;
 
 const blogSchema = {

@@ -1,26 +1,19 @@
 ---
-// TrustStrip — static grayscale logo strip of Maryland government partners.
-// Six official logo assets pulled from each org's own site, quality-gated
-// (transparency, no white backgrounds, no white-content logos).
-type Emblem = { name: string; file: string; h: number; url: string };
+type Partner = { name: string; file: string; h: number; url: string };
+type Props = {
+  partners?: Partner[];
+  ui?: { partnersAriaLabel?: string };
+};
 
-const emblem: Emblem[] = [
-  // every link verified live (HTTP 200) and pointed at the org's business-facing page
-  { name: "Montgomery County", file: "/images/brand/official/montgomery.png", h: 34, url: "https://www.montgomerycountymd.gov/business/" },
-  { name: "Business Express MD", file: "/images/brand/official/businessexpress.png", h: 30, url: "https://businessexpress.maryland.gov/" },
-  { name: "Baltimore County", file: "/images/brand/official/baltco.png", h: 22, url: "https://www.baltimorecountymd.gov/departments/economic-and-workforce-development" },
-  { name: "Howard County", file: "/images/brand/official/howard.png", h: 40, url: "https://www.howardcountymd.gov/business-development" },
-  { name: "Maryland Labor", file: "/images/brand/official/labor.png", h: 30, url: "https://labor.maryland.gov/employment/new-employers.shtml" },
-  { name: "Baltimore City", file: "/images/brand/official/baltimore-city.png", h: 40, url: "https://baltimore.org/business/" },
-];
+const { partners = [], ui } = Astro.props as Props;
 ---
 
-<section class="dts-scope" aria-label="Maryland government partners">
+<section class="dts-scope" aria-label={ui?.partnersAriaLabel}>
   <div class="mx-auto w-full max-w-[1320px] px-4 py-5 md:px-6 md:py-6">
     <!-- STATIC strip: responsive logo row -->
     <div class="dts-strip relative grid grid-cols-3 items-center gap-x-3 gap-y-5 py-4 md:flex md:flex-wrap md:justify-center md:gap-x-0 md:py-5 lg:flex-nowrap">
       {
-        emblem.map((e) => (
+        partners.map((e) => (
           <a
             href={e.url}
             target="_blank"
@@ -31,7 +24,7 @@ const emblem: Emblem[] = [
           >
             <img
               src={e.file}
-              alt={`${e.name} logo`}
+              alt={e.name}
               loading="lazy"
               style={`--dts-logo-height: ${Math.round(e.h * 1.65)}px; --dts-logo-height-md: ${Math.round(e.h * 1.9)}px;`}
               class="dts-logo w-auto object-contain"

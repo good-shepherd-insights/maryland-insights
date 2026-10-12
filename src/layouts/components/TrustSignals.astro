@@ -33,6 +33,14 @@ type Props = {
   intro?: string;
   headingLevel?: "h2" | "h3";
   anchor?: string;
+  ui?: {
+    verifySourceLabel?: string;
+    reviewSingularLabel?: string;
+    reviewPluralLabel?: string;
+    outOfTemplate?: string;
+    scaleTemplate?: string;
+    basedOnTemplate?: string;
+  };
 };
 
 const {
@@ -45,6 +53,7 @@ const {
   intro,
   headingLevel = "h2",
   anchor,
+  ui,
 } = Astro.props as Props;
 
 // Nothing honest to show: render nothing rather than an empty band.
@@ -93,7 +102,7 @@ const isExternal = (url: string) => /^https?:\/\//.test(url);
 
 const countText =
   aggregateRating && typeof aggregateRating.reviewCount === "number"
-    ? `${aggregateRating.reviewCount.toLocaleString()} review${aggregateRating.reviewCount === 1 ? "" : "s"}`
+    ? `${aggregateRating.reviewCount.toLocaleString()} ${aggregateRating.reviewCount === 1 ? ui?.reviewSingularLabel ?? "" : ui?.reviewPluralLabel ?? ""}`
     : null;
 ---
 
@@ -135,8 +144,8 @@ const countText =
                   <div class="min-w-0">
                     {showStars && <span class="relative inline-flex shrink-0" set:html={starsBlock("h-5 w-5")} />}
                     <p class="mt-1.5 min-w-0 break-words text-sm text-text [overflow-wrap:anywhere]">
-                      out of {scaleMax}
-                      {worst !== null && best !== null ? ` (scale ${worst}–${best})` : ""}
+                      {(ui?.outOfTemplate ?? "").replace("{max}", String(scaleMax))}
+                      {worst !== null && best !== null ? (ui?.scaleTemplate ?? "").replace("{worst}", String(worst)).replace("{best}", String(best)) : ""}
                     </p>
                   </div>
                 </div>
@@ -146,7 +155,7 @@ const countText =
                   </span>
                   {countText && (
                     <span class="min-w-0 break-words tabular-nums [overflow-wrap:anywhere]">
-                      · based on {countText}
+                      {(ui?.basedOnTemplate ?? "").replace("{count}", countText ?? "")}
                     </span>
                   )}
                   {aggregateRating.url && (
@@ -156,7 +165,7 @@ const countText =
                       rel={isExternal(aggregateRating.url) ? externalRel : undefined}
                       class="inline-flex items-center gap-1.5 break-words underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary [overflow-wrap:anywhere]"
                     >
-                      <span>Verify the source</span>
+                      <span>{ui?.verifySourceLabel}</span>
                       <svg
                         class="mt-0.5 h-3.5 w-3.5 shrink-0"
                         viewBox="0 0 24 24"
@@ -251,7 +260,7 @@ const countText =
             aggregateRating && (
               <li class="min-w-0 break-words text-text [overflow-wrap:anywhere]">
                 <span class="font-semibold text-text-dark">{aggregateRating.source}</span>
-                {countText ? ` · based on ${countText}` : ""}
+                {countText ? (ui?.basedOnTemplate ?? "").replace("{count}", countText) : ""}
               </li>
             )
           }
@@ -265,7 +274,7 @@ const countText =
                   rel={isExternal(aggregateRating.url) ? externalRel : undefined}
                   class="inline-flex min-w-0 items-center gap-1.5 break-words text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary [overflow-wrap:anywhere]"
                 >
-                  <span>Verify the source</span>
+                  <span>{ui?.verifySourceLabel}</span>
                   <svg
                     class="mt-0.5 h-3.5 w-3.5 shrink-0"
                     viewBox="0 0 24 24"
@@ -327,7 +336,7 @@ const countText =
                   </div>
                   <p class="mt-2 min-w-0 break-words text-sm text-text [overflow-wrap:anywhere]">
                     <span class="font-semibold text-text-dark">{aggregateRating.source}</span>
-                    {countText ? ` · based on ${countText}` : ""}
+                    {countText ? (ui?.basedOnTemplate ?? "").replace("{count}", countText) : ""}
                   </p>
                 </div>
               )
@@ -372,7 +381,7 @@ const countText =
                       <path d="M15 3h6v6" />
                       <path d="M10 14L21 3" />
                     </svg>
-                    Verify the source
+                    {ui?.verifySourceLabel}
                   </a>
                 </p>
               )

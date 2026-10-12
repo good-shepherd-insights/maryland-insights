@@ -41,6 +41,36 @@ type Props = {
   anchor?: string;
   headingLevel?: "h1" | "h2";
   lookup?: Lookup;
+  ui?: {
+    loadingTitle?: string;
+    loadingCopy?: string;
+    loadingRecordHeading?: string;
+    loadingRowBusiness?: string;
+    loadingRowLocation?: string;
+    loadingRowCategory?: string;
+    loadingFoot?: string;
+    shareAriaLabel?: string;
+    linkCopiedLabel?: string;
+    changeBusinessLabel?: string;
+    requiredSuffix?: string;
+    suggestionsAriaLabel?: string;
+    searchingLabel?: string;
+    searchUnavailableLabel?: string;
+    notListedLabel?: string;
+    notYourListingLabel?: string;
+    noMatchLabel?: string;
+    tooManySearchesLabel?: string;
+    receivedSuffix?: string;
+    successMessage?: string;
+    sendingLabel?: string;
+    errorMessage?: string;
+    profileHeadingLabel?: string;
+    profileLogoAlt?: string;
+    viewOnMapsLabel?: string;
+    servesPrefix?: string;
+    reviewSingular?: string;
+    reviewPlural?: string;
+  };
 };
 
 const {
@@ -57,6 +87,7 @@ const {
   anchor,
   headingLevel = "h2",
   lookup,
+  ui,
 } = Astro.props as Props;
 
 const headingId = `lead-${slugify(title)}`;
@@ -96,18 +127,18 @@ const auditPlatformIcons = [
           <div class="lookup-loading-inner">
             <div class="lookup-loading-progress" aria-hidden="true"><span></span></div>
             <h2 class="lookup-loading-title font-secondary font-extrabold text-text-dark">
-              Loading your business profile audit<span class="lookup-loading-dots text-primary">...</span>
+              {ui?.loadingTitle}<span class="lookup-loading-dots text-primary">...</span>
             </h2>
             <p class="lookup-loading-copy text-text">
-              Pulling live Google Business Profile details to prepare your free local SEO audit.
+              {ui?.loadingCopy}
             </p>
             <div class="lookup-loading-record" aria-hidden="true">
-              <div class="lookup-loading-record-heading">Business profile</div>
-              <div class="lookup-loading-record-row"><span>Business</span><i class="lookup-loading-bar lookup-loading-bar-name"></i></div>
-              <div class="lookup-loading-record-row"><span>Location</span><i class="lookup-loading-bar lookup-loading-bar-location"></i></div>
-              <div class="lookup-loading-record-row"><span>Category</span><i class="lookup-loading-bar lookup-loading-bar-category"></i></div>
+              <div class="lookup-loading-record-heading">{ui?.loadingRecordHeading}</div>
+              <div class="lookup-loading-record-row"><span>{ui?.loadingRowBusiness}</span><i class="lookup-loading-bar lookup-loading-bar-name"></i></div>
+              <div class="lookup-loading-record-row"><span>{ui?.loadingRowLocation}</span><i class="lookup-loading-bar lookup-loading-bar-location"></i></div>
+              <div class="lookup-loading-record-row"><span>{ui?.loadingRowCategory}</span><i class="lookup-loading-bar lookup-loading-bar-category"></i></div>
             </div>
-            <p class="lookup-loading-foot text-text"><span aria-hidden="true"></span>Finding the right business profile</p>
+            <p class="lookup-loading-foot text-text"><span aria-hidden="true"></span>{ui?.loadingFoot}</p>
           </div>
         </div>
       )
@@ -156,14 +187,14 @@ const auditPlatformIcons = [
                   <span class="h-px w-6 shrink-0 bg-dark" aria-hidden="true"></span>
                   {leadMagnetLabel}
                 </p>
-                <button type="button" class="lead-page-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label="Share">
+                <button type="button" class="lead-page-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label={ui?.shareAriaLabel}>
                   <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 15V3" />
                     <path d="M8.25 6.75 12 3l3.75 3.75" />
                     <path d="M8 10.5H6.75A1.75 1.75 0 0 0 5 12.25v7A1.75 1.75 0 0 0 6.75 21h10.5A1.75 1.75 0 0 0 19 19.25v-7a1.75 1.75 0 0 0-1.75-1.75H16" />
                   </svg>
                 </button>
-                <span class="lead-page-share-status text-sm text-text-light" role="status" hidden>Link copied</span>
+                <span class="lead-page-share-status text-sm text-text-light" role="status" hidden>{ui?.linkCopiedLabel}</span>
                 <input class="lead-page-share-url basis-full bg-transparent text-xs text-text" type="text" readonly hidden />
               </div>
             )
@@ -180,6 +211,20 @@ const auditPlatformIcons = [
             data-lookup-prefill={lookup ? JSON.stringify(lookup.prefill ?? []) : undefined}
             data-lookup-title={lookup?.titleTemplate}
             data-lookup-cta={lookup?.ctaTemplate}
+            data-ui-no-match={ui?.noMatchLabel}
+            data-ui-too-many={ui?.tooManySearchesLabel}
+            data-ui-unavailable={ui?.searchUnavailableLabel}
+            data-ui-searching={ui?.searchingLabel}
+            data-ui-change={ui?.changeBusinessLabel}
+            data-ui-not-listed={ui?.notListedLabel}
+            data-ui-not-yours={ui?.notYourListingLabel}
+            data-ui-sending={ui?.sendingLabel}
+            data-ui-error={ui?.errorMessage}
+            data-ui-success={ui?.successMessage}
+            data-ui-received={ui?.receivedSuffix}
+            data-ui-serves={ui?.servesPrefix}
+            data-ui-review-singular={ui?.reviewSingular}
+            data-ui-review-plural={ui?.reviewPlural}
           >
             {
               lookup && (
@@ -187,7 +232,7 @@ const auditPlatformIcons = [
                   type="button"
                   class="lookup-change-business mb-5 hidden border-b border-border pb-0.5 text-sm font-semibold text-text-dark transition-colors hover:border-primary hover:text-primary"
                 >
-                  Change business
+                  {ui?.changeBusinessLabel}
                 </button>
               )
             }
@@ -250,7 +295,7 @@ const auditPlatformIcons = [
                         >
                           <li class="lookup-searching flex items-center gap-3 px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
                             <span class="h-4 w-4 shrink-0 rounded-full border-2 border-primary/25 border-t-primary motion-safe:animate-spin" aria-hidden="true"></span>
-                            Searching Maryland Businesses
+                            {ui?.searchingLabel}
                           </li>
                           <li class="lookup-search-error px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
                             Search is unavailable. Please try again.
@@ -273,7 +318,7 @@ const auditPlatformIcons = [
                       />
                     )}
                     {isLookupInput ? (
-                      <p class="lookup-not-listed mt-3 text-sm font-semibold text-[#1B83E2]" hidden>Business not listed?</p>
+                      <p class="lookup-not-listed mt-3 text-sm font-semibold text-[#1B83E2]" hidden>{ui?.notListedLabel}</p>
                     ) : null}
                   </div>
                 );
@@ -295,7 +340,7 @@ const auditPlatformIcons = [
             >
               {submitLabel}
             </button>
-            <button type="button" class="lookup-wrong-listing border-0 bg-transparent p-0 text-left text-sm font-semibold text-[#1B83E2] transition hover:underline" hidden>Not your business listing?</button>
+            <button type="button" class="lookup-wrong-listing border-0 bg-transparent p-0 text-left text-sm font-semibold text-[#1B83E2] transition hover:underline" hidden>{ui?.notYourListingLabel}</button>
 
             <p aria-live="polite" class="lead-capture-status mt-3 text-sm font-semibold text-primary" hidden></p>
 
@@ -327,10 +372,10 @@ const auditPlatformIcons = [
               <path d="M12 20.5l5.5 5.5L28 15" />
             </svg>
             <h3 class="text-h5 font-secondary font-bold text-text-dark" tabindex="-1">
-              {leadMagnetLabel} received
+              {leadMagnetLabel} {ui?.receivedSuffix}
             </h3>
             <p class="mt-3 leading-relaxed text-text">
-              We have your details. A strategist will follow up personally — no automated drip.
+              {ui?.successMessage}
             </p>
           </div>
         </div>
@@ -378,21 +423,21 @@ const auditPlatformIcons = [
                       <span class="lookup-profile-score text-sm font-bold tabular-nums text-text-dark"></span>
                       <a class="lookup-profile-reviews text-sm text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" target="_blank" rel="noopener noreferrer nofollow"></a>
                     </p>
-                    <button type="button" class="lookup-profile-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label="Share">
+                    <button type="button" class="lookup-profile-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label={ui?.shareAriaLabel}>
                       <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M12 15V3" />
                         <path d="M8.25 6.75 12 3l3.75 3.75" />
                         <path d="M8 10.5H6.75A1.75 1.75 0 0 0 5 12.25v7A1.75 1.75 0 0 0 6.75 21h10.5A1.75 1.75 0 0 0 19 19.25v-7a1.75 1.75 0 0 0-1.75-1.75H16" />
                       </svg>
                     </button>
-                    <span class="lookup-profile-share-status text-sm text-text-light" role="status" hidden>Link copied</span>
+                    <span class="lookup-profile-share-status text-sm text-text-light" role="status" hidden>{ui?.linkCopiedLabel}</span>
                     <input class="lookup-profile-share-url basis-full bg-transparent text-xs text-text" type="text" readonly hidden />
                   </div>
                 </div>
                 <ul class="lookup-profile-rows mt-6 border-t border-border"></ul>
                 <p class="mt-5 flex items-center gap-3 px-5 sm:px-7">
-                  <img src="/images/brand/official/google.svg" alt="Google" width="272" height="92" class="h-[22px] w-auto" />
-                  <a class="lookup-profile-maps text-xs text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" href="#" target="_blank" rel="noopener noreferrer nofollow" hidden>View on Maps</a>
+                  <img src="/images/brand/official/google.svg" alt={ui?.profileLogoAlt} width="272" height="92" class="h-[22px] w-auto" />
+                  <a class="lookup-profile-maps text-xs text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" href="#" target="_blank" rel="noopener noreferrer nofollow" hidden>{ui?.viewOnMapsLabel}</a>
                 </p>
               </div>
             </div>
@@ -485,7 +530,7 @@ const auditPlatformIcons = [
 
       button?.setAttribute("disabled", "");
       const originalLabel = button?.textContent;
-      if (button) button.textContent = "Sending…";
+      if (button) button.textContent = form.dataset.uiSending ?? "";
 
       try {
         const res = await fetch(form.action, {
@@ -508,7 +553,7 @@ const auditPlatformIcons = [
         success.hidden = false;
         success.querySelector<HTMLElement>("h3")?.focus();
       } catch {
-        status.textContent = "Something went wrong sending your request. Check your connection and try again — nothing was submitted.";
+        status.textContent = form.dataset.uiError ?? "";
         button?.removeAttribute("disabled");
         if (button) button.textContent = originalLabel ?? "";
       }
@@ -917,7 +962,7 @@ const auditPlatformIcons = [
         row.setAttribute("role", "option");
         row.setAttribute("aria-disabled", "true");
         row.className = "px-4 py-2.5 text-sm text-text-light";
-        row.textContent = "No match — keep typing manually";
+        row.textContent = form.dataset.uiNoMatch ?? "";
         listbox.appendChild(row);
         return;
       }
@@ -967,8 +1012,8 @@ const auditPlatformIcons = [
       isOpen = false;
       activeIndex = -1;
       searchError.textContent = rateLimited
-        ? "Too many searches. Please try again in a few minutes."
-        : "Search is unavailable. Please try again.";
+        ? form.dataset.uiTooMany ?? ""
+        : form.dataset.uiUnavailable ?? "";
       listbox.replaceChildren(searchError);
       listbox.hidden = false;
       input.setAttribute("aria-expanded", "true");
@@ -1077,7 +1122,7 @@ const auditPlatformIcons = [
             : undefined;
         profileRows.appendChild(profileRow("tag", str("category"), undefined, googleIcon));
       }
-      if (str("county") !== "") profileRows.appendChild(profileRow("map", `Serves ${str("county")}`));
+      if (str("county") !== "") profileRows.appendChild(profileRow("map", `${form.dataset.uiServes ?? ""}${str("county")}`));
       if (str("address") !== "") profileRows.appendChild(profileRow("pin", str("address")));
       const phone = str("phone");
       if (phone !== "") profileRows.appendChild(profileRow("phone", phone, `tel:${phone.replace(/[^\d+]/g, "")}`));
@@ -1101,7 +1146,7 @@ const auditPlatformIcons = [
         const reviews = typeof place.reviewCount === "number" ? place.reviewCount : null;
         if (rating !== null && reviews !== null) {
           profileScore.textContent = rating.toFixed(1);
-          profileReviews.textContent = `${reviews} Google review${reviews === 1 ? "" : "s"}`;
+          profileReviews.textContent = `${reviews} ${reviews === 1 ? form.dataset.uiReviewSingular ?? "" : form.dataset.uiReviewPlural ?? ""}`;
           setExternalLink(profileReviews, reviewsUrl || mapsUrl);
           profileRating.hidden = false;
         } else {

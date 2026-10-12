@@ -18,6 +18,16 @@ export interface NavigationLink {
 const { main }: { main: NavigationLink[] } = menu;
 const { navigation_button } = config;
 const { pathname } = Astro.url;
+
+type Props = {
+  ui?: {
+    toggleLabel?: string;
+    menuOpenTitle?: string;
+    menuCloseTitle?: string;
+  };
+};
+
+const { ui } = Astro.props as Props;
 ---
 
 <header class={`header z-30 non_sticky`}>
@@ -33,16 +43,16 @@ const { pathname } = Astro.url;
       id="nav-toggle-label"
       role="button"
       tabindex="0"
-      aria-label="Toggle navigation menu"
+      aria-label={ui?.toggleLabel}
       aria-expanded="false"
       class="order-3 cursor-pointer flex items-center lg:hidden text-text-dark lg:order-1"
     >
       <svg id="show-button" class="h-6 fill-current block" viewBox="0 0 20 20">
-        <title>Menu Open</title>
+        <title>{ui?.menuOpenTitle}</title>
         <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
       </svg>
       <svg id="hide-button" class="h-6 fill-current hidden" viewBox="0 0 20 20">
-        <title>Menu Close</title>
+        <title>{ui?.menuCloseTitle}</title>
         <polygon
           points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
           transform="rotate(45 10 10)"></polygon>

@@ -11,7 +11,7 @@ import {
 } from "astro-swiper";
 import type { SwiperOptions } from "swiper/types";
 
-const { data } = Astro.props;
+const { data, ui } = Astro.props;
 if (data && data.enable === false) return null;
 
 let integrations_list = data?.integrations_list;
@@ -76,8 +76,8 @@ const swiperOptions: SwiperOptions = {
                       <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
                     </div>
                     <div class="min-w-0">
-                      <h3 class="mb-1 font-secondary text-sm font-bold leading-snug text-text-dark sm:text-base">And more…</h3>
-                      <p class="text-xs leading-relaxed text-text-dark/70 sm:text-sm">See the full list of integrations</p>
+                      <h3 class="mb-1 font-secondary text-sm font-bold leading-snug text-text-dark sm:text-base">{ui?.andMoreHeading}</h3>
+                      <p class="text-xs leading-relaxed text-text-dark/70 sm:text-sm">{ui?.andMoreDescription}</p>
                     </div>
                   </a>
                 </SwiperSlide>
@@ -100,8 +100,8 @@ const swiperOptions: SwiperOptions = {
               <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
             </div>
             <div class="min-w-0">
-              <h3 class="h6 mb-2 shrink-0">And more…</h3>
-              <p class="text-sm text-text-dark/70">See the full list of integrations</p>
+              <h3 class="h6 mb-2 shrink-0">{ui?.andMoreHeading}</h3>
+              <p class="text-sm text-text-dark/70">{ui?.andMoreDescription}</p>
             </div>
           </a>
         </div>

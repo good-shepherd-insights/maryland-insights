@@ -9,9 +9,23 @@ type Category = { category: string; rows: Row[] };
 type Props = {
   categories: Category[];
   planNames: Plan[];
+  ui?: {
+    firstColumnLabel?: string;
+    swipeHint?: string;
+    tableAriaLabel?: string;
+    expandAllLabel?: string;
+    collapseAllLabel?: string;
+    includedLabel?: string;
+    notIncludedLabel?: string;
+    viewMoreTemplate?: string;
+    viewLessLabel?: string;
+    includedAltTemplate?: string;
+    notIncludedAltTemplate?: string;
+    roundedLogoLabels?: string[];
+  };
 };
 
-const { categories, planNames } = Astro.props;
+const { categories, planNames, ui } = Astro.props;
 const VISIBLE_ROWS = 4;
 ---
 
@@ -20,23 +34,25 @@ const VISIBLE_ROWS = 4;
     <div class="comparison-frame rounded-2xl border border-border p-4 sm:p-6">
       <p class="comparison-hint mb-3 text-right">
         <span class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-text-dark shadow-sm">
-          Swipe
+          {ui?.swipeHint}
           <FaArrowRight className="text-xs text-primary" aria-hidden="true" />
         </span>
       </p>
-      <div class="comparison-scroll overflow-hidden" role="region" tabindex="0" aria-label="Business platform comparison">
+      <div class="comparison-scroll overflow-hidden" role="region" tabindex="0" aria-label={ui?.tableAriaLabel}>
       <table class="comparison-table min-w-full text-left table-fixed">
         <thead>
           <tr>
             <th scope="col" class="feature-column sticky left-0 top-0 z-30 bg-light text-text-dark p-5 border-b border-r border-border">
               <div class="flex items-center justify-between">
-                <span>Features</span>
+                <span>{ui?.firstColumnLabel}</span>
                 <button
                   type="button"
                   data-expand-all-toggle
+                  data-expand-label={ui?.expandAllLabel}
+                  data-collapse-label={ui?.collapseAllLabel}
                   class="text-xs font-semibold text-primary hover:underline"
                 >
-                  Expand All
+                  {ui?.expandAllLabel}
                 </button>
               </div>
             </th>
@@ -54,7 +70,7 @@ const VISIBLE_ROWS = 4;
                         src={plan.logo}
                         alt={`${plan.label} logo`}
                         class={`h-8 object-contain ${
-                          ["Wix", "Webflow", "GoHighLevel"].includes(plan.label)
+                          (ui?.roundedLogoLabels ?? []).includes(plan.label)
                             ? "w-8 rounded-full"
                             : "w-auto"
                         }`}
@@ -99,9 +115,9 @@ const VISIBLE_ROWS = 4;
                             class={`p-5 text-center ${index !== planNames.length - 1 ? "border-r border-border" : ""} ${!isLastInCategory ? "border-b border-border" : ""} ${plan.isUs ? "bg-primary/5" : ""}`}
                           >
                             {value === "active" ? (
-                              <span class="cell-icon mx-auto" data-icon={plan.isUs ? "active-accent" : "active"} role="img" aria-label="Included" />
+                              <span class="cell-icon mx-auto" data-icon={plan.isUs ? "active-accent" : "active"} role="img" aria-label={ui?.includedLabel} />
                             ) : value === "cross" ? (
-                              <span class="cell-icon mx-auto" data-icon="cross" role="img" aria-label="Not included" />
+                              <span class="cell-icon mx-auto" data-icon="cross" role="img" aria-label={ui?.notIncludedLabel} />
                             ) : (
                               <span class="text-sm">{value}</span>
                             )}
@@ -119,10 +135,10 @@ const VISIBLE_ROWS = 4;
                         aria-expanded="false"
                         class="text-sm font-semibold text-primary hover:underline"
                         data-category-toggle={catIndex}
-                        data-more-label={`View ${category.rows.length - VISIBLE_ROWS} more`}
-                        data-less-label="View less"
+                        data-more-label={(ui?.viewMoreTemplate ?? "").replace("{n}", String(category.rows.length - VISIBLE_ROWS))}
+                        data-less-label={ui?.viewLessLabel}
                       >
-                        {`View ${category.rows.length - VISIBLE_ROWS} more`}
+                        {(ui?.viewMoreTemplate ?? "").replace("{n}", String(category.rows.length - VISIBLE_ROWS))}
                       </button>
                     </td>
                   </tr>
@@ -343,13 +359,13 @@ const VISIBLE_ROWS = 4;
       const root = btn.closest("[data-comparison-table]")!;
       const allExtraRows = root.querySelectorAll<HTMLElement>("[data-category-extra]");
       const allButtons = root.querySelectorAll<HTMLButtonElement>("[data-category-toggle]");
-      const isCurrentlyExpanded = btn.textContent?.trim() === "Collapse All";
+      const isCurrentlyExpanded = btn.textContent?.trim() === (btn.dataset.collapseLabel ?? "");
       allExtraRows.forEach((row) => row.classList.toggle("hidden", isCurrentlyExpanded));
       allButtons.forEach((b) => {
         b.setAttribute("aria-expanded", String(!isCurrentlyExpanded));
         b.textContent = isCurrentlyExpanded ? b.dataset.moreLabel ?? "" : b.dataset.lessLabel ?? "";
       });
-      btn.textContent = isCurrentlyExpanded ? "Expand All" : "Collapse All";
+      btn.textContent = isCurrentlyExpanded ? (btn.dataset.expandLabel ?? "") : (btn.dataset.collapseLabel ?? "");
     });
   });
 </script>

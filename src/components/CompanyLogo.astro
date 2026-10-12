@@ -15,6 +15,7 @@ interface Props {
   fallback?: "monogram" | "404";
   class?: string;
   showAttribution?: boolean;
+  ui?: { attributionPrefix?: string; attributionLinkText?: string };
 }
 
 const {
@@ -26,6 +27,7 @@ const {
   fallback,
   class: className,
   showAttribution = false,
+  ui,
 } = Astro.props;
 
 const params = new URLSearchParams({
@@ -53,7 +55,7 @@ const src = domain
   />
   {showAttribution && (
     <figcaption class="text-[10px] text-text-light">
-      Logos provided by <a href="https://logo.dev" class="underline">Logo.dev</a>
+      {ui?.attributionPrefix} <a href="https://logo.dev" class="underline">{ui?.attributionLinkText}</a>
     </figcaption>
   )}
 </figure>

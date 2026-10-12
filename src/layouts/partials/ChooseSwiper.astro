@@ -6,9 +6,10 @@ import type { CollectionEntry } from "astro:content";
 type Props = {
   data: CollectionEntry<"homepage">["data"]["agents_swiper"];
   id?: string;
+  ui?: { servicesAriaLabel?: string };
 };
 
-const { data, id = "be-the-answer" } = Astro.props as Props;
+const { data, id = "be-the-answer", ui } = Astro.props as Props;
 if (!data.enable) return null;
 const { title, agents } = data;
 
@@ -42,7 +43,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
       <div
         class="ds-tabs grid grid-cols-1 gap-2 sm:grid-flow-col sm:grid-cols-none sm:auto-cols-max sm:overflow-x-auto sm:pb-1 lg:hidden [scrollbar-width:thin] [scrollbar-gutter:stable] [-webkit-overflow-scrolling:touch]"
         role="tablist"
-        aria-label="Services"
+        aria-label={ui?.servicesAriaLabel}
       >
         {
           tabs.map((t) => (
@@ -64,7 +65,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
       <div class="hidden lg:block lg:w-[226px] lg:shrink-0">
         <div class="ds-rail lg:sticky lg:top-32 self-start max-h-[calc(100dvh-8.5rem)] overflow-y-auto">
           <div class="relative">
-            <div class="relative flex overflow-x-auto lg:flex-col" role="tablist" aria-label="Services">
+            <div class="relative flex overflow-x-auto lg:flex-col" role="tablist" aria-label={ui?.servicesAriaLabel}>
               {
                 tabs.map((t) => (
                   <button

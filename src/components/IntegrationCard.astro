@@ -11,9 +11,10 @@ interface Props {
     image?: string;
     link?: string;
   };
+  ui?: { ariaLabelTemplate?: string };
 }
 
-const { integration } = Astro.props;
+const { integration, ui } = Astro.props;
 ---
 
 <div
@@ -48,6 +49,6 @@ const { integration } = Astro.props;
     />
   </div>
   {integration.link && (
-    <a href={integration.link} class="before:inset-0 before:absolute" aria-label={`Learn more about ${integration.title} integration`} />
+    <a href={integration.link} class="before:inset-0 before:absolute" aria-label={ui?.ariaLabelTemplate?.replace("{title}", integration.title)} />
   )}
 </div>

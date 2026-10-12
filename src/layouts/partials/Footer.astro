@@ -8,6 +8,25 @@ import { markdownify } from "@/lib/utils/textConverter";
 
 const { footer } = menu;
 
+type Props = {
+  newsletter?: {
+    heading?: string;
+    placeholder?: string;
+    submitTitle?: string;
+    consentHint?: string;
+    consentLabel?: string;
+    consentLinkText?: string;
+    logoAttribution?: string;
+    logoAttributionLink?: string;
+    acceptingHint?: string;
+    subscribingHint?: string;
+    subscribedHint?: string;
+    failedHint?: string;
+  };
+};
+
+const { newsletter } = Astro.props as Props;
+
 // Function to replace {year} this from string to year
 function replaceYear(text: string) {
   const year = new Date().getFullYear();
@@ -60,12 +79,16 @@ function replaceYear(text: string) {
           config.subscription_in_footer.enable && (
             <div class="w-full md:max-w-md lg:w-[30%]">
               <div class="mb-4 text-sm font-semibold tracking-wide text-text-dark">
-                Newsletter
+                {newsletter?.heading}
               </div>
               <form
                 data-newsletter-form
                 action="/api/newsletter"
                 method="post"
+                data-ui-accepting={newsletter?.acceptingHint}
+                data-ui-subscribing={newsletter?.subscribingHint}
+                data-ui-subscribed={newsletter?.subscribedHint}
+                data-ui-failed={newsletter?.failedHint}
               >
                 <div
                  
@@ -75,13 +98,13 @@ function replaceYear(text: string) {
                   <input
                     id="newsletter-email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={newsletter?.placeholder}
                     class="form-input w-full rounded-full border-transparent! bg-transparent! py-2! pl-2! placeholder:opacity-100! placeholder:font-normal disabled:cursor-not-allowed disabled:opacity-40"
                     required
                     name="email"
                   />
                   <button
-                    title="Subscribe"
+                    title={newsletter?.submitTitle}
                     class="pr-2 transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
                     type="submit"
                   >
@@ -97,7 +120,7 @@ function replaceYear(text: string) {
                   </button>
                 </div>
                 <p data-newsletter-hint class="text-xs text-text-light/70 mb-2" role="status" aria-live="polite">
-                  Please accept the privacy policy to enable subscription.
+                  {newsletter?.consentHint}
                 </p>
 
                 <label
@@ -115,12 +138,12 @@ function replaceYear(text: string) {
                     required
                     class="appearance-auto rounded-sm accent-primary ring-0"
                   />
-                  <span>I agree with </span>
+                  <span>{newsletter?.consentLabel} </span>
                   <a
                     href="/privacy-policy"
                     class="text-text-dark font-semibold hover:text-primary transition duration-300"
                   >
-                    privacy policy.
+                    {newsletter?.consentLinkText}
                   </a>
                 </label>
               </form>
@@ -141,7 +164,7 @@ function replaceYear(text: string) {
           set:html={markdownify(replaceYear(config.params.copyright))}
         />
         <p class="text-text-light text-xs">
-          Some logos via <a href="https://logo.dev" target="_blank" rel="noopener noreferrer" class="underline">Logo.dev</a>
+          {newsletter?.logoAttribution} <a href="https://logo.dev" target="_blank" rel="noopener noreferrer" class="underline">{newsletter?.logoAttributionLink}</a>
         </p>
       </div>
     </div>
@@ -183,13 +206,13 @@ function replaceYear(text: string) {
     newsletterForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (consent && !consent.checked) {
-        setHint("Please accept the privacy policy to enable subscription.", "error");
+        setHint(newsletterForm.dataset.uiAccepting ?? "", "error");
         return;
       }
 
       if (submit) submit.disabled = true;
       setSuccessIcon(false);
-      setHint("Subscribing…");
+      setHint(newsletterForm.dataset.uiSubscribing ?? "");
 
       const res = await fetch("/api/newsletter", {
         method: "POST",
@@ -200,10 +223,10 @@ function replaceYear(text: string) {
       if (res?.ok) {
         newsletterForm.reset();
         setSuccessIcon(true);
-        setHint("Subscribed — you're on the list.", "success");
+        setHint(newsletterForm.dataset.uiSubscribed ?? "", "success");
       } else {
         setSuccessIcon(false);
-        setHint("Subscription failed. Please try again.", "error");
+        setHint(newsletterForm.dataset.uiFailed ?? "", "error");
       }
       if (submit) submit.disabled = false;
     });

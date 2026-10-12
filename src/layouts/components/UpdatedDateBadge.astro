@@ -6,6 +6,7 @@ type Props = {
   variant?: "inline" | "badge" | "minimal";
   showPublished?: boolean;
   class?: string;
+  ui?: { publishedLabel?: string; staleNote?: string };
 };
 
 const {
@@ -15,6 +16,7 @@ const {
   variant = "inline",
   showPublished = true,
   class: className,
+  ui,
 } = Astro.props as Props;
 
 const DAY_MS = 86_400_000;
@@ -89,11 +91,11 @@ const showStaleNote = isStale && variant !== "minimal";
       </time>
       {showPublishedContext && (
         <span class="min-w-0 break-words uppercase text-text-light">
-          <span aria-hidden="true">· </span>Published <time datetime={publishedDatetime} class="normal-case tracking-normal tabular-nums">{publishedText}</time>
+          <span aria-hidden="true">· </span>{ui?.publishedLabel} <time datetime={publishedDatetime} class="normal-case tracking-normal tabular-nums">{publishedText}</time>
         </span>
       )}
       <span data-stale-note hidden={!showStaleNote} class="min-w-0 break-words normal-case tracking-normal text-text-light">
-        (this page may be out of date)
+        {ui?.staleNote}
       </span>
     </span>
   ) : variant === "minimal" ? (
@@ -117,12 +119,12 @@ const showStaleNote = isStale && variant !== "minimal";
       {showPublishedContext && (
         <span class="min-w-0 break-words text-xs text-text-light">
           <span aria-hidden="true">·</span>
-          <span class="uppercase tracking-[0.14em] font-semibold">Published</span>{" "}
+          <span class="uppercase tracking-[0.14em] font-semibold">{ui?.publishedLabel}</span>{" "}
           <time datetime={publishedDatetime} class="tabular-nums">{publishedText}</time>
         </span>
       )}
       <span data-stale-note hidden={!showStaleNote} class="min-w-0 break-words text-xs text-text-light">
-        (this page may be out of date)
+        {ui?.staleNote}
       </span>
     </div>
   )

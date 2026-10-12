@@ -10,6 +10,7 @@ const {
   blogData,
   caseData,
   careerData,
+  ui,
 }: {
   title?: string;
   description?: string;
@@ -19,6 +20,12 @@ const {
     date: string;
   };
   careerData?: { department: string; vacancy: string; deadline: string };
+  ui?: {
+    writtenByLabel?: string;
+    departmentLabel?: string;
+    vacanciesLabel?: string;
+    deadlineLabel?: string;
+  };
 } = Astro.props;
 
 const dateString = (value: Date | string): string => value instanceof Date ? value.toISOString() : value;
@@ -62,7 +69,7 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
             />
           )}
           <p class="flex flex-col gap-1 text-left border-r border-border pr-3 md:pr-4">
-            <span class="text-xs">Written By</span>
+            <span class="text-xs">{ui?.writtenByLabel}</span>
             <span class="text-text-dark">{blogData.author?.name}</span>
           </p>
           {blogData.date && (
@@ -118,19 +125,19 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
         >
           {careerData.department && (
             <span class="text-sm flex flex-col gap-2 border-r border-border pr-3">
-              Department
+              {ui?.departmentLabel}
               <span class="font-semibold text-text-dark">{careerData.department}</span>
             </span>
           )}
           {careerData.vacancy && (
             <span class="text-sm flex flex-col gap-2 border-r border-border pr-3">
-              Vacancies
+              {ui?.vacanciesLabel}
               <span class="font-semibold text-text-dark">{careerData.vacancy}</span>
             </span>
           )}
           {careerData.deadline && (
             <span class="text-sm flex flex-col gap-2">
-              Deadline
+              {ui?.deadlineLabel}
               <span class="font-semibold text-text-dark">{dateFormat(careerData.deadline)}</span>
             </span>
           )}

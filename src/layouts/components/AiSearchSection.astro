@@ -43,8 +43,7 @@ const headingId = `ai-${slugify(title)}`;
 const enginesLabelId = `${headingId}-engines-label`;
 const Heading = headingLevel;
 const CardHeading = headingLevel === "h2" ? "h3" : "h4";
-const engineAdditions = ["Claude", "Bing"];
-const shownEngines = [...engines, ...engineAdditions.filter((engine) => !engines.includes(engine))];
+const shownEngines = engines;
 ---
 
 <section
