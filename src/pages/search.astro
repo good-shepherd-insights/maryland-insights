@@ -9,9 +9,10 @@ type Props = {
   heading?: string;
   body?: string;
   homeLinkText?: string;
+  homeLinkUrl?: string;
 };
 
-const { title, description, heading, body, homeLinkText } = Astro.props as Props;
+const { title, description, heading, body, homeLinkText, homeLinkUrl } = Astro.props as Props;
 
 const searchSchema: SearchResultsPage = {
   "@type": "SearchResultsPage",
@@ -28,7 +29,7 @@ const searchSchema: SearchResultsPage = {
       <p class="text-lg mb-8">
         {body}
       </p>
-      <a href="/" class="btn btn-primary">{homeLinkText}</a>
+      <a href={homeLinkUrl} class="btn btn-primary">{homeLinkText}</a>
     </div>
   </section>
 </Base>

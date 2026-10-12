@@ -46,6 +46,7 @@ type BlogUi = {
   privacyLinkUrl?: string;
   subscribeButtonTitle?: string;
   faqSectionTitle?: string;
+  similarPostsHeading?: string;
 };
 
 type Props = {
@@ -395,7 +396,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
             <h2
               class="text-center text-white text-balance mx-auto mb-12"
               set:html={markdownify(
-                "Related blog posts you may like",
+                ui?.similarPostsHeading ?? "",
               )}
             />
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
