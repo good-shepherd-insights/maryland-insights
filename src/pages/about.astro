@@ -5,6 +5,7 @@ import Base from "@/layouts/Base.astro";
 import { getAboutPage, getSiteSettings } from "@/lib/sanity/queries";
 import AboutNarrative from "@/partials/AboutNarrative.astro";
 import CallToAction from "@/partials/CallToAction.astro";
+import ChooseSwiper from "@/layouts/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
@@ -29,6 +30,18 @@ const company_narrative = {
 const facts = aboutPage?.facts ?? {};
 const facts_section = { enable: true, facts: facts.facts ?? [] };
 
+const story = aboutPage?.story ?? {};
+const story_section = {
+  enable: !!story.title,
+  title: story.title,
+  agents: (story.agents ?? []).map((a: any) => ({
+    title: a.label,
+    description: a.description,
+    icon: a.icon,
+    button: a.buttonLabel ? { label: a.buttonLabel, link: a.buttonLink } : undefined,
+  })),
+};
+
 const aboutSchema: AboutPage = {
   "@type": "AboutPage",
   "mainEntity": {
@@ -41,6 +54,8 @@ const aboutSchema: AboutPage = {
   <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
 
   <AboutNarrative {...company_narrative} />
+
+  <ChooseSwiper data={story_section} />
 
   <div class="border-t border-border">
     <TrustedBrands />

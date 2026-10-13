@@ -24,6 +24,7 @@ export async function getAboutPage() {
     ...,
     header->,
     narrative->,
+    story->,
     facts->,
     cta->
   }`);
@@ -73,7 +74,7 @@ export async function getServicesPage() {
     ...,
     header->,
     grid->{..., "services": services[]->{
-      title, description,
+      title, description, image,
       "slug": slug.current,
       button{label, link}
     }},

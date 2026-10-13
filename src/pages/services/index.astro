@@ -19,7 +19,7 @@ const title = header.title;
 const description = header.description;
 const section_title = grid.title;
 const use_cases = servicesPage?.useCases
-  ? { enable: true, ...servicesPage.useCases }
+  ? { enable: servicesPage.useCasesEnable ?? true, ...servicesPage.useCases }
   : undefined;
 
 const services = (grid.services ?? []).map((s: any) => ({
@@ -27,7 +27,7 @@ const services = (grid.services ?? []).map((s: any) => ({
   data: {
     title: s.title,
     description: s.description,
-    image: undefined,
+    image: s.image,
     button: s.button,
   },
 }));

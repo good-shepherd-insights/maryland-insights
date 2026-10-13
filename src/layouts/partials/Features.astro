@@ -24,9 +24,9 @@ const features = ((_home?.features?.features ?? []) as any[]).map((f: any) => ({
   data: {
     title: f.title,
     description: f.subtitle,
-    image: undefined,
+    image: f.image,
     button: f.button,
-    icon_srcs: undefined,
+    icon_srcs: f.icon ? [f.icon] : undefined,
   },
 }));
 
