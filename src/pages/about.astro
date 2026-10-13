@@ -51,7 +51,7 @@ const aboutSchema: AboutPage = {
 };
 ---
 
-<Base {...aboutPage} ui={settingsUi} schema={[aboutSchema]}>
+<Base {...aboutPage} title={header.title} metaTitle={header.metaTitle} description={header.description} ui={settingsUi} schema={[aboutSchema]}>
   <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
 
   <AboutNarrative {...company_narrative} />
