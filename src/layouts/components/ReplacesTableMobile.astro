@@ -1,5 +1,5 @@
 ---
-import config from "@/config/config.json";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
 type Plan = { label: string; logo?: string; isUs?: boolean };
 type Row = { name: string; description?: string; values: string[] };
@@ -8,9 +8,21 @@ type Category = { category: string; rows: Row[] };
 type Props = {
   categories: Category[];
   planNames: Plan[];
+  ui?: {
+    includedLabel?: string;
+    notIncludedLabel?: string;
+    viewMoreTemplate?: string;
+    viewLessLabel?: string;
+    includedAltTemplate?: string;
+    notIncludedAltTemplate?: string;
+    logoAltTemplate?: string;
+    roundedLogoLabels?: string[];
+  };
 };
 
-const { categories, planNames } = Astro.props;
+const { categories, planNames, ui } = Astro.props;
+const settings = (await getSiteSettings()) ?? {};
+const siteLogo: string = settings.logo ?? "";
 const VISIBLE_ROWS = 4;
 ---
 
@@ -20,13 +32,13 @@ const VISIBLE_ROWS = 4;
       <div class="rounded-xl border border-border overflow-hidden">
         <div class="bg-light border-b border-border p-6 flex items-center justify-center">
           {plan.isUs ? (
-            <img src={config.site.logo} alt={plan.label} class="h-7 w-auto" />
+            <img src={siteLogo} alt={plan.label} class="h-7 w-auto" />
           ) : plan.logo ? (
             <img
               src={plan.logo}
-              alt={`${plan.label} logo`}
+              alt={ui?.logoAltTemplate ? ui.logoAltTemplate.replace("{label}", plan.label) : undefined}
               class={`h-8 object-contain ${
-                ["Wix", "Webflow", "GoHighLevel"].includes(plan.label)
+                (ui?.roundedLogoLabels ?? []).includes(plan.label)
                   ? "w-8 rounded-full"
                   : "w-auto"
               }`}
@@ -57,9 +69,9 @@ const VISIBLE_ROWS = 4;
                       )}
                     </div>
                     {value === "active" ? (
-                      <img src="/images/icons/active.svg" alt={`${row.name}: Included`} />
+                      <img src="/images/icons/active.svg" alt={(ui?.includedAltTemplate ?? "").replace("{name}", row.name)} />
                     ) : value === "cross" ? (
-                      <img src="/images/icons/cross.svg" alt={`${row.name}: Not included`} />
+                      <img src="/images/icons/cross.svg" alt={(ui?.notIncludedAltTemplate ?? "").replace("{name}", row.name)} />
                     ) : (
                       <span class="text-sm shrink-0"><span class="sr-only">{row.name}: </span>{value}</span>
                     )}
@@ -72,10 +84,10 @@ const VISIBLE_ROWS = 4;
                     type="button"
                     class="text-sm font-semibold text-primary hover:underline"
                     data-category-toggle={`${planIndex}-${catIndex}`}
-                    data-more-label={`View ${category.rows.length - VISIBLE_ROWS} more`}
-                    data-less-label="View less"
+                    data-more-label={(ui?.viewMoreTemplate ?? "").replace("{n}", String(category.rows.length - VISIBLE_ROWS))}
+                    data-less-label={ui?.viewLessLabel}
                   >
-                    {`View ${category.rows.length - VISIBLE_ROWS} more`}
+                    {(ui?.viewMoreTemplate ?? "").replace("{n}", String(category.rows.length - VISIBLE_ROWS))}
                   </button>
                 </div>
               )}
@@ -94,7 +106,7 @@ const VISIBLE_ROWS = 4;
       const rows = document.querySelectorAll<HTMLElement>(`[data-category-extra="${id}"]`);
       const expanded = rows[0]?.classList.contains("hidden") === false;
       rows.forEach((row) => row.classList.toggle("hidden", expanded));
-      btn.textContent = expanded ? btn.dataset.moreLabel ?? "View more" : btn.dataset.lessLabel ?? "View less";
+      btn.textContent = expanded ? btn.dataset.moreLabel ?? "" : btn.dataset.lessLabel ?? "";
     });
   });
 </script>

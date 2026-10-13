@@ -1,12 +1,22 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
-import { getListPage } from "@/lib/contentParser.astro";
+import { getClosingCta } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 
-const sectionData = await getListPage("ctaSection", "call-to-action");
-const { buttonLabel, buttonLink } = Astro.props as {
+const _cta = await getClosingCta();
+const { buttonLabel, buttonLink, override } = Astro.props as {
   buttonLabel?: string;
   buttonLink?: string;
+  override?: { title?: string; description?: string; image?: string; button?: { label?: string; link?: string } };
+};
+const sectionData = {
+  data: {
+    enable: !!(override ?? _cta),
+    title: override?.title ?? _cta?.title,
+    description: override?.description ?? _cta?.description,
+    button: (override ?? _cta) ? { label: override?.button?.label ?? _cta?.primaryLabel, link: override?.button?.link ?? _cta?.primaryLink } : undefined,
+    rotating_icons: undefined,
+  },
 };
 if (!sectionData.data.enable) {
   return null;
@@ -70,14 +80,14 @@ const dots = Array.from({ length: 16 }, () => {
       }
 
       {
-        button.enable && (
+        button?.label && button?.link && (
           <a
            
            
-            href={buttonLink || button.link}
+            href={buttonLink || button?.link}
             class="hero-cta-gold inline-block font-semibold text-base px-8 py-4 transition"
           >
-            {buttonLabel || button.label}
+            {buttonLabel || button?.label}
           </a>
         )
       }
@@ -88,7 +98,7 @@ const dots = Array.from({ length: 16 }, () => {
   <div class="nested-circles group-hover:scale-90">
     <div class="nested-circle inf-rotate">
       {
-        rotating_icons.slice(0, 4).map((image: any) => (
+        (rotating_icons ?? []).slice(0, 4).map((image: any) => (
           <div class="nested-circle-icon">
             <ImageMod
               width={120}
@@ -103,7 +113,7 @@ const dots = Array.from({ length: 16 }, () => {
     </div>
     <div class="nested-circle inf-rotate">
       {
-        rotating_icons.slice(4, 8).map((image: any) => (
+        (rotating_icons ?? []).slice(4, 8).map((image: any) => (
           <div class="nested-circle-icon">
             <ImageMod
               width={50}

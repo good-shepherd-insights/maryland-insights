@@ -6,7 +6,7 @@ export function initPostHog(): void {
   if (typeof window !== 'undefined') {
     const config = trackingConfig.tracking.posthog;
     // Vite injects meta.env, we use it directly.
-    const apiKey = import.meta.env.PUBLIC_POSTHOG_API_KEY || config?.api_key;
+    const apiKey = import.meta.env.PUBLIC_POSTHOG_API_KEY;
     const apiHost = import.meta.env.PUBLIC_POSTHOG_API_HOST || config?.api_host;
 
     if (config?.enable && apiKey && apiKey !== 'YOUR_POSTHOG_API_KEY') {

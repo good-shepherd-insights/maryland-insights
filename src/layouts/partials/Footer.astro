@@ -1,12 +1,69 @@
 ---
 import Logo from "@/components/Logo.astro";
 import Social from "@/components/Social.astro";
-import config from "@/config/config.json";
-import menu from "@/config/menu.json";
-import social from "@/config/social.json";
+import { getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 
-const { footer } = menu;
+// Site chrome comes from Sanity siteSettings, not config files.
+const siteSettings = await getSiteSettings();
+
+interface FooterLink {
+  name: string;
+  url: string;
+}
+
+interface FooterColumn {
+  title: string;
+  children: FooterLink[];
+}
+
+const footer: FooterColumn[] = (siteSettings?.footerColumns ?? []).map(
+  (col: any): FooterColumn => ({
+    title: col.title,
+    children: (col.links ?? []).map((link: any): FooterLink => ({
+      name: link.label,
+      url: link.href,
+    })),
+  })
+);
+
+const footer_description = siteSettings?.footerDescription ?? "";
+const copyrightText = siteSettings?.copyright ?? "";
+
+// Sanity socialLinks carry platform + url; icon glyphs are component graphics.
+const socialIconByPlatform: Record<string, string> = {
+  instagram: "FaInstagram",
+  x: "FaXTwitter",
+  linkedin: "FaLinkedin",
+};
+const social = {
+  main: (siteSettings?.socialLinks ?? []).map((s: any) => ({
+    name: s.platform,
+    icon: socialIconByPlatform[s.platform] ?? "FaGlobe",
+    link: s.url,
+  })),
+};
+
+type Props = {
+  newsletter?: {
+    heading?: string;
+    placeholder?: string;
+    submitTitle?: string;
+    consentHint?: string;
+    consentLabel?: string;
+    consentLinkText?: string;
+    logoAttribution?: string;
+    logoAttributionLink?: string;
+    logoAttributionUrl?: string;
+    acceptingHint?: string;
+    subscribingHint?: string;
+    subscribedHint?: string;
+    failedHint?: string;
+    privacyUrl?: string;
+  };
+};
+
+const { newsletter } = Astro.props as Props;
 
 // Function to replace {year} this from string to year
 function replaceYear(text: string) {
@@ -28,7 +85,7 @@ function replaceYear(text: string) {
         <Logo />
         <p
           class="mt-5 max-w-sm text-sm leading-relaxed text-text-light"
-          set:html={markdownify(config.params.footer_description)}
+          set:html={markdownify(footer_description)}
         />
       </div>
 
@@ -54,18 +111,21 @@ function replaceYear(text: string) {
         }
       </div>
 
-      <!-- right  -->
+      <!-- right — newsletter block shows when Sanity provides newsletter fields -->
       {
-        config.subscription_in_footer &&
-          config.subscription_in_footer.enable && (
+        newsletter && (
             <div class="w-full md:max-w-md lg:w-[30%]">
               <div class="mb-4 text-sm font-semibold tracking-wide text-text-dark">
-                Newsletter
+                {newsletter?.heading}
               </div>
               <form
                 data-newsletter-form
                 action="/api/newsletter"
                 method="post"
+                data-ui-accepting={newsletter?.acceptingHint}
+                data-ui-subscribing={newsletter?.subscribingHint}
+                data-ui-subscribed={newsletter?.subscribedHint}
+                data-ui-failed={newsletter?.failedHint}
               >
                 <div
                  
@@ -75,13 +135,13 @@ function replaceYear(text: string) {
                   <input
                     id="newsletter-email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={newsletter?.placeholder}
                     class="form-input w-full rounded-full border-transparent! bg-transparent! py-2! pl-2! placeholder:opacity-100! placeholder:font-normal disabled:cursor-not-allowed disabled:opacity-40"
                     required
                     name="email"
                   />
                   <button
-                    title="Subscribe"
+                    title={newsletter?.submitTitle}
                     class="pr-2 transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
                     type="submit"
                   >
@@ -97,7 +157,7 @@ function replaceYear(text: string) {
                   </button>
                 </div>
                 <p data-newsletter-hint class="text-xs text-text-light/70 mb-2" role="status" aria-live="polite">
-                  Please accept the privacy policy to enable subscription.
+                  {newsletter?.consentHint}
                 </p>
 
                 <label
@@ -115,12 +175,12 @@ function replaceYear(text: string) {
                     required
                     class="appearance-auto rounded-sm accent-primary ring-0"
                   />
-                  <span>I agree with </span>
+                  <span>{newsletter?.consentLabel} </span>
                   <a
-                    href="/privacy-policy"
+                    href={newsletter?.privacyUrl}
                     class="text-text-dark font-semibold hover:text-primary transition duration-300"
                   >
-                    privacy policy.
+                    {newsletter?.consentLinkText}
                   </a>
                 </label>
               </form>
@@ -138,10 +198,10 @@ function replaceYear(text: string) {
       <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
         <p
           class="text-text-light [&>a]:underline [&>a]:text-text-dark text-sm"
-          set:html={markdownify(replaceYear(config.params.copyright))}
+          set:html={markdownify(replaceYear(copyrightText))}
         />
         <p class="text-text-light text-xs">
-          Some logos via <a href="https://logo.dev" target="_blank" rel="noopener noreferrer" class="underline">Logo.dev</a>
+          {newsletter?.logoAttribution} <a href={newsletter?.logoAttributionUrl} target="_blank" rel="noopener noreferrer" class="underline">{newsletter?.logoAttributionLink}</a>
         </p>
       </div>
     </div>
@@ -183,13 +243,13 @@ function replaceYear(text: string) {
     newsletterForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (consent && !consent.checked) {
-        setHint("Please accept the privacy policy to enable subscription.", "error");
+        setHint(newsletterForm.dataset.uiAccepting ?? "", "error");
         return;
       }
 
       if (submit) submit.disabled = true;
       setSuccessIcon(false);
-      setHint("Subscribing…");
+      setHint(newsletterForm.dataset.uiSubscribing ?? "");
 
       const res = await fetch("/api/newsletter", {
         method: "POST",
@@ -200,10 +260,10 @@ function replaceYear(text: string) {
       if (res?.ok) {
         newsletterForm.reset();
         setSuccessIcon(true);
-        setHint("Subscribed — you're on the list.", "success");
+        setHint(newsletterForm.dataset.uiSubscribed ?? "", "success");
       } else {
         setSuccessIcon(false);
-        setHint("Subscription failed. Please try again.", "error");
+        setHint(newsletterForm.dataset.uiFailed ?? "", "error");
       }
       if (submit) submit.disabled = false;
     });

@@ -1,26 +1,27 @@
 ---
-import config from "@/config/config.json";
 import {
   FaFacebookF,
   FaLinkedinIn,
   FaPinterestP,
   FaXTwitter,
 } from "react-icons/fa6";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
-const { base_url }: { base_url: string } = config.site;
+const settings = (await getSiteSettings()) ?? {};
+const base_url: string = settings.seoUrl ?? "";
 const {
   title,
   description,
   slug,
   className,
-}: { title?: string; description?: string; slug?: string; className?: string } =
+}: { title?: string; description?: string; slug?: string; className?: string; ui?: { facebookLabel?: string; twitterLabel?: string; linkedinLabel?: string; pinterestLabel?: string } } =
   Astro.props;
 ---
 
 <ul class={`${className}`}>
   <li class="inline-block">
     <a
-      aria-label="facebook share button"
+      aria-label={Astro.props.ui?.facebookLabel}
       href={`https://facebook.com/sharer/sharer.php?u=${base_url}/${slug}`}
       target="_blank"
       rel="noreferrer noopener"
@@ -30,7 +31,7 @@ const {
   </li>
   <li class="inline-block">
     <a
-      aria-label="twitter share button"
+      aria-label={Astro.props.ui?.twitterLabel}
       href={`https://twitter.com/intent/tweet/?text=${title}&amp;url=${base_url}/${slug}`}
       target="_blank"
       rel="noreferrer noopener"
@@ -40,7 +41,7 @@ const {
   </li>
   <li class="inline-block">
     <a
-      aria-label="linkedin share button"
+      aria-label={Astro.props.ui?.linkedinLabel}
       href={`https://www.linkedin.com/shareArticle?mini=true&url=${base_url}/${slug}&title=${title}&summary=${description}&source=${base_url}`}
       target="_blank"
       rel="noreferrer noopener"
@@ -50,7 +51,7 @@ const {
   </li>
   <li class="inline-block">
     <a
-      aria-label="pinterest share button"
+      aria-label={Astro.props.ui?.pinterestLabel}
       href={`https://pinterest.com/pin/create/button/?url=${base_url}/${slug}&media=&description=${description}`}
       target="_blank"
       rel="noreferrer noopener"

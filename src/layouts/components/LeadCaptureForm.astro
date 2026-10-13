@@ -41,6 +41,43 @@ type Props = {
   anchor?: string;
   headingLevel?: "h1" | "h2";
   lookup?: Lookup;
+  ui?: {
+    loadingTitle?: string;
+    loadingBody?: string;
+    gbpCardLabel?: string;
+    businessLabel?: string;
+    locationLabel?: string;
+    categoryLabel?: string;
+    loadingFoot?: string;
+    shareLabel?: string;
+    linkCopiedLabel?: string;
+    changeBusinessLabel?: string;
+    requiredSuffix?: string;
+    suggestionsAriaLabel?: string;
+    searchingLabel?: string;
+    searchUnavailableLabel?: string;
+    notListedLabel?: string;
+    notYourListingLabel?: string;
+    noMatchLabel?: string;
+    tooManySearchesLabel?: string;
+    receivedSuffix?: string;
+    successBody?: string;
+    /** Absolute http(s) URL to open after the lead is accepted. Blank keeps the in-page success card. */
+    successRedirectUrl?: string;
+    sendingLabel?: string;
+    sendFailedLabel?: string;
+    profileCardTitle?: string;
+    googleAlt?: string;
+    viewOnMapsLabel?: string;
+    servesTemplate?: string;
+    reviewSingularLabel?: string;
+    reviewPluralLabel?: string;
+    suggestionsLabel?: string;
+    platformsLabel?: string;
+    honeypotLabel?: string;
+  };
+  /** CMS `auditPlatform` items: `{ name, icon }`. `class` is an optional presentational override. */
+  platforms?: { name: string; icon: string; class?: string }[];
 };
 
 const {
@@ -57,6 +94,8 @@ const {
   anchor,
   headingLevel = "h2",
   lookup,
+  ui,
+  platforms = [],
 } = Astro.props as Props;
 
 const headingId = `lead-${slugify(title)}`;
@@ -64,15 +103,7 @@ const fieldId = (name: string) => `lead-field-${slugify(name)}`;
 const lookupBusinessName = lookup?.businessField;
 const listboxId = `lookup-list-${slugify(title)}`;
 
-const auditPlatformIcons = [
-  { name: "Google Business Profile", src: "/images/brand/official/google-business-profile.svg", class: "h-[30.6px]" },
-  { name: "Yelp", src: "/images/icons/yelp.svg", class: "h-[30.6px]" },
-  { name: "Bing", src: "/images/icons/bing_webmaster_tools.svg", class: "h-[27px]" },
-  { name: "ChatGPT", src: "/images/brand/official/openai-chatgpt.svg", class: "h-[23.8px]" },
-  { name: "Google Answers", src: "/images/brand/official/google-ai-overviews.svg", class: "h-[23.8px]" },
-  { name: "Claude", src: "/images/brand/official/claude.svg", class: "h-[23.8px]" },
-];
----
+const auditPlatformIcons = platforms;---
 
 <section
   id={anchor}
@@ -96,18 +127,17 @@ const auditPlatformIcons = [
           <div class="lookup-loading-inner">
             <div class="lookup-loading-progress" aria-hidden="true"><span></span></div>
             <h2 class="lookup-loading-title font-secondary font-extrabold text-text-dark">
-              Loading your business profile audit<span class="lookup-loading-dots text-primary">...</span>
+              {ui?.loadingTitle}<span class="lookup-loading-dots text-primary">...</span>
             </h2>
             <p class="lookup-loading-copy text-text">
-              Pulling live Google Business Profile details to prepare your free local SEO audit.
+              {ui?.loadingBody}
             </p>
             <div class="lookup-loading-record" aria-hidden="true">
-              <div class="lookup-loading-record-heading">Business profile</div>
-              <div class="lookup-loading-record-row"><span>Business</span><i class="lookup-loading-bar lookup-loading-bar-name"></i></div>
-              <div class="lookup-loading-record-row"><span>Location</span><i class="lookup-loading-bar lookup-loading-bar-location"></i></div>
-              <div class="lookup-loading-record-row"><span>Category</span><i class="lookup-loading-bar lookup-loading-bar-category"></i></div>
+              <div class="lookup-loading-record-heading">{ui?.gbpCardLabel}</div>
+              <div class="lookup-loading-record-row"><span>{ui?.businessLabel}</span><i class="lookup-loading-bar lookup-loading-bar-name"></i></div>
+              <div class="lookup-loading-record-row"><span>{ui?.locationLabel}</span><i class="lookup-loading-bar lookup-loading-bar-location"></i></div>
+              <div class="lookup-loading-record-row"><span>{ui?.categoryLabel}</span><i class="lookup-loading-bar lookup-loading-bar-category"></i></div>
             </div>
-            <p class="lookup-loading-foot text-text"><span aria-hidden="true"></span>Finding the right business profile</p>
           </div>
         </div>
       )
@@ -156,14 +186,14 @@ const auditPlatformIcons = [
                   <span class="h-px w-6 shrink-0 bg-dark" aria-hidden="true"></span>
                   {leadMagnetLabel}
                 </p>
-                <button type="button" class="lead-page-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label="Share">
+                <button type="button" class="lead-page-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label={ui?.shareLabel}>
                   <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 15V3" />
                     <path d="M8.25 6.75 12 3l3.75 3.75" />
                     <path d="M8 10.5H6.75A1.75 1.75 0 0 0 5 12.25v7A1.75 1.75 0 0 0 6.75 21h10.5A1.75 1.75 0 0 0 19 19.25v-7a1.75 1.75 0 0 0-1.75-1.75H16" />
                   </svg>
                 </button>
-                <span class="lead-page-share-status text-sm text-text-light" role="status" hidden>Link copied</span>
+                <span class="lead-page-share-status text-sm text-text-light" role="status" hidden>{ui?.linkCopiedLabel}</span>
                 <input class="lead-page-share-url basis-full bg-transparent text-xs text-text" type="text" readonly hidden />
               </div>
             )
@@ -174,12 +204,27 @@ const auditPlatformIcons = [
             id={anchor ? `${anchor}-form` : undefined}
             method="post"
             action={formAction}
-            data-lookup-endpoint={lookup ? (lookup.endpoint ?? "/api/business-lookup") : undefined}
+            data-lookup-endpoint={lookup?.endpoint}
             data-lookup-field={lookupBusinessName}
             data-lookup-min={lookup?.minChars}
             data-lookup-prefill={lookup ? JSON.stringify(lookup.prefill ?? []) : undefined}
             data-lookup-title={lookup?.titleTemplate}
             data-lookup-cta={lookup?.ctaTemplate}
+            data-ui-no-match={ui?.noMatchLabel}
+            data-ui-too-many={ui?.tooManySearchesLabel}
+            data-ui-unavailable={ui?.searchUnavailableLabel}
+            data-ui-searching={ui?.searchingLabel}
+            data-ui-change={ui?.changeBusinessLabel}
+            data-ui-not-listed={ui?.notListedLabel}
+            data-ui-not-yours={ui?.notYourListingLabel}
+            data-ui-sending={ui?.sendingLabel}
+            data-ui-error={ui?.sendFailedLabel}
+            data-ui-success={ui?.successBody}
+            data-ui-success-redirect={ui?.successRedirectUrl}
+            data-ui-received={ui?.receivedSuffix}
+            data-ui-serves={ui?.servesTemplate}
+            data-ui-review-singular={ui?.reviewSingularLabel}
+            data-ui-review-plural={ui?.reviewPluralLabel}
           >
             {
               lookup && (
@@ -187,7 +232,7 @@ const auditPlatformIcons = [
                   type="button"
                   class="lookup-change-business mb-5 hidden border-b border-border pb-0.5 text-sm font-semibold text-text-dark transition-colors hover:border-primary hover:text-primary"
                 >
-                  Change business
+                  {ui?.changeBusinessLabel}
                 </button>
               )
             }
@@ -212,7 +257,7 @@ const auditPlatformIcons = [
                           <span class="text-primary" aria-hidden="true">
                             {" "}*
                           </span>
-                          <span class="sr-only"> (required)</span>
+                          <span class="sr-only">{ui?.requiredSuffix}</span>
                         </>
                       ) : null}
                     </label>
@@ -244,16 +289,16 @@ const auditPlatformIcons = [
                         <ul
                           id={listboxId}
                           role="listbox"
-                          aria-label="Business suggestions"
+                          aria-label={ui?.suggestionsLabel}
                           hidden
                           class="lookup-listbox absolute left-0 right-0 top-full z-20 mt-1 max-h-56 overflow-y-auto rounded-none border border-dark bg-body shadow-[0_12px_28px_-18px_rgba(18,18,18,0.3)]"
                         >
                           <li class="lookup-searching flex items-center gap-3 px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
                             <span class="h-4 w-4 shrink-0 rounded-full border-2 border-primary/25 border-t-primary motion-safe:animate-spin" aria-hidden="true"></span>
-                            Searching Maryland Businesses
+                            {ui?.searchingLabel}
                           </li>
                           <li class="lookup-search-error px-4 py-3 text-sm font-medium text-text" role="option" aria-disabled="true">
-                            Search is unavailable. Please try again.
+                            {ui?.searchUnavailableLabel}
                           </li>
                         </ul>
                       </div>
@@ -273,14 +318,14 @@ const auditPlatformIcons = [
                       />
                     )}
                     {isLookupInput ? (
-                      <p class="lookup-not-listed mt-3 text-sm font-semibold text-[#1B83E2]" hidden>Business not listed?</p>
+                      <p class="lookup-not-listed mt-3 text-sm font-semibold text-[#1B83E2]" hidden>{ui?.notListedLabel}</p>
                     ) : null}
                   </div>
                 );
               })}
 
               <div class="hidden" aria-hidden="true">
-                <label for="lead-hp-company-website">Company website</label>
+                <label for="lead-hp-company-website">{ui?.honeypotLabel}</label>
                 <input id="lead-hp-company-website" name="website" type="text" tabindex="-1" autocomplete="off" />
               </div>
             </div>
@@ -295,13 +340,13 @@ const auditPlatformIcons = [
             >
               {submitLabel}
             </button>
-            <button type="button" class="lookup-wrong-listing border-0 bg-transparent p-0 text-left text-sm font-semibold text-[#1B83E2] transition hover:underline" hidden>Not your business listing?</button>
+            <button type="button" class="lookup-wrong-listing border-0 bg-transparent p-0 text-left text-sm font-semibold text-[#1B83E2] transition hover:underline" hidden>{ui?.notYourListingLabel}</button>
 
             <p aria-live="polite" class="lead-capture-status mt-3 text-sm font-semibold text-primary" hidden></p>
 
-            <div class="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-5 pt-2 sm:justify-start" aria-label="Audit platforms">
-              {auditPlatformIcons.map((icon) => (
-                <img src={icon.src} alt={icon.name} title={icon.name} class:list={["w-auto object-contain", icon.class]} loading="lazy" />
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-5 pt-2 sm:justify-start" aria-label={ui?.platformsLabel}>
+              {auditPlatformIcons.map((platform) => (
+                <img src={platform.icon} alt={platform.name} title={platform.name} class:list={["h-6 w-auto object-contain", platform.class]} loading="lazy" />
               ))}
             </div>
 
@@ -327,10 +372,10 @@ const auditPlatformIcons = [
               <path d="M12 20.5l5.5 5.5L28 15" />
             </svg>
             <h3 class="text-h5 font-secondary font-bold text-text-dark" tabindex="-1">
-              {leadMagnetLabel ?? "Request"} received
+              {leadMagnetLabel} {ui?.receivedSuffix}
             </h3>
             <p class="mt-3 leading-relaxed text-text">
-              We have your details. A strategist will follow up personally — no automated drip.
+              {ui?.successBody}
             </p>
           </div>
         </div>
@@ -361,7 +406,7 @@ const auditPlatformIcons = [
                       <img class="lookup-profile-logo relative max-h-full max-w-full" alt="" referrerpolicy="no-referrer" hidden />
                     </span>
                     <div class="min-w-0">
-                      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Google Business Profile</p>
+                      <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.profileCardTitle}</p>
                       <a class="lookup-profile-name mt-2 block min-w-0 break-words font-secondary text-h4 font-bold leading-tight text-text-dark underline decoration-border underline-offset-4 transition hover:text-primary hover:decoration-primary" target="_blank" rel="noopener noreferrer nofollow"></a>
                     </div>
                   </div>
@@ -378,21 +423,21 @@ const auditPlatformIcons = [
                       <span class="lookup-profile-score text-sm font-bold tabular-nums text-text-dark"></span>
                       <a class="lookup-profile-reviews text-sm text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" target="_blank" rel="noopener noreferrer nofollow"></a>
                     </p>
-                    <button type="button" class="lookup-profile-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label="Share">
+                    <button type="button" class="lookup-profile-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label={ui?.shareLabel}>
                       <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M12 15V3" />
                         <path d="M8.25 6.75 12 3l3.75 3.75" />
                         <path d="M8 10.5H6.75A1.75 1.75 0 0 0 5 12.25v7A1.75 1.75 0 0 0 6.75 21h10.5A1.75 1.75 0 0 0 19 19.25v-7a1.75 1.75 0 0 0-1.75-1.75H16" />
                       </svg>
                     </button>
-                    <span class="lookup-profile-share-status text-sm text-text-light" role="status" hidden>Link copied</span>
+                    <span class="lookup-profile-share-status text-sm text-text-light" role="status" hidden>{ui?.linkCopiedLabel}</span>
                     <input class="lookup-profile-share-url basis-full bg-transparent text-xs text-text" type="text" readonly hidden />
                   </div>
                 </div>
                 <ul class="lookup-profile-rows mt-6 border-t border-border"></ul>
                 <p class="mt-5 flex items-center gap-3 px-5 sm:px-7">
-                  <img src="/images/brand/official/google.svg" alt="Google" width="272" height="92" class="h-[22px] w-auto" />
-                  <a class="lookup-profile-maps text-xs text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" href="#" target="_blank" rel="noopener noreferrer nofollow" hidden>View on Maps</a>
+                  <img src="/images/brand/official/google.svg" alt={ui?.googleAlt} width="272" height="92" class="h-[22px] w-auto" />
+                  <a class="lookup-profile-maps text-xs text-text underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary" href="#" target="_blank" rel="noopener noreferrer nofollow" hidden>{ui?.viewOnMapsLabel}</a>
                 </p>
               </div>
             </div>
@@ -468,6 +513,17 @@ const auditPlatformIcons = [
     window.history.replaceState(window.history.state, "", url);
   }
 
+  function safeRedirect(raw: string | undefined): string | null {
+    const value = raw?.trim();
+    if (!value) return null;
+    try {
+      const url = new URL(value, window.location.origin);
+      return url.protocol === "http:" || url.protocol === "https:" ? url.href : null;
+    } catch {
+      return null;
+    }
+  }
+
   document.querySelectorAll<HTMLFormElement>(".lead-capture-form").forEach((form) => {
     const card = form.parentElement;
     const status = form.querySelector<HTMLElement>(".lead-capture-status");
@@ -485,7 +541,7 @@ const auditPlatformIcons = [
 
       button?.setAttribute("disabled", "");
       const originalLabel = button?.textContent;
-      if (button) button.textContent = "Sending…";
+      if (button) button.textContent = form.dataset.uiSending ?? "";
 
       try {
         const res = await fetch(form.action, {
@@ -507,8 +563,10 @@ const auditPlatformIcons = [
         form.hidden = true;
         success.hidden = false;
         success.querySelector<HTMLElement>("h3")?.focus();
+        const redirect = safeRedirect(form.dataset.uiSuccessRedirect);
+        if (redirect) window.location.assign(redirect);
       } catch {
-        status.textContent = "Something went wrong sending your request. Check your connection and try again — nothing was submitted.";
+        status.textContent = form.dataset.uiError ?? "";
         button?.removeAttribute("disabled");
         if (button) button.textContent = originalLabel ?? "";
       }
@@ -628,7 +686,7 @@ const auditPlatformIcons = [
       .filter((field): field is HTMLInputElement | HTMLTextAreaElement => field !== null);
     const baseCtaLabel = submitBtn?.textContent?.trim() ?? "";
     const ctaTemplate = form.dataset.lookupCta || "";
-    const endpoint = form.dataset.lookupEndpoint || "/api/business-lookup";
+    const endpoint = form.dataset.lookupEndpoint;
     const minChars = Math.max(2, Number(form.dataset.lookupMin) || 3);
     const notListed = form.querySelector<HTMLElement>(".lookup-not-listed");
     const wrongListing = form.querySelector<HTMLButtonElement>(".lookup-wrong-listing");
@@ -917,7 +975,7 @@ const auditPlatformIcons = [
         row.setAttribute("role", "option");
         row.setAttribute("aria-disabled", "true");
         row.className = "px-4 py-2.5 text-sm text-text-light";
-        row.textContent = "No match — keep typing manually";
+        row.textContent = form.dataset.uiNoMatch ?? "";
         listbox.appendChild(row);
         return;
       }
@@ -967,8 +1025,8 @@ const auditPlatformIcons = [
       isOpen = false;
       activeIndex = -1;
       searchError.textContent = rateLimited
-        ? "Too many searches. Please try again in a few minutes."
-        : "Search is unavailable. Please try again.";
+        ? form.dataset.uiTooMany ?? ""
+        : form.dataset.uiUnavailable ?? "";
       listbox.replaceChildren(searchError);
       listbox.hidden = false;
       input.setAttribute("aria-expanded", "true");
@@ -976,6 +1034,7 @@ const auditPlatformIcons = [
     }
 
     async function queryAutocomplete(rawQuery: string, selectSingleMatch = false) {
+      if (!endpoint) return;
       controller?.abort();
       const requestController = new AbortController();
       controller = requestController;
@@ -1076,7 +1135,7 @@ const auditPlatformIcons = [
             : undefined;
         profileRows.appendChild(profileRow("tag", str("category"), undefined, googleIcon));
       }
-      if (str("county") !== "") profileRows.appendChild(profileRow("map", `Serves ${str("county")}`));
+      if (str("county") !== "") profileRows.appendChild(profileRow("map", (form.dataset.uiServes ?? "").replace("{county}", str("county"))));
       if (str("address") !== "") profileRows.appendChild(profileRow("pin", str("address")));
       const phone = str("phone");
       if (phone !== "") profileRows.appendChild(profileRow("phone", phone, `tel:${phone.replace(/[^\d+]/g, "")}`));
@@ -1100,7 +1159,7 @@ const auditPlatformIcons = [
         const reviews = typeof place.reviewCount === "number" ? place.reviewCount : null;
         if (rating !== null && reviews !== null) {
           profileScore.textContent = rating.toFixed(1);
-          profileReviews.textContent = `${reviews} Google review${reviews === 1 ? "" : "s"}`;
+          profileReviews.textContent = `${reviews} ${reviews === 1 ? form.dataset.uiReviewSingular ?? "" : form.dataset.uiReviewPlural ?? ""}`;
           setExternalLink(profileReviews, reviewsUrl || mapsUrl);
           profileRating.hidden = false;
         } else {
@@ -1178,6 +1237,7 @@ const auditPlatformIcons = [
       showWrongListing();
       if (placeIdField) placeIdField.value = item.placeId;
       updateAuditQuery(item.placeId);
+      if (!endpoint) return;
       const detailsRequest = fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1211,6 +1271,7 @@ const auditPlatformIcons = [
     }
 
     async function loadPlaceId(placeId: string): Promise<boolean> {
+      if (!endpoint) return false;
       try {
         const res = await fetch(endpoint, {
           method: "POST",

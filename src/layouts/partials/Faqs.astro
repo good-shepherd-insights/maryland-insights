@@ -1,15 +1,16 @@
 ---
 import { markdownify } from "@/lib/utils/textConverter";
-import { getListPage } from "@/lib/contentParser.astro";
+import { getFaqsPage } from "@/lib/sanity/queries";
 
-const { data, prefix = "faq" } = Astro.props;
+const { data, prefix = "faq", ui } = Astro.props;
 let faqs_list = data?.faqs_list;
 let section_title = data?.section_title;
 
 if (!faqs_list) {
-  const pageIndex = await getListPage("faqs", "-index");
-  faqs_list = pageIndex.data.faqs_list;
-  if (!section_title) section_title = pageIndex.data.section_title;
+  const faqsPage = await getFaqsPage();
+  const items = faqsPage?.list?.items ?? [];
+  faqs_list = items.map((faq: any) => ({ question: faq.question, answer: faq.answer }));
+  if (!section_title) section_title = faqsPage?.list?.sectionTitle;
 }
 ---
 
@@ -29,7 +30,7 @@ if (!faqs_list) {
       <input
         type="search"
         data-faq-search
-        placeholder="Search questions (e.g. LLC, taxes, domain)..."
+        placeholder={ui?.searchPlaceholder}
         class="form-input w-full rounded-xl border-border bg-light px-4 py-3 text-sm text-text-dark placeholder:text-text-dark/60 focus:border-primary focus:ring-1 focus:ring-primary"
       />
     </div>
@@ -38,13 +39,13 @@ if (!faqs_list) {
       data-faq-no-results
       class="hidden text-center py-8 px-4 bg-light rounded-2xl border border-border mb-6"
     >
-      <p class="text-text-dark font-medium mb-2">No matching questions found</p>
+      <p class="text-text-dark font-medium mb-2">{ui?.noResultsText}</p>
       <button
         type="button"
         data-faq-reset-search
         class="text-sm text-primary hover:underline font-semibold"
       >
-        Clear search filter
+        {ui?.clearFilterLabel}
       </button>
     </div>
 

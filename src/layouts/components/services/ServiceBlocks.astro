@@ -21,20 +21,34 @@ import ToolCallout from "@/components/ToolCallout.astro";
 import TrustSignals from "@/components/TrustSignals.astro";
 
 type Block = {
-  type: string;
+  _type: string;
   [key: string]: any;
 };
 
 type Props = {
   blocks?: Block[];
+  locale?: string;
 };
 
-const { blocks = [] } = Astro.props as Props;
+const { blocks = [], locale } = Astro.props as Props;
+
+// Sanity stores cells positionally against `columns`; ComparisonTable reads `values` keyed by column key.
+const comparisonRows = (block: Block) =>
+  (block.rows ?? []).map((row: any, i: number) => ({
+    ...row,
+    key: row.key ?? `row-${i}`,
+    values: Object.fromEntries(
+      (block.columns ?? []).map((col: any, j: number) => [
+        col.key,
+        row.cells?.[j]?.kind === "check" ? true : (row.cells?.[j]?.text ?? null),
+      ]),
+    ),
+  }));
 ---
 
 {
   blocks.map((block) => {
-    switch (block.type) {
+    switch (block._type) {
       case "leadCapture":
         return (
           <LeadCaptureForm
@@ -45,12 +59,14 @@ const { blocks = [] } = Astro.props as Props;
             points={block.points}
             fields={block.fields}
             submitLabel={block.submitLabel}
-            formAction={block.formAction ?? "/api/lead"}
+            formAction={block.formAction}
             service={block.service}
             disclaimer={block.disclaimer}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
             lookup={block.lookup}
+            ui={block.ui}
+            platforms={block.platforms}
           />
         );
       case "authorByline":
@@ -68,6 +84,8 @@ const { blocks = [] } = Astro.props as Props;
                 reviewer={block.reviewer}
                 variant={block.variant}
                 className={block.className}
+                locale={locale}
+                ui={block.ui}
               />
             </div>
           </section>
@@ -77,7 +95,7 @@ const { blocks = [] } = Astro.props as Props;
           <section class="section-sm border-y border-border/70 bg-light">
             <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
               <div class="w-full max-w-none">
-                <TableOfContents headings={block.headings} variant={block.variant} title={block.title} />
+                <TableOfContents headings={block.headings} variant={block.variant} title={block.title} sectionsWord={block.sectionsWord} />
               </div>
             </div>
           </section>
@@ -89,6 +107,7 @@ const { blocks = [] } = Astro.props as Props;
             articles={block.articles}
             layout={block.layout}
             maxItems={block.maxItems}
+            locale={locale}
           />
         );
       case "toolCallout":
@@ -102,6 +121,7 @@ const { blocks = [] } = Astro.props as Props;
             footerNote={block.footerNote}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       case "aiSearchSection":
@@ -129,6 +149,7 @@ const { blocks = [] } = Astro.props as Props;
             variant={block.variant}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       case "resourcesDirectory":
@@ -169,6 +190,7 @@ const { blocks = [] } = Astro.props as Props;
             sourceLabel={block.sourceLabel}
             sourceUrl={block.sourceUrl}
             changes={block.changes}
+            ui={block.ui}
           />
         );
       case "localNap":
@@ -191,6 +213,7 @@ const { blocks = [] } = Astro.props as Props;
             note={block.note}
             headingLevel={block.headingLevel}
             anchor={block.anchor}
+            ui={block.ui}
           />
         );
       case "caseStudy":
@@ -207,6 +230,7 @@ const { blocks = [] } = Astro.props as Props;
             outcomes={block.outcomes}
             permissionLine={block.permissionLine}
             variant={block.variant}
+            ui={block.ui}
           />
         );
       case "comparisonTable":
@@ -216,17 +240,20 @@ const { blocks = [] } = Astro.props as Props;
             title={block.title}
             intro={block.intro}
             columns={block.columns}
-            rows={block.rows}
+            rows={comparisonRows(block)}
             footerNote={block.footerNote}
             highlightRow={block.highlightRow}
             variant={block.variant}
             firstColumnLabel={block.firstColumnLabel}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       case "serviceArea":
-        return <ServiceArea title={block.title} intro={block.intro} counties={block.counties} />;
+        return <ServiceArea title={block.title} intro={block.intro} counties={block.counties}
+            ui={block.ui}
+          />;
       case "trust":
         return (
           <ServiceTrust
@@ -237,6 +264,7 @@ const { blocks = [] } = Astro.props as Props;
             migrationPolicy={block.migrationPolicy}
             included={block.included}
             extraCost={block.extraCost}
+            ui={block.ui}
           />
         );
       case "pricingTiers":
@@ -250,6 +278,7 @@ const { blocks = [] } = Astro.props as Props;
             variant={block.variant}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       case "recognitionBadges":
@@ -277,6 +306,7 @@ const { blocks = [] } = Astro.props as Props;
             variant={block.variant}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       default:

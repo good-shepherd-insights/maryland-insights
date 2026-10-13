@@ -32,6 +32,7 @@ type Props = {
   firstColumnLabel?: string;
   anchor?: string;
   headingLevel?: "h2" | "h3";
+  ui?: { includedLabel?: string; notIncludedLabel?: string };
 };
 
 const {
@@ -43,9 +44,10 @@ const {
   footerNote,
   highlightRow,
   variant = "table",
-  firstColumnLabel = "Features",
+  firstColumnLabel,
   anchor,
   headingLevel = "h2",
+  ui,
 } = Astro.props as Props;
 
 const headingId = `comparison-${slugify(title)}`;
@@ -82,9 +84,9 @@ const widthOf = (col: Column) => (isFixed(col) ? col.width! : autoWidth);
 // Inline SVG mirrors the analog's check/cross sprite assets (active.svg stroke 2, cross.svg stroke 1.5,
 // active-accent.svg as the primary-tinted check for highlighted rows).
 const yesIcon = (accent: boolean) =>
-  `<svg class="block h-4 w-4 ${accent ? "text-primary" : "text-text-dark"}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 14L8.5 17.5L19 6.5"/></svg><span class="sr-only">Included</span>`;
+  `<svg class="block h-4 w-4 ${accent ? "text-primary" : "text-text-dark"}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 14L8.5 17.5L19 6.5"/></svg><span class="sr-only">${ui?.includedLabel ?? ""}</span>`;
 const noIcon =
-  '<svg class="block h-4 w-4 text-text-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.0005 5L5.00049 19M5.00049 5L19.0005 19"/></svg><span class="sr-only">Not included</span>';
+  `<svg class="block h-4 w-4 text-text-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19.0005 5L5.00049 19M5.00049 5L19.0005 19"/></svg><span class="sr-only">${ui?.notIncludedLabel ?? ""}</span>`;
 ---
 
 {

@@ -1,38 +1,37 @@
 ---
+export const prerender = true;
 import Base from "@/layouts/Base.astro";
+import { getSiteSettings } from "@/lib/sanity/queries";
+
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const nf = settingsUi.notFound ?? {};
 ---
 
-<Base title="Page Not Found" noindex={true}>
+<Base title={nf.title} ui={settingsUi} noindex={true}>
   <section
     class="section bg-light pt-30 lg:pt-43 bg-4col-grid overflow-x-hidden border-b border-border"
   >
     <div
-     
-     
       class="container sm:w-[90%] md:w-[70%] lg:w-[50%] mx-auto"
     >
       <div class="text-center">
         <span
-         
-         
           class="text-[9rem] block font-bold text-text-dark"
         >
           404
         </span>
         <h1 class="h2 mb-4">
-          Oops! Page not found
+          {nf.heading}
         </h1>
         <div class="content">
           <p class="text-balance">
-            It looks like the page you’re looking for doesn’t exist or might
-            have been moved. Don’t worry, let’s get you back on track!
+            {nf.description}
           </p>
         </div>
         <a
-         
-         
-          href="/"
-          class="btn btn-dark rounded-full mt-8">Go to Homepage</a
+          href={nf.homeLinkUrl}
+          class="btn btn-dark rounded-full mt-8">{nf.homeLinkText}</a
         >
       </div>
     </div>

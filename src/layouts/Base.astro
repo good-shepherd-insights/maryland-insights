@@ -1,7 +1,5 @@
 ---
 import TwSizeIndicator from "@/components/TwSizeIndicator.astro";
-import config from "@/config/config.json";
-import social from "@/config/social.json";
 import theme from "@/config/theme.json";
 import { plainify } from "@/lib/utils/textConverter";
 import trackingConfig from "@/config/tracking.json";
@@ -13,10 +11,9 @@ import { GoogleTagmanagerNoscript } from "@digi4care/astro-google-tagmanager";
 import { AstroFont } from "astro-font";
 import { ClientRouter } from "astro:transitions";
 import { SEO } from "astro-seo";
-import JsonLd from "@/lib/seo/JsonLd.astro";
-import { buildWebSite, buildOrganization, buildBreadcrumbList, buildWebPage, buildNavigation } from "@/lib/seo/graph";
 import { canonicalUrl } from "@/lib/seo/ids";
 import { getOpenGraphImagePath } from "@/lib/seo/openGraphImagePath";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
 // font families
 const pf = theme.fonts.font_family.primary;
@@ -35,11 +32,11 @@ if (theme.fonts.font_family.secondary) {
 export interface Props {
   title?: string;
   meta_title?: string;
+  metaTitle?: string;
   description?: string;
   image?: string;
   noindex?: boolean;
   canonical?: string;
-  schema?: any[];
   head_links?: { rel: string; href: string; crossorigin?: string }[];
   og_type?: "website" | "article";
   date_published?: string;
@@ -49,48 +46,75 @@ export interface Props {
   article_tags?: string[];
   article_section?: string;
   googlebot?: string;
+  ui?: any;
 }
 
-// Derive Twitter handle from social.json ("x" entry)
-const twitterEntry = social.main.find((s) => s.name === "x");
+// Site settings come from Sanity, not config files.
+let siteSettings: any = {};
+let footerNewsletter;
+try {
+  siteSettings = (await getSiteSettings()) ?? {};
+} catch {
+  siteSettings = {};
+}
+
+// Derive Twitter handle from Sanity socialLinks ("x" entry)
+const twitterEntry = (siteSettings.socialLinks ?? []).find((s: any) => s.platform === "x");
 const twitterHandle = twitterEntry
-  ? `@${twitterEntry.link.split("/").filter(Boolean).pop()}`
+  ? `@${twitterEntry.url.split("/").filter(Boolean).pop()}`
   : undefined;
 
-// Resolve locale for inLanguage — derived from config only
-const resolvedLocale = config.metadata.locale ? config.metadata.locale.replace("_", "-") : undefined;
+// Bot directives from Sanity (array of {bot, directive}) → map for meta tags
+const botDirectivesMap: Record<string, string> = {};
+for (const b of siteSettings.botDirectives ?? []) {
+  if (b.bot && b.directive) botDirectivesMap[b.bot] = b.directive;
+}
 
 // destructure frontmatter
 const {
-  title, meta_title, description, noindex, canonical,
+  title, meta_title, metaTitle, description, noindex, canonical,
   og_type = "website", date_published, date_modified, author_name,
   author_twitter, article_tags, article_section, googlebot,
-  head_links = []
-} = Astro.props;
+  head_links = [], ui
+} = Astro.props as any;
+
+// Sanity fields are camelCase; origin/main frontmatter used snake_case — accept both.
+const resolvedMetaTitle = meta_title ?? metaTitle;
+
+// Footer newsletter labels come from Sanity siteSettings; Base renders Footer
+// directly, so resolve them here and pass down.
+{
+  const n = siteSettings?.newsletter;
+  if (n) {
+    footerNewsletter = {
+      heading: n.title,
+      placeholder: n.placeholder,
+      submitTitle: n.submitLabel,
+      consentHint: n.consentHint,
+      consentLabel: n.consentLabel,
+      consentLinkText: n.consentLinkLabel,
+      logoAttribution: n.attributionLabel,
+      logoAttributionLink: n.attributionLinkLabel,
+      logoAttributionUrl: n.attributionLinkHref,
+      subscribingHint: n.subscribingLabel,
+      subscribedHint: n.subscribedLabel,
+      failedHint: n.failedLabel,
+      acceptingHint: n.acceptingHint,
+      privacyUrl: n.consentLinkHref,
+    };
+  }
+}
 
 const resolvedImage = getOpenGraphImagePath(Astro.url.pathname);
+const baseUrl = siteSettings.seoUrl ?? "";
+const fallbackTitle = siteSettings.siteTitle ?? "";
+const fallbackDescription = siteSettings.seoDescription ?? "";
+const documentLocale = siteSettings.locale?.replace("_", "-");
 
-// Combine all graph items — shared nodes come from typed builders in @/lib/seo/graph
-// so canonical/@id generation can't diverge per page (see @/lib/seo/ids canonicalUrl).
-const graphItems: unknown[] = [
-  buildWebSite(),
-  buildOrganization(),
-  buildBreadcrumbList(Astro.url.pathname),
-  buildWebPage({
-    pathname: Astro.url.pathname,
-    name: meta_title ? meta_title : title ? title : config.site.title,
-    description: description ? description : config.metadata.meta_description,
-    canonical,
-    image: resolvedImage ? `${config.site.base_url}${resolvedImage}` : undefined,
-    locale: resolvedLocale,
-  }),
-  buildNavigation(),
-  ...(Astro.props.schema || []),
-];
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={documentLocale}>
   <head>
     <meta charset="UTF-8" />
 
@@ -98,26 +122,26 @@ const graphItems: unknown[] = [
     <TrackingManager />
     
     <SEO
-      title={plainify(meta_title ? meta_title : title ? title : config.site.title)}
-      description={plainify(description ? description : config.metadata.meta_description)}
-      canonical={canonical || canonicalUrl(Astro.url.pathname)}
+      title={plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle)}
+      description={plainify(description ? description : fallbackDescription)}
+      canonical={canonical || canonicalUrl(baseUrl, Astro.url.pathname)}
       noindex={noindex}
       openGraph={{
         basic: {
-          title: plainify(meta_title ? meta_title : title ? title : config.site.title),
+          title: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle),
           type: og_type,
-          image: `${config.site.base_url}${resolvedImage}`,
-          url: canonical || canonicalUrl(Astro.url.pathname)
+          image: `${baseUrl}${resolvedImage}`,
+          url: canonical || canonicalUrl(baseUrl, Astro.url.pathname)
         },
         optional: {
-          description: plainify(description ? description : config.metadata.meta_description),
-          locale: config.metadata.locale,
-          siteName: config.site.logo_text || config.site.title,
+          description: plainify(description ? description : fallbackDescription),
+          locale: siteSettings.locale,
+          siteName: siteSettings.logoText || siteSettings.siteTitle,
         },
         image: {
-          alt: plainify(meta_title ? meta_title : title ? title : config.site.title),
-          width: config.metadata.meta_image_width,
-          height: config.metadata.meta_image_height,
+          alt: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle),
+          width: siteSettings.metaImageWidth,
+          height: siteSettings.metaImageHeight,
         },
         article: og_type === "article" ? {
           publishedTime: date_published,
@@ -131,16 +155,16 @@ const graphItems: unknown[] = [
         card: "summary_large_image",
         site: twitterHandle,
         creator: author_twitter ? `@${author_twitter}` : twitterHandle,
-        title: plainify(meta_title ? meta_title : title ? title : config.site.title),
-        description: plainify(description ? description : config.metadata.meta_description),
-        image: `${config.site.base_url}${resolvedImage}`,
-        imageAlt: plainify(meta_title ? meta_title : title ? title : config.site.title)
+        title: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle),
+        description: plainify(description ? description : fallbackDescription),
+        image: `${baseUrl}${resolvedImage}`,
+        imageAlt: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle)
       }}
       extend={{
         meta: [
           { name: "referrer", content: "strict-origin-when-cross-origin" },
-          ...(config.metadata.bot_directives
-            ? Object.entries(config.metadata.bot_directives).map(
+          ...(Object.keys(botDirectivesMap).length > 0
+            ? Object.entries(botDirectivesMap).map(
                 ([bot, directive]) => ({
                   name: bot,
                   content: (bot === "googlebot" && googlebot) ? googlebot : directive as string,
@@ -151,12 +175,12 @@ const graphItems: unknown[] = [
           { name: "msapplication-TileColor", content: "#000000" },
           { name: "theme-color", content: "#fff", media: "(prefers-color-scheme: light)" },
           { name: "theme-color", content: "#000", media: "(prefers-color-scheme: dark)" },
-          { name: "author", content: config.metadata.meta_author }
+          { name: "author", content: siteSettings.metaAuthor }
         ],
         link: [
-          { rel: "shortcut icon", href: config.site.favicon },
+          { rel: "shortcut icon", href: siteSettings.favicon },
           { rel: "security", href: "/.well-known/security.txt" },
-          { rel: "search", type: "application/opensearchdescription+xml", title: "Maryland Insights", href: "/opensearch.xml" },
+          { rel: "search", type: "application/opensearchdescription+xml", title: siteSettings.siteTitle, href: "/opensearch.xml" },
           ...(head_links as any[])
         ]
       }}
@@ -196,7 +220,6 @@ const graphItems: unknown[] = [
 
     <ClientRouter />
 
-    <JsonLd graph={graphItems} />
   </head>
 
   <body>
@@ -211,17 +234,17 @@ const graphItems: unknown[] = [
       href="#main-content"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-dark focus:rounded-lg focus:shadow-lg focus:outline-none"
     >
-      Skip to main content
+      {ui?.base?.skipLinkLabel}
     </a>
     <TwSizeIndicator />
-    <Header />
+    <Header ui={ui?.header} />
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
     <button
       type="button"
       id="back-to-top"
-      aria-label="Back to top"
+      aria-label={ui?.base?.backToTopLabel}
       aria-hidden="true"
       tabindex="-1"
       class="fixed bottom-6 left-6 z-40 p-3 rounded-full bg-primary text-dark shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2"
@@ -230,7 +253,7 @@ const graphItems: unknown[] = [
         <path d="M12 4l-8 8h5v8h6v-8h5z"/>
       </svg>
     </button>
-    <Footer />
+    <Footer newsletter={footerNewsletter} />
 
     <script>
       import Lenis from "lenis";

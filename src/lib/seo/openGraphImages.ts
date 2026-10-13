@@ -1,6 +1,20 @@
-import config from "@/config/config.json";
 import { plainify } from "@/lib/utils/textConverter";
-import { getCollection, getEntry } from "astro:content";
+import {
+  getHomePage,
+  getAboutPage,
+  getBlogPage,
+  getBlogPosts,
+  getContactPage,
+  getFaqsPage,
+  getIntegrationsPage,
+  getLegalPage,
+  getLegalPageSlugs,
+  getServicePage,
+  getServicePageSlugs,
+  getServicesPage,
+  getSiteSettings,
+  getToolsPage,
+} from "@/lib/sanity/queries";
 
 export interface OpenGraphPage {
   title: string;
@@ -17,20 +31,24 @@ const shorten = (value: string, maxLength = MAX_DESCRIPTION_LENGTH) => {
   return `${shortened.slice(0, lastSpace > 0 ? lastSpace : undefined).trimEnd()}…`;
 };
 
-const toOpenGraphPage = (data: {
-  title?: string;
-  meta_title?: string;
-  description?: string;
-}): OpenGraphPage => ({
-  title: plainify(data.title || data.meta_title || config.site.title),
+const toOpenGraphPage = (
+  site: { siteTitle?: string; seoDescription?: string },
+  data: {
+    title?: string;
+    meta_title?: string;
+    description?: string;
+  }
+): OpenGraphPage => ({
+  title: plainify(data.title || data.meta_title || site.siteTitle),
   description: shorten(
-    plainify(data.description || config.metadata.meta_description),
+    plainify(data.description || site.seoDescription),
   ),
 });
 
-export const getOpenGraphPages = async (): Promise<
-  Record<string, OpenGraphPage>
-> => {
+export const getOpenGraphPages = async (options?: {
+  notFound?: OpenGraphPage;
+  search?: OpenGraphPage;
+}): Promise<Record<string, OpenGraphPage>> => {
   const [
     homepage,
     about,
@@ -41,76 +59,63 @@ export const getOpenGraphPages = async (): Promise<
     servicesIndex,
     tools,
     blogPosts,
-    regularPages,
-    services,
+    legalSlugs,
+    serviceSlugs,
+    siteSettings,
   ] = await Promise.all([
-    getEntry("homepage", "-index"),
-    getEntry("about", "-index"),
-    getEntry("blog", "-index"),
-    getEntry("contact", "-index"),
-    getEntry("faqs", "-index"),
-    getEntry("integrations", "-index"),
-    getEntry("services", "-index"),
-    getEntry("tools", "-index"),
-    getCollection("blog", ({ data, id }) => !data.draft && !id.startsWith("-")),
-    getCollection(
-      "pages",
-      ({ data, id }) => !data.draft && !id.startsWith("-"),
-    ),
-    getCollection(
-      "services",
-      ({ data, id }) => !data.draft && !id.startsWith("-"),
-    ),
+    getHomePage(),
+    getAboutPage(),
+    getBlogPage(),
+    getContactPage(),
+    getFaqsPage(),
+    getIntegrationsPage(),
+    getServicesPage(),
+    getToolsPage(),
+    getBlogPosts(),
+    getLegalPageSlugs(),
+    getServicePageSlugs(),
+    getSiteSettings(),
   ]);
 
-  const requiredIndexes = {
-    about,
-    blog: blogIndex,
-    contact,
-    faqs,
-    integrations,
-    services: servicesIndex,
-    tools,
+  const headerOf = (doc: any) => doc?.header ?? {};
+  const requiredIndexes: Record<string, any> = {
+    about: headerOf(about),
+    blog: headerOf(blogIndex),
+    contact: headerOf(contact),
+    faqs: headerOf(faqs),
+    integrations: headerOf(integrations),
+    services: headerOf(servicesIndex),
+    tools: headerOf(tools),
   };
 
   for (const [route, entry] of Object.entries(requiredIndexes)) {
-    if (!entry) {
+    if (!entry?.title) {
       throw new Error(`Missing content entry for the /${route} OG image.`);
     }
   }
 
   const pages: Record<string, OpenGraphPage> = {
-    home: homepage
-      ? {
-          title: plainify(homepage.data.banner.title),
-          description: shorten(plainify(homepage.data.banner.content)),
-        }
-      : toOpenGraphPage({}),
-    "404": {
-      title: "Page Not Found",
-      description:
-        "Return to Maryland Insights to keep building your business.",
-    },
-    search: {
-      title: "Search Results",
-      description: "Search results for your Maryland business needs.",
-    },
+    home: toOpenGraphPage(siteSettings, { title: homepage?.hero?.title }),
+    "404": options?.notFound ?? { title: "", description: "" },
+    search: options?.search ?? { title: "", description: "" },
   };
 
   for (const [route, entry] of Object.entries(requiredIndexes)) {
-    pages[route] = toOpenGraphPage(entry!.data);
+    pages[route] = toOpenGraphPage(siteSettings, entry);
   }
 
-  for (const entry of regularPages) {
-    pages[entry.id] = toOpenGraphPage(entry.data);
+  for (const slug of legalSlugs) {
+    const entry = await getLegalPage(slug);
+    if (entry) pages[slug] = toOpenGraphPage(siteSettings, entry);
   }
 
-  for (const entry of blogPosts) {
-    pages[`blog/${entry.id}`] = toOpenGraphPage(entry.data);
+  for (const entry of blogPosts ?? []) {
+    pages[`blog/${entry.slug}`] = toOpenGraphPage(siteSettings, entry);
   }
 
-  for (const entry of services) {
-    pages[`services/${entry.id}`] = toOpenGraphPage(entry.data);
+  for (const slug of serviceSlugs) {
+    const entry = await getServicePage(slug);
+    if (entry) pages[`services/${slug}`] = toOpenGraphPage(siteSettings, entry);
   }
 
   return pages;

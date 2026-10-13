@@ -32,7 +32,7 @@ const {
   intro,
   cards = [],
   engines = [],
-  enginesLabel = "Answer engines",
+  enginesLabel,
   honestTake,
   variant = "section",
   anchor,
@@ -43,8 +43,7 @@ const headingId = `ai-${slugify(title)}`;
 const enginesLabelId = `${headingId}-engines-label`;
 const Heading = headingLevel;
 const CardHeading = headingLevel === "h2" ? "h3" : "h4";
-const engineAdditions = ["Claude", "Bing"];
-const shownEngines = [...engines, ...engineAdditions.filter((engine) => !engines.includes(engine))];
+const shownEngines = engines;
 ---
 
 <section
@@ -136,7 +135,7 @@ const shownEngines = [...engines, ...engineAdditions.filter((engine) => !engines
             >
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-            {honestTake.title ?? "Honest take"}
+            {honestTake.title}
           </p>
           <div class="content mt-3 text-sm leading-relaxed text-text" set:html={markdownify(honestTake.body, true) as string} />
         </aside>

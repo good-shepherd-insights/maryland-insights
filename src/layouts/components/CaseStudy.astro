@@ -22,6 +22,16 @@ type Props = {
   outcomes?: Outcome[];
   permissionLine?: string;
   variant?: "compact" | "expanded";
+  ui?: {
+    clientLabel?: string;
+    locationLabel?: string;
+    periodLabel?: string;
+    situationLabel?: string;
+    findingsLabel?: string;
+    actionsLabel?: string;
+    outcomeLabel?: string;
+    publishingNoteLabel?: string;
+  };
 };
 
 const {
@@ -36,20 +46,21 @@ const {
   outcomes = [],
   permissionLine,
   variant = "expanded",
+  ui,
 } = Astro.props as Props;
 
 const headingId = `service-${slugify(title)}`;
 
 const meta = [
-  { label: "Client", value: client },
-  { label: "Location", value: location },
-  { label: "Period", value: dateRange },
+  { label: ui?.clientLabel, value: client },
+  { label: ui?.locationLabel, value: location },
+  { label: ui?.periodLabel, value: dateRange },
 ].filter((entry) => Boolean(entry.value));
 
-const narrative: { label: string; body?: string }[] = [
-  { label: "Situation", body: situation },
-  { label: "What we found", body: whatWeFound },
-  { label: "What we did", body: whatChanged },
+const narrative: { label: string | undefined; body?: string }[] = [
+  { label: ui?.situationLabel, body: situation },
+  { label: ui?.findingsLabel, body: whatWeFound },
+  { label: ui?.actionsLabel, body: whatChanged },
 ].filter((entry) => Boolean(entry.body));
 ---
 
@@ -97,7 +108,7 @@ const narrative: { label: string; body?: string }[] = [
         {
           outcomes.length > 0 && (
             <div class="mt-12">
-              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Outcome</p>
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.outcomeLabel}</p>
               <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {outcomes.map((outcome) => (
                   <li class="min-w-0 rounded-xl border border-border bg-body p-6 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-8">
@@ -118,7 +129,7 @@ const narrative: { label: string; body?: string }[] = [
         {
           permissionLine && (
             <div class="mt-10 border-t border-border pt-6">
-              <p class="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary">Publishing note</p>
+              <p class="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary">{ui?.publishingNoteLabel}</p>
               <p class="max-w-[62ch] text-sm leading-relaxed text-text" set:html={markdownify(permissionLine)} />
             </div>
           )
@@ -170,7 +181,7 @@ const narrative: { label: string; body?: string }[] = [
             {
               outcomes.length > 0 && (
                 <div class="min-w-0">
-                  <p class="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">Outcome</p>
+                  <p class="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.outcomeLabel}</p>
                   <ul class="border-t border-border">
                     {outcomes.map((outcome) => (
                       <li class="flex items-baseline gap-4 border-b border-border py-4">

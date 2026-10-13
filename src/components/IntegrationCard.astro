@@ -11,9 +11,11 @@ interface Props {
     image?: string;
     link?: string;
   };
+  ui?: { ariaLabelTemplate?: string };
+  logoAltTemplate?: string;
 }
 
-const { integration } = Astro.props;
+const { integration, ui, logoAltTemplate } = Astro.props;
 ---
 
 <div
@@ -24,6 +26,7 @@ const { integration } = Astro.props;
     {integration.logo_name ? (
       <CompanyLogo
         name={integration.logo_name}
+        altTemplate={logoAltTemplate}
         size={36}
         class="h-8 w-8 object-contain sm:h-9 sm:w-9"
       />
@@ -48,6 +51,6 @@ const { integration } = Astro.props;
     />
   </div>
   {integration.link && (
-    <a href={integration.link} class="before:inset-0 before:absolute" aria-label={`Learn more about ${integration.title} integration`} />
+    <a href={integration.link} class="before:inset-0 before:absolute" aria-label={ui?.ariaLabelTemplate?.replace("{title}", integration.title)} />
   )}
 </div>

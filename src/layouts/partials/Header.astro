@@ -1,7 +1,6 @@
 ---
 import Logo from "@/layouts/components/Logo.astro";
-import config from "@/config/config.json";
-import menu from "@/config/menu.json";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
 export interface ChildNavigationLink {
   name: string;
@@ -10,14 +9,43 @@ export interface ChildNavigationLink {
 
 export interface NavigationLink {
   name: string;
-  url: string;
+  url?: string;
   hasChildren?: boolean;
   children?: ChildNavigationLink[];
 }
 
-const { main }: { main: NavigationLink[] } = menu;
-const { navigation_button } = config;
+// Site chrome comes from Sanity siteSettings, not config files.
+const siteSettings = await getSiteSettings();
+const main: NavigationLink[] = (siteSettings?.navLinks ?? []).map(
+  (link: any): NavigationLink => ({
+    name: link.label,
+    url: link.href && link.href !== "#" ? link.href : undefined,
+    hasChildren:
+      Array.isArray(link.children) && link.children.length > 0,
+    children: (link.children ?? []).map((child: any): ChildNavigationLink => ({
+      name: child.label,
+      url: child.href,
+    })),
+  })
+);
+const navigation_button = siteSettings?.navigationButton
+  ? {
+      enable: true,
+      label: siteSettings.navigationButton.label,
+      link: siteSettings.navigationButton.link,
+    }
+  : { enable: false, label: "", link: "" };
 const { pathname } = Astro.url;
+
+type Props = {
+  ui?: {
+    toggleLabel?: string;
+    menuOpenTitle?: string;
+    menuCloseTitle?: string;
+  };
+};
+
+const { ui } = Astro.props as Props;
 ---
 
 <header class={`header z-30 non_sticky`}>
@@ -33,16 +61,16 @@ const { pathname } = Astro.url;
       id="nav-toggle-label"
       role="button"
       tabindex="0"
-      aria-label="Toggle navigation menu"
+      aria-label={ui?.toggleLabel}
       aria-expanded="false"
       class="order-3 cursor-pointer flex items-center lg:hidden text-text-dark lg:order-1"
     >
       <svg id="show-button" class="h-6 fill-current block" viewBox="0 0 20 20">
-        <title>Menu Open</title>
+        <title>{ui?.menuOpenTitle}</title>
         <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
       </svg>
       <svg id="hide-button" class="h-6 fill-current hidden" viewBox="0 0 20 20">
-        <title>Menu Close</title>
+        <title>{ui?.menuCloseTitle}</title>
         <polygon
           points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
           transform="rotate(45 10 10)"></polygon>
@@ -56,32 +84,53 @@ const { pathname } = Astro.url;
       class="navbar-nav order-3 hidden w-full pb-6 lg:order-1 lg:flex lg:w-auto lg:space-x-2 lg:pb-0 xl:space-x-5"
     >
       {
-        main.map((menu) => (
+        main.map((menu, index) => (
           <>
             {menu.hasChildren ? (
               <li
                 data-lenis-prevent
                 class="nav-item nav-dropdown group relative"
               >
-                <span
-                  class={`nav-link bg-transparent! inline-flex items-center cursor-pointer ${
-                    menu.children?.some(
-                      ({ url }) => pathname === url || pathname === `${url}/` || pathname.startsWith(`${url}/`)
-                    )
-                      ? "active"
-                      : ""
-                  }`}
-                  role="button"
-                  tabindex="0"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  {menu.name}
-                  <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
-                </span>
-                <ul class="nav-dropdown-list">
+                {menu.url ? (
+                  <a
+                    href={menu.url}
+                    aria-controls={`nav-dropdown-${index}`}
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    class={`nav-link bg-transparent! inline-flex items-center ${
+                      menu.children?.some(
+                        ({ url }) => pathname === url || pathname === `${url}/` || pathname.startsWith(`${url}/`)
+                      )
+                        ? "active"
+                        : ""
+                    }`}
+                  >
+                    {menu.name}
+                    <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                  </a>
+                ) : (
+                  <span
+                    class={`nav-link bg-transparent! inline-flex items-center cursor-pointer ${
+                      menu.children?.some(
+                        ({ url }) => pathname === url || pathname === `${url}/` || pathname.startsWith(`${url}/`)
+                      )
+                        ? "active"
+                        : ""
+                    }`}
+                    role="button"
+                    tabindex="0"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    {menu.name}
+                    <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                  </span>
+                )}
+                <ul id={`nav-dropdown-${index}`} class="nav-dropdown-list">
                   {menu.children?.map((child) => (
                     <li class="nav-dropdown-item">
                       <a
@@ -181,12 +230,39 @@ const { pathname } = Astro.url;
 
     navDropdowns.forEach((dropdown) => {
       const trigger = dropdown.querySelector(".nav-link");
+      const chevron = dropdown.querySelector("button.nav-link");
       const menu = dropdown.querySelector(".nav-dropdown-list");
 
       if (!trigger || !menu) return;
 
-      trigger.addEventListener("click", () => {
-        menu.classList.toggle("grid");
+      const setExpanded = (open: boolean) => {
+        menu.classList.toggle("grid", open);
+        trigger.setAttribute("aria-expanded", String(open));
+      };
+
+      trigger.addEventListener("click", (event) => {
+        const href = trigger.getAttribute("href");
+        if (
+          href &&
+          new URL(href, window.location.href).pathname !==
+            window.location.pathname
+        ) {
+          setExpanded(false);
+          return;
+        }
+        event.preventDefault();
+        setExpanded(!menu.classList.contains("grid"));
+      });
+
+      dropdown.addEventListener("focusin", () => {
+        trigger.setAttribute("aria-expanded", "true");
+      });
+
+      dropdown.addEventListener("focusout", (event) => {
+        const next = (event as FocusEvent).relatedTarget;
+        if (!(next instanceof Node) || !dropdown.contains(next)) {
+          setExpanded(false);
+        }
       });
     });
   };

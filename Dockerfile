@@ -37,7 +37,8 @@ RUN \
 
 # Production image, copy all the files and run nginx
 FROM nginx:alpine AS runner
-COPY ./config/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/config/nginx/nginx.generated.conf /etc/nginx/nginx.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
+RUN nginx -t
 
 WORKDIR /usr/share/nginx/html

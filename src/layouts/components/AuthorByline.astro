@@ -23,6 +23,14 @@ type Props = {
   variant?: "inline" | "card" | "minimal";
   /** Optional extra classes on the outer wrapper (spacing handled by the host layout). */
   className?: string;
+  locale?: string;
+  ui?: {
+    publishedLabel?: string;
+    updatedLabel?: string;
+    byPrefix?: string;
+    writtenByLabel?: string;
+    reviewedByTemplate?: string;
+  };
 };
 
 const {
@@ -36,13 +44,15 @@ const {
   reviewer,
   variant = "inline",
   className,
+  locale,
+  ui,
 } = Astro.props as Props;
 
 const formatDate = (iso?: string): string | undefined => {
   if (!iso) return undefined;
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return undefined;
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(locale?.replace("_", "-"), {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -88,11 +98,11 @@ const socialIconKey = (platform: string): string | undefined => {
 };
 
 const hasSocialLinks = socialLinks.length > 0;
-const displayName = name.replace(/\s+Team$/, "");
-const reviewerName = reviewer?.name === "Editorial Review" ? undefined : reviewer?.name;
-const reviewerRole = reviewer?.role?.replace(/\s+Editorial$/, "");
-const reviewerLabelText = reviewerName
-  ? `Reviewed by ${reviewerName}${reviewerRole ? `, ${reviewerRole}` : ""}`
+const displayName = name;
+const reviewerName = reviewer?.name;
+const reviewerRole = reviewer?.role;
+const reviewerLabelText = reviewerName && ui?.reviewedByTemplate
+  ? ui.reviewedByTemplate.replace("{name}", reviewerName).replace("{role}", reviewerRole ? `, ${reviewerRole}` : "")
   : undefined;
 const hasDates = Boolean(publishedText || modifiedText);
 const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
@@ -126,7 +136,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
           <div class="min-w-0 flex-1">
             <p class="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
               <span class="ab-rule" aria-hidden="true"></span>
-              Written by
+              {ui?.writtenByLabel}
             </p>
             <address class="not-italic mt-2">
               <p class="break-words text-balance font-secondary text-h5 font-bold leading-[1.15] text-text-dark">
@@ -159,7 +169,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
                 publishedText && (
                   <div class="min-w-0">
                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-                      Published
+                      {ui?.publishedLabel}
                     </p>
                     <p class="mt-1 break-words font-secondary text-sm font-semibold tabular-nums text-text-dark">
                       <time datetime={datePublished}>{publishedText}</time>
@@ -171,7 +181,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
                 modifiedText && (
                   <div class="min-w-0">
                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-                      Updated
+                      {ui?.updatedLabel}
                     </p>
                     <p class="mt-1 break-words font-secondary text-sm font-semibold tabular-nums text-text-dark">
                       <time datetime={dateModified}>{modifiedText}</time>
@@ -277,7 +287,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
         <address class="not-italic min-w-0 grow basis-48">
           <p class="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
             <span class="ab-rule" aria-hidden="true"></span>
-            Written by
+            {ui?.writtenByLabel}
           </p>
           <p class="mt-1.5 break-words font-secondary text-base font-bold leading-snug text-text-dark">
             {displayName}
@@ -317,7 +327,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
               {
                 publishedText && (
                   <p class="break-words text-sm text-text-light">
-                    <span class="text-xs font-semibold uppercase tracking-[0.14em]">Published</span>
+                    <span class="text-xs font-semibold uppercase tracking-[0.14em]">{ui?.publishedLabel}</span>
                     {" "}
                     <time datetime={datePublished} class="font-medium tabular-nums text-text-dark">
                       {publishedText}
@@ -328,7 +338,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
               {
                 modifiedText && (
                   <p class="break-words text-sm text-text-light">
-                    <span class="text-xs font-semibold uppercase tracking-[0.14em]">Updated</span>
+                    <span class="text-xs font-semibold uppercase tracking-[0.14em]">{ui?.updatedLabel}</span>
                     {" "}
                     <time datetime={dateModified} class="font-medium tabular-nums text-text-dark">
                       {modifiedText}
@@ -347,7 +357,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
     variant === "minimal" && (
       <address class="not-italic author-byline-minimal min-w-0">
         <p class="break-words text-sm leading-relaxed text-text">
-          <span class="text-text-light">By </span>
+          <span class="text-text-light">{ui?.byPrefix}</span>
           <span class="font-secondary font-bold text-text-dark">{displayName}</span>
           {
             role && (
@@ -371,7 +381,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
                 <span aria-hidden="true">{" · "}</span>
                 {publishedText && (
                   <span class="text-text-light">
-                    Published{" "}
+                    {ui?.publishedLabel}{" "}
                     <time datetime={datePublished} class="font-medium tabular-nums text-text-dark">
                       {publishedText}
                     </time>
@@ -380,7 +390,7 @@ const checkPath = "M2.5 8.5l3.5 3.5 7.5-8";
                 {publishedText && modifiedText && <span aria-hidden="true">{" · "}</span>}
                 {modifiedText && (
                   <span class="text-text-light">
-                    Updated{" "}
+                    {ui?.updatedLabel}{" "}
                     <time datetime={dateModified} class="font-medium tabular-nums text-text-dark">
                       {modifiedText}
                     </time>

@@ -16,8 +16,11 @@ const {
   imageFit = "cover",
   imageSizes = "(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw",
   class: className = "",
+  locale,
+  ui,
 } = Astro.props;
 const { title, description, image, button, date, author } = data;
+const dateTime = date ? (typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : new Date(date).toISOString()) : undefined;
 const isSvg = typeof image === "string" && image.endsWith(".svg");
 const imageWidth = smallImage ? 172 : 696;
 const imageHeight = smallImage ? 40 : 528;
@@ -60,7 +63,7 @@ const imageFrameClass = smallImage
       <div class="flex items-center gap-3 mb-4 text-xs text-text-light">
         <span>{author.name}</span>
         <span class="text-text-light/50">•</span>
-        <time datetime={dateFormat(date)}>{dateFormat(date)}</time>
+        <time datetime={dateTime}>{dateFormat(date, locale)}</time>
       </div>
     )
   }
@@ -72,7 +75,7 @@ const imageFrameClass = smallImage
 
   <p class="max-w-[68ch] text-sm" set:html={markdownify(description)} />
 
-  <a href={`${id ? id : button?.link}`} class={`before:absolute before:inset-0 ${equalHeight ? "mt-auto" : ""}`} aria-label={`Read more about ${title}`}>
+  <a href={`${id ? id : button?.link}`} class={`before:absolute before:inset-0 ${equalHeight ? "mt-auto" : ""}`} aria-label={ui?.readMorePrefix ? `${ui.readMorePrefix} ${title}` : undefined}>
     <div
       class={`flex justify-between relative pt-10 ${hasDarkArrow ? "text-dark" : "text-light"}`}
     >
@@ -92,7 +95,7 @@ const imageFrameClass = smallImage
             ))}
           </div>
         ) : (
-          <span class="text-xs text-dark">{button?.label ?? "Learn More"}</span>
+          <span class="text-xs text-dark">{button?.label}</span>
         )
       }
 
@@ -110,7 +113,7 @@ const imageFrameClass = smallImage
             fill="currentColor"></path>
         </svg>
 
-        {!iconSlot && <span class="sr-only">{button?.label ?? "Learn More"}</span>}
+        {!iconSlot && <span class="sr-only">{button?.label}</span>}
         <span
           class="absolute left-[60%] top-[60%] h-9.5 w-9.5 -translate-x-1/2 -translate-y-1/2 overflow-hidden"
         >

@@ -1,48 +1,72 @@
 import { getOpenGraphPages } from "@/lib/seo/openGraphImages";
+import { getSiteSettings } from "@/lib/sanity/queries";
 import type { APIRoute } from "astro";
 import { OGImageRoute } from "astro-og-canvas";
 
 export const prerender = true;
 
-const pages = await getOpenGraphPages();
+const [pages, settings] = await Promise.all([getOpenGraphPages(), getSiteSettings()]);
+const style = settings?.openGraphImage;
+if (!style) throw new Error("siteSettings.openGraphImage is required.");
+
+const color = (value: string): [number, number, number] => {
+  if (!/^#[0-9a-fA-F]{6}$/.test(value)) throw new Error(`Invalid CMS Open Graph color: ${value}`);
+  return [1, 3, 5].map((index) => parseInt(value.slice(index, index + 2), 16)) as [number, number, number];
+};
+const localAsset = (value: string, prefix: string): string => {
+  if (typeof value !== "string" || !value.startsWith(prefix) || value.includes("..")) {
+    throw new Error(`Invalid CMS Open Graph asset path: ${value}`);
+  }
+  return value;
+};
+const positive = (value: number, field: string): number => {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
+    throw new Error(`siteSettings.openGraphImage.${field} must be positive.`);
+  }
+  return value;
+};
+const logoPath = localAsset(style.logoPath, "./public/images/");
+const regularFont = localAsset(style.fontRegularPath, "./src/assets/fonts/");
+const boldFont = localAsset(style.fontBoldPath, "./src/assets/fonts/");
+const gradientStart = color(style.gradientStart);
+const gradientEnd = color(style.gradientEnd);
+const borderColor = color(style.borderColor);
+const fontFamily = style.fontFamily;
+if (typeof fontFamily !== "string" || !fontFamily.trim()) throw new Error("siteSettings.openGraphImage.fontFamily is required.");
 
 const ogImageRoute = await OGImageRoute({
   pages,
   getImageOptions: (_path, page) => {
     const titleSize =
-      page.title.length > 65 ? 48 : page.title.length > 45 ? 54 : 60;
+      page.title.length > 65 ? positive(style.titleSizeLong, "titleSizeLong")
+      : page.title.length > 45 ? positive(style.titleSizeMedium, "titleSizeMedium")
+      : positive(style.titleSizeShort, "titleSizeShort");
 
     return {
       title: page.title,
       description: page.description,
       logo: {
-        path: "./public/images/logo.png",
-        size: [88, 88],
+        path: logoPath,
+        size: [positive(style.logoSize, "logoSize"), positive(style.logoSize, "logoSize")],
       },
-      bgGradient: [
-        [18, 18, 18],
-        [217, 101, 26],
-      ],
+      bgGradient: [gradientStart, gradientEnd],
       border: {
-        color: [200, 16, 46],
-        width: 12,
+        color: borderColor,
+        width: positive(style.borderWidth, "borderWidth"),
         side: "inline-start",
       },
-      padding: 72,
-      fonts: [
-        "./src/assets/fonts/geist-latin-400-normal.ttf",
-        "./src/assets/fonts/geist-latin-700-normal.ttf",
-      ],
+      padding: positive(style.padding, "padding"),
+      fonts: [regularFont, boldFont],
       font: {
         title: {
-          families: ["Geist"],
+          families: [fontFamily],
           size: titleSize,
           lineHeight: 1.05,
           weight: "Bold",
         },
         description: {
-          families: ["Geist"],
-          size: 28,
+          families: [fontFamily],
+          size: positive(style.descriptionSize, "descriptionSize"),
           lineHeight: 1.3,
         },
       },
