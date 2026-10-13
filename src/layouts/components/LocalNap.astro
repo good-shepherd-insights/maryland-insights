@@ -25,6 +25,14 @@ type Props = {
   headingLevel?: "h2" | "h3";
   /** Jump-link id on the section. */
   anchor?: string;
+  ui?: {
+    addressLabel?: string;
+    phoneLabel?: string;
+    emailLabel?: string;
+    hoursLabel?: string;
+    mapLabel?: string;
+    viewOnMapsLabel?: string;
+  };
 };
 
 const {
@@ -45,9 +53,10 @@ const {
   note,
   headingLevel = "h2",
   anchor,
+  ui,
 } = Astro.props as Props;
 
-const heading = title ?? name ?? "Contact details";
+const heading = title ?? name;
 const headingId = `nap-${slugify(heading)}`;
 
 const line2 = [`${city}, ${region} ${postal}`, country !== "US" ? country : null]
@@ -65,14 +74,14 @@ const ICONS: Record<string, string> = {
   map: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/>',
 };
 
-type Row = { label: string; icon: string; value: string; href?: string; tabular?: boolean };
+type Row = { label?: string; icon: string; value?: string; href?: string; tabular?: boolean };
 
 const rows: Row[] = [
-  { label: "Address", icon: "pin", value: `${street}\n${line2}` },
-  { label: "Phone", icon: "phone", value: phone, href: telHref, tabular: true },
-  { label: "Email", icon: "mail", value: email, href: `mailto:${email}` },
-  ...(hours ? [{ label: "Hours", icon: "clock", value: hours }] : []),
-  ...(mapUrl ? [{ label: "Map", icon: "map", value: "View on Maps", href: mapUrl }] : []),
+  { label: ui?.addressLabel, icon: "pin", value: `${street}\n${line2}` },
+  { label: ui?.phoneLabel, icon: "phone", value: phone, href: telHref, tabular: true },
+  { label: ui?.emailLabel, icon: "mail", value: email, href: `mailto:${email}` },
+  ...(hours ? [{ label: ui?.hoursLabel, icon: "clock", value: hours }] : []),
+  ...(mapUrl ? [{ label: ui?.mapLabel, icon: "map", value: ui?.viewOnMapsLabel, href: mapUrl }] : []),
 ];
 ---
 
@@ -161,11 +170,11 @@ const rows: Row[] = [
                             { "tabular-nums": Boolean(row.tabular) },
                           ]}
                         >
-                          {row.value.includes("\n") ? (
+                          {row.value?.includes("\n") ? (
                             <>
-                              {row.value.split("\n")[0]}
+                              {row.value?.split("\n")[0]}
                               <br />
-                              {row.value.split("\n").slice(1).join("\n")}
+                              {row.value?.split("\n").slice(1).join("\n")}
                             </>
                           ) : (
                             row.value
@@ -299,7 +308,7 @@ const rows: Row[] = [
                   rel="noopener noreferrer"
                   class="min-w-0 break-words text-text-dark underline decoration-border underline-offset-2 transition hover:text-primary hover:decoration-primary [overflow-wrap:anywhere]"
                 >
-                  View on Maps
+                  {ui?.viewOnMapsLabel}
                 </a>
               </li>
             )
@@ -377,7 +386,7 @@ const rows: Row[] = [
                         aria-hidden="true"
                         set:html={ICONS.map}
                       />
-                      View on Maps
+                      {ui?.viewOnMapsLabel}
                     </a>
                   </p>
                 )

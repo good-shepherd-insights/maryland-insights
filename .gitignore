@@ -1,5 +1,6 @@
 # build output
 dist/
+config/nginx/nginx.generated.conf
 .output/
 .vercel/
 .json/
@@ -36,3 +37,4 @@ font-pairings/
 
 .fast-agent/fast-agent.secrets.yaml
 .untracked/
+node_modules/

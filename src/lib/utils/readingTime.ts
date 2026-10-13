@@ -1,5 +1,9 @@
 // content reading
-const readingTime = (content: string): string => {
+const readingTime = (
+  content: string,
+  singularSuffix?: string,
+  pluralSuffix?: string,
+): string => {
   const WPS = 275 / 60;
 
   let images = 0;
@@ -28,12 +32,12 @@ const readingTime = (content: string): string => {
 
   if (minutes < 10) {
     if (minutes < 2) {
-      return "0" + minutes + ` Min read`;
+      return "0" + minutes + (singularSuffix ?? "");
     } else {
-      return "0" + minutes + ` Mins read`;
+      return "0" + minutes + (pluralSuffix ?? "");
     }
   } else {
-    return minutes + ` Mins read`;
+    return minutes + (pluralSuffix ?? "");
   }
 };
 

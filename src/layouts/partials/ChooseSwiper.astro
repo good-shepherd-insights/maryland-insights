@@ -1,14 +1,18 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
 import { markdownify } from "@/lib/utils/textConverter";
-import type { CollectionEntry } from "astro:content";
 
 type Props = {
-  data: CollectionEntry<"homepage">["data"]["agents_swiper"];
+  data: {
+    enable?: boolean;
+    title?: string;
+    agents?: any[];
+  };
   id?: string;
+  ui?: { servicesAriaLabel?: string; exploreAriaTemplate?: string };
 };
 
-const { data, id = "be-the-answer" } = Astro.props as Props;
+const { data, id = "be-the-answer", ui } = Astro.props as Props;
 if (!data.enable) return null;
 const { title, agents } = data;
 
@@ -42,7 +46,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
       <div
         class="ds-tabs grid grid-cols-1 gap-2 sm:grid-flow-col sm:grid-cols-none sm:auto-cols-max sm:overflow-x-auto sm:pb-1 lg:hidden [scrollbar-width:thin] [scrollbar-gutter:stable] [-webkit-overflow-scrolling:touch]"
         role="tablist"
-        aria-label="Services"
+        aria-label={ui?.servicesAriaLabel}
       >
         {
           tabs.map((t) => (
@@ -64,7 +68,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
       <div class="hidden lg:block lg:w-[226px] lg:shrink-0">
         <div class="ds-rail lg:sticky lg:top-32 self-start max-h-[calc(100dvh-8.5rem)] overflow-y-auto">
           <div class="relative">
-            <div class="relative flex overflow-x-auto lg:flex-col" role="tablist" aria-label="Services">
+            <div class="relative flex overflow-x-auto lg:flex-col" role="tablist" aria-label={ui?.servicesAriaLabel}>
               {
                 tabs.map((t) => (
                   <button
@@ -171,7 +175,7 @@ const tabs = agents?.map((agent: any, i: number) => ({
                       href={agent.button.link}
                       target={agent.button.link.startsWith("http") ? "_blank" : "_self"}
                       rel={agent.button.link.startsWith("http") ? "noopener" : undefined}
-                      aria-label={`Explore ${agent.label}`}
+                      aria-label={ui?.exploreAriaTemplate?.replace("{label}", agent.label)}
                       class="absolute bottom-4 right-4 flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-md md:hidden"
                     >
                       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">

@@ -2,7 +2,7 @@
 import ImageMod from "@/components/ImageMod.astro";
 import UpdatedDateBadge from "@/components/UpdatedDateBadge.astro";
 import dateFormat from "@/lib/utils/dateFormat";
-import { humanize, markdownify } from "@/lib/utils/textConverter";
+import { markdownify } from "@/lib/utils/textConverter";
 
 const {
   title = "",
@@ -10,6 +10,8 @@ const {
   blogData,
   caseData,
   careerData,
+  locale,
+  ui,
 }: {
   title?: string;
   description?: string;
@@ -19,6 +21,17 @@ const {
     date: string;
   };
   careerData?: { department: string; vacancy: string; deadline: string };
+  locale?: string;
+  ui?: {
+    writtenByLabel?: string;
+    departmentLabel?: string;
+    vacanciesLabel?: string;
+    deadlineLabel?: string;
+    caseLastUpdatedLabel?: string;
+    badgeUpdatedLabel?: string;
+    publishedLabel?: string;
+    staleNote?: string;
+  };
 } = Astro.props;
 
 const dateString = (value: Date | string): string => value instanceof Date ? value.toISOString() : value;
@@ -32,7 +45,7 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
      
      
       class={`xl:w-[80%] text-balance mx-auto ${(blogData || caseData) && "h2"}`}
-      set:text={humanize(title)}
+      set:text={title}
     />
     {
       description && (
@@ -62,7 +75,7 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
             />
           )}
           <p class="flex flex-col gap-1 text-left border-r border-border pr-3 md:pr-4">
-            <span class="text-xs">Written By</span>
+            <span class="text-xs">{ui?.writtenByLabel}</span>
             <span class="text-text-dark">{blogData.author?.name}</span>
           </p>
           {blogData.date && (
@@ -70,7 +83,9 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
               dateModified={dateString(blogData.lastmod || blogData.date)}
               datePublished={blogData.date ? dateString(blogData.date) : undefined}
               variant="badge"
-              label="Updated"
+              label={ui?.badgeUpdatedLabel}
+              locale={locale}
+              ui={ui}
             />
           )}
         </div>
@@ -99,9 +114,9 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
           </p>
           {caseData.date && (
             <p class="flex flex-col gap-1 text-left">
-              <span class="text-xs">Last updated</span>
-              <time class="text-text-dark" datetime={dateFormat(caseData.date)}>
-                {dateFormat(caseData.date)}
+              <span class="text-xs">{ui?.caseLastUpdatedLabel}</span>
+              <time class="text-text-dark" datetime={dateString(caseData.date)}>
+                {dateFormat(caseData.date, locale)}
               </time>
             </p>
           )}
@@ -118,20 +133,20 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
         >
           {careerData.department && (
             <span class="text-sm flex flex-col gap-2 border-r border-border pr-3">
-              Department
+              {ui?.departmentLabel}
               <span class="font-semibold text-text-dark">{careerData.department}</span>
             </span>
           )}
           {careerData.vacancy && (
             <span class="text-sm flex flex-col gap-2 border-r border-border pr-3">
-              Vacancies
+              {ui?.vacanciesLabel}
               <span class="font-semibold text-text-dark">{careerData.vacancy}</span>
             </span>
           )}
           {careerData.deadline && (
             <span class="text-sm flex flex-col gap-2">
-              Deadline
-              <span class="font-semibold text-text-dark">{dateFormat(careerData.deadline)}</span>
+              {ui?.deadlineLabel}
+              <span class="font-semibold text-text-dark">{dateFormat(careerData.deadline, locale)}</span>
             </span>
           )}
         </div>

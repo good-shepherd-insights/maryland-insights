@@ -1,25 +1,33 @@
 ---
-import config from "@/config/config.json";
 import ImageMod from "@/components/ImageMod.astro";
 import DynamicIcon from "@/helpers/DynamicIcon";
 import Base from "@/layouts/Base.astro";
-import { getListPage } from "@/lib/contentParser.astro";
+import { getContactPage, getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import ContactGuidance from "@/partials/ContactGuidance.astro";
-import type { ContactPage } from "schema-dts";
 
-const pageIndex = await getListPage("contact", "-index");
-const {
-  title,
-  description,
-  section_title,
-  contact_form,
-  contact_info,
-  gallery_section,
-} = pageIndex.data;
+const _contact = await getContactPage();
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const title = _contact?.header?.title;
+const metaTitle = _contact?.metaTitle;
+const description = _contact?.header?.description;
+const section_title = _contact?.sectionTitle;
+const gallery_section = _contact?.offices;
+const contact_form = _contact?.form
+  ? {
+      enable: true,
+      form_action: _contact.form.formAction,
+      fields: _contact.form.fields,
+      submit_button_label: _contact.form.submitLabel,
+    }
+  : undefined;
+const contact_info = _contact?.info
+  ? { enable: true, informations: _contact.info.informations }
+  : undefined;
 
 const toContactHref = (rawValue: string) => {
   const value = (rawValue ?? "").trim();
@@ -39,21 +47,11 @@ const toContactHref = (rawValue: string) => {
   return value;
 };
 
-const contactSchema: ContactPage = {
-  "@type": "ContactPage",
-  "mainEntity": {
-    "@id": `${config.site.base_url}/#organization`,
-  },
-};
-
-if (pageIndex.data.draft) {
-  return Astro.redirect("/404");
-}
 ---
 
-<Base {...pageIndex.data} schema={[contactSchema]}>
-  <PageHeader title={title} description={description} />
-  <ContactGuidance />
+<Base title={title} metaTitle={metaTitle} description={description} ui={settingsUi}>
+  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
+  <ContactGuidance {..._contact?.guidance} />
   <section class="section-sm bg-light">
     <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
       <h2
@@ -143,7 +141,7 @@ if (pageIndex.data.draft) {
 
   <!-- Gallery Section  -->
   {
-    gallery_section?.enable && (
+    gallery_section && (
       <section
         class="section section-divider bg-dark"
         style="--section-divider-color: var(--color-dark)"
@@ -191,6 +189,6 @@ if (pageIndex.data.draft) {
       </section>
     )
   }
-  <Faqs prefix="contact-faq" />
+  <Faqs prefix="contact-faq" data={{ faqs_list: [] }} ui={settingsUi.faqs} />
   <CallToAction />
 </Base>

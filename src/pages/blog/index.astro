@@ -1,72 +1,76 @@
 ---
-import config from "@/config/config.json";
 import CardPrimary from "@/components/CardPrimary.astro";
 import Base from "@/layouts/Base.astro";
-import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
-import { getTaxonomy } from "@/lib/taxonomyParser.astro";
+import { getBlogPage, getBlogPosts, getSiteSettings } from "@/lib/sanity/queries";
 import { sortByDate } from "@/lib/utils/sortFunctions";
-import { markdownify, slugify, humanize, plainify } from "@/lib/utils/textConverter";
+import { markdownify, slugify } from "@/lib/utils/textConverter";
 import BlogLibraryGuide from "@/partials/BlogLibraryGuide.astro";
 import CallToAction from "@/partials/CallToAction.astro";
 import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
-import type { Blog, BlogPosting, Person } from "schema-dts";
 
-const BLOG_FOLDER = "blog";
+const blogPage = await getBlogPage();
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const cardUi = settingsUi.cardPrimary;
+const header = blogPage?.header ?? {};
+const title = header.title;
+const description = header.description;
 
-const postIndex = await getListPage(BLOG_FOLDER, "-index");
-if (postIndex.data.draft) return Astro.redirect("/404");
-
-const { title, description, blog_library_guide, featured_posts, actual_posts } = postIndex.data;
-const blogGuide = blog_library_guide ?? {
+const guide = blogPage?.guide ?? {};
+const blogGuide = {
   enable: true,
-  title: "A working library for Maryland business decisions",
-  introduction:
-    "This is where Maryland Insights collects practical reporting on the decisions that shape how a business gets established, gets discovered, and stays visible as search changes. The focus is the work in front of Maryland owners and the agencies serving them—not a feed of disconnected trends.",
-  reading_note:
-    "Start with the question closest to the work you are doing now, then use the topic index to move into the full archive. Featured articles surface the pieces worth beginning with; the archive lets you narrow the rest by subject instead of digging through every post.",
+  ...guide,
+  introduction: guide.description,
+  reading_note: guide.researchIntro,
 };
-const posts = await getSinglePage(BLOG_FOLDER);
-const featuredPosts = posts.filter(
-  (post) => post.data.featured && !post.data.draft
-);
 
-const featuredFive = featuredPosts.slice(0, 5);
+const featured_posts = { enable: true, title: blogPage?.featuredTitle };
+const actual_posts = { enable: true, title: blogPage?.archiveTitle };
+const all_filter_label = blogPage?.allFilterLabel;
+
+const toCardPost = (p: any) => ({
+  id: p.slug,
+  data: {
+    title: p.title,
+    description: p.description,
+    image: p.image,
+    date: p.datePublished,
+    author: p.author,
+    categories: (p.categories ?? []).map((c: any) => c.title),
+  },
+});
+
+const posts = (await getBlogPosts()).map(toCardPost);
+const featuredFive = ((blogPage?.featuredPosts ?? []) as any[])
+  .filter((p: any) => !p.draft)
+  .map(toCardPost)
+  .slice(0, 5);
 const featuredFirst = featuredFive[0];
 const featuredCol2 = featuredFive.slice(1, 3);
 const featuredCol3 = featuredFive.slice(3, 5);
-const categories = await getTaxonomy(BLOG_FOLDER, "categories");
-const categoryGroups = [
-  ...new Set(categories.map((category) => category.toLocaleLowerCase())),
-];
-const categoryLabels = [
-  ...new Map(categories.map((category) => [category.toLocaleLowerCase(), category])).values(),
-];
-const publishedPosts = posts.filter((post) => !post.data.draft);
-const sortedPosts = sortByDate(publishedPosts);
 
-const blogIndexSchema: Blog = {
-  "@type": "Blog",
-  "name": plainify(title),
-  "description": plainify(description),
-  "url": `${config.site.base_url}/blog`,
-  "blogPost": sortedPosts.slice(0, 10).map((post) => ({
-    "@type": "BlogPosting",
-    "headline": plainify(post.data.title),
-    "url": `${config.site.base_url}/blog/${post.id}`,
-    "datePublished": post.data.date,
-    "author": {
-      "@type": "Person",
-      "name": plainify(post.data.author.name),
-    } as Person,
-  } as BlogPosting)),
-};
+const categories: string[] = [...new Set((posts as any[]).flatMap((p: any) => p.data.categories as string[]))];
+const categoryLabelsBySlug = new Map(categories.map((category: string) => [slugify(category).toLocaleLowerCase(), category]));
+const categoryGroups = [...categoryLabelsBySlug.keys()];
+const categoryLabels = [...categoryLabelsBySlug.values()];
+const sortedPosts = sortByDate(posts);
 ---
 
-<Base {...postIndex.data} schema={[blogIndexSchema]}>
-  <PageHeader title={title} description={description} />
+<Base {...blogPage} ui={settingsUi}>
+  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
 
-  {blogGuide.enable && <BlogLibraryGuide {...blogGuide} categories={categoryLabels} />}
+  {blogGuide?.enable && <BlogLibraryGuide
+    title={blogGuide.title}
+    introduction={blogGuide.description}
+    reading_note={blogGuide.researchIntro}
+    categories={categoryLabels}
+    eyebrow={blogGuide.standardsTitle}
+    pillars={blogGuide.pillars}
+    domainsHeading={blogGuide.domainsHeading}
+    domainsIntro={blogGuide.domainsIntro}
+    topics={blogGuide.highlights}
+  />}
 
   <!-- Featured section  -->
   {
@@ -74,8 +78,6 @@ const blogIndexSchema: Blog = {
       <section class="section-sm bg-light">
         <div class="container">
           <h2
-           
-           
             class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
             set:html={markdownify(featured_posts.title)}
           />
@@ -86,17 +88,21 @@ const blogIndexSchema: Blog = {
                 <CardPrimary
                   data={featuredFirst.data}
                   id={`/blog/${featuredFirst.id}`}
+                  locale={settings.locale}
+                  ui={cardUi}
                 />
               </div>
             )}
 
             {featuredCol2.length > 0 && (
               <div class="flex flex-col gap-6">
-                {featuredCol2.map((post) => (
+                {featuredCol2.map((post: any) => (
                   <div>
                     <CardPrimary
                       data={post.data}
                       id={`/blog/${post.id}`}
+                      locale={settings.locale}
+                      ui={cardUi}
                     />
                   </div>
                 ))}
@@ -105,11 +111,13 @@ const blogIndexSchema: Blog = {
 
             {featuredCol3.length > 0 && (
               <div class="w-full flex flex-col gap-6 sm:grid sm:grid-cols-2 lg:flex lg:flex-col md:col-span-2 lg:col-span-1">
-                {featuredCol3.map((post) => (
+                {featuredCol3.map((post: any) => (
                   <div>
                     <CardPrimary
                       data={post.data}
                       id={post.id}
+                      locale={settings.locale}
+                      ui={cardUi}
                     />
                   </div>
                 ))}
@@ -132,32 +140,26 @@ const blogIndexSchema: Blog = {
         actual_posts && actual_posts.enable && (
           <>
             <h2
-             
-             
               class="mb-12 text-center xl:w-[60%] mx-auto text-balance text-white"
               set:html={markdownify(actual_posts.title)}
             />
 
-            <ul
-             
-             
-              class="flex justify-center items-center flex-wrap shuffle-filter"
-            >
+            <ul class="flex justify-center items-center flex-wrap shuffle-filter">
               <li class="selected" data-target="all">
                 <button
                   type="button"
                   class={`btn btn-primary btn-sm border-2 hover:-translate-y-0.75 transition-transform m-3 inline-block capitalize py-3 rounded-full`}
                 >
-                  All Together
+                  {all_filter_label}
                 </button>
               </li>
-              {categoryGroups.map((group) => (
+              {categoryGroups.map((group: string) => (
                 <li data-target={group}>
                   <button
                     type="button"
                     class={`btn btn-outline btn-sm border-2 bg-body hover:-translate-y-0.75 transition-transform m-3 inline-block capitalize py-3 rounded-full`}
                   >
-                    {humanize(group)}
+                    {categoryLabelsBySlug.get(group)}
                   </button>
                 </li>
               ))}
@@ -168,7 +170,7 @@ const blogIndexSchema: Blog = {
                 class="shuffle-sizer w-full md:w-1/2 lg:w-1/3 p-3"
                 aria-hidden="true"
               />
-              {sortedPosts.map((post) => {
+              {sortedPosts.map((post: any) => {
                 const postCategories = Array.isArray(post.data.categories)
                   ? post.data.categories
                   : [];
@@ -190,6 +192,8 @@ const blogIndexSchema: Blog = {
                       data={post.data}
                       id={`/blog/${post.id}`}
                       hasDarkArrow
+                      locale={settings.locale}
+                      ui={cardUi}
                     />
                   </li>
                 );
@@ -200,7 +204,7 @@ const blogIndexSchema: Blog = {
       }
     </div>
   </section>
-  <Faqs prefix="blog-faq" />
+  <Faqs prefix="blog-faq" ui={settingsUi.faqs} />
   <CallToAction />
 </Base>
 

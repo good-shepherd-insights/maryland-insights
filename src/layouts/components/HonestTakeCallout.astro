@@ -12,16 +12,18 @@ type Props = {
   variant?: "callout" | "aside" | "card";
   anchor?: string;
   headingLevel?: "h2" | "h3";
+  ui?: { criticalLabel?: string; supportiveLabel?: string };
 };
 
 const {
   eyebrow,
-  title = "Honest take",
+  title,
   body,
   tone = "neutral",
   variant = "callout",
   anchor,
   headingLevel = "h2",
+  ui,
 } = Astro.props as Props;
 
 const titleSlug = slugify(title);
@@ -82,7 +84,7 @@ const chipClass =
       {
         variant === "card" && tone !== "neutral" ? (
           <p class:list={["mt-5 inline-flex items-center rounded-full px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-text-dark", chipClass]}>
-            {tone === "critical" ? "Critical perspective" : "Supportive perspective"}
+            {tone === "critical" ? ui?.criticalLabel : ui?.supportiveLabel}
           </p>
         ) : null
       }

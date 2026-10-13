@@ -1,40 +1,51 @@
 ---
 import Base from "@/layouts/Base.astro";
-import { getListPage } from "@/lib/contentParser.astro";
+import { getIntegrationsPage, getIntegrationsGuidance, getSiteSettings } from "@/lib/sanity/queries";
 import CallToAction from "@/partials/CallToAction.astro";
 import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import IntegrationsGuidance from "@/partials/IntegrationsGuidance.astro";
 import Integrations from "@/partials/Integrations.astro";
-import type { CollectionPage } from "schema-dts";
-import config from "@/config/config.json";
 
-const pageIndex = await getListPage("integrations", "-index");
-if (pageIndex.data.draft) return Astro.redirect("/404");
+const integrationsPage = await getIntegrationsPage();
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const header = integrationsPage?.header ?? {};
+const title = header.title;
+const description = header.description;
 
-const { title, description } = pageIndex.data;
-
-const collectionSchema: CollectionPage = {
-  "@type": "CollectionPage",
-  "name": title,
-  "description": description,
-  "url": `${config.site.base_url}/integrations`,
-  "publisher": {
-    "@id": `${config.site.base_url}/#organization`
-  }
+const guidance = await getIntegrationsGuidance();
+const guidanceProps = {
+  eyebrow: guidance?.eyebrow,
+  title: guidance?.title,
+  intro: guidance?.description,
+  description: guidance?.archIntro,
+  pillars: guidance?.pillars,
+  standardsHeading: guidance?.standardsTitle,
+  standardsIntro: guidance?.standardsIntro,
+  standards: guidance?.standards,
 };
+
 ---
 
-<Base {...pageIndex.data} schema={[collectionSchema]}>
+<Base
+  {...integrationsPage}
+  title={title}
+  meta_title={header.metaTitle}
+  description={description}
+  ui={settingsUi}
+>
   <PageHeader
-    title={pageIndex.data.title}
-    description={pageIndex.data.description}
+    title={title}
+    description={description}
+    locale={settings.locale}
+    ui={settingsUi.pageHeader}
   />
 
-  <IntegrationsGuidance />
+  <IntegrationsGuidance {...guidanceProps} />
 
-  <Integrations />
+  <Integrations ui={integrationsPage?.ui?.integrations} logoAltTemplate={settingsUi.companyLogo?.altTemplate} />
 
-  <Faqs prefix="integrations-faq" />
+  <Faqs prefix="integrations-faq" ui={settingsUi.faqs} />
   <CallToAction />
 </Base>

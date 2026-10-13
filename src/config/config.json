@@ -10,22 +10,18 @@
     "logo_height": "64",
     "logo_text": "Maryland Insights"
   },
-
   "params": {
     "footer_description": "The new way for Maryland small businesses to build professional websites with AI-powered tools.",
     "copyright": "© {year} Maryland Insights. All Rights Reserved."
   },
-
   "navigation_button": {
     "enable": true,
     "label": "Get Started",
     "link": "/get-started"
   },
-
   "subscription_in_footer": {
     "enable": true
   },
-
   "metadata": {
     "meta_author": "Maryland Insights",
     "meta_image": "/images/og-image.png",
@@ -44,5 +40,25 @@
       "Bytespider": "index,follow"
     },
     "search_url": "/search?q={search_term_string}"
+  },
+  "business": {
+    "street_address": "7375 Executive Pl. Suite 400",
+    "address_locality": "Lanham",
+    "address_region": "MD",
+    "postal_code": "20706",
+    "address_country": "US",
+    "latitude": 38.98,
+    "longitude": -76.85,
+    "telephone": "+1-240-441-5259",
+    "area_served": "Maryland",
+    "breadcrumb_home_label": "Home",
+    "navigation_list_name": "Main Menu"
+  },
+  "consult_url": "https://cal.id/maryland-insights/business-growth-consult?overlayCalendar=true",
+  "privacy_url": "/privacy-policy",
+  "redirects": {
+    "get_started": "https://app.marylandinsights.com",
+    "start_for_free": "https://app.marylandinsights.com",
+    "enterprise_support": "https://cal.id/maryland-insights/partnership"
   }
 }

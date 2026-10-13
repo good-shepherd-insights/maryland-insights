@@ -35,7 +35,15 @@ describe("lead API", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("posts the email array and local-seo service to the audits endpoint", async () => {
+  it("rejects a lead without a business name", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    expect((await POST({ request: request({ email: "owner@example.com", service: "local-seo" }) })).status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("posts the email, service, and business name to the audits endpoint", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 201 }));
     vi.stubGlobal("fetch", fetchMock);
 
@@ -55,6 +63,7 @@ describe("lead API", () => {
     expect(JSON.parse(options.body as string)).toEqual({
       email: ["owner@example.com"],
       service: "local-seo",
+      businessName: "Tehrani Law, LLC",
     });
     expect(options.signal).toBeInstanceOf(AbortSignal);
   });
@@ -62,7 +71,7 @@ describe("lead API", () => {
   it("returns 502 when the CRM rejects or cannot complete the request", async () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(new Response(null, { status: 503 })).mockRejectedValueOnce(new Error("offline"));
     vi.stubGlobal("fetch", fetchMock);
-    const lead = { email: "owner@example.com", service: "local-seo" };
+    const lead = { email: "owner@example.com", service: "local-seo", business: "Tehrani Law, LLC" };
 
     expect((await POST({ request: request(lead) })).status).toBe(502);
     expect((await POST({ request: request(lead) })).status).toBe(502);

@@ -3,32 +3,37 @@ import CardPrimary from "@/components/CardPrimary.astro";
 import ImageMod from "@/components/ImageMod.astro";
 import DynamicIcon from "@/helpers/DynamicIcon";
 import Base from "@/layouts/Base.astro";
-import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import { getServicesPage, getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
-import type { CollectionPage } from "schema-dts";
-import config from "@/config/config.json";
 
-const pageIndex = await getListPage("services", "-index");
-if (pageIndex.data.draft) return Astro.redirect("/404");
-const { title, description, section_title, use_cases } = pageIndex.data;
+const servicesPage = await getServicesPage();
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const header = servicesPage?.header ?? {};
+const grid = servicesPage?.grid ?? {};
+const title = header.title;
+const description = header.description;
+const section_title = grid.title;
+const use_cases = servicesPage?.useCases
+  ? { enable: servicesPage.useCasesEnable ?? true, ...servicesPage.useCases }
+  : undefined;
 
-const services = await getSinglePage("services");
+const services = (grid.services ?? []).map((s: any) => ({
+  id: s.slug,
+  data: {
+    title: s.title,
+    description: s.description,
+    image: s.image,
+    button: s.button,
+  },
+}));
 
-const collectionSchema: CollectionPage = {
-  "@type": "CollectionPage",
-  "name": title,
-  "description": description,
-  "url": `${config.site.base_url}/services`,
-  "publisher": {
-    "@id": `${config.site.base_url}/#organization`
-  }
-};
 ---
 
-<Base {...pageIndex.data} schema={[collectionSchema]}>
-  <PageHeader title={title} description={description} />
+<Base {...servicesPage} ui={settingsUi}>
+  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
 
   <section class="section-sm bg-light">
     <div class="container">
@@ -43,15 +48,17 @@ const collectionSchema: CollectionPage = {
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-10">
         {
-          services?.map((service) => (
+          services?.map((service: any) => (
             <div class="h-auto! flex">
               <div class="w-full">
                 <CardPrimary
                   data={service.data}
                   id={`/services/${service.id}`}
+                  locale={settings.locale}
                   compactImage={true}
                   imageFit="contain"
                   imageSizes="(min-width: 1024px) 18rem, (min-width: 768px) 16rem, 14rem"
+                  ui={settingsUi.cardPrimary}
                 />
               </div>
             </div>
@@ -101,7 +108,7 @@ const collectionSchema: CollectionPage = {
                     set:html={markdownify(item.description)}
                   />
 
-                  {item.button.enable && (
+                  {item.button?.enable && (
                     <a
                       href={item.button.link}
                       class="hero-cta-gold inline-block mt-6 px-8 py-4 font-semibold text-base transition"
@@ -126,5 +133,6 @@ const collectionSchema: CollectionPage = {
       </section>
     )
   }
+
   <CallToAction />
 </Base>
