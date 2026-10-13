@@ -1,15 +1,16 @@
 ---
 import { markdownify } from "@/lib/utils/textConverter";
-import { getListPage } from "@/lib/contentParser.astro";
+import { getFaqsPage } from "@/lib/sanity/queries";
 
 const { data, prefix = "faq", ui } = Astro.props;
 let faqs_list = data?.faqs_list;
 let section_title = data?.section_title;
 
 if (!faqs_list) {
-  const pageIndex = await getListPage("faqs", "-index");
-  faqs_list = pageIndex.data.faqs_list;
-  if (!section_title) section_title = pageIndex.data.section_title;
+  const faqsPage = await getFaqsPage();
+  const items = faqsPage?.list?.items ?? [];
+  faqs_list = items.map((faq: any) => ({ question: faq.question, answer: faq.answer }));
+  if (!section_title) section_title = faqsPage?.list?.sectionTitle;
 }
 ---
 

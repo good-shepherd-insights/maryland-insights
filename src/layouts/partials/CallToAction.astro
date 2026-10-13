@@ -1,9 +1,18 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
-import { getListPage } from "@/lib/contentParser.astro";
+import { getClosingCta } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 
-const sectionData = await getListPage("ctaSection", "call-to-action");
+const _cta = await getClosingCta();
+const sectionData = {
+  data: {
+    enable: !!_cta,
+    title: _cta?.title,
+    description: _cta?.description,
+    button: _cta ? { enable: true, label: _cta.primaryLabel, link: _cta.primaryLink } : undefined,
+    rotating_icons: undefined,
+  },
+};
 const { buttonLabel, buttonLink } = Astro.props as {
   buttonLabel?: string;
   buttonLink?: string;
@@ -70,14 +79,14 @@ const dots = Array.from({ length: 16 }, () => {
       }
 
       {
-        button.enable && (
+        button?.enable && (
           <a
            
            
-            href={buttonLink || button.link}
+            href={buttonLink || button?.link}
             class="hero-cta-gold inline-block font-semibold text-base px-8 py-4 transition"
           >
-            {buttonLabel || button.label}
+            {buttonLabel || button?.label}
           </a>
         )
       }
@@ -88,7 +97,7 @@ const dots = Array.from({ length: 16 }, () => {
   <div class="nested-circles group-hover:scale-90">
     <div class="nested-circle inf-rotate">
       {
-        rotating_icons.slice(0, 4).map((image: any) => (
+        (rotating_icons ?? []).slice(0, 4).map((image: any) => (
           <div class="nested-circle-icon">
             <ImageMod
               width={120}
@@ -103,7 +112,7 @@ const dots = Array.from({ length: 16 }, () => {
     </div>
     <div class="nested-circle inf-rotate">
       {
-        rotating_icons.slice(4, 8).map((image: any) => (
+        (rotating_icons ?? []).slice(4, 8).map((image: any) => (
           <div class="nested-circle-icon">
             <ImageMod
               width={50}

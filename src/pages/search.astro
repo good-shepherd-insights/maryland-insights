@@ -1,6 +1,7 @@
 ---
 import Base from "@/layouts/Base.astro";
 import PageHeader from "@/partials/PageHeader.astro";
+import { getSiteSettings } from "@/lib/sanity/queries";
 import type { SearchResultsPage } from "schema-dts";
 
 type Props = {
@@ -13,6 +14,8 @@ type Props = {
 };
 
 const { title, description, heading, body, homeLinkText, homeLinkUrl } = Astro.props as Props;
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
 
 const searchSchema: SearchResultsPage = {
   "@type": "SearchResultsPage",
@@ -21,8 +24,8 @@ const searchSchema: SearchResultsPage = {
 };
 ---
 
-<Base title={title} description={description} schema={[searchSchema]} noindex={true}>
-  <PageHeader title={title} />
+<Base title={title} description={description} ui={settingsUi} schema={[searchSchema]} noindex={true}>
+  <PageHeader title={title} ui={settingsUi.pageHeader} />
   <section class="section">
     <div class="container text-center">
       <h2 class="h3 mb-6">{heading}</h2>

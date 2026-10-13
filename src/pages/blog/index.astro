@@ -2,62 +2,78 @@
 import config from "@/config/config.json";
 import CardPrimary from "@/components/CardPrimary.astro";
 import Base from "@/layouts/Base.astro";
-import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
-import { getTaxonomy } from "@/lib/taxonomyParser.astro";
+import { getBlogPage, getBlogPosts, getSiteSettings } from "@/lib/sanity/queries";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import { markdownify, slugify, humanize, plainify } from "@/lib/utils/textConverter";
 import BlogLibraryGuide from "@/partials/BlogLibraryGuide.astro";
 import CallToAction from "@/partials/CallToAction.astro";
-import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import type { Blog, BlogPosting, Person } from "schema-dts";
 
-const BLOG_FOLDER = "blog";
+const blogPage = await getBlogPage();
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const cardUi = settingsUi.cardPrimary;
+const header = blogPage?.header ?? {};
+const title = header.title;
+const description = header.description;
 
-const postIndex = await getListPage(BLOG_FOLDER, "-index");
-if (postIndex.data.draft) return Astro.redirect("/404");
+const guide = blogPage?.guide ?? {};
+const blogGuide = { enable: true, ...guide };
 
-const { title, description, blog_library_guide, featured_posts, actual_posts, all_filter_label } = postIndex.data;
-const blogGuide = blog_library_guide;
-const posts = await getSinglePage(BLOG_FOLDER);
-const featuredPosts = posts.filter(
-  (post) => post.data.featured && !post.data.draft
-);
+const featured_posts = { enable: true, title: blogPage?.featuredTitle };
+const actual_posts = { enable: true, title: blogPage?.archiveTitle };
+const all_filter_label = blogPage?.allFilterLabel;
 
-const featuredFive = featuredPosts.slice(0, 5);
+const toCardPost = (p: any) => ({
+  id: p.slug,
+  data: {
+    title: p.title,
+    description: p.description,
+    image: undefined,
+    date: p.datePublished,
+    author: p.author,
+    categories: (p.categories ?? []).map((c: any) => c.title),
+  },
+});
+
+const posts = (await getBlogPosts()).map(toCardPost);
+const featuredFive = ((blogPage?.featuredPosts ?? []) as any[])
+  .map(toCardPost)
+  .slice(0, 5);
 const featuredFirst = featuredFive[0];
 const featuredCol2 = featuredFive.slice(1, 3);
 const featuredCol3 = featuredFive.slice(3, 5);
-const categories = await getTaxonomy(BLOG_FOLDER, "categories");
+
+const categories: string[] = [...new Set((posts as any[]).flatMap((p: any) => p.data.categories as string[]))];
 const categoryGroups = [
-  ...new Set(categories.map((category) => category.toLocaleLowerCase())),
+  ...new Set(categories.map((category: string) => category.toLocaleLowerCase())),
 ];
 const categoryLabels = [
-  ...new Map(categories.map((category) => [category.toLocaleLowerCase(), category])).values(),
+  ...new Map(categories.map((category: string) => [category.toLocaleLowerCase(), category])).values(),
 ];
-const publishedPosts = posts.filter((post) => !post.data.draft);
-const sortedPosts = sortByDate(publishedPosts);
+const sortedPosts = sortByDate(posts);
 
 const blogIndexSchema: Blog = {
   "@type": "Blog",
   "name": plainify(title),
   "description": plainify(description),
   "url": `${config.site.base_url}/blog`,
-  "blogPost": sortedPosts.slice(0, 10).map((post) => ({
+  "blogPost": sortedPosts.slice(0, 10).map((post: any) => ({
     "@type": "BlogPosting",
     "headline": plainify(post.data.title),
     "url": `${config.site.base_url}/blog/${post.id}`,
     "datePublished": post.data.date,
     "author": {
       "@type": "Person",
-      "name": plainify(post.data.author.name),
+      "name": plainify(post.data.author?.name),
     } as Person,
   } as BlogPosting)),
 };
 ---
 
-<Base {...postIndex.data} schema={[blogIndexSchema]}>
-  <PageHeader title={title} description={description} />
+<Base {...blogPage} ui={settingsUi} schema={[blogIndexSchema]}>
+  <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
 
   {blogGuide?.enable && <BlogLibraryGuide {...blogGuide} categories={categoryLabels} />}
 
@@ -67,8 +83,6 @@ const blogIndexSchema: Blog = {
       <section class="section-sm bg-light">
         <div class="container">
           <h2
-           
-           
             class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
             set:html={markdownify(featured_posts.title)}
           />
@@ -79,17 +93,19 @@ const blogIndexSchema: Blog = {
                 <CardPrimary
                   data={featuredFirst.data}
                   id={`/blog/${featuredFirst.id}`}
+                  ui={cardUi}
                 />
               </div>
             )}
 
             {featuredCol2.length > 0 && (
               <div class="flex flex-col gap-6">
-                {featuredCol2.map((post) => (
+                {featuredCol2.map((post: any) => (
                   <div>
                     <CardPrimary
                       data={post.data}
                       id={`/blog/${post.id}`}
+                      ui={cardUi}
                     />
                   </div>
                 ))}
@@ -98,11 +114,12 @@ const blogIndexSchema: Blog = {
 
             {featuredCol3.length > 0 && (
               <div class="w-full flex flex-col gap-6 sm:grid sm:grid-cols-2 lg:flex lg:flex-col md:col-span-2 lg:col-span-1">
-                {featuredCol3.map((post) => (
+                {featuredCol3.map((post: any) => (
                   <div>
                     <CardPrimary
                       data={post.data}
                       id={post.id}
+                      ui={cardUi}
                     />
                   </div>
                 ))}
@@ -125,17 +142,11 @@ const blogIndexSchema: Blog = {
         actual_posts && actual_posts.enable && (
           <>
             <h2
-             
-             
               class="mb-12 text-center xl:w-[60%] mx-auto text-balance text-white"
               set:html={markdownify(actual_posts.title)}
             />
 
-            <ul
-             
-             
-              class="flex justify-center items-center flex-wrap shuffle-filter"
-            >
+            <ul class="flex justify-center items-center flex-wrap shuffle-filter">
               <li class="selected" data-target="all">
                 <button
                   type="button"
@@ -144,7 +155,7 @@ const blogIndexSchema: Blog = {
                   {all_filter_label}
                 </button>
               </li>
-              {categoryGroups.map((group) => (
+              {categoryGroups.map((group: string) => (
                 <li data-target={group}>
                   <button
                     type="button"
@@ -161,7 +172,7 @@ const blogIndexSchema: Blog = {
                 class="shuffle-sizer w-full md:w-1/2 lg:w-1/3 p-3"
                 aria-hidden="true"
               />
-              {sortedPosts.map((post) => {
+              {sortedPosts.map((post: any) => {
                 const postCategories = Array.isArray(post.data.categories)
                   ? post.data.categories
                   : [];
@@ -183,6 +194,7 @@ const blogIndexSchema: Blog = {
                       data={post.data}
                       id={`/blog/${post.id}`}
                       hasDarkArrow
+                      ui={cardUi}
                     />
                   </li>
                 );
@@ -193,68 +205,5 @@ const blogIndexSchema: Blog = {
       }
     </div>
   </section>
-  <Faqs prefix="blog-faq" />
   <CallToAction />
 </Base>
-
-<script>
-  import Shuffle from "shufflejs";
-
-  document.addEventListener("astro:page-load", () => {
-    const element = document.querySelector(
-      ".shuffle-container"
-    ) as HTMLElement | null;
-    if (!element) return;
-
-    let shuffleInstance = new Shuffle(element, {
-      itemSelector: ".shuffle-item",
-      sizer: element.querySelector(".shuffle-sizer") as HTMLElement,
-    });
-
-    const filter = document.querySelector(".shuffle-filter");
-    if (!filter) return;
-
-    const baseBtnClasses =
-      "btn btn-sm hover:-translate-y-0.75 active:scale-95 transition-transform duration-200 inline-block m-2 capitalize py-2.5 rounded-full text-text-dark";
-    const activeBtnClasses = `${baseBtnClasses} btn-primary text-dark`;
-    const inactiveBtnClasses = `${baseBtnClasses} btn-outline bg-body`;
-
-    const filtterLists = Array.from(filter.children) as HTMLElement[];
-
-    const setButtonVariant = (listItem: HTMLElement, isSelected: boolean) => {
-      const button = listItem.querySelector(
-        "button"
-      ) as HTMLButtonElement | null;
-      if (!button) return;
-      button.className = isSelected ? activeBtnClasses : inactiveBtnClasses;
-    };
-
-    // Apply correct styles on load ("All Together" is selected by default)
-    filtterLists.forEach((listItem) => {
-      setButtonVariant(listItem, listItem.classList.contains("selected"));
-    });
-
-    filtterLists.forEach((listItem) => {
-      const button = listItem.querySelector(
-        "button"
-      ) as HTMLButtonElement | null;
-      button?.addEventListener("click", function () {
-        filtterLists.forEach((li) => {
-          li.classList.remove("selected");
-          setButtonVariant(li, false);
-        });
-
-        const activeLi = (this as HTMLElement).closest(
-          "li"
-        ) as HTMLElement | null;
-        if (activeLi) {
-          activeLi.classList.add("selected");
-          setButtonVariant(activeLi, true);
-        }
-
-        const keyword = activeLi?.getAttribute("data-target") || "all";
-        shuffleInstance.filter(keyword);
-      });
-    });
-  });
-</script>

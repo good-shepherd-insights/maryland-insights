@@ -49,6 +49,7 @@ export interface Props {
   article_tags?: string[];
   article_section?: string;
   googlebot?: string;
+  ui?: any;
 }
 
 // Derive Twitter handle from social.json ("x" entry)
@@ -211,7 +212,7 @@ const graphItems: unknown[] = [
       href="#main-content"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-dark focus:rounded-lg focus:shadow-lg focus:outline-none"
     >
-      {ui?.skipLinkLabel}
+      {ui?.base?.skipLinkLabel}
     </a>
     <TwSizeIndicator />
     <Header ui={ui?.header} />
@@ -221,7 +222,7 @@ const graphItems: unknown[] = [
     <button
       type="button"
       id="back-to-top"
-      aria-label={ui?.backToTopLabel}
+      aria-label={ui?.base?.backToTopLabel}
       aria-hidden="true"
       tabindex="-1"
       class="fixed bottom-6 left-6 z-40 p-3 rounded-full bg-primary text-dark shadow-lg transition-all duration-300 opacity-0 pointer-events-none hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-dark focus-visible:ring-offset-2"

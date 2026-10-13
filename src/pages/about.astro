@@ -1,23 +1,34 @@
 ---
 export const prerender = true;
 import config from "@/config/config.json";
-import ImageMod from "@/components/ImageMod.astro";
 import Base from "@/layouts/Base.astro";
-import { getListPage } from "@/lib/contentParser.astro";
+import { getAboutPage, getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify, plainify } from "@/lib/utils/textConverter";
 import AboutNarrative from "@/partials/AboutNarrative.astro";
 import CallToAction from "@/partials/CallToAction.astro";
-import ChooseSwiper from "@/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
-import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
 import type { AboutPage, Person } from "schema-dts";
 
-const pageIndex = await getListPage("about", "-index");
-const { title, description, company_narrative, facts_section, teams_section, story_section } =
-  pageIndex.data;
+const aboutPage = await getAboutPage();
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const header = aboutPage?.header ?? {};
+const title = header.title;
+const description = header.description;
+
+const narrative = aboutPage?.narrative ?? {};
+const narrativeUi = aboutPage?.ui?.aboutNarrative ?? {};
+const company_narrative = {
+  title: narrative.title,
+  sections: narrative.sections ?? [],
+  ui: narrativeUi,
+};
+
+const facts = aboutPage?.facts ?? {};
+const facts_section = { enable: true, facts: facts.facts ?? [] };
 
 const aboutSchema: AboutPage = {
   "@type": "AboutPage",
@@ -25,67 +36,18 @@ const aboutSchema: AboutPage = {
     "@id": `${config.site.base_url}/#organization`,
   },
 };
-
-const teamSchema: Person[] = (teams_section?.members || []).map((member: any) => ({
-  "@type": "Person",
-  "name": plainify(member.name),
-  "jobTitle": plainify(member.position),
-  "image": member.image ? `${config.site.base_url}${member.image}` : undefined,
-  "affiliation": {
-    "@id": `${config.site.base_url}/#organization`,
-  },
-}));
-
-if (pageIndex.data.draft) return Astro.redirect("/404");
 ---
 
-<Base {...pageIndex.data} schema={[aboutSchema, ...teamSchema]}>
-  <PageHeader title={title} description={description} />
+<Base {...aboutPage} ui={settingsUi} schema={[aboutSchema]}>
+  <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
 
-  {company_narrative?.enable && <AboutNarrative {...company_narrative} />}
-
-  {story_section?.enable && <ChooseSwiper data={story_section} />}
+  <AboutNarrative {...company_narrative} />
 
   <div class="border-t border-border">
     <TrustedBrands />
   </div>
   <Facts data={facts_section} />
 
-  {
-    teams_section?.enable && (
-      <section class="section section-divider" style="--section-divider-color: var(--color-body)">
-        <div class="container xl:w-[80%] mx-auto">
-          <h2
-          
-          
-            class="mb-10 text-center xl:w-[60%] mx-auto text-balance"
-            set:html={markdownify(teams_section.title)}
-          />
-
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {teams_section.members.map((member: any) => (
-              <div
-                class="text-center max-w-sm p-6 rounded-2xl bg-light/50"
-               
-              >
-                <ImageMod
-                  src={member.image}
-                  alt={member.name}
-                  width={335}
-                  height={335}
-                  class="mx-auto rounded-xl object-cover"
-                />
-                <h3 class="mt-6 h6">{member.name}</h3>
-                <p class="mt-2 text-sm text-muted">{member.position}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
   <Testimonial />
-  <Faqs prefix="about-faq" />
   <CallToAction />
 </Base>

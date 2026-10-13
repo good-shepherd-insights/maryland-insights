@@ -1,17 +1,34 @@
 ---
 import CardPrimary from "@/components/CardPrimary.astro";
-import { getListPage, getSinglePage } from "@/lib/contentParser.astro";
+import { getHomePage } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 import { Swiper, SwiperSlide, SwiperWrapper } from "astro-swiper";
 import type { SwiperOptions } from "swiper/types";
 
-const pageIndex = await getListPage("homepage", "-index");
+const _home = await getHomePage();
+const pageIndex = {
+  data: {
+    featured_features_section: {
+      enable: true,
+      title: _home?.features?.title,
+      ui: _home?.features?.ui,
+    },
+  },
+};
 if (!pageIndex.data.featured_features_section.enable) return null;
 const { title, ui } = pageIndex.data.featured_features_section as typeof pageIndex.data.featured_features_section & {
   ui?: { prevLabel?: string; nextLabel?: string; pauseLabel?: string };
 };
 
-const features = await getSinglePage("features");
+const features = ((_home?.features?.features ?? []) as any[]).map((f: any) => ({
+  data: {
+    title: f.title,
+    description: f.subtitle,
+    image: undefined,
+    button: f.button,
+    icon_srcs: undefined,
+  },
+}));
 
 const swiperOptions: SwiperOptions = {
   spaceBetween: 32,

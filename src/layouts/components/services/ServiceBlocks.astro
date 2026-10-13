@@ -21,7 +21,7 @@ import ToolCallout from "@/components/ToolCallout.astro";
 import TrustSignals from "@/components/TrustSignals.astro";
 
 type Block = {
-  type: string;
+  _type: string;
   [key: string]: any;
 };
 
@@ -34,7 +34,7 @@ const { blocks = [] } = Astro.props as Props;
 
 {
   blocks.map((block) => {
-    switch (block.type) {
+    switch (block._type) {
       case "leadCapture":
         return (
           <LeadCaptureForm
@@ -51,6 +51,7 @@ const { blocks = [] } = Astro.props as Props;
             anchor={block.anchor}
             headingLevel={block.headingLevel}
             lookup={block.lookup}
+            ui={block.ui}
           />
         );
       case "authorByline":
@@ -130,6 +131,7 @@ const { blocks = [] } = Astro.props as Props;
             variant={block.variant}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       case "resourcesDirectory":
@@ -170,6 +172,7 @@ const { blocks = [] } = Astro.props as Props;
             sourceLabel={block.sourceLabel}
             sourceUrl={block.sourceUrl}
             changes={block.changes}
+            ui={block.ui}
           />
         );
       case "localNap":
@@ -192,6 +195,7 @@ const { blocks = [] } = Astro.props as Props;
             note={block.note}
             headingLevel={block.headingLevel}
             anchor={block.anchor}
+            ui={block.ui}
           />
         );
       case "caseStudy":
@@ -208,6 +212,7 @@ const { blocks = [] } = Astro.props as Props;
             outcomes={block.outcomes}
             permissionLine={block.permissionLine}
             variant={block.variant}
+            ui={block.ui}
           />
         );
       case "comparisonTable":
@@ -224,10 +229,13 @@ const { blocks = [] } = Astro.props as Props;
             firstColumnLabel={block.firstColumnLabel}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       case "serviceArea":
-        return <ServiceArea title={block.title} intro={block.intro} counties={block.counties} />;
+        return <ServiceArea title={block.title} intro={block.intro} counties={block.counties}
+            ui={block.ui}
+          />;
       case "trust":
         return (
           <ServiceTrust
@@ -238,6 +246,7 @@ const { blocks = [] } = Astro.props as Props;
             migrationPolicy={block.migrationPolicy}
             included={block.included}
             extraCost={block.extraCost}
+            ui={block.ui}
           />
         );
       case "pricingTiers":
@@ -251,6 +260,7 @@ const { blocks = [] } = Astro.props as Props;
             variant={block.variant}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       case "recognitionBadges":
@@ -278,6 +288,7 @@ const { blocks = [] } = Astro.props as Props;
             variant={block.variant}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       default:
