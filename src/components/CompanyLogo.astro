@@ -49,7 +49,7 @@ const src = domain
 <figure class="inline-flex flex-col items-center gap-1 m-0">
   <img
     src={src}
-    alt={altTemplate ? altTemplate.replace("{name}", name) : undefined}
+    alt={altTemplate ? altTemplate.replace("{name}", name) : `${name} logo`}
     width={size}
     height={size}
     loading="lazy"
