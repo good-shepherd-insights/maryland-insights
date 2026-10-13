@@ -66,7 +66,7 @@ const collectionSchema: CollectionPage = {
       {tools_list && tools_list.length > 0 ? (
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {tools_list.map((tool: any) => (
-            <IntegrationCard integration={tool} />
+            <IntegrationCard integration={tool} ui={toolsPage?.ui?.integrationCard} />
           ))}
         </div>
       ) : (
