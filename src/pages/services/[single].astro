@@ -26,6 +26,9 @@ const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const { title, description, image, faqs_list, blocks = [], date_modified, faq_title_prefix, faqsUi } = service;
 const hasLeadHero = blocks.some((block: { _type: string }) => block._type === "leadCapture");
+const isLocalSeo = service.slug === "local-seo";
+const mainBlocks = isLocalSeo ? blocks.filter((block: { _type: string }) => block._type !== "relatedArticles") : blocks;
+const trailingArticleBlocks = isLocalSeo ? blocks.filter((block: { _type: string }) => block._type === "relatedArticles") : [];
 const ctaProps = {
   title: service.cta_title,
   description: service.cta_description,
@@ -39,11 +42,13 @@ const serviceSchema: SoftwareApplication = {
   "description": plainify(description),
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
-  "offers": {
-    "@type": "Offer" as const,
-    "price": 0,
-    "priceCurrency": "USD" as const,
-  },
+  ...(!isLocalSeo ? {
+    "offers": {
+      "@type": "Offer" as const,
+      "price": 0,
+      "priceCurrency": "USD" as const,
+    },
+  } : {}),
   "image": image ? `${settings.seoUrl ?? ""}${image}` : undefined,
   "publisher": {
     "@id": `${settings.seoUrl ?? ""}/#organization`,
@@ -75,9 +80,11 @@ if (faqs_list && faqs_list.length > 0) {
 <Base {...service} ui={settingsUi} schema={pageSchemas}>
   {!hasLeadHero && <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />}
 
-  <ServiceBlocks blocks={blocks} />
+  <ServiceBlocks blocks={mainBlocks} />
+
+  {isLocalSeo && <ServiceCTA {...ctaProps} />}
 
   {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: (faq_title_prefix ?? "").replace("{title}", title ?? "") }} prefix="service-faq" ui={faqsUi} />}
 
-  <ServiceCTA {...ctaProps} />
+  {isLocalSeo ? <ServiceBlocks blocks={trailingArticleBlocks} /> : <ServiceCTA {...ctaProps} />}
 </Base>
