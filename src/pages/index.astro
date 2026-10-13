@@ -53,7 +53,7 @@ const planNames = (comparison.plans ?? []).map((p: any) => ({
 const categories = (comparison.categories ?? []).map((c: any) => ({
   category: c.category,
   rows: (c.rows ?? []).map((r: any) => ({
-    name: r.name,
+    name: r.feature ?? r.name,
     description: r.description,
     values: (r.cells ?? []).map((cell: any) =>
       cell.kind === "check" ? "active" : cell.kind === "cross" ? "cross" : (cell.text ?? "")
