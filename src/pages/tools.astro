@@ -7,7 +7,6 @@ import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import IntegrationCard from "../components/IntegrationCard.astro";
 import type { CollectionPage } from "schema-dts";
-import config from "@/config/config.json";
 
 const toolsPage = await getToolsPage();
 const settings = await getSiteSettings();
@@ -32,9 +31,9 @@ const collectionSchema: CollectionPage = {
   "@type": "CollectionPage",
   "name": title,
   "description": description,
-  "url": `${config.site.base_url}/tools`,
+  "url": `${settings.seoUrl ?? ""}/tools`,
   "publisher": {
-    "@id": `${config.site.base_url}/#organization`
+    "@id": `${settings.seoUrl ?? ""}/#organization`
   }
 };
 ---

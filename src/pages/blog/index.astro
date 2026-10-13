@@ -1,5 +1,4 @@
 ---
-import config from "@/config/config.json";
 import CardPrimary from "@/components/CardPrimary.astro";
 import Base from "@/layouts/Base.astro";
 import { getBlogPage, getBlogPosts, getSiteSettings } from "@/lib/sanity/queries";
@@ -64,11 +63,11 @@ const blogIndexSchema: Blog = {
   "@type": "Blog",
   "name": plainify(title),
   "description": plainify(description),
-  "url": `${config.site.base_url}/blog`,
+  "url": `${settings.seoUrl ?? ""}/blog`,
   "blogPost": sortedPosts.slice(0, 10).map((post: any) => ({
     "@type": "BlogPosting",
     "headline": plainify(post.data.title),
-    "url": `${config.site.base_url}/blog/${post.id}`,
+    "url": `${settings.seoUrl ?? ""}/blog/${post.id}`,
     "datePublished": post.data.date,
     "author": {
       "@type": "Person",

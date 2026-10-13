@@ -1,7 +1,6 @@
 ---
 export const prerender = true;
 
-import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getLegalPageSlugs, getLegalPage, getSiteSettings } from "@/lib/sanity/queries";
 import { renderPortableText } from "@/lib/sanity/portableText";
@@ -33,7 +32,7 @@ const pageSchema: Article = {
   "headline": plainify(title),
   "description": plainify(description),
   "publisher": {
-    "@id": `${config.site.base_url}/#organization`,
+    "@id": `${settings.seoUrl ?? ""}/#organization`,
   },
 };
 ---

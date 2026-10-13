@@ -1,5 +1,4 @@
 ---
-import config from "@/config/config.json";
 import ImageMod from "@/components/ImageMod.astro";
 import DynamicIcon from "@/helpers/DynamicIcon";
 import Base from "@/layouts/Base.astro";
@@ -52,7 +51,7 @@ const toContactHref = (rawValue: string) => {
 const contactSchema: ContactPage = {
   "@type": "ContactPage",
   "mainEntity": {
-    "@id": `${config.site.base_url}/#organization`,
+    "@id": `${settings.seoUrl ?? ""}/#organization`,
   },
 };
 

@@ -1,5 +1,5 @@
 ---
-import config from "@/config/config.json";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
 type Plan = { label: string; logo?: string; isUs?: boolean };
 type Row = { name: string; description?: string; values: string[] };
@@ -21,6 +21,8 @@ type Props = {
 };
 
 const { categories, planNames, ui } = Astro.props;
+const settings = (await getSiteSettings()) ?? {};
+const siteLogo: string = settings.logo ?? "";
 const VISIBLE_ROWS = 4;
 ---
 
@@ -30,7 +32,7 @@ const VISIBLE_ROWS = 4;
       <div class="rounded-xl border border-border overflow-hidden">
         <div class="bg-light border-b border-border p-6 flex items-center justify-center">
           {plan.isUs ? (
-            <img src={config.site.logo} alt={plan.label} class="h-7 w-auto" />
+            <img src={siteLogo} alt={plan.label} class="h-7 w-auto" />
           ) : plan.logo ? (
             <img
               src={plan.logo}

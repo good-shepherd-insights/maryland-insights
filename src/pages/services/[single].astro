@@ -1,7 +1,6 @@
 ---
 export const prerender = true;
 
-import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getServicePageSlugs, getServicePage, getSiteSettings } from "@/lib/sanity/queries";
 import { adaptServicePage } from "@/lib/sanity/adapters";
@@ -45,9 +44,9 @@ const serviceSchema: SoftwareApplication = {
     "price": 0,
     "priceCurrency": "USD" as const,
   },
-  "image": image ? `${config.site.base_url}${image}` : undefined,
+  "image": image ? `${settings.seoUrl ?? ""}${image}` : undefined,
   "publisher": {
-    "@id": `${config.site.base_url}/#organization`,
+    "@id": `${settings.seoUrl ?? ""}/#organization`,
   },
   ...(date_modified ? { "dateModified": new Date(date_modified).toISOString() } : {}),
 };

@@ -3,7 +3,6 @@ export const prerender = true;
 
 import CardPrimary from "@/components/CardPrimary.astro";
 import Share from "@/components/Share.astro";
-import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getBlogPosts, getBlogPost, getSiteSettings } from "@/lib/sanity/queries";
 import { renderPortableText, extractHeadings } from "@/lib/sanity/portableText";
@@ -65,12 +64,12 @@ const dateModifiedRaw = doc?.dateModified || doc?.datePublished;
 
 const blogSchema = {
   "@type": "BlogPosting",
-  "@id": `${config.site.base_url}/blog/${slug}#blogposting`,
+  "@id": `${settings.seoUrl ?? ""}/blog/${slug}#blogposting`,
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": `${config.site.base_url}/blog/${slug}`,
+    "@id": `${settings.seoUrl ?? ""}/blog/${slug}`,
     "isPartOf": {
-      "@id": `${config.site.base_url}/#website`
+      "@id": `${settings.seoUrl ?? ""}/#website`
     }
   },
   "headline": plainify(title),
@@ -81,11 +80,11 @@ const blogSchema = {
     "author": {
       "@type": "Person",
       "name": plainify(doc.author.name),
-      "url": `${config.site.base_url}/about`,
+      "url": `${settings.seoUrl ?? ""}/about`,
     }
   } : {}),
   "publisher": {
-    "@id": `${config.site.base_url}/#organization`,
+    "@id": `${settings.seoUrl ?? ""}/#organization`,
   },
 };
 
@@ -197,9 +196,9 @@ if (doc?.faqs && doc.faqs.length > 0) {
         <div
           class="flex flex-wrap items-center justify-center gap-4 mt-12 py-10 border-t border-border/50"
         >
-          <a href={config.navigation_button.link} class="btn btn-primary px-10">{ui.ctaButtonLabel}</a>
+          <a href={settings.navigationButton?.link ?? "/get-started"} class="btn btn-primary px-10">{ui.ctaButtonLabel}</a>
           <a
-            href={config.consult_url}
+            href={settings.consultUrl ?? ""}
             class="btn btn-outline px-10"
           >
             {ui.consultButtonLabel}
@@ -263,8 +262,8 @@ if (doc?.faqs && doc.faqs.length > 0) {
 
         <!-- Subscribe to newsletter  -->
         {
-          config.subscription_in_footer &&
-            config.subscription_in_footer.enable && (
+          
+            settings.newsletter && (
               <div class="bg-body rounded-2xl p-4 mt-5 hidden lg:block">
                 <small class="font-semibold text-text-dark font-primary text-sm">
                   {ui.newsletterHeading}
@@ -322,7 +321,7 @@ if (doc?.faqs && doc.faqs.length > 0) {
                     />
                     <span>{ui.consentLabel}</span>
                     <a
-                      href={config.privacy_url}
+                      href={"/privacy-policy"}
                       class="text-text-dark font-semibold hover:text-primary transition duration-300"
                     >
                       {ui.privacyLinkText}

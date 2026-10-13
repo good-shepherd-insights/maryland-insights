@@ -7,7 +7,6 @@ import PageHeader from "@/partials/PageHeader.astro";
 import IntegrationsGuidance from "@/partials/IntegrationsGuidance.astro";
 import Integrations from "@/partials/Integrations.astro";
 import type { CollectionPage } from "schema-dts";
-import config from "@/config/config.json";
 
 const integrationsPage = await getIntegrationsPage();
 const settings = await getSiteSettings();
@@ -32,9 +31,9 @@ const collectionSchema: CollectionPage = {
   "@type": "CollectionPage",
   "name": title,
   "description": description,
-  "url": `${config.site.base_url}/integrations`,
+  "url": `${settings.seoUrl ?? ""}/integrations`,
   "publisher": {
-    "@id": `${config.site.base_url}/#organization`
+    "@id": `${settings.seoUrl ?? ""}/#organization`
   }
 };
 ---

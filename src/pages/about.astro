@@ -1,6 +1,5 @@
 ---
 export const prerender = true;
-import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getAboutPage, getSiteSettings } from "@/lib/sanity/queries";
 import AboutNarrative from "@/partials/AboutNarrative.astro";
@@ -47,7 +46,7 @@ const story_section = {
 const aboutSchema: AboutPage = {
   "@type": "AboutPage",
   "mainEntity": {
-    "@id": `${config.site.base_url}/#organization`,
+    "@id": `${settings.seoUrl ?? ""}/#organization`,
   },
 };
 ---
