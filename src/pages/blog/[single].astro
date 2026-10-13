@@ -29,7 +29,7 @@ const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const ui = doc?.ui?.blogSingle ?? {};
 const shareUi = doc?.ui?.share;
-const authorUi = doc?.ui?.authorByline;
+const authorUi = { ...doc?.ui?.authorByline, badgeUpdatedLabel: doc?.ui?.authorByline?.updatedLabel };
 
 const title = doc?.title;
 const bodyHtml = renderPortableText(doc?.body);

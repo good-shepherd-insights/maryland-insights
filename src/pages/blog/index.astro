@@ -53,10 +53,10 @@ const featuredCol3 = featuredFive.slice(3, 5);
 
 const categories: string[] = [...new Set((posts as any[]).flatMap((p: any) => p.data.categories as string[]))];
 const categoryGroups = [
-  ...new Set(categories.map((category: string) => category.toLocaleLowerCase())),
+  ...new Set(categories.map((category: string) => slugify(category).toLocaleLowerCase())),
 ];
 const categoryLabels = [
-  ...new Map(categories.map((category: string) => [category.toLocaleLowerCase(), category])).values(),
+  ...new Map(categories.map((category: string) => [slugify(category).toLocaleLowerCase(), category])).values(),
 ];
 const sortedPosts = sortByDate(posts);
 
