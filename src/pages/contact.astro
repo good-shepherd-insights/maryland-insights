@@ -14,9 +14,9 @@ const _contact = await getContactPage();
 const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const title = _contact?.header?.title;
+const metaTitle = _contact?.metaTitle;
 const description = _contact?.header?.description;
 const section_title = _contact?.sectionTitle;
-const section_description = _contact?.form?.description;
 const gallery_section = _contact?.offices;
 const contact_form = _contact?.form
   ? {
@@ -58,7 +58,7 @@ const contactSchema: ContactPage = {
 
 ---
 
-<Base title={title} description={description} ui={settingsUi} schema={[contactSchema]}>
+<Base title={title} metaTitle={metaTitle} description={description} ui={settingsUi} schema={[contactSchema]}>
   <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
   <ContactGuidance />
   <section class="section-sm bg-light">
@@ -66,16 +66,9 @@ const contactSchema: ContactPage = {
       <h2
        
        
-        class="mb-6 text-center xl:w-[60%] mx-auto text-balance"
+        class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
         set:html={markdownify(section_title)}
       />
-
-      {section_description && (
-        <p
-          class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
-          set:html={markdownify(section_description)}
-        />
-      )}
 
       <div
         class="flex flex-col gap-7.5 justify-center lg:flex-row lg:items-stretch"
