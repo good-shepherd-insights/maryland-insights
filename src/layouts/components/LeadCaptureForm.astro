@@ -204,7 +204,7 @@ const auditPlatformIcons = platforms;---
             id={anchor ? `${anchor}-form` : undefined}
             method="post"
             action={formAction}
-            data-lookup-endpoint={lookup?.endpoint}
+            data-lookup-endpoint={lookup ? (lookup.endpoint ?? "/api/business-lookup") : undefined}
             data-lookup-field={lookupBusinessName}
             data-lookup-min={lookup?.minChars}
             data-lookup-prefill={lookup ? JSON.stringify(lookup.prefill ?? []) : undefined}
@@ -686,7 +686,7 @@ const auditPlatformIcons = platforms;---
       .filter((field): field is HTMLInputElement | HTMLTextAreaElement => field !== null);
     const baseCtaLabel = submitBtn?.textContent?.trim() ?? "";
     const ctaTemplate = form.dataset.lookupCta || "";
-    const endpoint = form.dataset.lookupEndpoint;
+    const endpoint = form.dataset.lookupEndpoint || "/api/business-lookup";
     const minChars = Math.max(2, Number(form.dataset.lookupMin) || 3);
     const notListed = form.querySelector<HTMLElement>(".lookup-not-listed");
     const wrongListing = form.querySelector<HTMLButtonElement>(".lookup-wrong-listing");
