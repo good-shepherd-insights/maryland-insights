@@ -74,6 +74,14 @@ const blogSchema = {
   },
   "headline": plainify(title),
   "description": plainify(doc?.description),
+  ...(doc?.image ? {
+    "image": {
+      "@type": "ImageObject",
+      "url": `${settings.seoUrl ?? ""}${doc.image}`,
+      ...(settings.metaImageWidth ? { "width": settings.metaImageWidth } : {}),
+      ...(settings.metaImageHeight ? { "height": settings.metaImageHeight } : {}),
+    }
+  } : {}),
   ...(doc?.datePublished ? { "datePublished": new Date(doc.datePublished).toISOString() } : {}),
   ...(dateModifiedRaw ? { "dateModified": new Date(dateModifiedRaw).toISOString() } : {}),
   ...(doc?.author?.name ? {
