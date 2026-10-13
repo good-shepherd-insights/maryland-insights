@@ -20,11 +20,14 @@ const description = header.description;
 const eyebrow = grid.eyebrow ?? header.eyebrow;
 const section_title = grid.title;
 // `integration` schema: title, description, logo, logoName, link, kind, featured.
-// Cards render the mark from logoName (Logo.dev); there is no `image` field.
+// Cards prefer the logoName (Logo.dev) mark; a CMS-uploaded Sanity logo is used when
+// the doc has no logoName, which is the only case that changes what renders.
 const tools_list = (grid.tools ?? []).map((t: any) => ({
   title: t.title,
   description: t.description,
   logo_name: t.logoName,
+  logo_url: t.logoUrl,
+  logo_alt: t.logoAlt,
   link: t.link,
 }));
 

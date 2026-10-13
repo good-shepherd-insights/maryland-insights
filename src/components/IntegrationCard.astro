@@ -8,6 +8,8 @@ interface Props {
     title: string;
     description: string;
     logo_name?: string;
+    logo_url?: string;
+    logo_alt?: string;
     image?: string;
     link?: string;
   };
@@ -28,6 +30,15 @@ const { integration, ui, logoAltTemplate } = Astro.props;
         name={integration.logo_name}
         altTemplate={logoAltTemplate}
         size={36}
+        class="h-8 w-8 object-contain sm:h-9 sm:w-9"
+      />
+    ) : integration.logo_url ? (
+      <img
+        src={integration.logo_url}
+        alt={integration.logo_alt ?? integration.title}
+        width={36}
+        height={36}
+        loading="lazy"
         class="h-8 w-8 object-contain sm:h-9 sm:w-9"
       />
     ) : integration.image ? (

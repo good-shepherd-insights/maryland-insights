@@ -69,7 +69,11 @@ export async function getToolsPage() {
   return sanityClient.fetch(`*[_type == "toolsPage"][0]{
     ...,
     header->,
-    grid->{..., "tools": tools[]->},
+    grid->{..., "tools": tools[]->{
+      ...,
+      "logoUrl": logo.asset->url,
+      "logoAlt": logo.alt
+    }},
     cta->
   }`);
 }
