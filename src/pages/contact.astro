@@ -60,7 +60,7 @@ const contactSchema: ContactPage = {
 
 <Base title={title} metaTitle={metaTitle} description={description} ui={settingsUi} schema={[contactSchema]}>
   <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
-  <ContactGuidance />
+  <ContactGuidance {..._contact?.guidance} />
   <section class="section-sm bg-light">
     <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
       <h2

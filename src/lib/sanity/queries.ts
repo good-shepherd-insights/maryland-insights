@@ -37,6 +37,7 @@ export async function getContactPage() {
     info->,
     offices->,
     form->,
+    guidance->,
     cta->
   }`);
 }
