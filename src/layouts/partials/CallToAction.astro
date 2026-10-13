@@ -14,7 +14,7 @@ const sectionData = {
     enable: !!(override ?? _cta),
     title: override?.title ?? _cta?.title,
     description: override?.description ?? _cta?.description,
-    button: (override ?? _cta) ? { enable: true, label: override?.button?.label ?? _cta?.primaryLabel, link: override?.button?.link ?? _cta?.primaryLink } : undefined,
+    button: (override ?? _cta) ? { label: override?.button?.label ?? _cta?.primaryLabel, link: override?.button?.link ?? _cta?.primaryLink } : undefined,
     rotating_icons: undefined,
   },
 };
