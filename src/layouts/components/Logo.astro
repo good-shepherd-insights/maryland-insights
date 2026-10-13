@@ -1,6 +1,6 @@
 ---
-import config from "@/config/config.json";
 import ImageMod from "./ImageMod.astro";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
 const {
   src,
@@ -18,6 +18,7 @@ const {
   homeUrl?: string;
 } = Astro.props;
 
+const settings = (await getSiteSettings()) ?? {};
 const {
   logo,
   logo_width,
@@ -30,10 +31,16 @@ const {
   logo_height: any;
   logo_text: string;
   title: string;
-} = config.site;
+} = {
+  logo: settings.logo,
+  logo_width: settings.logoWidth,
+  logo_height: settings.logoHeight,
+  logo_text: settings.logoText,
+  title: settings.siteTitle,
+};
 ---
 
-<a href={homeUrl} class={`navbar-brand inline-block flex items-center gap-2`}>
+<a href={homeUrl ?? "/"} class={`navbar-brand inline-block flex items-center gap-2`}>
   {
     src || logo ? (
       <>

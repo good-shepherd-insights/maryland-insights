@@ -2,11 +2,11 @@
 import Base from "@/layouts/Base.astro";
 import { getIntegrationsPage, getIntegrationsGuidance, getSiteSettings } from "@/lib/sanity/queries";
 import CallToAction from "@/partials/CallToAction.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import IntegrationsGuidance from "@/partials/IntegrationsGuidance.astro";
 import Integrations from "@/partials/Integrations.astro";
 import type { CollectionPage } from "schema-dts";
-import config from "@/config/config.json";
 
 const integrationsPage = await getIntegrationsPage();
 const settings = await getSiteSettings();
@@ -31,14 +31,21 @@ const collectionSchema: CollectionPage = {
   "@type": "CollectionPage",
   "name": title,
   "description": description,
-  "url": `${config.site.base_url}/integrations`,
+  "url": `${settings.seoUrl ?? ""}/integrations`,
   "publisher": {
-    "@id": `${config.site.base_url}/#organization`
+    "@id": `${settings.seoUrl ?? ""}/#organization`
   }
 };
 ---
 
-<Base {...integrationsPage} ui={settingsUi} schema={[collectionSchema]}>
+<Base
+  {...integrationsPage}
+  title={title}
+  meta_title={header.metaTitle}
+  description={description}
+  ui={settingsUi}
+  schema={[collectionSchema]}
+>
   <PageHeader
     title={title}
     description={description}
@@ -49,5 +56,6 @@ const collectionSchema: CollectionPage = {
 
   <Integrations ui={integrationsPage?.ui?.integrations} />
 
+  <Faqs prefix="integrations-faq" ui={settingsUi.faqs} />
   <CallToAction />
 </Base>

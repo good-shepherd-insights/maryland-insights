@@ -80,6 +80,7 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
               datePublished={blogData.date ? dateString(blogData.date) : undefined}
               variant="badge"
               label={ui?.badgeUpdatedLabel}
+              ui={ui}
             />
           )}
         </div>

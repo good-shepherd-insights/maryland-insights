@@ -1,7 +1,6 @@
 ---
 export const prerender = true;
 
-import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getServicePageSlugs, getServicePage, getSiteSettings } from "@/lib/sanity/queries";
 import { adaptServicePage } from "@/lib/sanity/adapters";
@@ -27,6 +26,9 @@ const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const { title, description, image, faqs_list, blocks = [], date_modified, faq_title_prefix, faqsUi } = service;
 const hasLeadHero = blocks.some((block: { _type: string }) => block._type === "leadCapture");
+const isLocalSeo = (service.slug?.current ?? service.slug) === "local-seo";
+const mainBlocks = isLocalSeo ? blocks.filter((block: { _type: string }) => block._type !== "relatedArticles") : blocks;
+const trailingArticleBlocks = isLocalSeo ? blocks.filter((block: { _type: string }) => block._type === "relatedArticles") : [];
 const ctaProps = {
   title: service.cta_title,
   description: service.cta_description,
@@ -40,14 +42,16 @@ const serviceSchema: SoftwareApplication = {
   "description": plainify(description),
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web",
-  "offers": {
-    "@type": "Offer" as const,
-    "price": 0,
-    "priceCurrency": "USD" as const,
-  },
-  "image": image ? `${config.site.base_url}${image}` : undefined,
+  ...(!isLocalSeo ? {
+    "offers": {
+      "@type": "Offer" as const,
+      "price": 0,
+      "priceCurrency": "USD" as const,
+    },
+  } : {}),
+  "image": image ? `${settings.seoUrl ?? ""}${image}` : undefined,
   "publisher": {
-    "@id": `${config.site.base_url}/#organization`,
+    "@id": `${settings.seoUrl ?? ""}/#organization`,
   },
   ...(date_modified ? { "dateModified": new Date(date_modified).toISOString() } : {}),
 };
@@ -76,9 +80,11 @@ if (faqs_list && faqs_list.length > 0) {
 <Base {...service} ui={settingsUi} schema={pageSchemas}>
   {!hasLeadHero && <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />}
 
-  <ServiceBlocks blocks={blocks} />
+  <ServiceBlocks blocks={mainBlocks} />
 
-  {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `${faq_title_prefix ?? ""}${title}` }} prefix="service-faq" ui={faqsUi} />}
+  {isLocalSeo && <ServiceCTA {...ctaProps} />}
 
-  <ServiceCTA {...ctaProps} />
+  {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: (faq_title_prefix ?? "").replace("{title}", title ?? "") }} prefix="service-faq" ui={faqsUi} />}
+
+  {isLocalSeo ? <ServiceBlocks blocks={trailingArticleBlocks} /> : <ServiceCTA {...ctaProps} />}
 </Base>

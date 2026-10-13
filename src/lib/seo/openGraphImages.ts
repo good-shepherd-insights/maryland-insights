@@ -1,4 +1,3 @@
-import config from "@/config/config.json";
 import { plainify } from "@/lib/utils/textConverter";
 import {
   getHomePage,
@@ -13,6 +12,7 @@ import {
   getServicePage,
   getServicePageSlugs,
   getServicesPage,
+  getSiteSettings,
   getToolsPage,
 } from "@/lib/sanity/queries";
 
@@ -31,14 +31,17 @@ const shorten = (value: string, maxLength = MAX_DESCRIPTION_LENGTH) => {
   return `${shortened.slice(0, lastSpace > 0 ? lastSpace : undefined).trimEnd()}…`;
 };
 
-const toOpenGraphPage = (data: {
-  title?: string;
-  meta_title?: string;
-  description?: string;
-}): OpenGraphPage => ({
-  title: plainify(data.title || data.meta_title || config.site.title),
+const toOpenGraphPage = (
+  site: { siteTitle?: string; seoDescription?: string },
+  data: {
+    title?: string;
+    meta_title?: string;
+    description?: string;
+  }
+): OpenGraphPage => ({
+  title: plainify(data.title || data.meta_title || site.siteTitle),
   description: shorten(
-    plainify(data.description || config.metadata.meta_description),
+    plainify(data.description || site.seoDescription),
   ),
 });
 
@@ -58,6 +61,7 @@ export const getOpenGraphPages = async (options?: {
     blogPosts,
     legalSlugs,
     serviceSlugs,
+    siteSettings,
   ] = await Promise.all([
     getHomePage(),
     getAboutPage(),
@@ -70,6 +74,7 @@ export const getOpenGraphPages = async (options?: {
     getBlogPosts(),
     getLegalPageSlugs(),
     getServicePageSlugs(),
+    getSiteSettings(),
   ]);
 
   const headerOf = (doc: any) => doc?.header ?? {};
@@ -90,27 +95,27 @@ export const getOpenGraphPages = async (options?: {
   }
 
   const pages: Record<string, OpenGraphPage> = {
-    home: toOpenGraphPage({ title: homepage?.hero?.title }),
+    home: toOpenGraphPage(siteSettings, { title: homepage?.hero?.title }),
     "404": options?.notFound ?? { title: "", description: "" },
     search: options?.search ?? { title: "", description: "" },
   };
 
   for (const [route, entry] of Object.entries(requiredIndexes)) {
-    pages[route] = toOpenGraphPage(entry);
+    pages[route] = toOpenGraphPage(siteSettings, entry);
   }
 
   for (const slug of legalSlugs) {
     const entry = await getLegalPage(slug);
-    if (entry) pages[slug] = toOpenGraphPage(entry);
+    if (entry) pages[slug] = toOpenGraphPage(siteSettings, entry);
   }
 
   for (const entry of blogPosts ?? []) {
-    pages[`blog/${entry.slug}`] = toOpenGraphPage(entry);
+    pages[`blog/${entry.slug}`] = toOpenGraphPage(siteSettings, entry);
   }
 
   for (const slug of serviceSlugs) {
     const entry = await getServicePage(slug);
-    if (entry) pages[`services/${slug}`] = toOpenGraphPage(entry);
+    if (entry) pages[`services/${slug}`] = toOpenGraphPage(siteSettings, entry);
   }
 
   return pages;

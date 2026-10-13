@@ -1,12 +1,12 @@
 ---
 export const prerender = true;
-import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getAboutPage, getSiteSettings } from "@/lib/sanity/queries";
 import AboutNarrative from "@/partials/AboutNarrative.astro";
 import CallToAction from "@/partials/CallToAction.astro";
 import ChooseSwiper from "@/layouts/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
@@ -23,6 +23,7 @@ const narrative = aboutPage?.narrative ?? {};
 const narrativeUi = aboutPage?.ui?.aboutNarrative ?? {};
 const company_narrative = {
   title: narrative.title,
+  image: narrative.image,
   sections: narrative.sections ?? [],
   ui: narrativeUi,
 };
@@ -35,22 +36,22 @@ const story_section = {
   enable: !!story.title,
   title: story.title,
   agents: (story.agents ?? []).map((a: any) => ({
-    title: a.label,
+    label: a.label,
     description: a.description,
     icon: a.icon,
-    button: a.buttonLabel ? { label: a.buttonLabel, link: a.buttonLink } : undefined,
+    button: a.button ? { enable: true, label: a.button.label, link: a.button.link } : undefined,
   })),
 };
 
 const aboutSchema: AboutPage = {
   "@type": "AboutPage",
   "mainEntity": {
-    "@id": `${config.site.base_url}/#organization`,
+    "@id": `${settings.seoUrl ?? ""}/#organization`,
   },
 };
 ---
 
-<Base {...aboutPage} ui={settingsUi} schema={[aboutSchema]}>
+<Base {...aboutPage} title={header.title} metaTitle={header.metaTitle} description={header.description} ui={settingsUi} schema={[aboutSchema]}>
   <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
 
   <AboutNarrative {...company_narrative} />
@@ -63,5 +64,6 @@ const aboutSchema: AboutPage = {
   <Facts data={facts_section} />
 
   <Testimonial />
+  <Faqs prefix="about-faq" data={{ faqs_list: [] }} ui={settingsUi.faqs} />
   <CallToAction />
 </Base>

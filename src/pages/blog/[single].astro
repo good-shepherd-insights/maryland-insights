@@ -3,7 +3,6 @@ export const prerender = true;
 
 import CardPrimary from "@/components/CardPrimary.astro";
 import Share from "@/components/Share.astro";
-import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
 import { getBlogPosts, getBlogPost, getSiteSettings } from "@/lib/sanity/queries";
 import { renderPortableText, extractHeadings } from "@/lib/sanity/portableText";
@@ -12,6 +11,7 @@ import similarItems from "@/lib/utils/similarItems";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import { markdownify, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
+import ImageMod from "@/components/ImageMod.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Faqs from "@/partials/Faqs.astro";
 
@@ -29,7 +29,7 @@ const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const ui = doc?.ui?.blogSingle ?? {};
 const shareUi = doc?.ui?.share;
-const authorUi = doc?.ui?.authorByline;
+const authorUi = { ...doc?.ui?.authorByline, badgeUpdatedLabel: doc?.ui?.authorByline?.updatedLabel };
 
 const title = doc?.title;
 const bodyHtml = renderPortableText(doc?.body);
@@ -47,7 +47,7 @@ const allPosts = allPostsRaw.map((p: any) => ({
   data: {
     title: p.title,
     description: p.description,
-    image: undefined,
+    image: p.image,
     date: p.datePublished,
     author: p.author,
     categories: (p.categories ?? []).map((c: any) => c.title),
@@ -64,27 +64,35 @@ const dateModifiedRaw = doc?.dateModified || doc?.datePublished;
 
 const blogSchema = {
   "@type": "BlogPosting",
-  "@id": `${config.site.base_url}/blog/${slug}#blogposting`,
+  "@id": `${settings.seoUrl ?? ""}/blog/${slug}#blogposting`,
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": `${config.site.base_url}/blog/${slug}`,
+    "@id": `${settings.seoUrl ?? ""}/blog/${slug}`,
     "isPartOf": {
-      "@id": `${config.site.base_url}/#website`
+      "@id": `${settings.seoUrl ?? ""}/#website`
     }
   },
   "headline": plainify(title),
   "description": plainify(doc?.description),
+  ...(doc?.image ? {
+    "image": {
+      "@type": "ImageObject",
+      "url": `${settings.seoUrl ?? ""}${doc.image}`,
+      ...(settings.metaImageWidth ? { "width": settings.metaImageWidth } : {}),
+      ...(settings.metaImageHeight ? { "height": settings.metaImageHeight } : {}),
+    }
+  } : {}),
   ...(doc?.datePublished ? { "datePublished": new Date(doc.datePublished).toISOString() } : {}),
   ...(dateModifiedRaw ? { "dateModified": new Date(dateModifiedRaw).toISOString() } : {}),
   ...(doc?.author?.name ? {
     "author": {
       "@type": "Person",
       "name": plainify(doc.author.name),
-      "url": `${config.site.base_url}/about`,
+      "url": `${settings.seoUrl ?? ""}/about`,
     }
   } : {}),
   "publisher": {
-    "@id": `${config.site.base_url}/#organization`,
+    "@id": `${settings.seoUrl ?? ""}/#organization`,
   },
 };
 
@@ -180,14 +188,25 @@ if (doc?.faqs && doc.faqs.length > 0) {
             </nav>
           )
         }
+        {
+          doc?.image && (
+            <ImageMod
+              src={doc.image}
+              width={900}
+              height={500}
+              alt={title}
+              class="rounded-2xl object-cover mb-8 w-full"
+            />
+          )
+        }
         <div class="content" set:html={bodyHtml} />
 
         <div
           class="flex flex-wrap items-center justify-center gap-4 mt-12 py-10 border-t border-border/50"
         >
-          <a href={config.navigation_button.link} class="btn btn-primary px-10">{ui.ctaButtonLabel}</a>
+          <a href={settings.navigationButton?.link ?? "/get-started"} class="btn btn-primary px-10">{ui.ctaButtonLabel}</a>
           <a
-            href={config.consult_url}
+            href={settings.consultUrl ?? ""}
             class="btn btn-outline px-10"
           >
             {ui.consultButtonLabel}
@@ -210,6 +229,13 @@ if (doc?.faqs && doc.faqs.length > 0) {
                       class="block py-2 pl-2 text-sm hover:bg-light rounded"
                     >
                       <div class="flex">
+                        <ImageMod
+                          src={post?.data.image}
+                          alt={post?.data.title}
+                          width={50}
+                          height={40}
+                          class="inline-block mr-2 rounded object-cover"
+                        />
                         <div>
                           <span class="text-[10px]">
                             By {post?.data.author?.name} -{" "}
@@ -244,8 +270,8 @@ if (doc?.faqs && doc.faqs.length > 0) {
 
         <!-- Subscribe to newsletter  -->
         {
-          config.subscription_in_footer &&
-            config.subscription_in_footer.enable && (
+          
+            settings.newsletter && (
               <div class="bg-body rounded-2xl p-4 mt-5 hidden lg:block">
                 <small class="font-semibold text-text-dark font-primary text-sm">
                   {ui.newsletterHeading}
@@ -303,7 +329,7 @@ if (doc?.faqs && doc.faqs.length > 0) {
                     />
                     <span>{ui.consentLabel}</span>
                     <a
-                      href={config.privacy_url}
+                      href={"/privacy-policy"}
                       class="text-text-dark font-semibold hover:text-primary transition duration-300"
                     >
                       {ui.privacyLinkText}
@@ -337,6 +363,7 @@ if (doc?.faqs && doc.faqs.length > 0) {
                   data={post.data}
                   id={`/blog/${post.id}`}
                   hasDarkArrow={true}
+                  ui={settingsUi.cardPrimary}
                 />
               ))}
             </div>

@@ -28,6 +28,7 @@ const agents_swiper = {
     label: c.label,
     description: c.description,
     icon: c.icon,
+    image: c.image,
     points: c.points ?? [],
     button: c.button ? { ...c.button, enable: true } : undefined,
   })),
@@ -47,6 +48,7 @@ const comparison_section = {
 const planNames = (comparison.plans ?? []).map((p: any) => ({
   label: p.label,
   isUs: p.isUs,
+  logo: p.logo,
 }));
 const categories = (comparison.categories ?? []).map((c: any) => ({
   category: c.category,
@@ -67,8 +69,8 @@ const trustStripUi = homeUi.trustStrip ?? {};
 const partners = (trust.logos ?? []).map((l: any) => ({
   name: l.name,
   file: l.logoUrl,
-  h: 32,
-  url: undefined,
+  h: l.height,
+  url: l.url,
 }));
 
 // Unique Homepage FAQ Schema for Semantic Density

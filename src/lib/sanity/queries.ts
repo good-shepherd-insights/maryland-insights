@@ -37,6 +37,7 @@ export async function getContactPage() {
     info->,
     offices->,
     form->,
+    guidance->,
     cta->
   }`);
 }
@@ -101,7 +102,7 @@ export async function getServicePage(slug: string) {
             title,
             description,
             "slug": slug.current,
-            datePublished
+            "datePublished": date
           }
         }
       }
@@ -116,9 +117,9 @@ export async function getBlogPage() {
     header->,
     guide->,
     "featuredPosts": featuredPosts[]->{
-      _id, title, description,
+      _id, title, description, image,
       "slug": slug.current,
-      datePublished,
+      "datePublished": date,
       author{name}
     },
     cta->
@@ -126,10 +127,10 @@ export async function getBlogPage() {
 }
 
 export async function getBlogPosts() {
-  return sanityClient.fetch(`*[_type == "blogPost"] | order(datePublished desc) {
-    _id, title, description,
+  return sanityClient.fetch(`*[_type == "blogPost" && draft != true] | order(date desc) {
+    _id, title, description, image,
     "slug": slug.current,
-    datePublished,
+    "datePublished": date,
     author{name},
     categories[]->{title, "slug": slug.current}
   }`);

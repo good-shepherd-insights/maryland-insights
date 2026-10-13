@@ -3,10 +3,10 @@ import Base from "@/layouts/Base.astro";
 import { getToolsPage, getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import IntegrationCard from "../components/IntegrationCard.astro";
 import type { CollectionPage } from "schema-dts";
-import config from "@/config/config.json";
 
 const toolsPage = await getToolsPage();
 const settings = await getSiteSettings();
@@ -24,21 +24,28 @@ const tools_list = (grid.tools ?? []).map((t: any) => ({
   description: t.description,
   logo_name: t.logoName,
   image: t.image,
-  link: t.link,
+  link: undefined,
 }));
 
 const collectionSchema: CollectionPage = {
   "@type": "CollectionPage",
   "name": title,
   "description": description,
-  "url": `${config.site.base_url}/tools`,
+  "url": `${settings.seoUrl ?? ""}/tools`,
   "publisher": {
-    "@id": `${config.site.base_url}/#organization`
+    "@id": `${settings.seoUrl ?? ""}/#organization`
   }
 };
 ---
 
-<Base {...toolsPage} ui={settingsUi} schema={[collectionSchema]}>
+<Base
+  {...toolsPage}
+  title={title}
+  meta_title={header.metaTitle}
+  description={description}
+  ui={settingsUi}
+  schema={[collectionSchema]}
+>
   <PageHeader
     title={title}
     description={description}
@@ -59,7 +66,7 @@ const collectionSchema: CollectionPage = {
       {tools_list && tools_list.length > 0 ? (
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {tools_list.map((tool: any) => (
-            <IntegrationCard integration={tool} />
+            <IntegrationCard integration={tool} ui={toolsPage?.ui?.integrationCard} />
           ))}
         </div>
       ) : (
@@ -70,5 +77,6 @@ const collectionSchema: CollectionPage = {
     </div>
   </section>
 
+  <Faqs prefix="tools-faq" ui={settingsUi.faqs} />
   <CallToAction />
 </Base>

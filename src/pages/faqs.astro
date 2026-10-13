@@ -31,10 +31,12 @@ const supportProps = {
   title: support.title,
   intro: support.description,
   description: support.descriptionSecondary,
-  cards: (support.topics ?? []).map((t: any) => ({
+  navAriaLabel: "FAQ topics",
+  cards: (support.topics ?? []).map((t: any, i: number) => ({
     title: t.label,
     description: t.description,
     href: t.link,
+    highlight: i === 4,
   })),
 };
 
@@ -64,5 +66,5 @@ const faqSchema: FAQPage = {
   )}
 
   <Testimonial />
-  <CallToAction override={faqsPage?.ctaOverride} />
+  <CallToAction />
 </Base>

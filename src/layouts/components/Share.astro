@@ -1,13 +1,14 @@
 ---
-import config from "@/config/config.json";
 import {
   FaFacebookF,
   FaLinkedinIn,
   FaPinterestP,
   FaXTwitter,
 } from "react-icons/fa6";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
-const { base_url }: { base_url: string } = config.site;
+const settings = (await getSiteSettings()) ?? {};
+const base_url: string = settings.seoUrl ?? "";
 const {
   title,
   description,
