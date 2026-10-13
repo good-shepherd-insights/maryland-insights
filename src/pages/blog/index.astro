@@ -44,6 +44,7 @@ const toCardPost = (p: any) => ({
 
 const posts = (await getBlogPosts()).map(toCardPost);
 const featuredFive = ((blogPage?.featuredPosts ?? []) as any[])
+  .filter((p: any) => !p.draft)
   .map(toCardPost)
   .slice(0, 5);
 const featuredFirst = featuredFive[0];
@@ -80,7 +81,17 @@ const blogIndexSchema: Blog = {
 <Base {...blogPage} ui={settingsUi} schema={[blogIndexSchema]}>
   <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
 
-  {blogGuide?.enable && <BlogLibraryGuide {...blogGuide} categories={categoryLabels} />}
+  {blogGuide?.enable && <BlogLibraryGuide
+    title={blogGuide.title}
+    introduction={blogGuide.description}
+    reading_note={blogGuide.researchIntro}
+    categories={categoryLabels}
+    eyebrow={blogGuide.standardsTitle}
+    pillars={blogGuide.pillars}
+    domainsHeading={blogGuide.domainsHeading}
+    domainsIntro={blogGuide.domainsIntro}
+    topics={blogGuide.highlights}
+  />}
 
   <!-- Featured section  -->
   {
@@ -210,7 +221,7 @@ const blogIndexSchema: Blog = {
       }
     </div>
   </section>
-  <Faqs prefix="blog-faq" />
+  <Faqs prefix="blog-faq" ui={settingsUi.faqs} />
   <CallToAction />
 </Base>
 
