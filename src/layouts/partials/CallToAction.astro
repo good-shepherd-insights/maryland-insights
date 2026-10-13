@@ -4,18 +4,19 @@ import { getClosingCta } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 
 const _cta = await getClosingCta();
-const sectionData = {
-  data: {
-    enable: !!_cta,
-    title: _cta?.title,
-    description: _cta?.description,
-    button: _cta ? { enable: true, label: _cta.primaryLabel, link: _cta.primaryLink } : undefined,
-    rotating_icons: undefined,
-  },
-};
-const { buttonLabel, buttonLink } = Astro.props as {
+const { buttonLabel, buttonLink, override } = Astro.props as {
   buttonLabel?: string;
   buttonLink?: string;
+  override?: { title?: string; description?: string; image?: string; button?: { label?: string; link?: string } };
+};
+const sectionData = {
+  data: {
+    enable: !!(override ?? _cta),
+    title: override?.title ?? _cta?.title,
+    description: override?.description ?? _cta?.description,
+    button: (override ?? _cta) ? { enable: true, label: override?.button?.label ?? _cta?.primaryLabel, link: override?.button?.link ?? _cta?.primaryLink } : undefined,
+    rotating_icons: undefined,
+  },
 };
 if (!sectionData.data.enable) {
   return null;
