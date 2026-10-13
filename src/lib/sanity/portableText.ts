@@ -47,6 +47,7 @@ export function renderPortableText(blocks: any[]): string {
         code: ({ children }: any) => `<code>${children}</code>`,
         link: ({ children, value }: any) => {
           const href = value?.href ?? "";
+          if (!href) return `${children}`;
           const external = /^https?:\/\//.test(href);
           return `<a href="${href}"${
             external ? ` target="_blank" rel="noopener noreferrer"` : ""

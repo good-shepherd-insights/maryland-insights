@@ -22,6 +22,7 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.props;
 const service = adaptServicePage(await getServicePage(slug));
+if (!service) return Astro.redirect("/404");
 const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const { title, description, image, faqs_list, blocks = [], date_modified, faq_title_prefix, faqsUi } = service;
