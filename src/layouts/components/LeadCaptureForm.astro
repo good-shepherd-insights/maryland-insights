@@ -72,6 +72,7 @@ type Props = {
     reviewPlural?: string;
     businessSuggestionsAriaLabel?: string;
     auditPlatformsAriaLabel?: string;
+    honeypotLabel?: string;
   };
   platforms?: { name: string; src: string; class?: string }[];
 };
@@ -322,7 +323,7 @@ const auditPlatformIcons = platforms;
               })}
 
               <div class="hidden" aria-hidden="true">
-                <label for="lead-hp-company-website">Company website</label>
+                <label for="lead-hp-company-website">{ui?.honeypotLabel}</label>
                 <input id="lead-hp-company-website" name="website" type="text" tabindex="-1" autocomplete="off" />
               </div>
             </div>
