@@ -12,18 +12,20 @@ const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const header = toolsPage?.header ?? {};
 const grid = toolsPage?.grid ?? {};
-const ui = toolsPage?.ui?.tools ?? {};
+// toolsGrid.ui.cardAriaLabelTemplate — the labels live on the grid document, not on toolsPage.
+const gridUi = grid.ui ?? {};
 
 const title = header.title;
 const description = header.description;
 const eyebrow = grid.eyebrow ?? header.eyebrow;
 const section_title = grid.title;
+// `integration` schema: title, description, logo, logoName, link, kind, featured.
+// Cards render the mark from logoName (Logo.dev); there is no `image` field.
 const tools_list = (grid.tools ?? []).map((t: any) => ({
   title: t.title,
   description: t.description,
   logo_name: t.logoName,
-  image: t.image,
-  link: undefined,
+  link: t.link,
 }));
 
 ---
@@ -56,12 +58,12 @@ const tools_list = (grid.tools ?? []).map((t: any) => ({
       {tools_list && tools_list.length > 0 ? (
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {tools_list.map((tool: any) => (
-            <IntegrationCard integration={tool} ui={toolsPage?.ui?.integrationCard} logoAltTemplate={settingsUi.companyLogo?.altTemplate} />
+            <IntegrationCard integration={tool} ui={{ ariaLabelTemplate: gridUi.cardAriaLabelTemplate }} logoAltTemplate={settingsUi.companyLogo?.altTemplate} />
           ))}
         </div>
       ) : (
         <div class="text-center text-text-dark/70 max-w-md mx-auto">
-          <p>{ui?.emptyStateText}</p>
+          <p>{grid.emptyState}</p>
         </div>
       )}
     </div>

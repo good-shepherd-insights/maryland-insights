@@ -49,14 +49,10 @@ export interface Props {
   ui?: any;
 }
 
-// Site settings come from Sanity, not config files.
-let siteSettings: any = {};
+// Site settings come from Sanity, not config files. A missing document must fail
+// the build rather than render every page with empty chrome.
+const siteSettings = await getSiteSettings();
 let footerNewsletter;
-try {
-  siteSettings = (await getSiteSettings()) ?? {};
-} catch {
-  siteSettings = {};
-}
 
 // Derive Twitter handle from Sanity socialLinks ("x" entry)
 const twitterEntry = (siteSettings.socialLinks ?? []).find((s: any) => s.platform === "x");

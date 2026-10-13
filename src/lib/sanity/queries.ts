@@ -1,7 +1,11 @@
 import { sanityClient } from "./client";
 
 export async function getSiteSettings() {
-  return sanityClient.fetch(`*[_type == "siteSettings"][0]`);
+  const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]`);
+  if (!settings) {
+    throw new Error('Sanity has no "siteSettings" document; site chrome would render empty.');
+  }
+  return settings;
 }
 
 export async function getHomePage() {
@@ -86,14 +90,14 @@ export async function getServicesPage() {
 
 export async function getServicePageSlugs(): Promise<string[]> {
   const rows = await sanityClient.fetch(
-    `*[_type == "servicePage"]{ "slug": slug.current }`,
+    `*[_type == "servicePage" && draft != true]{ "slug": slug.current }`,
   );
   return rows.map((r: { slug: string }) => r.slug).filter(Boolean);
 }
 
 export async function getServicePage(slug: string) {
   return sanityClient.fetch(
-    `*[_type == "servicePage" && slug.current == $slug][0]{
+    `*[_type == "servicePage" && draft != true && slug.current == $slug][0]{
       ...,
       blocks[]{
         ...,
@@ -138,7 +142,7 @@ export async function getBlogPosts() {
 
 export async function getBlogPost(slug: string) {
   return sanityClient.fetch(
-    `*[_type == "blogPost" && slug.current == $slug][0]{
+    `*[_type == "blogPost" && draft != true && slug.current == $slug][0]{
       ...,
       author,
       categories[]->{_id, title, "slug": slug.current}
@@ -149,14 +153,14 @@ export async function getBlogPost(slug: string) {
 
 export async function getLegalPageSlugs(): Promise<string[]> {
   const rows = await sanityClient.fetch(
-    `*[_type == "legalPage"]{ "slug": slug.current }`,
+    `*[_type == "legalPage" && draft != true]{ "slug": slug.current }`,
   );
   return rows.map((r: { slug: string }) => r.slug).filter(Boolean);
 }
 
 export async function getLegalPage(slug: string) {
   return sanityClient.fetch(
-    `*[_type == "legalPage" && slug.current == $slug][0]`,
+    `*[_type == "legalPage" && draft != true && slug.current == $slug][0]`,
     { slug },
   );
 }
