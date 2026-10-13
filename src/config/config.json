@@ -54,12 +54,6 @@
     "breadcrumb_home_label": "Home",
     "navigation_list_name": "Main Menu"
   },
-  "service_cta": {
-    "title": "Ready to make your next customer easier to find?",
-    "description": "Bring your service area, customer journey, and growth goals into one conversation. We’ll start with what your business needs and make the next step clear.",
-    "button_label": "Partner with Us",
-    "button_link": "/get-started"
-  },
   "consult_url": "https://cal.id/maryland-insights/business-growth-consult?overlayCalendar=true",
   "privacy_url": "/privacy-policy",
   "redirects": {
