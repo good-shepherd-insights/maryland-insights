@@ -214,3 +214,65 @@ const blogIndexSchema: Blog = {
   <Faqs prefix="blog-faq" />
   <CallToAction />
 </Base>
+
+<script>
+  import Shuffle from "shufflejs";
+
+  document.addEventListener("astro:page-load", () => {
+    const element = document.querySelector(
+      ".shuffle-container"
+    ) as HTMLElement | null;
+    if (!element) return;
+
+    let shuffleInstance = new Shuffle(element, {
+      itemSelector: ".shuffle-item",
+      sizer: element.querySelector(".shuffle-sizer") as HTMLElement,
+    });
+
+    const filter = document.querySelector(".shuffle-filter");
+    if (!filter) return;
+
+    const baseBtnClasses =
+      "btn btn-sm hover:-translate-y-0.75 active:scale-95 transition-transform duration-200 inline-block m-2 capitalize py-2.5 rounded-full text-text-dark";
+    const activeBtnClasses = `${baseBtnClasses} btn-primary text-dark`;
+    const inactiveBtnClasses = `${baseBtnClasses} btn-outline bg-body`;
+
+    const filtterLists = Array.from(filter.children) as HTMLElement[];
+
+    const setButtonVariant = (listItem: HTMLElement, isSelected: boolean) => {
+      const button = listItem.querySelector(
+        "button"
+      ) as HTMLButtonElement | null;
+      if (!button) return;
+      button.className = isSelected ? activeBtnClasses : inactiveBtnClasses;
+    };
+
+    // Apply correct styles on load ("All Together" is selected by default)
+    filtterLists.forEach((listItem) => {
+      setButtonVariant(listItem, listItem.classList.contains("selected"));
+    });
+
+    filtterLists.forEach((listItem) => {
+      const button = listItem.querySelector(
+        "button"
+      ) as HTMLButtonElement | null;
+      button?.addEventListener("click", function () {
+        filtterLists.forEach((li) => {
+          li.classList.remove("selected");
+          setButtonVariant(li, false);
+        });
+
+        const activeLi = (this as HTMLElement).closest(
+          "li"
+        ) as HTMLElement | null;
+        if (activeLi) {
+          activeLi.classList.add("selected");
+          setButtonVariant(activeLi, true);
+        }
+
+        const keyword = activeLi?.getAttribute("data-target") || "all";
+        shuffleInstance.filter(keyword);
+      });
+    });
+  });
+</script>

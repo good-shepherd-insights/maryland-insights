@@ -222,6 +222,13 @@ if (doc?.faqs && doc.faqs.length > 0) {
                       class="block py-2 pl-2 text-sm hover:bg-light rounded"
                     >
                       <div class="flex">
+                        <ImageMod
+                          src={post?.data.image}
+                          alt={post?.data.title}
+                          width={50}
+                          height={40}
+                          class="inline-block mr-2 rounded object-cover"
+                        />
                         <div>
                           <span class="text-[10px]">
                             By {post?.data.author?.name} -{" "}
