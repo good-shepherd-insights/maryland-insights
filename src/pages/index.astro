@@ -115,6 +115,8 @@ const combinedSchema = [faqSchema].filter(Boolean);
   }
   <Integrations />
   <Facts data={facts_section} enableAnimation={false} />
-  <Faqs data={faqs_section} prefix="home-faq" ui={settingsUi.faqs} />
+  {faqs_section.faqs_list.length > 0 && (
+    <Faqs data={faqs_section} prefix="home-faq" ui={settingsUi.faqs} />
+  )}
   <CallToAction />
 </Base>

@@ -59,7 +59,9 @@ const faqSchema: FAQPage = {
 
   <FaqSupport {...supportProps} />
 
-  <Faqs data={faqs_section} ui={settingsUi.faqs} />
+  {faqs_section.faqs_list.length > 0 && (
+    <Faqs data={faqs_section} ui={settingsUi.faqs} />
+  )}
 
   <Testimonial />
   <CallToAction />
