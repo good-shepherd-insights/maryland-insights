@@ -1,10 +1,12 @@
 ---
 import config from "@/config/config.json";
+import ImageMod from "@/components/ImageMod.astro";
 import DynamicIcon from "@/helpers/DynamicIcon";
 import Base from "@/layouts/Base.astro";
 import { getContactPage, getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import ContactGuidance from "@/partials/ContactGuidance.astro";
 import type { ContactPage } from "schema-dts";
@@ -14,7 +16,9 @@ const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const title = _contact?.header?.title;
 const description = _contact?.header?.description;
-const section_title = _contact?.form?.title;
+const section_title = _contact?.sectionTitle;
+const section_description = _contact?.form?.description;
+const gallery_section = _contact?.offices;
 const contact_form = _contact?.form
   ? {
       enable: true,
@@ -63,9 +67,16 @@ const contactSchema: ContactPage = {
       <h2
        
        
-        class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
+        class="mb-6 text-center xl:w-[60%] mx-auto text-balance"
         set:html={markdownify(section_title)}
       />
+
+      {section_description && (
+        <p
+          class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
+          set:html={markdownify(section_description)}
+        />
+      )}
 
       <div
         class="flex flex-col gap-7.5 justify-center lg:flex-row lg:items-stretch"
@@ -145,5 +156,56 @@ const contactSchema: ContactPage = {
     </div>
   </section>
 
+  <!-- Gallery Section  -->
+  {
+    gallery_section && (
+      <section
+        class="section section-divider bg-dark"
+        style="--section-divider-color: var(--color-dark)"
+      >
+        <div class="container">
+          <h2
+            set:html={markdownify(gallery_section.title)}
+            class="mb-12 text-white xl:w-[60%] mx-auto text-balance text-center"
+          />
+
+          {gallery_section.image && (
+            <div>
+              <ImageMod
+                src={gallery_section.image}
+                alt={section_title ?? ""}
+                width={1500}
+                height={600}
+                class="mx-auto rounded-3xl"
+              />
+            </div>
+          )}
+
+          <div class="flex flex-wrap justify-center gap-7.5 w-full mt-7.5">
+            {gallery_section.locations?.map((location: any) => (
+              <div
+                class="bg-body/5 p-7 rounded-2xl flex-1 min-w-62"
+              >
+                <DynamicIcon
+                  icon={location.icon}
+                  className="text-text-light text-4xl mb-6"
+                />
+                <h4 class="h5 mb-2 text-white">{location.name}</h4>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="hover:underline"
+                >
+                  {location.address}
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+  <Faqs prefix="contact-faq" ui={settingsUi.faqs} />
   <CallToAction />
 </Base>

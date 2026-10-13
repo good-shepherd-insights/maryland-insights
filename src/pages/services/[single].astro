@@ -78,7 +78,7 @@ if (faqs_list && faqs_list.length > 0) {
 
   <ServiceBlocks blocks={blocks} />
 
-  {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `${faq_title_prefix ?? ""}${title}` }} prefix="service-faq" ui={faqsUi} />}
+  {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: (faq_title_prefix ?? "").replace("{title}", title ?? "") }} prefix="service-faq" ui={faqsUi} />}
 
   <ServiceCTA {...ctaProps} />
 </Base>

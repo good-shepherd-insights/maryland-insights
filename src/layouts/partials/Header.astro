@@ -1,7 +1,6 @@
 ---
 import Logo from "@/layouts/components/Logo.astro";
-import config from "@/config/config.json";
-import menu from "@/config/menu.json";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
 export interface ChildNavigationLink {
   name: string;
@@ -15,8 +14,27 @@ export interface NavigationLink {
   children?: ChildNavigationLink[];
 }
 
-const { main }: { main: NavigationLink[] } = menu;
-const { navigation_button } = config;
+// Site chrome comes from Sanity siteSettings, not config files.
+const siteSettings = await getSiteSettings();
+const main: NavigationLink[] = (siteSettings?.navLinks ?? []).map(
+  (link: any): NavigationLink => ({
+    name: link.label,
+    url: link.href,
+    hasChildren:
+      Array.isArray(link.children) && link.children.length > 0,
+    children: (link.children ?? []).map((child: any): ChildNavigationLink => ({
+      name: child.label,
+      url: child.href,
+    })),
+  })
+);
+const navigation_button = siteSettings?.navigationButton
+  ? {
+      enable: true,
+      label: siteSettings.navigationButton.label,
+      link: siteSettings.navigationButton.link,
+    }
+  : { enable: false, label: "", link: "" };
 const { pathname } = Astro.url;
 
 type Props = {

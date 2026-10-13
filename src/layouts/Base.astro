@@ -17,6 +17,7 @@ import JsonLd from "@/lib/seo/JsonLd.astro";
 import { buildWebSite, buildOrganization, buildBreadcrumbList, buildWebPage, buildNavigation } from "@/lib/seo/graph";
 import { canonicalUrl } from "@/lib/seo/ids";
 import { getOpenGraphImagePath } from "@/lib/seo/openGraphImagePath";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
 // font families
 const pf = theme.fonts.font_family.primary;
@@ -35,6 +36,7 @@ if (theme.fonts.font_family.secondary) {
 export interface Props {
   title?: string;
   meta_title?: string;
+  metaTitle?: string;
   description?: string;
   image?: string;
   noindex?: boolean;
@@ -63,11 +65,41 @@ const resolvedLocale = config.metadata.locale ? config.metadata.locale.replace("
 
 // destructure frontmatter
 const {
-  title, meta_title, description, noindex, canonical,
+  title, meta_title, metaTitle, description, noindex, canonical,
   og_type = "website", date_published, date_modified, author_name,
   author_twitter, article_tags, article_section, googlebot,
   head_links = [], ui
 } = Astro.props as any;
+
+// Sanity fields are camelCase; origin/main frontmatter used snake_case — accept both.
+const resolvedMetaTitle = meta_title ?? metaTitle;
+
+// Footer newsletter labels come from Sanity siteSettings; Base renders Footer
+// directly, so resolve them here and pass down.
+let footerNewsletter;
+try {
+  const siteSettings = await getSiteSettings();
+  const n = siteSettings?.newsletter;
+  if (n) {
+    footerNewsletter = {
+      heading: n.title,
+      placeholder: n.placeholder,
+      submitTitle: n.submitLabel,
+      consentHint: n.consentHint,
+      consentLabel: n.consentLabel,
+      consentLinkText: n.consentLinkLabel,
+      logoAttribution: n.attributionLabel,
+      logoAttributionLink: n.attributionLinkLabel,
+      logoAttributionUrl: n.attributionLinkHref,
+      subscribingHint: n.subscribingLabel,
+      subscribedHint: n.subscribedLabel,
+      failedHint: n.failedLabel,
+      privacyUrl: n.consentLinkHref,
+    };
+  }
+} catch {
+  footerNewsletter = undefined;
+}
 
 const resolvedImage = getOpenGraphImagePath(Astro.url.pathname);
 
@@ -79,7 +111,7 @@ const graphItems: unknown[] = [
   buildBreadcrumbList(Astro.url.pathname),
   buildWebPage({
     pathname: Astro.url.pathname,
-    name: meta_title ? meta_title : title ? title : config.site.title,
+    name: resolvedMetaTitle ? resolvedMetaTitle : title ? title : config.site.title,
     description: description ? description : config.metadata.meta_description,
     canonical,
     image: resolvedImage ? `${config.site.base_url}${resolvedImage}` : undefined,
@@ -99,13 +131,13 @@ const graphItems: unknown[] = [
     <TrackingManager />
     
     <SEO
-      title={plainify(meta_title ? meta_title : title ? title : config.site.title)}
+      title={plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : config.site.title)}
       description={plainify(description ? description : config.metadata.meta_description)}
       canonical={canonical || canonicalUrl(Astro.url.pathname)}
       noindex={noindex}
       openGraph={{
         basic: {
-          title: plainify(meta_title ? meta_title : title ? title : config.site.title),
+          title: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : config.site.title),
           type: og_type,
           image: `${config.site.base_url}${resolvedImage}`,
           url: canonical || canonicalUrl(Astro.url.pathname)
@@ -116,7 +148,7 @@ const graphItems: unknown[] = [
           siteName: config.site.logo_text || config.site.title,
         },
         image: {
-          alt: plainify(meta_title ? meta_title : title ? title : config.site.title),
+          alt: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : config.site.title),
           width: config.metadata.meta_image_width,
           height: config.metadata.meta_image_height,
         },
@@ -132,10 +164,10 @@ const graphItems: unknown[] = [
         card: "summary_large_image",
         site: twitterHandle,
         creator: author_twitter ? `@${author_twitter}` : twitterHandle,
-        title: plainify(meta_title ? meta_title : title ? title : config.site.title),
+        title: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : config.site.title),
         description: plainify(description ? description : config.metadata.meta_description),
         image: `${config.site.base_url}${resolvedImage}`,
-        imageAlt: plainify(meta_title ? meta_title : title ? title : config.site.title)
+        imageAlt: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : config.site.title)
       }}
       extend={{
         meta: [
@@ -231,7 +263,7 @@ const graphItems: unknown[] = [
         <path d="M12 4l-8 8h5v8h6v-8h5z"/>
       </svg>
     </button>
-    <Footer />
+    <Footer newsletter={footerNewsletter} />
 
     <script>
       import Lenis from "lenis";

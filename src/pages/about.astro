@@ -7,6 +7,7 @@ import AboutNarrative from "@/partials/AboutNarrative.astro";
 import CallToAction from "@/partials/CallToAction.astro";
 import ChooseSwiper from "@/layouts/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
@@ -23,6 +24,7 @@ const narrative = aboutPage?.narrative ?? {};
 const narrativeUi = aboutPage?.ui?.aboutNarrative ?? {};
 const company_narrative = {
   title: narrative.title,
+  image: narrative.image,
   sections: narrative.sections ?? [],
   ui: narrativeUi,
 };
@@ -35,10 +37,10 @@ const story_section = {
   enable: !!story.title,
   title: story.title,
   agents: (story.agents ?? []).map((a: any) => ({
-    title: a.label,
+    label: a.label,
     description: a.description,
     icon: a.icon,
-    button: a.buttonLabel ? { label: a.buttonLabel, link: a.buttonLink } : undefined,
+    button: a.button ? { enable: true, label: a.button.label, link: a.button.link } : undefined,
   })),
 };
 
@@ -63,5 +65,6 @@ const aboutSchema: AboutPage = {
   <Facts data={facts_section} />
 
   <Testimonial />
+  <Faqs prefix="about-faq" />
   <CallToAction />
 </Base>
