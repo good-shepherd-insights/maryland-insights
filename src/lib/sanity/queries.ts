@@ -126,7 +126,7 @@ export async function getBlogPage() {
 }
 
 export async function getBlogPosts() {
-  return sanityClient.fetch(`*[_type == "blogPost" && !draft] | order(date desc) {
+  return sanityClient.fetch(`*[_type == "blogPost" && draft != true] | order(date desc) {
     _id, title, description, image,
     "slug": slug.current,
     "datePublished": date,
