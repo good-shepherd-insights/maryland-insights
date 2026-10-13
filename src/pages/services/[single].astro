@@ -26,7 +26,7 @@ const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const { title, description, image, faqs_list, blocks = [], date_modified, faq_title_prefix, faqsUi } = service;
 const hasLeadHero = blocks.some((block: { _type: string }) => block._type === "leadCapture");
-const isLocalSeo = service.slug === "local-seo";
+const isLocalSeo = (service.slug?.current ?? service.slug) === "local-seo";
 const mainBlocks = isLocalSeo ? blocks.filter((block: { _type: string }) => block._type !== "relatedArticles") : blocks;
 const trailingArticleBlocks = isLocalSeo ? blocks.filter((block: { _type: string }) => block._type === "relatedArticles") : [];
 const ctaProps = {
