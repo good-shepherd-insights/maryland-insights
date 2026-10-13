@@ -537,7 +537,14 @@ const auditPlatformIcons = platforms;---
 
       const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
       const data = Object.fromEntries(new FormData(form));
-      const body = JSON.stringify({ ...data, page: document.title, source: window.location.pathname });
+      const lookupField = form.dataset.lookupField;
+      const businessName = lookupField ? data[lookupField] : data.businessName ?? data.business;
+      const body = JSON.stringify({
+        ...data,
+        businessName,
+        page: document.title,
+        source: window.location.pathname,
+      });
 
       button?.setAttribute("disabled", "");
       const originalLabel = button?.textContent;
@@ -551,8 +558,6 @@ const auditPlatformIcons = platforms;---
         });
         if (!res.ok) throw new Error(String(res.status));
         const placeId = data.googlePlaceId;
-        const lookupField = form.dataset.lookupField;
-        const businessName = lookupField ? data[lookupField] : "";
         const query =
           typeof placeId === "string" && /^[A-Za-z0-9_-]{10,90}$/.test(placeId)
             ? placeId

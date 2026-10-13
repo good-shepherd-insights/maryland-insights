@@ -1,4 +1,4 @@
-import { auditServiceFromSlug } from "@/lib/crm/auditService";
+import { auditServiceFromSlug } from "../../lib/crm/auditService";
 
 export const prerender = false;
 
@@ -37,7 +37,8 @@ export async function POST({ request }: { request: Request }) {
 
   const email = (lead.email ?? "").toLowerCase();
   const service = auditServiceFromSlug(lead.service ?? "");
-  if (!emailPattern.test(email) || !service) {
+  const businessName = lead.businessName || lead.business || "";
+  if (!emailPattern.test(email) || !service || !businessName) {
     return new Response(null, { status: 400 });
   }
 
@@ -55,6 +56,7 @@ export async function POST({ request }: { request: Request }) {
       body: JSON.stringify({
         email: [email],
         service,
+        businessName,
       }),
       signal: AbortSignal.timeout(CRM_TIMEOUT_MS),
     });
