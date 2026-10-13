@@ -12,9 +12,10 @@ interface Props {
     link?: string;
   };
   ui?: { ariaLabelTemplate?: string };
+  logoAltTemplate?: string;
 }
 
-const { integration, ui } = Astro.props;
+const { integration, ui, logoAltTemplate } = Astro.props;
 ---
 
 <div
@@ -25,6 +26,7 @@ const { integration, ui } = Astro.props;
     {integration.logo_name ? (
       <CompanyLogo
         name={integration.logo_name}
+        altTemplate={logoAltTemplate}
         size={36}
         class="h-8 w-8 object-contain sm:h-9 sm:w-9"
       />

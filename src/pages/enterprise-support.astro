@@ -1,3 +1,7 @@
 ---
-return Astro.redirect("https://cal.id/maryland-insights/partnership", 301);
+import { getSiteSettings } from "@/lib/sanity/queries";
+
+const destination = (await getSiteSettings())?.redirects?.enterpriseSupport;
+if (!destination) throw new Error("siteSettings.redirects.enterpriseSupport is required.");
+return Astro.redirect(destination, 301);
 ---

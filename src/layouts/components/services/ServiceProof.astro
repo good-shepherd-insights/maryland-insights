@@ -14,7 +14,7 @@ type Props = {
     beforeLabel?: string;
     afterLabel?: string;
     contextLabel?: string;
-    whatChangedLabel?: string;
+    changesLabel?: string;
   };
 };
 
@@ -52,7 +52,7 @@ const headingId = `service-${slugify(title)}`;
         {
           changes && (
             <div>
-              <p class="mb-2 font-semibold text-text-dark">{ui?.whatChangedLabel}</p>
+              <p class="mb-2 font-semibold text-text-dark">{ui?.changesLabel}</p>
               <div class="content text-sm" set:html={markdownify(changes, true) as string} />
             </div>
           )

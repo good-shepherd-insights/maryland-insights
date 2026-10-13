@@ -18,6 +18,7 @@ type Props = {
   footerNote?: string;
   anchor?: string;
   headingLevel?: "h2" | "h3";
+  ui?: { alignedWithLabel?: string; namedOnPageLabel?: string };
 };
 
 const {
@@ -29,10 +30,11 @@ const {
   footerNote,
   anchor,
   headingLevel = "h2",
+  ui,
 } = Astro.props as Props;
 
 const headingId = `tool-${slugify(title)}`;
-const label = eyebrow;
+const label = eyebrow ?? (tone === "aligned-with" ? ui?.alignedWithLabel : ui?.namedOnPageLabel);
 const shownItems = items;
 const Heading = headingLevel;
 ---

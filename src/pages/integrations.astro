@@ -6,7 +6,6 @@ import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import IntegrationsGuidance from "@/partials/IntegrationsGuidance.astro";
 import Integrations from "@/partials/Integrations.astro";
-import type { CollectionPage } from "schema-dts";
 
 const integrationsPage = await getIntegrationsPage();
 const settings = await getSiteSettings();
@@ -27,15 +26,6 @@ const guidanceProps = {
   standards: guidance?.standards,
 };
 
-const collectionSchema: CollectionPage = {
-  "@type": "CollectionPage",
-  "name": title,
-  "description": description,
-  "url": `${settings.seoUrl ?? ""}/integrations`,
-  "publisher": {
-    "@id": `${settings.seoUrl ?? ""}/#organization`
-  }
-};
 ---
 
 <Base
@@ -44,17 +34,17 @@ const collectionSchema: CollectionPage = {
   meta_title={header.metaTitle}
   description={description}
   ui={settingsUi}
-  schema={[collectionSchema]}
 >
   <PageHeader
     title={title}
     description={description}
+    locale={settings.locale}
     ui={settingsUi.pageHeader}
   />
 
   <IntegrationsGuidance {...guidanceProps} />
 
-  <Integrations ui={integrationsPage?.ui?.integrations} />
+  <Integrations ui={integrationsPage?.ui?.integrations} logoAltTemplate={settingsUi.companyLogo?.altTemplate} />
 
   <Faqs prefix="integrations-faq" ui={settingsUi.faqs} />
   <CallToAction />

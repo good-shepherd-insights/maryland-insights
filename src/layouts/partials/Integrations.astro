@@ -11,13 +11,14 @@ import {
 } from "astro-swiper";
 import type { SwiperOptions } from "swiper/types";
 
-const { data, ui } = Astro.props;
+const { data, ui, logoAltTemplate } = Astro.props;
 if (data && data.enable === false) return null;
 
 let integrations_list = data?.integrations_list;
 let section_title = data?.section_title;
 let eyebrow = data?.eyebrow;
 let cardUi = data?.cardUi;
+let showMoreCard = data?.showMoreCard;
 
 if (!integrations_list) {
   const integrationsPage = await getIntegrationsPage();
@@ -29,6 +30,11 @@ if (!integrations_list) {
     link: i.link,
   });
   const curated = (integrationsPage?.grid?.integrations ?? []).map(toCard);
+  showMoreCard = integrationsPage?.grid?.showMoreCard ?? (
+    ui?.andMoreHeading
+      ? { title: ui.andMoreHeading, body: ui.andMoreDescription, link: ui.viewAllUrl }
+      : undefined
+  );
   integrations_list = curated.length > 0 ? curated : (await getIntegrations()).map(toCard);
   if (!section_title) section_title = integrationsPage?.grid?.title;
   if (!eyebrow) eyebrow = integrationsPage?.header?.eyebrow;
@@ -74,21 +80,21 @@ const swiperOptions: SwiperOptions = {
               <SwiperWrapper>
                 {integrations_list.map((integration: any) => (
                   <SwiperSlide>
-                    <IntegrationCard integration={integration} ui={cardUi} />
+                    <IntegrationCard integration={integration} ui={cardUi} logoAltTemplate={logoAltTemplate} />
                   </SwiperSlide>
                 ))}
                 <SwiperSlide>
-                  {ui?.viewAllUrl ? (
+                  {showMoreCard?.link ? (
                   <a
-                    href={ui.viewAllUrl}
+                    href={showMoreCard.link}
                     class="group relative flex h-full w-full items-start gap-3 rounded-2xl bg-body p-4 text-left shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)] duration-300 sm:gap-4"
                   >
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-light">
                       <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
                     </div>
                     <div class="min-w-0">
-                      <h3 class="mb-1 font-secondary text-sm font-bold leading-snug text-text-dark sm:text-base">{ui?.andMoreHeading}</h3>
-                      <p class="text-xs leading-relaxed text-text-dark/70 sm:text-sm">{ui?.andMoreDescription}</p>
+                      <h3 class="mb-1 font-secondary text-sm font-bold leading-snug text-text-dark sm:text-base">{showMoreCard?.title}</h3>
+                      <p class="text-xs leading-relaxed text-text-dark/70 sm:text-sm">{showMoreCard?.body}</p>
                     </div>
                   </a>
                   ) : (
@@ -99,8 +105,8 @@ const swiperOptions: SwiperOptions = {
                       <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
                     </div>
                     <div class="min-w-0">
-                      <h3 class="mb-1 font-secondary text-sm font-bold leading-snug text-text-dark sm:text-base">{ui?.andMoreHeading}</h3>
-                      <p class="text-xs leading-relaxed text-text-dark/70 sm:text-sm">{ui?.andMoreDescription}</p>
+                      <h3 class="mb-1 font-secondary text-sm font-bold leading-snug text-text-dark sm:text-base">{showMoreCard?.title}</h3>
+                      <p class="text-xs leading-relaxed text-text-dark/70 sm:text-sm">{showMoreCard?.body}</p>
                     </div>
                   </div>
                   )}
@@ -114,19 +120,19 @@ const swiperOptions: SwiperOptions = {
         {/* Desktop: grid */}
         <div class="hidden gap-6 lg:grid lg:grid-cols-2 xl:grid-cols-3">
           {integrations_list.map((integration: any) => (
-            <IntegrationCard integration={integration} ui={cardUi} />
+            <IntegrationCard integration={integration} ui={cardUi} logoAltTemplate={logoAltTemplate} />
           ))}
-          {ui?.viewAllUrl ? (
+          {showMoreCard?.link ? (
           <a
-            href={ui.viewAllUrl}
+            href={showMoreCard.link}
             class="group relative flex h-full w-full items-center gap-4 rounded-2xl bg-body p-6 text-left shadow-[0_8px_28px_-6px_rgba(0,0,0,0.14)] duration-300"
           >
             <div class="flex h-15 w-15 shrink-0 items-center justify-center rounded-full bg-light">
               <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
             </div>
             <div class="min-w-0">
-              <h3 class="h6 mb-2 shrink-0">{ui?.andMoreHeading}</h3>
-              <p class="text-sm text-text-dark/70">{ui?.andMoreDescription}</p>
+              <h3 class="h6 mb-2 shrink-0">{showMoreCard?.title}</h3>
+              <p class="text-sm text-text-dark/70">{showMoreCard?.body}</p>
             </div>
           </a>
           ) : (
@@ -137,8 +143,8 @@ const swiperOptions: SwiperOptions = {
               <FaArrowRight className="text-lg text-text-dark transition-transform duration-300 group-hover:translate-x-1" />
             </div>
             <div class="min-w-0">
-              <h3 class="h6 mb-2 shrink-0">{ui?.andMoreHeading}</h3>
-              <p class="text-sm text-text-dark/70">{ui?.andMoreDescription}</p>
+              <h3 class="h6 mb-2 shrink-0">{showMoreCard?.title}</h3>
+              <p class="text-sm text-text-dark/70">{showMoreCard?.body}</p>
             </div>
           </div>
           )}

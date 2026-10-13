@@ -1,5 +1,6 @@
 # build output
 dist/
+config/nginx/nginx.generated.conf
 .output/
 .vercel/
 .json/

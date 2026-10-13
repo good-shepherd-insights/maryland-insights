@@ -14,6 +14,7 @@ type Props = {
   articles?: RelatedArticle[];
   layout?: "grid" | "list" | "inline";
   maxItems?: number;
+  locale?: string;
 };
 
 const {
@@ -21,6 +22,7 @@ const {
   articles = [],
   layout = "grid",
   maxItems = 4,
+  locale,
 } = Astro.props as Props;
 
 const headingId = `related-${slugify(title)}`;
@@ -55,7 +57,7 @@ const articleDate = (value?: string | Date): { iso: string; label: string } | un
   if (Number.isNaN(date.getTime())) return undefined;
   return {
     iso: date.toISOString().slice(0, 10),
-    label: new Intl.DateTimeFormat("en-US", {
+    label: new Intl.DateTimeFormat(locale?.replace("_", "-"), {
       month: "short",
       day: "numeric",
       year: "numeric",

@@ -1,3 +1,7 @@
 ---
-return Astro.redirect("https://app.marylandinsights.com", 301);
+import { getSiteSettings } from "@/lib/sanity/queries";
+
+const destination = (await getSiteSettings())?.redirects?.getStarted;
+if (!destination) throw new Error("siteSettings.redirects.getStarted is required.");
+return Astro.redirect(destination, 301);
 ---

@@ -26,7 +26,7 @@ const features = ((_home?.features?.features ?? []) as any[]).map((f: any) => ({
     description: f.subtitle,
     image: f.image,
     button: f.button,
-    icon_srcs: f.icon ? [f.icon] : undefined,
+    icon_srcs: f.logos?.length ? f.logos : f.icon ? [f.icon] : undefined,
   },
 }));
 
@@ -176,7 +176,6 @@ const swiperOptions: SwiperOptions = {
                 <div class="w-full">
                   <CardPrimary
                     data={feature.data}
-                    id="/services"
                     equalHeight
                     iconSlot
                     iconSrcs={feature.data.icon_srcs}
@@ -196,7 +195,6 @@ const swiperOptions: SwiperOptions = {
         features?.map((feature) => (
           <CardPrimary
             data={feature.data}
-            id="/services"
             equalHeight
             iconSlot
             iconSrcs={feature.data.icon_srcs}

@@ -6,7 +6,6 @@ import CallToAction from "@/partials/CallToAction.astro";
 import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import IntegrationCard from "../components/IntegrationCard.astro";
-import type { CollectionPage } from "schema-dts";
 
 const toolsPage = await getToolsPage();
 const settings = await getSiteSettings();
@@ -27,15 +26,6 @@ const tools_list = (grid.tools ?? []).map((t: any) => ({
   link: undefined,
 }));
 
-const collectionSchema: CollectionPage = {
-  "@type": "CollectionPage",
-  "name": title,
-  "description": description,
-  "url": `${settings.seoUrl ?? ""}/tools`,
-  "publisher": {
-    "@id": `${settings.seoUrl ?? ""}/#organization`
-  }
-};
 ---
 
 <Base
@@ -44,11 +34,11 @@ const collectionSchema: CollectionPage = {
   meta_title={header.metaTitle}
   description={description}
   ui={settingsUi}
-  schema={[collectionSchema]}
 >
   <PageHeader
     title={title}
     description={description}
+    locale={settings.locale}
     ui={settingsUi.pageHeader}
   />
 
@@ -66,7 +56,7 @@ const collectionSchema: CollectionPage = {
       {tools_list && tools_list.length > 0 ? (
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {tools_list.map((tool: any) => (
-            <IntegrationCard integration={tool} ui={toolsPage?.ui?.integrationCard} />
+            <IntegrationCard integration={tool} ui={toolsPage?.ui?.integrationCard} logoAltTemplate={settingsUi.companyLogo?.altTemplate} />
           ))}
         </div>
       ) : (

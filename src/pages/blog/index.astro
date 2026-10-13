@@ -3,12 +3,11 @@ import CardPrimary from "@/components/CardPrimary.astro";
 import Base from "@/layouts/Base.astro";
 import { getBlogPage, getBlogPosts, getSiteSettings } from "@/lib/sanity/queries";
 import { sortByDate } from "@/lib/utils/sortFunctions";
-import { markdownify, slugify, humanize, plainify } from "@/lib/utils/textConverter";
+import { markdownify, slugify } from "@/lib/utils/textConverter";
 import BlogLibraryGuide from "@/partials/BlogLibraryGuide.astro";
 import CallToAction from "@/partials/CallToAction.astro";
 import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
-import type { Blog, BlogPosting, Person } from "schema-dts";
 
 const blogPage = await getBlogPage();
 const settings = await getSiteSettings();
@@ -52,34 +51,14 @@ const featuredCol2 = featuredFive.slice(1, 3);
 const featuredCol3 = featuredFive.slice(3, 5);
 
 const categories: string[] = [...new Set((posts as any[]).flatMap((p: any) => p.data.categories as string[]))];
-const categoryGroups = [
-  ...new Set(categories.map((category: string) => slugify(category).toLocaleLowerCase())),
-];
-const categoryLabels = [
-  ...new Map(categories.map((category: string) => [slugify(category).toLocaleLowerCase(), category])).values(),
-];
+const categoryLabelsBySlug = new Map(categories.map((category: string) => [slugify(category).toLocaleLowerCase(), category]));
+const categoryGroups = [...categoryLabelsBySlug.keys()];
+const categoryLabels = [...categoryLabelsBySlug.values()];
 const sortedPosts = sortByDate(posts);
-
-const blogIndexSchema: Blog = {
-  "@type": "Blog",
-  "name": plainify(title),
-  "description": plainify(description),
-  "url": `${settings.seoUrl ?? ""}/blog`,
-  "blogPost": sortedPosts.slice(0, 10).map((post: any) => ({
-    "@type": "BlogPosting",
-    "headline": plainify(post.data.title),
-    "url": `${settings.seoUrl ?? ""}/blog/${post.id}`,
-    "datePublished": post.data.date,
-    "author": {
-      "@type": "Person",
-      "name": plainify(post.data.author?.name),
-    } as Person,
-  } as BlogPosting)),
-};
 ---
 
-<Base {...blogPage} ui={settingsUi} schema={[blogIndexSchema]}>
-  <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
+<Base {...blogPage} ui={settingsUi}>
+  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
 
   {blogGuide?.enable && <BlogLibraryGuide
     title={blogGuide.title}
@@ -109,6 +88,7 @@ const blogIndexSchema: Blog = {
                 <CardPrimary
                   data={featuredFirst.data}
                   id={`/blog/${featuredFirst.id}`}
+                  locale={settings.locale}
                   ui={cardUi}
                 />
               </div>
@@ -121,6 +101,7 @@ const blogIndexSchema: Blog = {
                     <CardPrimary
                       data={post.data}
                       id={`/blog/${post.id}`}
+                      locale={settings.locale}
                       ui={cardUi}
                     />
                   </div>
@@ -135,6 +116,7 @@ const blogIndexSchema: Blog = {
                     <CardPrimary
                       data={post.data}
                       id={post.id}
+                      locale={settings.locale}
                       ui={cardUi}
                     />
                   </div>
@@ -177,7 +159,7 @@ const blogIndexSchema: Blog = {
                     type="button"
                     class={`btn btn-outline btn-sm border-2 bg-body hover:-translate-y-0.75 transition-transform m-3 inline-block capitalize py-3 rounded-full`}
                   >
-                    {humanize(group)}
+                    {categoryLabelsBySlug.get(group)}
                   </button>
                 </li>
               ))}
@@ -210,6 +192,7 @@ const blogIndexSchema: Blog = {
                       data={post.data}
                       id={`/blog/${post.id}`}
                       hasDarkArrow
+                      locale={settings.locale}
                       ui={cardUi}
                     />
                   </li>

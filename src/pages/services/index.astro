@@ -7,7 +7,6 @@ import { getServicesPage, getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
-import type { CollectionPage } from "schema-dts";
 
 const servicesPage = await getServicesPage();
 const settings = await getSiteSettings();
@@ -31,19 +30,10 @@ const services = (grid.services ?? []).map((s: any) => ({
   },
 }));
 
-const collectionSchema: CollectionPage = {
-  "@type": "CollectionPage",
-  "name": title,
-  "description": description,
-  "url": `${settings.seoUrl ?? ""}/services`,
-  "publisher": {
-    "@id": `${settings.seoUrl ?? ""}/#organization`
-  }
-};
 ---
 
-<Base {...servicesPage} ui={settingsUi} schema={[collectionSchema]}>
-  <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
+<Base {...servicesPage} ui={settingsUi}>
+  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
 
   <section class="section-sm bg-light">
     <div class="container">
@@ -64,6 +54,7 @@ const collectionSchema: CollectionPage = {
                 <CardPrimary
                   data={service.data}
                   id={`/services/${service.id}`}
+                  locale={settings.locale}
                   compactImage={true}
                   imageFit="contain"
                   imageSizes="(min-width: 1024px) 18rem, (min-width: 768px) 16rem, 14rem"

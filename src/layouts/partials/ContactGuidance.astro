@@ -2,10 +2,10 @@
 type Props = {
   eyebrow?: string;
   title?: string;
-  intro?: string;
+  processIntro?: string;
   description?: string;
   steps?: { number?: string; title?: string; description?: string }[];
-  contextHeading?: string;
+  contextTitle?: string;
   contextIntro?: string;
   contextItems?: { title?: string; detail?: string }[];
 };
@@ -13,10 +13,10 @@ type Props = {
 const {
   eyebrow,
   title,
-  intro,
+  processIntro,
   description,
   steps = [],
-  contextHeading,
+  contextTitle,
   contextIntro,
   contextItems = [],
 } = Astro.props as Props;
@@ -34,7 +34,7 @@ const {
           {title}
         </h2>
         <p class="text-lg leading-relaxed text-text-dark/80 mb-4 max-w-prose">
-          {intro}
+          {processIntro}
         </p>
         <p class="leading-relaxed text-text-light max-w-prose text-sm">
           {description}
@@ -63,7 +63,7 @@ const {
     <div class="mt-12 pt-10 border-t border-border lg:mt-16">
       <div class="mb-8">
         <h3 class="h4 font-medium text-balance text-text-dark">
-          {contextHeading}
+          {contextTitle}
         </h3>
         <p class="mt-1 text-sm text-text-light max-w-2xl">
           {contextIntro}

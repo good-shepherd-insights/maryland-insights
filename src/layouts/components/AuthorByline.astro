@@ -23,6 +23,7 @@ type Props = {
   variant?: "inline" | "card" | "minimal";
   /** Optional extra classes on the outer wrapper (spacing handled by the host layout). */
   className?: string;
+  locale?: string;
   ui?: {
     publishedLabel?: string;
     updatedLabel?: string;
@@ -31,9 +32,6 @@ type Props = {
     reviewedByTemplate?: string;
   };
 };
-
-/** Sentinel reviewer name meaning "no individual reviewer" — data value, not display text. */
-const EDITORIAL_REVIEW_SENTINEL = "Editorial Review";
 
 const {
   name,
@@ -46,6 +44,7 @@ const {
   reviewer,
   variant = "inline",
   className,
+  locale,
   ui,
 } = Astro.props as Props;
 
@@ -53,7 +52,7 @@ const formatDate = (iso?: string): string | undefined => {
   if (!iso) return undefined;
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return undefined;
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat(locale?.replace("_", "-"), {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -99,9 +98,9 @@ const socialIconKey = (platform: string): string | undefined => {
 };
 
 const hasSocialLinks = socialLinks.length > 0;
-const displayName = name.replace(/\s+Team$/, "");
-const reviewerName = reviewer?.name === EDITORIAL_REVIEW_SENTINEL ? undefined : reviewer?.name;
-const reviewerRole = reviewer?.role?.replace(/\s+Editorial$/, "");
+const displayName = name;
+const reviewerName = reviewer?.name;
+const reviewerRole = reviewer?.role;
 const reviewerLabelText = reviewerName && ui?.reviewedByTemplate
   ? ui.reviewedByTemplate.replace("{name}", reviewerName).replace("{role}", reviewerRole ? `, ${reviewerRole}` : "")
   : undefined;

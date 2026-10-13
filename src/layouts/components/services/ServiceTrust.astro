@@ -13,8 +13,8 @@ type Props = {
     backupsLabel?: string;
     uptimeLabel?: string;
     migrationLabel?: string;
-    includedHeading?: string;
-    additionalCostHeading?: string;
+    includedLabel?: string;
+    extraCostLabel?: string;
   };
 };
 
@@ -57,13 +57,13 @@ const headingId = `service-${slugify(title)}`;
 
         <div class="mt-10 grid gap-8 md:grid-cols-2">
           <div>
-            <h3 class="h6 mb-4">{ui?.includedHeading}</h3>
+            <h3 class="h6 mb-4">{ui?.includedLabel}</h3>
             <ul class="space-y-3 border-t border-border pt-4">
               {included.map((item) => <li class="border-b border-border pb-3 text-sm text-text-dark/80" set:html={markdownify(item)} />)}
             </ul>
           </div>
           <div>
-            <h3 class="h6 mb-4">{ui?.additionalCostHeading}</h3>
+            <h3 class="h6 mb-4">{ui?.extraCostLabel}</h3>
             <ul class="space-y-3 border-t border-border pt-4">
               {extraCost.map((item) => <li class="border-b border-border pb-3 text-sm text-text-dark/80" set:html={markdownify(item)} />)}
             </ul>

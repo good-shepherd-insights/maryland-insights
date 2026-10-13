@@ -3,7 +3,7 @@ export const prerender = true;
 import Base from "@/layouts/Base.astro";
 import ReplacesTable from "@/components/ReplacesTable.astro";
 import { getHomePage, getSiteSettings } from "@/lib/sanity/queries";
-import { markdownify, plainify } from "@/lib/utils/textConverter";
+import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import ChooseSwiper from "@/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
@@ -13,7 +13,6 @@ import TrustStrip from "@/layouts/partials/TrustStrip.astro";
 import Integrations from "@/partials/Integrations.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
 import Faqs from "@/partials/Faqs.astro";
-import type { FAQPage } from "schema-dts";
 
 const home = await getHomePage();
 const settings = await getSiteSettings();
@@ -73,25 +72,9 @@ const partners = (trust.logos ?? []).map((l: any) => ({
   url: l.url,
 }));
 
-// Unique Homepage FAQ Schema for Semantic Density
-const faqSchema: FAQPage | null = faqs_section?.faqs_list?.length
-  ? {
-      "@type": "FAQPage",
-      mainEntity: faqs_section.faqs_list.map((faq: any) => ({
-        "@type": "Question",
-        name: plainify(faq.question),
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: plainify(faq.answer),
-        },
-      })),
-    }
-  : null;
-
-const combinedSchema = [faqSchema].filter(Boolean);
 ---
 
-<Base {...home} ui={settingsUi} schema={combinedSchema}>
+<Base {...home} ui={settingsUi}>
   <DesignsHeroV2 />
   <TrustStrip partners={partners} ui={trustStripUi} />
   <TrustedBrands />
@@ -115,7 +98,7 @@ const combinedSchema = [faqSchema].filter(Boolean);
       </section>
     )
   }
-  <Integrations />
+  <Integrations logoAltTemplate={settingsUi.companyLogo?.altTemplate} />
   <Facts data={facts_section} enableAnimation={false} />
   {faqs_section.faqs_list.length > 0 && (
     <Faqs data={faqs_section} prefix="home-faq" ui={settingsUi.faqs} />

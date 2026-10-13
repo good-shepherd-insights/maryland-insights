@@ -11,8 +11,6 @@ import { GoogleTagmanagerNoscript } from "@digi4care/astro-google-tagmanager";
 import { AstroFont } from "astro-font";
 import { ClientRouter } from "astro:transitions";
 import { SEO } from "astro-seo";
-import JsonLd from "@/lib/seo/JsonLd.astro";
-import { buildWebSite, buildOrganization, buildBreadcrumbList, buildWebPage, buildNavigation } from "@/lib/seo/graph";
 import { canonicalUrl } from "@/lib/seo/ids";
 import { getOpenGraphImagePath } from "@/lib/seo/openGraphImagePath";
 import { getSiteSettings } from "@/lib/sanity/queries";
@@ -39,7 +37,6 @@ export interface Props {
   image?: string;
   noindex?: boolean;
   canonical?: string;
-  schema?: any[];
   head_links?: { rel: string; href: string; crossorigin?: string }[];
   og_type?: "website" | "article";
   date_published?: string;
@@ -66,9 +63,6 @@ const twitterEntry = (siteSettings.socialLinks ?? []).find((s: any) => s.platfor
 const twitterHandle = twitterEntry
   ? `@${twitterEntry.url.split("/").filter(Boolean).pop()}`
   : undefined;
-
-// Resolve locale for inLanguage — from Sanity siteSettings
-const resolvedLocale = siteSettings.locale ? siteSettings.locale.replace("_", "-") : undefined;
 
 // Bot directives from Sanity (array of {bot, directive}) → map for meta tags
 const botDirectivesMap: Record<string, string> = {};
@@ -115,28 +109,12 @@ const resolvedImage = getOpenGraphImagePath(Astro.url.pathname);
 const baseUrl = siteSettings.seoUrl ?? "";
 const fallbackTitle = siteSettings.siteTitle ?? "";
 const fallbackDescription = siteSettings.seoDescription ?? "";
+const documentLocale = siteSettings.locale?.replace("_", "-");
 
-// Combine all graph items — shared nodes come from typed builders in @/lib/seo/graph
-// so canonical/@id generation can't diverge per page (see @/lib/seo/ids canonicalUrl).
-const graphItems: unknown[] = [
-  buildWebSite(siteSettings),
-  buildOrganization(siteSettings),
-  buildBreadcrumbList(siteSettings, Astro.url.pathname),
-  buildWebPage(siteSettings, {
-    pathname: Astro.url.pathname,
-    name: resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle,
-    description: description ? description : fallbackDescription,
-    canonical,
-    image: resolvedImage ? `${baseUrl}${resolvedImage}` : undefined,
-    locale: resolvedLocale,
-  }),
-  buildNavigation(siteSettings),
-  ...(Astro.props.schema || []),
-];
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={documentLocale}>
   <head>
     <meta charset="UTF-8" />
 
@@ -202,7 +180,7 @@ const graphItems: unknown[] = [
         link: [
           { rel: "shortcut icon", href: siteSettings.favicon },
           { rel: "security", href: "/.well-known/security.txt" },
-          { rel: "search", type: "application/opensearchdescription+xml", title: "Maryland Insights", href: "/opensearch.xml" },
+          { rel: "search", type: "application/opensearchdescription+xml", title: siteSettings.siteTitle, href: "/opensearch.xml" },
           ...(head_links as any[])
         ]
       }}
@@ -242,7 +220,6 @@ const graphItems: unknown[] = [
 
     <ClientRouter />
 
-    <JsonLd graph={graphItems} />
   </head>
 
   <body>

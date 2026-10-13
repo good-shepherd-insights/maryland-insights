@@ -8,7 +8,6 @@ import CallToAction from "@/partials/CallToAction.astro";
 import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import ContactGuidance from "@/partials/ContactGuidance.astro";
-import type { ContactPage } from "schema-dts";
 
 const _contact = await getContactPage();
 const settings = await getSiteSettings();
@@ -48,18 +47,10 @@ const toContactHref = (rawValue: string) => {
   return value;
 };
 
-const contactSchema: ContactPage = {
-  "@type": "ContactPage",
-  "mainEntity": {
-    "@id": `${settings.seoUrl ?? ""}/#organization`,
-  },
-};
-
-
 ---
 
-<Base title={title} metaTitle={metaTitle} description={description} ui={settingsUi} schema={[contactSchema]}>
-  <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
+<Base title={title} metaTitle={metaTitle} description={description} ui={settingsUi}>
+  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
   <ContactGuidance {..._contact?.guidance} />
   <section class="section-sm bg-light">
     <div class="container lg:w-[80%] xl:w-[70%] mx-auto">

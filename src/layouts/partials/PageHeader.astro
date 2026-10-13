@@ -2,7 +2,7 @@
 import ImageMod from "@/components/ImageMod.astro";
 import UpdatedDateBadge from "@/components/UpdatedDateBadge.astro";
 import dateFormat from "@/lib/utils/dateFormat";
-import { humanize, markdownify } from "@/lib/utils/textConverter";
+import { markdownify } from "@/lib/utils/textConverter";
 
 const {
   title = "",
@@ -10,6 +10,7 @@ const {
   blogData,
   caseData,
   careerData,
+  locale,
   ui,
 }: {
   title?: string;
@@ -20,6 +21,7 @@ const {
     date: string;
   };
   careerData?: { department: string; vacancy: string; deadline: string };
+  locale?: string;
   ui?: {
     writtenByLabel?: string;
     departmentLabel?: string;
@@ -27,6 +29,8 @@ const {
     deadlineLabel?: string;
     caseLastUpdatedLabel?: string;
     badgeUpdatedLabel?: string;
+    publishedLabel?: string;
+    staleNote?: string;
   };
 } = Astro.props;
 
@@ -41,7 +45,7 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
      
      
       class={`xl:w-[80%] text-balance mx-auto ${(blogData || caseData) && "h2"}`}
-      set:text={humanize(title)}
+      set:text={title}
     />
     {
       description && (
@@ -80,6 +84,7 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
               datePublished={blogData.date ? dateString(blogData.date) : undefined}
               variant="badge"
               label={ui?.badgeUpdatedLabel}
+              locale={locale}
               ui={ui}
             />
           )}
@@ -110,8 +115,8 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
           {caseData.date && (
             <p class="flex flex-col gap-1 text-left">
               <span class="text-xs">{ui?.caseLastUpdatedLabel}</span>
-              <time class="text-text-dark" datetime={dateFormat(caseData.date)}>
-                {dateFormat(caseData.date)}
+              <time class="text-text-dark" datetime={dateString(caseData.date)}>
+                {dateFormat(caseData.date, locale)}
               </time>
             </p>
           )}
@@ -141,7 +146,7 @@ const dateString = (value: Date | string): string => value instanceof Date ? val
           {careerData.deadline && (
             <span class="text-sm flex flex-col gap-2">
               {ui?.deadlineLabel}
-              <span class="font-semibold text-text-dark">{dateFormat(careerData.deadline)}</span>
+              <span class="font-semibold text-text-dark">{dateFormat(careerData.deadline, locale)}</span>
             </span>
           )}
         </div>

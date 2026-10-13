@@ -10,7 +10,6 @@ import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Testimonial from "@/partials/Testimonial.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
-import type { AboutPage } from "schema-dts";
 
 const aboutPage = await getAboutPage();
 const settings = await getSiteSettings();
@@ -43,16 +42,10 @@ const story_section = {
   })),
 };
 
-const aboutSchema: AboutPage = {
-  "@type": "AboutPage",
-  "mainEntity": {
-    "@id": `${settings.seoUrl ?? ""}/#organization`,
-  },
-};
 ---
 
-<Base {...aboutPage} title={header.title} metaTitle={header.metaTitle} description={header.description} ui={settingsUi} schema={[aboutSchema]}>
-  <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
+<Base {...aboutPage} title={header.title} metaTitle={header.metaTitle} description={header.description} ui={settingsUi}>
+  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
 
   <AboutNarrative {...company_narrative} />
 

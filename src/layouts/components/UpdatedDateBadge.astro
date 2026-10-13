@@ -6,6 +6,7 @@ type Props = {
   variant?: "inline" | "badge" | "minimal";
   showPublished?: boolean;
   class?: string;
+  locale?: string;
   ui?: { publishedLabel?: string; staleNote?: string };
 };
 
@@ -16,6 +17,7 @@ const {
   variant = "inline",
   showPublished = true,
   class: className,
+  locale,
   ui,
 } = Astro.props as Props;
 
@@ -29,7 +31,7 @@ const parseDate = (raw: string | undefined): Date | null => {
   return Number.isNaN(d.getTime()) ? null : d;
 };
 
-const dateFormatter = new Intl.DateTimeFormat("en-US", {
+const dateFormatter = new Intl.DateTimeFormat(locale?.replace("_", "-"), {
   month: "long",
   day: "numeric",
   year: "numeric",

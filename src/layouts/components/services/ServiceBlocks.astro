@@ -27,9 +27,23 @@ type Block = {
 
 type Props = {
   blocks?: Block[];
+  locale?: string;
 };
 
-const { blocks = [] } = Astro.props as Props;
+const { blocks = [], locale } = Astro.props as Props;
+
+// Sanity stores cells positionally against `columns`; ComparisonTable reads `values` keyed by column key.
+const comparisonRows = (block: Block) =>
+  (block.rows ?? []).map((row: any, i: number) => ({
+    ...row,
+    key: row.key ?? `row-${i}`,
+    values: Object.fromEntries(
+      (block.columns ?? []).map((col: any, j: number) => [
+        col.key,
+        row.cells?.[j]?.kind === "check" ? true : (row.cells?.[j]?.text ?? null),
+      ]),
+    ),
+  }));
 ---
 
 {
@@ -52,6 +66,7 @@ const { blocks = [] } = Astro.props as Props;
             headingLevel={block.headingLevel}
             lookup={block.lookup}
             ui={block.ui}
+            platforms={block.platforms}
           />
         );
       case "authorByline":
@@ -69,6 +84,7 @@ const { blocks = [] } = Astro.props as Props;
                 reviewer={block.reviewer}
                 variant={block.variant}
                 className={block.className}
+                locale={locale}
                 ui={block.ui}
               />
             </div>
@@ -91,6 +107,7 @@ const { blocks = [] } = Astro.props as Props;
             articles={block.articles}
             layout={block.layout}
             maxItems={block.maxItems}
+            locale={locale}
           />
         );
       case "toolCallout":
@@ -104,6 +121,7 @@ const { blocks = [] } = Astro.props as Props;
             footerNote={block.footerNote}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            ui={block.ui}
           />
         );
       case "aiSearchSection":
@@ -222,7 +240,7 @@ const { blocks = [] } = Astro.props as Props;
             title={block.title}
             intro={block.intro}
             columns={block.columns}
-            rows={block.rows}
+            rows={comparisonRows(block)}
             footerNote={block.footerNote}
             highlightRow={block.highlightRow}
             variant={block.variant}

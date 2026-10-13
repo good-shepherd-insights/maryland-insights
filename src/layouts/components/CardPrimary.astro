@@ -16,9 +16,11 @@ const {
   imageFit = "cover",
   imageSizes = "(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw",
   class: className = "",
+  locale,
   ui,
 } = Astro.props;
 const { title, description, image, button, date, author } = data;
+const dateTime = date ? (typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : new Date(date).toISOString()) : undefined;
 const isSvg = typeof image === "string" && image.endsWith(".svg");
 const imageWidth = smallImage ? 172 : 696;
 const imageHeight = smallImage ? 40 : 528;
@@ -61,7 +63,7 @@ const imageFrameClass = smallImage
       <div class="flex items-center gap-3 mb-4 text-xs text-text-light">
         <span>{author.name}</span>
         <span class="text-text-light/50">•</span>
-        <time datetime={dateFormat(date)}>{dateFormat(date)}</time>
+        <time datetime={dateTime}>{dateFormat(date, locale)}</time>
       </div>
     )
   }

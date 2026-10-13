@@ -1,17 +1,16 @@
-import { format } from "date-fns";
-
 const dateFormat = (
   date: Date | string,
-  pattern: string = "dd MMM, yyyy",
+  locale?: string | undefined,
 ): string => {
-  // Parse date-only strings (YYYY-MM-DD) as local time so the calendar
-  // day matches the stored value instead of shifting under the server timezone.
+  // Keep date-only CMS values on the stored calendar day in every time zone.
   const dateObj =
     typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date.trim())
-      ? new Date(`${date.trim()}T12:00:00`)
+      ? new Date(`${date.trim()}T12:00:00Z`)
       : new Date(date);
-  const output = format(dateObj, pattern);
-  return output;
+  return new Intl.DateTimeFormat(locale?.replace("_", "-"), {
+    dateStyle: "medium",
+    timeZone: "UTC",
+  }).format(dateObj);
 };
 
 export default dateFormat;
