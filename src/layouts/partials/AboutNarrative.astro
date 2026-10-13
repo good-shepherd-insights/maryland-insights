@@ -9,7 +9,7 @@ type NarrativeSection = {
 
 type Props = {
   title: string;
-  image: string;
+  image?: string;
   sections: NarrativeSection[];
   ui?: { imageAlt?: string; navAriaLabel?: string; onThisPageLabel?: string };
 };
@@ -25,6 +25,7 @@ const purposeSections = sections.slice(2);
       <h2 id="about-narrative-title" class="text-balance">{title}</h2>
     </div>
 
+    {image && (
     <figure class="mt-10 lg:mt-14">
       <ImageMod
         src={image}
@@ -34,6 +35,7 @@ const purposeSections = sections.slice(2);
         height={601}
       />
     </figure>
+    )}
 
     <div class="mt-12 lg:mt-20 grid gap-10 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16 xl:gap-24">
       <nav class="lg:sticky lg:top-28 lg:self-start" aria-label={ui?.navAriaLabel}>

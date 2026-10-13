@@ -1,6 +1,6 @@
 ---
 import Base from "@/layouts/Base.astro";
-import { getListPage } from "@/lib/contentParser.astro";
+import { getFaqsPage, getSiteSettings } from "@/lib/sanity/queries";
 import { plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
@@ -9,13 +9,34 @@ import Faqs from "@/partials/Faqs.astro";
 import FaqSupport from "@/partials/FaqSupport.astro";
 import type { FAQPage, Question } from "schema-dts";
 
-const pageIndex = await getListPage("faqs", "-index");
-if (pageIndex.data.draft) return Astro.redirect("/404");
+const faqsPage = await getFaqsPage();
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const header = faqsPage?.header ?? {};
+const title = header.title;
+const description = header.description;
 
-const { title, description } = pageIndex.data;
+const list = faqsPage?.list ?? {};
+const faqs_section = {
+  faqs_list: (list.items ?? []).map((faq: any) => ({
+    question: faq.question,
+    answer: faq.answer,
+  })),
+  section_title: list.sectionTitle,
+};
 
-const faqsComponent = await getListPage("faqs", "-general");
-const faqs_section = faqsComponent.data;
+const support = faqsPage?.support ?? {};
+const supportProps = {
+  eyebrow: support.eyebrow,
+  title: support.title,
+  intro: support.description,
+  description: support.descriptionSecondary,
+  cards: (support.topics ?? []).map((t: any) => ({
+    title: t.label,
+    description: t.description,
+    href: t.link,
+  })),
+};
 
 const faqSchema: FAQPage = {
   "@type": "FAQPage",
@@ -33,12 +54,12 @@ const faqSchema: FAQPage = {
 };
 ---
 
-<Base {...pageIndex.data} schema={[faqSchema]}>
-  <PageHeader title={title} description={description} />
+<Base {...faqsPage} ui={settingsUi} schema={[faqSchema]}>
+  <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />
 
-  <FaqSupport />
+  <FaqSupport {...supportProps} />
 
-  <Faqs data={faqs_section} />
+  <Faqs data={faqs_section} ui={settingsUi.faqs} />
 
   <Testimonial />
   <CallToAction />

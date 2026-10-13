@@ -2,30 +2,77 @@
 export const prerender = true;
 import Base from "@/layouts/Base.astro";
 import ReplacesTable from "@/components/ReplacesTable.astro";
-import { getListPage } from "@/lib/contentParser.astro";
+import { getHomePage, getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import ChooseSwiper from "@/partials/ChooseSwiper.astro";
 import Facts from "@/partials/Facts.astro";
 import Features from "@/partials/Features.astro";
-// import FeautresCarousel from "@/partials/FeautresCarousel.astro";
 import DesignsHeroV2 from "@/layouts/partials/DesignsHeroV2.astro";
 import TrustStrip from "@/layouts/partials/TrustStrip.astro";
 import Integrations from "@/partials/Integrations.astro";
-// import PricingGrid from "@/partials/PricingGrid.astro";
 import TrustedBrands from "@/partials/TrustedBrands.astro";
 import Faqs from "@/partials/Faqs.astro";
 import type { FAQPage } from "schema-dts";
 
-const pageIndex = await getListPage("homepage", "-index");
-const faqsComponent = await getListPage("faqs", "-homepage");
-const faqs_section = faqsComponent.data;
+const home = await getHomePage();
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const homeUi = home?.ui ?? {};
 
-const pricingSectionPage = await getListPage("pricingSection", "pricing");
-const comparison_section = pricingSectionPage.data;
+const stack = home?.serviceStack ?? {};
+const agents_swiper = {
+  enable: true,
+  title: stack.title,
+  agents: (stack.cards ?? []).map((c: any) => ({
+    label: c.label,
+    description: c.description,
+    icon: c.icon,
+    points: c.points ?? [],
+    button: c.button ? { ...c.button, enable: true } : undefined,
+  })),
+};
+
+const faq = home?.faq ?? {};
+const faqs_section = {
+  faqs_list: (faq.items ?? []).map((f: any) => ({ question: f.question, answer: f.answer })),
+  section_title: faq.sectionTitle,
+};
+
+const comparison = home?.comparison ?? {};
+const comparison_section = {
+  enable: true,
+  title: comparison.title,
+};
+const planNames = (comparison.plans ?? []).map((p: any) => ({
+  label: p.label,
+  isUs: p.isUs,
+}));
+const categories = (comparison.categories ?? []).map((c: any) => ({
+  category: c.category,
+  rows: (c.rows ?? []).map((r: any) => ({
+    name: r.name,
+    description: r.description,
+    values: (r.cells ?? []).map((cell: any) =>
+      cell.kind === "check" ? "active" : cell.kind === "cross" ? "cross" : (cell.text ?? "")
+    ),
+  })),
+}));
+
+const facts = home?.facts ?? {};
+const facts_section = { enable: true, facts: facts.facts ?? [] };
+
+const trust = home?.trustStrip ?? {};
+const trustStripUi = homeUi.trustStrip ?? {};
+const partners = (trust.logos ?? []).map((l: any) => ({
+  name: l.name,
+  file: l.logoUrl,
+  h: 32,
+  url: undefined,
+}));
 
 // Unique Homepage FAQ Schema for Semantic Density
-const faqSchema: FAQPage | null = faqs_section?.faqs_list
+const faqSchema: FAQPage | null = faqs_section?.faqs_list?.length
   ? {
       "@type": "FAQPage",
       mainEntity: faqs_section.faqs_list.map((faq: any) => ({
@@ -42,11 +89,11 @@ const faqSchema: FAQPage | null = faqs_section?.faqs_list
 const combinedSchema = [faqSchema].filter(Boolean);
 ---
 
-<Base {...pageIndex.data} schema={combinedSchema}>
+<Base {...home} ui={settingsUi} schema={combinedSchema}>
   <DesignsHeroV2 />
-  <TrustStrip />
+  <TrustStrip partners={partners} ui={trustStripUi} />
   <TrustedBrands />
-  <ChooseSwiper data={pageIndex.data.agents_swiper} />
+  <ChooseSwiper data={agents_swiper} ui={homeUi.chooseSwiper} />
   <Features />
   {
     comparison_section.enable && (
@@ -58,17 +105,16 @@ const combinedSchema = [faqSchema].filter(Boolean);
           />
 
           <ReplacesTable
-            categories={comparison_section.categories}
-            planNames={comparison_section.plan_names}
+            categories={categories}
+            planNames={planNames}
+            ui={homeUi.replacesTable}
           />
         </div>
       </section>
     )
   }
   <Integrations />
-  {/* <PricingGrid haveDivider /> */}
-  {/* <FeautresCarousel /> */}
-  <Facts data={pageIndex.data.facts_section} enableAnimation={false} />
-  <Faqs data={faqs_section} prefix="home-faq" />
+  <Facts data={facts_section} enableAnimation={false} />
+  <Faqs data={faqs_section} prefix="home-faq" ui={settingsUi.faqs} />
   <CallToAction />
 </Base>

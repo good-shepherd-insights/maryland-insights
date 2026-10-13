@@ -1,8 +1,9 @@
 ---
-import { getListPage } from "@/lib/contentParser.astro";
+import { getHomePage } from "@/lib/sanity/queries";
+import { adaptHomeBanner } from "@/lib/sanity/adapters";
 import { markdownify } from "@/lib/utils/textConverter";
 
-const pageIndex = await getListPage("homepage", "-index");
+const pageIndex = { data: { banner: adaptHomeBanner(await getHomePage()) } };
 const {
   title,
   content,

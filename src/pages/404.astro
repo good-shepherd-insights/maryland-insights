@@ -1,5 +1,6 @@
 ---
 import Base from "@/layouts/Base.astro";
+import { getSiteSettings } from "@/lib/sanity/queries";
 
 type Props = {
   title?: string;
@@ -10,9 +11,11 @@ type Props = {
 };
 
 const { title, heading, description, homeLinkText, homeLinkUrl } = Astro.props as Props;
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
 ---
 
-<Base title={title} noindex={true}>
+<Base title={title} ui={settingsUi} noindex={true}>
   <section
     class="section bg-light pt-30 lg:pt-43 bg-4col-grid overflow-x-hidden border-b border-border"
   >

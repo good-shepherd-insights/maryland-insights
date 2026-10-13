@@ -3,7 +3,8 @@ export const prerender = true;
 
 import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
-import { getSinglePage } from "@/lib/contentParser.astro";
+import { getServicePageSlugs, getServicePage, getSiteSettings } from "@/lib/sanity/queries";
+import { adaptServicePage } from "@/lib/sanity/adapters";
 import PageHeader from "@/partials/PageHeader.astro";
 import Faqs from "@/partials/Faqs.astro";
 import ServiceBlocks from "@/components/services/ServiceBlocks.astro";
@@ -12,25 +13,24 @@ import { plainify } from "@/lib/utils/textConverter";
 import type { SoftwareApplication, FAQPage, Question } from "schema-dts";
 
 export async function getStaticPaths() {
-  const services = await getSinglePage("services");
-
-  const paths = services.map((service) => ({
-    params: {
-      single: service.id,
-    },
-    props: { service },
+  const slugs = await getServicePageSlugs();
+  return slugs.map((slug) => ({
+    params: { single: slug },
+    props: { slug },
   }));
-  return paths;
 }
 
-const { service } = Astro.props;
-const { title, description, image, faqs_list, blocks = [], date_modified, faq_title_prefix } = service.data;
-const hasLeadHero = blocks.some((block: { type: string }) => block.type === "leadCapture");
+const { slug } = Astro.props;
+const service = adaptServicePage(await getServicePage(slug));
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const { title, description, image, faqs_list, blocks = [], date_modified, faq_title_prefix, faqsUi } = service;
+const hasLeadHero = blocks.some((block: { _type: string }) => block._type === "leadCapture");
 const ctaProps = {
-  title: config.service_cta.title,
-  description: config.service_cta.description,
-  buttonLabel: config.service_cta.button_label,
-  buttonLink: config.service_cta.button_link,
+  title: service.cta_title,
+  description: service.cta_description,
+  buttonLabel: service.cta_button_label,
+  buttonLink: service.cta_button_link,
 };
 
 const serviceSchema: SoftwareApplication = {
@@ -72,12 +72,12 @@ if (faqs_list && faqs_list.length > 0) {
 }
 ---
 
-<Base {...service.data} schema={pageSchemas}>
-  {!hasLeadHero && <PageHeader title={title} description={description} />}
+<Base {...service} ui={settingsUi} schema={pageSchemas}>
+  {!hasLeadHero && <PageHeader title={title} description={description} ui={settingsUi.pageHeader} />}
 
   <ServiceBlocks blocks={blocks} />
 
-  {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `${faq_title_prefix ?? ""}${title}` }} prefix="service-faq" />}
+  {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: `${faq_title_prefix ?? ""}${title}` }} prefix="service-faq" ui={faqsUi} />}
 
   <ServiceCTA {...ctaProps} />
 </Base>

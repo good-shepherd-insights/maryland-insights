@@ -6,7 +6,8 @@ import ImageMod from "@/components/ImageMod.astro";
 import Share from "@/components/Share.astro";
 import config from "@/config/config.json";
 import Base from "@/layouts/Base.astro";
-import { getSinglePage } from "@/lib/contentParser.astro";
+import { getBlogPosts, getBlogPost, getSiteSettings } from "@/lib/sanity/queries";
+import { renderPortableText, extractHeadings } from "@/lib/sanity/portableText";
 import dateFormat from "@/lib/utils/dateFormat";
 import similarItems from "@/lib/utils/similarItems";
 import { sortByDate } from "@/lib/utils/sortFunctions";
@@ -14,92 +15,72 @@ import { markdownify, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Faqs from "@/partials/Faqs.astro";
-// schema type is now dynamic via post.data.schema_type — no static type import needed
-import { render } from "astro:content";
 
 export async function getStaticPaths() {
-  const posts = await getSinglePage("blog");
-
-  const paths = posts.map((post) => ({
-    params: {
-      single: post.id,
-    },
-    props: { post },
+  const posts = await getBlogPosts();
+  return posts.map((post: any) => ({
+    params: { single: post.slug },
+    props: { slug: post.slug },
   }));
-  return paths;
 }
 
-type BlogUi = {
-  tocHeading?: string;
-  tocMobileHeading?: string;
-  ctaButtonLabel?: string;
-  ctaButtonLink?: string;
-  consultUrl?: string;
-  consultButtonLabel?: string;
-  recentPostsHeading?: string;
-  shareHeading?: string;
-  newsletterHeading?: string;
-  newsletterPlaceholder?: string;
-  newsletterHint?: string;
-  consentLabel?: string;
-  privacyLinkText?: string;
-  privacyLinkUrl?: string;
-  subscribeButtonTitle?: string;
-  faqSectionTitle?: string;
-  similarPostsHeading?: string;
-};
+const { slug } = Astro.props;
+const doc = await getBlogPost(slug);
+const settings = await getSiteSettings();
+const settingsUi = settings?.ui ?? {};
+const ui = doc?.ui?.blogSingle ?? {};
+const shareUi = doc?.ui?.share;
+const authorUi = doc?.ui?.authorByline;
 
-type Props = {
-  post: any;
-  ui?: BlogUi;
-};
-
-const { post, ui } = Astro.props as Props;
-const { title } = post.data;
-
-const { Content, headings } = await render(post);
+const title = doc?.title;
+const bodyHtml = renderPortableText(doc?.body);
+const headings = extractHeadings(doc?.body);
 
 const blogData = {
-  author: post.data.author,
-  date: post.data.date,
-  lastmod: post.data.lastmod,
+  author: doc?.author ? { name: doc.author.name, image: doc.author.image } : undefined,
+  date: doc?.datePublished,
+  lastmod: doc?.dateModified,
 };
 
-const validHeadings = headings.filter((heading) => heading.depth === 2);
+const allPostsRaw = await getBlogPosts();
+const allPosts = allPostsRaw.map((p: any) => ({
+  id: p.slug,
+  data: {
+    title: p.title,
+    description: p.description,
+    image: undefined,
+    date: p.datePublished,
+    author: p.author,
+    categories: (p.categories ?? []).map((c: any) => c.title),
+  },
+}));
+const currentItem = {
+  id: slug,
+  data: { categories: (doc?.categories ?? []).map((c: any) => c.title) },
+};
+const sortedPosts = sortByDate(allPosts).slice(0, 5);
+const similarPosts = similarItems(currentItem, allPosts).slice(0, 3);
 
-const posts = await getSinglePage("blog");
-const sortedPosts = sortByDate(posts).slice(0, 5);
-const similarPosts = similarItems(post, posts).slice(0, 3);
-
-const schemaType = post.data.schema_type;
-const dateModifiedRaw = post.data.lastmod || post.data.date;
+const dateModifiedRaw = doc?.dateModified || doc?.datePublished;
 
 const blogSchema = {
-  "@type": schemaType,
-  "@id": `${config.site.base_url}/blog/${post.id}#blogposting`,
+  "@type": "BlogPosting",
+  "@id": `${config.site.base_url}/blog/${slug}#blogposting`,
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": `${config.site.base_url}/blog/${post.id}`,
+    "@id": `${config.site.base_url}/blog/${slug}`,
     "isPartOf": {
       "@id": `${config.site.base_url}/#website`
     }
   },
   "headline": plainify(title),
-  "description": plainify(post.data.description),
-  ...(post.data.image || config.metadata.meta_image ? {
-    "image": {
-      "@type": "ImageObject",
-      "url": `${config.site.base_url}${post.data.image || config.metadata.meta_image}`,
-      ...(config.metadata.meta_image_width ? { "width": config.metadata.meta_image_width } : {}),
-      ...(config.metadata.meta_image_height ? { "height": config.metadata.meta_image_height } : {}),
-    }
-  } : {}),
-  ...(post.data.date ? { "datePublished": new Date(post.data.date).toISOString() } : {}),
+  "description": plainify(doc?.description),
+  ...(doc?.datePublished ? { "datePublished": new Date(doc.datePublished).toISOString() } : {}),
   ...(dateModifiedRaw ? { "dateModified": new Date(dateModifiedRaw).toISOString() } : {}),
-  ...(post.data.author?.name ? {
+  ...(doc?.author?.name ? {
     "author": {
       "@type": "Person",
-      "name": plainify(post.data.author.name),
+      "name": plainify(doc.author.name),
       "url": `${config.site.base_url}/about`,
     }
   } : {}),
@@ -110,39 +91,10 @@ const blogSchema = {
 
 const pageSchemas: any[] = [blogSchema];
 
-if (post.data.howto) {
-  pageSchemas.push({
-    "@type": "HowTo",
-    name: post.data.howto.name,
-    ...(post.data.howto.description ? { description: post.data.howto.description } : {}),
-    ...(post.data.howto.totalTime ? { totalTime: post.data.howto.totalTime } : {}),
-    step: post.data.howto.steps.map((s: { name: string; text: string }) => ({
-      "@type": "HowToStep",
-      name: s.name,
-      text: s.text,
-    })),
-  });
-}
-
-if (post.data.video) {
-  pageSchemas.push({
-    "@type": "VideoObject",
-    name: post.data.video.name,
-    description: post.data.video.description,
-    thumbnailUrl: post.data.video.thumbnailUrl.startsWith("http")
-      ? post.data.video.thumbnailUrl
-      : `${config.site.base_url}${post.data.video.thumbnailUrl}`,
-    uploadDate: post.data.video.uploadDate,
-    ...(post.data.video.duration ? { duration: post.data.video.duration } : {}),
-    ...(post.data.video.embedUrl ? { embedUrl: post.data.video.embedUrl } : {}),
-    ...(post.data.video.contentUrl ? { contentUrl: post.data.video.contentUrl } : {}),
-  });
-}
-
-if (post.data.faqs && post.data.faqs.length > 0) {
+if (doc?.faqs && doc.faqs.length > 0) {
   pageSchemas.push({
     "@type": "FAQPage",
-    mainEntity: post.data.faqs.map(
+    mainEntity: doc.faqs.map(
       (faq: { question: string; answer: string }) => ({
         "@type": "Question",
         name: plainify(faq.question),
@@ -156,35 +108,36 @@ if (post.data.faqs && post.data.faqs.length > 0) {
 }
 ---
 
-<Base 
-  {...post.data} 
-  schema={pageSchemas} 
+<Base
+  {...doc}
+  ui={settingsUi}
+  schema={pageSchemas}
   og_type="article"
-  date_published={post.data.date ? new Date(post.data.date).toISOString() : undefined}
+  date_published={doc?.datePublished ? new Date(doc.datePublished).toISOString() : undefined}
   date_modified={dateModifiedRaw ? new Date(dateModifiedRaw).toISOString() : undefined}
-  author_name={post.data.author?.name}
-  author_twitter={post.data.author?.twitter}
-  article_tags={post.data.categories}
-  article_section={post.data.categories?.[0]}
+  author_name={doc?.author?.name}
+  author_twitter={doc?.author?.twitter}
+  article_tags={(doc?.categories ?? []).map((c: any) => c.title)}
+  article_section={doc?.categories?.[0]?.title}
 >
-  <PageHeader title={title} blogData={blogData} />
+  <PageHeader title={title} blogData={blogData} ui={authorUi} />
   <section class="section-sm bg-light">
     <div
       class="container flex flex-col lg:flex-row justify-center gap-5 items-start"
     >
       {
-        validHeadings.length > 0 && (
+        headings.length > 0 && (
           <aside class="bg-body rounded-2xl p-6 shrink-0 max-w-62 lg:sticky top-30 hidden lg:block border border-border/50 shadow-sm">
             <nav>
               <small class="block mb-4 font-semibold text-text-dark font-primary text-[10px] uppercase tracking-wider">
-                {ui?.tocHeading}
+                {ui.tocHeading}
               </small>
               <div class="toc-desktop-container">
                 <div class="toc-desktop-line" />
                 <ul class="space-y-1">
-                  {validHeadings.map((heading) => (
+                  {headings.map((heading) => (
                     <li>
-                      <a href={`#${heading.slug}`} class="toc-desktop-link">
+                      <a href={`#${heading.id}`} class="toc-desktop-link">
                         {heading.text}
                       </a>
                     </li>
@@ -199,15 +152,15 @@ if (post.data.faqs && post.data.faqs.length > 0) {
         class="w-full lg:w-7/12 bg-body rounded-2xl px-6 sm:px-8 xl:px-10"
       >
         {
-          validHeadings.length > 0 && (
+          headings.length > 0 && (
             <nav class="lg:hidden my-8 p-5 bg-light/50 border border-border rounded-2xl">
               <small class="block mb-3 font-semibold text-text-dark font-primary text-[10px] uppercase tracking-wider">
-                {ui?.tocMobileHeading}
+                {ui.tocMobileHeading}
               </small>
               <ul class="space-y-1">
-                {validHeadings.map((heading) => (
+                {headings.map((heading) => (
                   <li>
-                    <a href={`#${heading.slug}`} class="toc-link group bg-body">
+                    <a href={`#${heading.id}`} class="toc-link group bg-body">
                       <span class="font-medium">{heading.text}</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -228,30 +181,17 @@ if (post.data.faqs && post.data.faqs.length > 0) {
             </nav>
           )
         }
-        {
-          post.data.image && (
-            <ImageMod
-              src={post.data.image}
-              width={900}
-              height={500}
-              alt={title}
-              class="rounded-2xl object-cover mb-8 w-full"
-            />
-          )
-        }
-        <div class="content">
-          <Content />
-        </div>
+        <div class="content" set:html={bodyHtml} />
 
         <div
           class="flex flex-wrap items-center justify-center gap-4 mt-12 py-10 border-t border-border/50"
         >
-          <a href={ui?.ctaButtonLink} class="btn btn-primary px-10">{ui?.ctaButtonLabel}</a>
+          <a href={config.navigation_button.link} class="btn btn-primary px-10">{ui.ctaButtonLabel}</a>
           <a
-            href={ui?.consultUrl}
+            href={config.consult_url}
             class="btn btn-outline px-10"
           >
-            {ui?.consultButtonLabel}
+            {ui.consultButtonLabel}
           </a>
         </div>
       </article>
@@ -261,27 +201,19 @@ if (post.data.faqs && post.data.faqs.length > 0) {
           sortedPosts.length > 0 && (
             <nav class="bg-body rounded-2xl p-4">
               <small class="font-semibold text-text-dark font-primary text-sm">
-                {ui?.recentPostsHeading}
+                {ui.recentPostsHeading}
               </small>
               <ul>
-                {sortedPosts.map((post) => (
+                {sortedPosts.map((post: any) => (
                   <li>
                     <a
-                      href={`${post.id}`}
+                      href={`/blog/${post.id}`}
                       class="block py-2 pl-2 text-sm hover:bg-light rounded"
                     >
                       <div class="flex">
-                        <ImageMod
-                          src={post?.data.image}
-                          alt={post?.data.title}
-                          width={50}
-                          height={40}
-                          class="inline-block mr-2 rounded object-cover"
-                        />
-
                         <div>
                           <span class="text-[10px]">
-                            By {post?.data.author.name} -{" "}
+                            By {post?.data.author?.name} -{" "}
                             {dateFormat(post?.data.date)}
                           </span>
                           <p class="text-sm line-clamp-1 font-medium text-text-dark">
@@ -300,13 +232,14 @@ if (post.data.faqs && post.data.faqs.length > 0) {
         <!-- Social Share  -->
         <div class="bg-body rounded-2xl p-4 mt-5">
           <small class="font-semibold text-text-dark font-primary text-sm">
-            {ui?.shareHeading}
+            {ui.shareHeading}
           </small>
           <Share
-            slug={post.id}
+            slug={`blog/${slug}`}
             className="space-x-5 mt-2 text-xl pl-2"
-            title={post.data.title}
-            description={post.data.description}
+            title={title}
+            description={doc?.description}
+            ui={shareUi}
           />
         </div>
 
@@ -316,7 +249,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
             config.subscription_in_footer.enable && (
               <div class="bg-body rounded-2xl p-4 mt-5 hidden lg:block">
                 <small class="font-semibold text-text-dark font-primary text-sm">
-                  {ui?.newsletterHeading}
+                  {ui.newsletterHeading}
                 </small>
 
                 <form
@@ -327,13 +260,13 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                   <div class="flex justify-between rounded-lg bg-light px-3 py-2 border border-border mb-5 mt-2">
                     <input
                       type="email"
-                      placeholder={ui?.newsletterPlaceholder}
+                      placeholder={ui.newsletterPlaceholder}
                       class="form-input w-full rounded-full border-transparent! bg-transparent! py-2! pl-2! placeholder:opacity-100! placeholder:font-normal"
                       required
                       name="email"
                     />
                     <button
-                      title={ui?.subscribeButtonTitle}
+                      title={ui.subscribeButtonTitle}
                       class="transition hover:opacity-80 pr-2"
                       type="submit"
                     >
@@ -353,7 +286,7 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                     </button>
                   </div>
                   <p data-newsletter-hint class="text-xs text-text-light/70 mb-2">
-                    {ui?.newsletterHint}
+                    {ui.newsletterHint}
                   </p>
 
                   <label
@@ -369,12 +302,12 @@ if (post.data.faqs && post.data.faqs.length > 0) {
                       required
                       class="appearance-auto rounded-sm accent-primary ring-0"
                     />
-                    <span>{ui?.consentLabel}</span>
+                    <span>{ui.consentLabel}</span>
                     <a
-                      href={ui?.privacyLinkUrl}
+                      href={config.privacy_url}
                       class="text-text-dark font-semibold hover:text-primary transition duration-300"
                     >
-                      {ui?.privacyLinkText}
+                      {ui.privacyLinkText}
                     </a>
                   </label>
                 </form>
@@ -396,11 +329,11 @@ if (post.data.faqs && post.data.faqs.length > 0) {
             <h2
               class="text-center text-white text-balance mx-auto mb-12"
               set:html={markdownify(
-                ui?.similarPostsHeading ?? "",
+                ui.similarPostsHeading ?? "",
               )}
             />
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {similarPosts.map((post) => (
+              {similarPosts.map((post: any) => (
                 <CardPrimary
                   data={post.data}
                   id={`/blog/${post.id}`}
@@ -414,8 +347,8 @@ if (post.data.faqs && post.data.faqs.length > 0) {
     </div>
   </section>
 
-  {post.data.faqs && post.data.faqs.length > 0 && (
-    <Faqs data={{ faqs_list: post.data.faqs, section_title: ui?.faqSectionTitle }} prefix="blog-faq" />
+  {doc?.faqs && doc.faqs.length > 0 && (
+    <Faqs data={{ faqs_list: doc.faqs, section_title: ui.faqSectionTitle }} prefix="blog-faq" ui={settingsUi.faqs} />
   )}
 
   <CallToAction />

@@ -1,10 +1,13 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
 import { markdownify } from "@/lib/utils/textConverter";
-import type { CollectionEntry } from "astro:content";
 
 type Props = {
-  data: CollectionEntry<"homepage">["data"]["agents_swiper"];
+  data: {
+    enable?: boolean;
+    title?: string;
+    agents?: any[];
+  };
   id?: string;
   ui?: { servicesAriaLabel?: string; exploreAriaTemplate?: string };
 };
