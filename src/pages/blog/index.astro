@@ -7,6 +7,7 @@ import { sortByDate } from "@/lib/utils/sortFunctions";
 import { markdownify, slugify, humanize, plainify } from "@/lib/utils/textConverter";
 import BlogLibraryGuide from "@/partials/BlogLibraryGuide.astro";
 import CallToAction from "@/partials/CallToAction.astro";
+import Faqs from "@/partials/Faqs.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import type { Blog, BlogPosting, Person } from "schema-dts";
 
@@ -19,7 +20,12 @@ const title = header.title;
 const description = header.description;
 
 const guide = blogPage?.guide ?? {};
-const blogGuide = { enable: true, ...guide };
+const blogGuide = {
+  enable: true,
+  ...guide,
+  introduction: guide.description,
+  reading_note: guide.researchIntro,
+};
 
 const featured_posts = { enable: true, title: blogPage?.featuredTitle };
 const actual_posts = { enable: true, title: blogPage?.archiveTitle };
@@ -30,7 +36,7 @@ const toCardPost = (p: any) => ({
   data: {
     title: p.title,
     description: p.description,
-    image: undefined,
+    image: p.image,
     date: p.datePublished,
     author: p.author,
     categories: (p.categories ?? []).map((c: any) => c.title),
@@ -205,5 +211,6 @@ const blogIndexSchema: Blog = {
       }
     </div>
   </section>
+  <Faqs prefix="blog-faq" />
   <CallToAction />
 </Base>

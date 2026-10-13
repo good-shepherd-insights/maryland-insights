@@ -12,6 +12,7 @@ import similarItems from "@/lib/utils/similarItems";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import { markdownify, plainify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
+import ImageMod from "@/components/ImageMod.astro";
 import PageHeader from "@/partials/PageHeader.astro";
 import Faqs from "@/partials/Faqs.astro";
 
@@ -47,7 +48,7 @@ const allPosts = allPostsRaw.map((p: any) => ({
   data: {
     title: p.title,
     description: p.description,
-    image: undefined,
+    image: p.image,
     date: p.datePublished,
     author: p.author,
     categories: (p.categories ?? []).map((c: any) => c.title),
@@ -178,6 +179,17 @@ if (doc?.faqs && doc.faqs.length > 0) {
                 ))}
               </ul>
             </nav>
+          )
+        }
+        {
+          doc?.image && (
+            <ImageMod
+              src={doc.image}
+              width={900}
+              height={500}
+              alt={title}
+              class="rounded-2xl object-cover mb-8 w-full"
+            />
           )
         }
         <div class="content" set:html={bodyHtml} />

@@ -116,7 +116,7 @@ export async function getBlogPage() {
     header->,
     guide->,
     "featuredPosts": featuredPosts[]->{
-      _id, title, description,
+      _id, title, description, image,
       "slug": slug.current,
       datePublished,
       author{name}
@@ -127,7 +127,7 @@ export async function getBlogPage() {
 
 export async function getBlogPosts() {
   return sanityClient.fetch(`*[_type == "blogPost"] | order(datePublished desc) {
-    _id, title, description,
+    _id, title, description, image,
     "slug": slug.current,
     datePublished,
     author{name},
