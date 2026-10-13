@@ -165,7 +165,7 @@ export async function getClosingCta() {
 
 export async function getIntegrations() {
   return sanityClient.fetch(`*[_type == "integration"] | order(title asc) {
-    _id, title, description, logoName, link
+    _id, title, description, logoName, image, link
   }`);
 }
 
