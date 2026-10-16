@@ -18,12 +18,12 @@
   @apply shadow-xl shadow-black/5 bg-light md:bg-light/50 md:backdrop-blur-lg md:border-[3px] md:border-transparent;
 }
 
-/* logo width/height are set inline from config.json (same value at every breakpoint);
+/* logo mark size comes from siteSettings (inline style, same at every breakpoint);
    inline style outranks any class, so shrinking it on mobile only needs !important here */
 @media (max-width: 47.9375rem) {
   .navbar-brand img {
-    width: 160px !important;
-    height: 51px !important;
+    width: 40px !important;
+    height: 40px !important;
   }
 }
 
@@ -62,6 +62,12 @@
   image {
     @apply max-h-full max-w-full;
   }
+}
+
+/* brand wordmark uses Onest only — loaded via AstroFont in Base.astro */
+.logo-wordmark {
+  font-family: "Onest", sans-serif;
+  letter-spacing: -0.06em;
 }
 
 .navbar-nav {
