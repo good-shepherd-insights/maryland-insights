@@ -1,6 +1,12 @@
 import posthog from 'posthog-js';
 import trackingConfig from '@/config/tracking.json';
 
+declare global {
+  interface Window {
+    posthog?: typeof posthog;
+  }
+}
+
 export function initPostHog(): void {
   // Prevent SDK execution during Astro SSG/SSR phases
   if (typeof window !== 'undefined') {
@@ -13,7 +19,10 @@ export function initPostHog(): void {
       posthog.init(apiKey, {
         api_host: apiHost,
         person_profiles: 'identified_only',
-        capture_pageview: false // We capture manually during Astro's view transitions
+        capture_pageview: false, // We capture manually during Astro's view transitions
+        loaded: (instance) => {
+          window.posthog = instance;
+        },
       });
     }
   }
