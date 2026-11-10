@@ -4,13 +4,13 @@ import Cta from "./Cta.astro";
 const { heading, sourceTitle, sourceDetail, targets = [], chartDescription, cta } = Astro.props;
 const n = Math.max(targets.length, 1);
 ---
-<section class="mi" style="padding: 96px 24px">
+<section class="mi m-sec m-fanout" style="padding: 96px 24px">
   <div class="wrap">
-    <div style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
       <h2 class="h2" style="max-width: 720px">{heading}</h2>
-      <Cta cta={cta} />
+      <Cta cta={cta} class="m-last" />
     </div>
-    <div role="img" aria-label={chartDescription} style="margin-top: 56px; overflow-x: auto">
+    <div role="img" aria-label={chartDescription} class="mi-d" style="margin-top: 56px; overflow-x: auto">
       <div style="min-width: 960px">
         <div style="background: #121212; color: #F5F5F5; padding: 28px 32px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px">
           <p class="stat" style="font-size: 48px; color: #FFB612">{sourceTitle}</p>
@@ -29,6 +29,18 @@ const n = Math.max(targets.length, 1);
           </ul>
         </div>
       </div>
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-m m-fan">
+      <div class="m-fan__source">
+        <p class="stat m-fan__title">{sourceTitle}</p>
+        <p class="body m-fan__detail">{sourceDetail}</p>
+      </div>
+      <ul class="m-fan__list">
+        <span aria-hidden="true" class="m-fan__rail"></span>
+        {targets.map((t: string) => (
+          <li><span aria-hidden="true" class="m-fan__tick"></span><span class="h4 m-fan__box">{t}</span></li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>

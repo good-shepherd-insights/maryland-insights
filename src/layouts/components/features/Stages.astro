@@ -3,10 +3,10 @@
 import Cta from "./Cta.astro";
 const { heading, stages = [], bandTitle, bandDetail, note, chartDescription, cta } = Astro.props;
 ---
-<section class="mi" style="padding: clamp(64px, 7vw, 104px) 24px">
+<section class="mi m-sec m-stages" style="padding: clamp(64px, 7vw, 104px) 24px">
   <div class="wrap">
     <h2 class="h2" style="max-width: 780px">{heading}</h2>
-    <div role="img" aria-label={chartDescription} style="margin-top: 56px; border: 2px solid #121212; border-left: 0">
+    <div role="img" aria-label={chartDescription} class="mi-d" style="margin-top: 56px; border: 2px solid #121212; border-left: 0">
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))">
         {stages.map((s: { title: string; detail: string }, i: number) => {
           const last = i === stages.length - 1;
@@ -23,9 +23,22 @@ const { heading, stages = [], bandTitle, bandDetail, note, chartDescription, cta
         <p class="small" style="font-weight: 600">{bandDetail}</p>
       </div>
     </div>
-    <div style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between">
+    <div role="img" aria-label={chartDescription} class="mi-m m-tl">
+      <ol class="m-tl__list">
+        <span aria-hidden="true" class="m-tl__rail"></span>
+        {stages.map((s: { title: string; detail: string }, i: number) => (
+          <li>
+            <span aria-hidden="true" class="m-tl__dot" style={`background: ${i === stages.length - 1 ? "#121212" : "#FDFBF7"}`}></span>
+            <p class="stat m-tl__title">{s.title}</p>
+            <p class="m-tl__detail">{s.detail}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="m-tl__band"><p class="stat m-tl__bandtitle">{bandTitle}</p><p class="m-tl__detail">{bandDetail}</p></div>
+    </div>
+    <div class="m-contents" style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between">
       <p class="body muted">{note}</p>
-      <Cta cta={cta} />
+      <Cta cta={cta} class="m-last" />
     </div>
   </div>
 </section>

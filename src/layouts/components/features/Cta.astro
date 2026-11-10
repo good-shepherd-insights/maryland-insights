@@ -4,7 +4,8 @@ interface Props {
   cta?: { label?: string; link?: string } | null;
   variant?: "btn-y" | "btn-ink" | "btn-ghost";
   style?: string;
+  class?: string;
 }
-const { cta, variant = "btn-y", style } = Astro.props;
+const { cta, variant = "btn-y", style, class: extra } = Astro.props;
 ---
-{cta?.label && cta?.link && <a class={`btn ${variant}`} href={cta.link} style={style}>{cta.label}</a>}
+{cta?.label && cta?.link && <a class={`btn ${variant}${extra ? ` ${extra}` : ""}`} href={cta.link} style={style}>{cta.label}</a>}

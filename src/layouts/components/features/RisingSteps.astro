@@ -7,14 +7,14 @@ const BOARD = [34, 54, 76, 100];
 const height = (i: number) =>
   steps.length === 4 ? BOARD[i] : Math.round(34 + (66 * i) / Math.max(steps.length - 1, 1));
 ---
-<section class="mi" style="background: #FFB612; padding: clamp(64px, 7vw, 104px) 24px">
+<section class="mi m-rising" style="background: #FFB612; padding: clamp(64px, 7vw, 104px) 24px">
   <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 48px 72px; align-items: flex-end">
-    <div style="flex: 1 1 360px; display: flex; flex-direction: column; gap: 24px">
-      <h2 class="stat" style="font-size: clamp(48px, 5.6vw, 80px); line-height: 0.92; letter-spacing: -0.045em">{heading}</h2>
-      <p class="body" style="max-width: 440px">{body}</p>
-      <div><Cta cta={cta} variant="btn-ink" /></div>
+    <div class="m-contents" style="flex: 1 1 360px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="stat m-o1 m-rising__h2" style="font-size: clamp(48px, 5.6vw, 80px); line-height: 0.92; letter-spacing: -0.045em">{heading}</h2>
+      <p class="body m-o2" style="max-width: 440px">{body}</p>
+      <div class="m-o5"><Cta cta={cta} variant="btn-ink" /></div>
     </div>
-    <div role="img" aria-label={chartDescription} class="mi-steps" style="flex: 1.4 1 560px; min-width: 0; display: flex; gap: 10px; align-items: flex-end; height: 440px">
+    <div role="img" aria-label={chartDescription} class="mi-steps mi-d" style="flex: 1.4 1 560px; min-width: 0; display: flex; gap: 10px; align-items: flex-end; height: 440px">
       {steps.map((step: { title: string; detail: string }, i: number) => {
         const last = i === steps.length - 1;
         return (
@@ -23,6 +23,17 @@ const height = (i: number) =>
               <p class="stat" style="font-size: clamp(18px, 2.3vw, 34px); line-height: 0.95">{step.title}</p>
               <p class="small" style="font-weight: 600">{step.detail}</p>
             </div>
+          </div>
+        );
+      })}
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-m m-o4 m-rise">
+      {steps.map((step: { title: string; detail: string }, i: number) => {
+        const last = i === steps.length - 1;
+        return (
+          <div class="m-rise__step">
+            <div class="m-rise__head"><p class="stat m-rise__title">{step.title}</p><p class="m-rise__detail">{step.detail}</p></div>
+            <div class="m-rise__bar" style={`width: ${height(i)}%; background: ${last ? "#121212" : "#FDFBF7"}`}></div>
           </div>
         );
       })}

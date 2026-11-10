@@ -4,15 +4,16 @@ import Cta from "./Cta.astro";
 const { leftTitle, leftItems = [], rightTitle, rightItems = [], note, cta } = Astro.props;
 const item = "font-size: clamp(36px, 4.4vw, 60px); padding: 16px 0; border-top: 2px solid #121212";
 ---
-<section class="mi" style="display: flex; flex-wrap: wrap; min-height: 840px">
-  <div style="flex: 1 1 520px; padding: 88px 56px; background: #FDFBF7; display: flex; flex-direction: column; gap: 28px">
+<section class="mi m-twolists" style="display: flex; flex-wrap: wrap; min-height: 840px">
+  <div class="m-twolists__left" style="flex: 1 1 520px; padding: 88px 56px; background: #FDFBF7; display: flex; flex-direction: column; gap: 28px">
     <h2 class="h3">{leftTitle}</h2>
     <ul style="border-bottom: 2px solid #121212">{leftItems.map((t: string) => <li class="stat" style={item}>{t}</li>)}</ul>
-    <div style="margin-top: auto"><Cta cta={cta} /></div>
+    <div class="mi-d" style="margin-top: auto"><Cta cta={cta} /></div>
   </div>
-  <div style="flex: 1 1 520px; padding: 88px 56px; background: #FFB612; display: flex; flex-direction: column; gap: 28px">
+  <div class="m-twolists__right" style="flex: 1 1 520px; padding: 88px 56px; background: #FFB612; display: flex; flex-direction: column; gap: 28px">
     <h2 class="h3">{rightTitle}</h2>
     <ul style="border-bottom: 2px solid #121212">{rightItems.map((t: string) => <li class="stat" style={item}>{t}</li>)}</ul>
     <p class="body" style="margin-top: auto">{note}</p>
+    <div class="mi-m"><Cta cta={cta} variant="btn-ink" /></div>
   </div>
 </section>

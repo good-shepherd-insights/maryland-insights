@@ -5,10 +5,10 @@ const { heading, yearLabel, months = [], rows = [], contrastLabel, chartDescript
 const cols = "display: grid; grid-template-columns: 200px repeat(12, minmax(0, 1fr)); gap: 4px";
 const twelve = Array.from({ length: 12 }, (_, i) => i);
 ---
-<section class="mi" style="padding: 96px 24px; background: #F6F0E5">
+<section class="mi m-sec" style="padding: 96px 24px; background: #F6F0E5">
   <div class="wrap">
     <h2 class="h2" style="max-width: 760px">{heading}</h2>
-    <div role="img" aria-label={chartDescription} style="margin-top: 56px; overflow-x: auto">
+    <div role="img" aria-label={chartDescription} class="mi-d" style="margin-top: 56px; overflow-x: auto">
       <div style="min-width: 760px; display: grid; gap: 10px">
         <div style={cols}>
           <span class="tiny muted">{yearLabel}</span>
@@ -34,6 +34,22 @@ const twelve = Array.from({ length: 12 }, (_, i) => i);
         </div>
       </div>
     </div>
-    <div style="margin-top: 48px"><Cta cta={cta} /></div>
+    <div role="img" aria-label={chartDescription} class="mi-m m-year">
+      <div class="m-year__row">
+        <p class="m-year__label m-year__label--muted">{yearLabel}</p>
+        <div class="m-year__cells m-year__cells--months">{months.map((m: string) => <span>{m}</span>)}</div>
+      </div>
+      {rows.map((row: string) => (
+        <div class="m-year__row">
+          <p class="h4 m-year__label">{row}</p>
+          <div class="m-year__cells">{twelve.map(() => <span class="m-year__on"></span>)}</div>
+        </div>
+      ))}
+      <div class="m-year__row m-year__row--contrast">
+        <p class="h4 m-year__label" style="color: #5B554B">{contrastLabel}</p>
+        <div class="m-year__cells">{twelve.map((i) => (i === 0 ? <span class="m-year__once"></span> : <span class="m-year__off"></span>))}</div>
+      </div>
+    </div>
+    <div class="m-ctarow" style="margin-top: 48px"><Cta cta={cta} /></div>
   </div>
 </section>

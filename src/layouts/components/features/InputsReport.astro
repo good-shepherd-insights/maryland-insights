@@ -6,13 +6,13 @@ const { heading, inputs = [], reportLines = [], nextLines = [], note, chartDescr
 const HANKEN = "MI Hanken, Arial, sans-serif";
 const ARCHIVO = "MI Archivo, Arial, sans-serif";
 ---
-<section class="mi" style="padding: clamp(64px, 7vw, 104px) 24px">
+<section class="mi m-sec m-inputs" style="padding: clamp(64px, 7vw, 104px) 24px">
   <div class="wrap">
-    <div style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
       <h2 class="h2" style="max-width: 700px">{heading}</h2>
-      <Cta cta={cta} />
+      <Cta cta={cta} class="m-last" />
     </div>
-    <div class="mi-scroll" style="margin-top: 56px">
+    <div class="mi-d" style="margin-top: 56px">
       <svg role="img" aria-label={chartDescription} viewBox="0 0 1200 440" style="display: block; width: 100%; height: auto">
         {inputs.slice(0, 6).map((label: string, i: number) => {
           const y = 40 + i * 72;
@@ -33,6 +33,16 @@ const ARCHIVO = "MI Archivo, Arial, sans-serif";
         ))}
       </svg>
     </div>
-    <p class="small muted" style="margin-top: 32px">{note}</p>
+    <div role="img" aria-label={chartDescription} class="mi-m m-in">
+      <ul class="m-in__list">
+        <span aria-hidden="true" class="m-in__rail"></span>
+        {inputs.map((label: string) => <li><span aria-hidden="true" class="m-in__tick"></span>{label}</li>)}
+      </ul>
+      <div class="m-in__out">
+        <div class="m-in__report"><p class="stat">{reportLines.join(" ")}</p></div>
+        <div class="m-in__next"><p class="stat">{nextLines.join(" ")}</p></div>
+      </div>
+    </div>
+    <p class="small muted m-inputs__note" style="margin-top: 32px">{note}</p>
   </div>
 </section>

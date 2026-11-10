@@ -4,41 +4,41 @@ import Cta from "./Cta.astro";
 import { COUNTY_THUMBS } from "@/lib/features/geo/countyThumbs";
 const { heading, stat, statNote, pages = [], emptyLabel, listLabel, caption, cta } = Astro.props;
 ---
-<section class="mi" style="padding: 96px 24px; background: #F6F0E5">
+<section class="mi m-sec m-county" style="padding: 96px 24px; background: #F6F0E5">
   <div class="wrap">
-    <div style="display: flex; flex-wrap: wrap; gap: 24px 64px; justify-content: space-between; align-items: flex-end">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 64px; justify-content: space-between; align-items: flex-end">
       <h2 class="h2" style="max-width: 640px">{heading}</h2>
-      <div style="display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap">
+      <div class="m-county__stat" style="display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap">
         <p class="stat" style="font-size: 72px; line-height: 0.9">{stat}</p>
         <p class="small muted" style="max-width: 260px">{statNote}</p>
       </div>
     </div>
-    <ul aria-label={listLabel} style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px">
+    <ul aria-label={listLabel} class="m-county__grid" style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px">
       {pages.map((page: { name: string; path: string; county: string }) => {
         const shape = COUNTY_THUMBS[page.county];
         return (
           <li style="border: 2px solid #121212; background: #FDFBF7; display: flex; flex-direction: column">
-            <div style="height: 170px; padding: 20px">
+            <div class="m-county__shape" style="height: 170px; padding: 20px">
               {shape && (
                 <svg role="img" aria-label={page.name} viewBox={shape.viewBox} preserveAspectRatio="xMidYMid meet" style="display: block; width: 100%; height: 100%">
                   <path d={shape.d} fill="#FFB612" stroke="#121212" stroke-width="2"></path>
                 </svg>
               )}
             </div>
-            <p class="h4" style="border-top: 2px solid #121212; padding: 14px 16px">{page.name}</p>
-            <p class="tiny muted" style="padding: 0 16px 16px">{page.path}</p>
+            <p class="h4 m-county__name" style="border-top: 2px solid #121212; padding: 14px 16px">{page.name}</p>
+            <p class="tiny muted m-county__path" style="padding: 0 16px 16px">{page.path}</p>
           </li>
         );
       })}
       {emptyLabel && (
-        <li style="border: 2px dashed #8A8173; display: flex; align-items: flex-end; padding: 16px; min-height: 240px">
+        <li class="m-county__empty" style="border: 2px dashed #8A8173; display: flex; align-items: flex-end; padding: 16px; min-height: 240px">
           <p class="h4" style="color: #5B554B">{emptyLabel}</p>
         </li>
       )}
     </ul>
-    <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 20px 40px; justify-content: space-between; align-items: center">
+    <div class="m-contents" style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 20px 40px; justify-content: space-between; align-items: center">
       <p class="tiny muted">{caption}</p>
-      <Cta cta={cta} />
+      <Cta cta={cta} class="m-last" />
     </div>
   </div>
 </section>

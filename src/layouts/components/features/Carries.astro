@@ -3,13 +3,13 @@
 import Cta from "./Cta.astro";
 const { heading, sourceLabel, sourceTitle, items = [], chartDescription, cta } = Astro.props;
 ---
-<section class="mi" style="padding: clamp(64px, 7vw, 104px) 24px">
+<section class="mi m-sec m-carries" style="padding: clamp(64px, 7vw, 104px) 24px">
   <div class="wrap">
-    <div style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
       <h2 class="h2" style="max-width: 680px">{heading}</h2>
-      <Cta cta={cta} />
+      <Cta cta={cta} class="m-last" />
     </div>
-    <div role="img" aria-label={chartDescription} style="margin-top: 56px; display: flex; flex-wrap: wrap; gap: 12px 0">
+    <div role="img" aria-label={chartDescription} class="mi-d" style="margin-top: 56px; display: flex; flex-wrap: wrap; gap: 12px 0">
       <div class="on-dark" style="flex: 1 1 300px; background: #121212; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px">
         <p class="small muted" style="font-weight: 600">{sourceLabel}</p>
         <p class="stat" style="font-size: clamp(56px, 7vw, 104px); line-height: 0.85; color: #FFB612">{sourceTitle}</p>
@@ -25,6 +25,24 @@ const { heading, sourceLabel, sourceTitle, items = [], chartDescription, cta } =
           </div>
         ))}
       </div>
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-m m-carry">
+      <div class="on-dark m-carry__source">
+        <p class="muted m-carry__label">{sourceLabel}</p>
+        <p class="stat m-carry__title">{sourceTitle}</p>
+      </div>
+      <ul class="m-carry__list">
+        <span aria-hidden="true" class="m-carry__rail"></span>
+        {items.map((item: { title: string; detail: string; muted?: boolean }) => (
+          <li>
+            <span aria-hidden="true" class="m-carry__tick"></span>
+            <div class="m-carry__box" style={`background: ${item.muted ? "#E7DFD0" : "#FFB612"}`}>
+              <p class="stat m-carry__item">{item.title}</p>
+              <p class="m-carry__detail">{item.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>
