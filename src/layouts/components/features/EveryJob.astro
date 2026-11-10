@@ -1,0 +1,23 @@
+---
+// Every completed job followed by one request (canvas: v-ls-04-reviews-c).
+import Cta from "./Cta.astro";
+const { heading, topLabel, bottomLabel, body, chartDescription, cta } = Astro.props;
+const jobs = Array.from({ length: 14 }, (_, i) => i);
+const row = "display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); gap: 10px";
+---
+<section class="mi" style="padding: 96px 24px">
+  <div class="wrap">
+    <div style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 720px">{heading}</h2>
+      <Cta cta={cta} />
+    </div>
+    <div role="img" aria-label={chartDescription} style="margin-top: 56px">
+      <p class="small" style="font-weight: 600; margin-bottom: 12px">{topLabel}</p>
+      <div style={row}>{jobs.map(() => <span style="aspect-ratio: 1; background: #121212"></span>)}</div>
+      <div style={row}>{jobs.map(() => <span style="justify-self: center; width: 2px; height: 56px; background: #121212"></span>)}</div>
+      <div style={row}>{jobs.map(() => <span style="aspect-ratio: 1; background: #FFB612; border: 2px solid #121212"></span>)}</div>
+      <p class="small" style="font-weight: 600; margin-top: 12px">{bottomLabel}</p>
+    </div>
+    <p class="body muted" style="margin-top: 40px; max-width: 720px">{body}</p>
+  </div>
+</section>

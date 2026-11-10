@@ -1,0 +1,30 @@
+---
+// City level: Howard County with every Census place drawn (canvas: v-ls-city-b).
+import Cta from "./Cta.astro";
+import { HOWARD_PLACES_VIEWBOX, HOWARD_PLACES_INNER } from "@/lib/features/geo/howardPlaces";
+const { heading, listTitle, places = [], listLabel, caption, mapDescription, cta } = Astro.props;
+---
+<section class="mi" style="padding: 80px 24px; background: #F6F0E5">
+  <div class="wrap">
+    <div style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 760px">{heading}</h2>
+      <Cta cta={cta} />
+    </div>
+    <div style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 32px 48px; align-items: flex-start">
+      <div style="flex: 2.4 1 560px; min-width: 0; border: 2px solid #121212; background: #FDFBF7">
+        <svg role="img" aria-label={mapDescription} viewBox={HOWARD_PLACES_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={HOWARD_PLACES_INNER} />
+      </div>
+      <div style="flex: 1 1 260px">
+        <p class="body" style="font-weight: 600">{listTitle}</p>
+        <ul aria-label={listLabel} style="margin-top: 20px; border-bottom: 2px solid #121212">
+          {places.map((p: { name: string; path: string }) => (
+            <li style="border-top: 2px solid #121212; padding: 12px 0; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+              <span class="h4">{p.name}</span><span class="small muted">{p.path}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="tiny muted" style="margin-top: 14px">{caption}</p>
+      </div>
+    </div>
+  </div>
+</section>

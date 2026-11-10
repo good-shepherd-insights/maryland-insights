@@ -1,0 +1,42 @@
+---
+// Renders a featurePage's sections in order. One component per design pattern.
+import HeroMap from "./HeroMap.astro";
+import MonthlyGrid from "./MonthlyGrid.astro";
+import HoursStat from "./HoursStat.astro";
+import EveryJob from "./EveryJob.astro";
+import CountyPages from "./CountyPages.astro";
+import CityPlaces from "./CityPlaces.astro";
+import StatBars from "./StatBars.astro";
+import Fanout from "./Fanout.astro";
+import ChecklistMap from "./ChecklistMap.astro";
+import TwoLists from "./TwoLists.astro";
+import BarChart from "./BarChart.astro";
+import CountyCount from "./CountyCount.astro";
+import Faq from "./Faq.astro";
+import ClosingMap from "./ClosingMap.astro";
+
+const COMPONENTS: Record<string, any> = {
+  featureHeroMap: HeroMap,
+  featureMonthlyGrid: MonthlyGrid,
+  featureHoursStat: HoursStat,
+  featureEveryJob: EveryJob,
+  featureCountyPages: CountyPages,
+  featureCityPlaces: CityPlaces,
+  featureStatBars: StatBars,
+  featureFanout: Fanout,
+  featureChecklistMap: ChecklistMap,
+  featureTwoLists: TwoLists,
+  featureBarChart: BarChart,
+  featureCountyCount: CountyCount,
+  featureFaq: Faq,
+  featureClosingMap: ClosingMap,
+};
+
+const { sections = [] } = Astro.props;
+---
+<div class="mi-page">
+  {sections.map((section: { _type: string; _key: string }) => {
+    const Component = COMPONENTS[section._type];
+    return Component ? <Component {...section} /> : null;
+  })}
+</div>

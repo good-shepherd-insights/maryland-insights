@@ -1,0 +1,38 @@
+---
+// Big stat beside an example week of hours (canvas: v-ls-03-profiles-c).
+import Cta from "./Cta.astro";
+const { stat, heading, body, dayLabels = [], caption, chartDescription, cta } = Astro.props;
+// Example hours, midnight to midnight: weekdays open 7am–5pm, Saturday 8am–12pm,
+// Sunday and the holiday closed. Matches the board cell for cell.
+const openHours = (col: number) => {
+  if (col <= 4) return (h: number) => h >= 7 && h < 17;
+  if (col === 5) return (h: number) => h >= 8 && h < 12;
+  return () => false;
+};
+const hours = Array.from({ length: 24 }, (_, h) => h);
+---
+<section class="mi on-dark" style="background: #121212; padding: 96px 24px">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px 80px; align-items: center">
+    <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 22px">
+      <p class="stat" style="font-size: clamp(140px, 16vw, 230px); line-height: 0.8; color: #FFB612; letter-spacing: -0.06em">{stat}</p>
+      <h2 class="h3">{heading}</h2>
+      <p class="body muted">{body}</p>
+      <div><Cta cta={cta} /></div>
+    </div>
+    <div style="flex: 1 1 460px; min-width: 0">
+      <div role="img" aria-label={chartDescription} style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) minmax(0, 1.3fr); gap: 6px">
+        {dayLabels.map((label: string, col: number) => {
+          const open = openHours(col);
+          const holiday = col === 7;
+          return (
+            <div style={`display: grid; gap: 3px;${holiday ? " padding-left: 14px; border-left: 2px solid #F5F5F5" : ""}`}>
+              <span class="tiny" style="height: 22px; color: rgba(245,245,245,0.68)">{label}</span>
+              {hours.map((h) => <span style={`height: 12px; background: ${open(h) ? "#FFB612" : "#2A2A2A"}`}></span>)}
+            </div>
+          );
+        })}
+      </div>
+      <p class="tiny muted" style="margin-top: 14px">{caption}</p>
+    </div>
+  </div>
+</section>

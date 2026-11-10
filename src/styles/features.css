@@ -1,0 +1,142 @@
+/*
+ * Feature-page sections (/features/*). Ported from the feature-page design
+ * canvas stylesheet; every rule is scoped to .mi so nothing leaks into the
+ * rest of the site. Fonts are the canvas's own Archivo and Hanken Grotesk files.
+ */
+@font-face {
+  font-family: "MI Archivo";
+  src: url("/fonts/features/archivo.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MI Hanken";
+  src: url("/fonts/features/hanken-grotesk.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.mi {
+  font-family: "MI Hanken", Arial, sans-serif;
+  font-size: 16px;
+  color: #121212;
+  background: #fdfbf7;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.mi *,
+.mi *::before,
+.mi *::after {
+  box-sizing: border-box;
+}
+.mi h1,
+.mi h2,
+.mi h3,
+.mi h4 {
+  font-family: "MI Archivo", Arial, sans-serif;
+  font-weight: 700;
+  margin: 0;
+  color: inherit;
+  text-wrap: balance;
+}
+.mi p,
+.mi ul,
+.mi ol,
+.mi figure {
+  margin: 0;
+}
+.mi ul,
+.mi ol {
+  padding: 0;
+  list-style: none;
+}
+.mi .wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.mi .d1 { font-size: 72px; line-height: 1; letter-spacing: -0.04em; }
+.mi .d2 { font-size: 56px; line-height: 1.02; letter-spacing: -0.035em; }
+.mi .h2 { font-size: 48px; line-height: 1.04; letter-spacing: -0.035em; }
+.mi .h3 { font-size: 28px; line-height: 1.12; letter-spacing: -0.025em; }
+.mi .h4 { font-family: "MI Archivo", Arial, sans-serif; font-weight: 700; font-size: 20px; line-height: 1.15; }
+.mi .lead { font-size: 20px; line-height: 1.6; }
+.mi .body { font-size: 18px; line-height: 1.62; }
+.mi .small { font-size: 14px; line-height: 1.5; }
+.mi .tiny { font-size: 13px; line-height: 1.5; }
+.mi .muted { color: #5b554b; }
+.mi .on-dark,
+.mi.on-dark { color: #f5f5f5; }
+.mi .on-dark .muted,
+.mi.on-dark .muted { color: rgba(245, 245, 245, 0.68); }
+.mi .eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #b4510f;
+}
+.mi .on-dark .eyebrow,
+.mi.on-dark .eyebrow { color: #ffb612; }
+.mi .stat {
+  font-family: "MI Archivo", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+.mi .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 28px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  /* The site's global .btn adds capitalize and its own padding; the boards don't. */
+  text-transform: none;
+  line-height: 1;
+}
+.mi .btn-y { background: #ffb612; border-color: #ffb612; color: #000; }
+.mi .btn-y:hover { background: #f0a800; border-color: #f0a800; }
+.mi .btn-ink { background: #121212; border-color: #121212; color: #fff; }
+.mi .btn-ghost { border-color: currentColor; color: inherit; background: transparent; }
+.mi .btn:focus-visible,
+.mi a:focus-visible,
+.mi summary:focus-visible {
+  outline: 2px solid #ffb612;
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .mi .d1 { font-size: 44px; }
+  .mi .d2 { font-size: 38px; }
+  .mi .h2 { font-size: 34px; }
+  .mi .h3 { font-size: 24px; }
+  .mi .stack-sm { flex-direction: column !important; align-items: stretch !important; }
+}
+
+/* The site's header is fixed and floats over the page (bottom edge at 124px on
+   desktop, 73px on phones). Clear it so the hero starts below it, on the
+   hero's own background. */
+.mi-page {
+  padding-top: 124px;
+  background: #fdfbf7;
+}
+@media (max-width: 1023px) {
+  .mi-page { padding-top: 73px; }
+}
+
+/* Bar chart at phone width: the board's 240px label column leaves no room for
+   the bars, so narrow the label and value columns. */
+@media (max-width: 760px) {
+  .mi .mi-bars li { grid-template-columns: 112px minmax(0, 1fr) 52px !important; gap: 12px !important; }
+  .mi .mi-bars .h4 { font-size: 16px; }
+  .mi .mi-bars .stat { font-size: 22px !important; }
+}

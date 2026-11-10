@@ -1,0 +1,28 @@
+---
+// Large stats, each with a bar (canvas: v-ls-06-record-b).
+import Cta from "./Cta.astro";
+const { heading, bars = [], note, chartDescription, cta } = Astro.props;
+---
+<section class="mi on-dark" style="background: #121212; padding: 96px 24px">
+  <div class="wrap">
+    <h2 class="h2" style="max-width: 860px">{heading}</h2>
+    <div role="img" aria-label={chartDescription} style="margin-top: 56px; display: grid; gap: 40px">
+      {bars.map((b: { value: string; label: string; percent: number; muted?: boolean }) => {
+        const fill = b.muted ? "#8A8173" : "#FFB612";
+        return (
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px">
+            <div style="display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap">
+              <p class="stat" style={`font-size: clamp(96px, 11vw, 160px); line-height: 0.85; color: ${fill}`}>{b.value}</p>
+              <p class="h3" style={`color: ${b.muted ? "rgba(245,245,245,0.68)" : "#F5F5F5"}`}>{b.label}</p>
+            </div>
+            <div style="height: 56px; background: #2A2A2A"><div style={`width: ${b.percent}%; height: 100%; background: ${fill}`}></div></div>
+          </div>
+        );
+      })}
+    </div>
+    <div style="margin-top: 56px; padding-top: 28px; border-top: 1px solid rgba(245,245,245,0.25); display: flex; flex-wrap: wrap; gap: 20px 40px; justify-content: space-between; align-items: center">
+      <p class="small muted">{note}</p>
+      <Cta cta={cta} />
+    </div>
+  </div>
+</section>

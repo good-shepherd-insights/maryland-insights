@@ -3,9 +3,11 @@ export const prerender = true;
 
 import Base from "@/layouts/Base.astro";
 import { getFeaturePageSlugs, getFeaturePage, getSiteSettings } from "@/lib/sanity/queries";
-import PageHeader from "@/partials/PageHeader.astro";
+import FeatureSections from "@/components/features/FeatureSections.astro";
+import "@/styles/features.css";
 
-// /features/<slug>: one Sanity "featurePage" document per page.
+// /features/<slug>: one Sanity "featurePage" document per page. The first
+// section is the hero, so there is no PageHeader here.
 export async function getStaticPaths() {
   const slugs = await getFeaturePageSlugs();
   return slugs.map((slug) => ({
@@ -19,10 +21,14 @@ const feature = await getFeaturePage(slug);
 if (!feature) return Astro.redirect("/404");
 const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
-const { title, description } = feature;
-
 ---
 
-<Base {...feature} date_modified={feature.dateModified} ui={settingsUi}>
-  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
+<Base
+  title={feature.title}
+  meta_title={feature.metaTitle}
+  description={feature.description}
+  date_modified={feature.dateModified}
+  ui={settingsUi}
+>
+  <FeatureSections sections={feature.sections ?? []} />
 </Base>

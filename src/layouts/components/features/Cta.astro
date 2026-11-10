@@ -1,0 +1,10 @@
+---
+// "Partner with us" style button used by every feature section.
+interface Props {
+  cta?: { label?: string; link?: string } | null;
+  variant?: "btn-y" | "btn-ink" | "btn-ghost";
+  style?: string;
+}
+const { cta, variant = "btn-y", style } = Astro.props;
+---
+{cta?.label && cta?.link && <a class={`btn ${variant}`} href={cta.link} style={style}>{cta.label}</a>}
