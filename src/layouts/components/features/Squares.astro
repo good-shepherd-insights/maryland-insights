@@ -1,0 +1,18 @@
+---
+// 03 Text beside a grid of squares, one marked (canvas: wv-03-speed-c).
+import Cta from "./Cta.astro";
+const { heading, body, count = 300, chartDescription, cta } = Astro.props;
+const cells = Array.from({ length: count }, (_, i) => i === 0);
+---
+<section class="mi m-squares" style="padding: 96px 24px">
+  <div class="wrap m-squares__wrap" style="display: flex; flex-wrap: wrap; gap: 48px 72px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 360px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="h2 m-o1">{heading}</h2>
+      <p class="body muted m-o2">{body}</p>
+      <div class="m-o5"><Cta cta={cta} /></div>
+    </div>
+    <div role="img" aria-label={chartDescription} class="m-o3 m-squares__grid" style="flex: 1.5 1 560px; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 8px">
+      {cells.map((dark) => <span style={`display: block; aspect-ratio: 1; background: ${dark ? "#121212" : "#FFB612"}`}></span>)}
+    </div>
+  </div>
+</section>

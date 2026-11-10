@@ -408,3 +408,94 @@
   .mi .m-closingphoto__h2 { font-size: 44px !important; line-height: 0.94 !important; letter-spacing: -0.045em !important; }
   .mi .m-closingphoto__foot { padding-top: 24px !important; gap: 12px !important; }
 }
+
+/* 24/7 Sales Website: phone layouts follow the mobile (390px) boards m-wv-*. */
+@media (max-width: 767px) {
+  /* 01 Hero, photo with ink block (wv-01-hero-a). */
+  .mi.m-ink { padding: 0 !important; background: #121212; }
+  .mi .m-ink__frame { min-height: 0 !important; display: block !important; }
+  .mi .m-ink__photo { position: static !important; height: 300px !important; object-position: 30% 50%; }
+  .mi .m-ink__block { max-width: none !important; padding: 36px 24px 44px !important; gap: 22px !important; }
+  .mi .m-ink__h1 { font-size: 44px; line-height: 1; letter-spacing: -0.04em; }
+  .mi.m-ink .lead { font-size: 18px; }
+
+  /* 02 Number grid (wv-02-intro-b). */
+  .mi.m-numgrid { padding: 64px 24px !important; }
+  .mi .m-numgrid__grid { grid-template-columns: minmax(0, 1fr) !important; margin-top: 28px !important; }
+  .mi .m-numgrid__big { grid-row: auto !important; border-right: 0 !important; padding: 28px 22px !important; gap: 16px !important; }
+  .mi .m-numgrid__stat { font-size: 104px !important; }
+  .mi .m-numgrid__big .body { font-size: 16px; }
+  .mi .m-numgrid__row { flex-direction: column; align-items: flex-start !important; gap: 4px !important; padding: 20px 22px !important; border-top: 2px solid #121212; border-bottom: 0 !important; }
+  .mi .m-numgrid__value { font-size: 44px !important; line-height: 1; min-width: 0 !important; }
+  .mi .m-numgrid__row .body { font-size: 16px; }
+
+  /* 03 Squares (wv-03-speed-c), 04 Build stack (wv-04-edits-b), 05 Waffle (wv-05-security-a),
+     06 Stat with code (wv-06-content-ai-b), 10 County map (wv-10-evidence-c): one column. */
+  .mi.m-squares, .mi.m-builds, .mi.m-waffle, .mi.m-statcode, .mi.m-cml { padding: 64px 24px !important; }
+  .mi .m-squares__wrap, .mi .m-builds__wrap, .mi .m-waffle__wrap, .mi .m-statcode__wrap, .mi .m-cml__wrap {
+    flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 24px !important;
+  }
+  .mi .m-squares__wrap > *, .mi .m-builds__wrap > *, .mi .m-waffle__wrap > *, .mi .m-statcode__wrap > *, .mi .m-cml__wrap > * { flex: none !important; margin-top: 0 !important; }
+  .mi .m-squares__grid { grid-template-columns: repeat(15, minmax(0, 1fr)) !important; gap: 5px !important; }
+  .mi.m-squares .body, .mi.m-builds .body { font-size: 17px; }
+  .mi .m-builds__m { display: flex !important; }
+
+  .mi .m-waffle__wrap { gap: 18px !important; }
+  .mi .m-waffle__stat { font-size: 120px !important; }
+  .mi.m-waffle .h3 { font-size: 24px; }
+  .mi .m-waffle__grid { gap: 5px !important; margin-top: 10px !important; }
+  .mi .m-waffle__h { font-size: 20px; margin-top: 14px !important; }
+
+  .mi .m-statcode__wrap { gap: 18px !important; }
+  .mi .m-statcode__stat { font-size: 96px !important; }
+  .mi.m-statcode .h3 { font-size: 24px; }
+  .mi.m-statcode .m-o4 { margin-top: 6px !important; }
+
+  .mi .m-cml__wrap { gap: 18px !important; }
+  .mi .m-cml__stat { font-size: 120px !important; }
+  .mi.m-cml .h3 { font-size: 26px; }
+  .mi .m-cml__map { margin: 12px 0 8px !important; }
+
+  /* 05 Things watched (wv-05-security-c). */
+  .mi.m-watch { padding: 64px 24px !important; }
+  .mi.m-watch > .wrap { display: flex; flex-direction: column; gap: 28px; }
+  .mi .m-watch__list { margin-top: 0 !important; grid-template-columns: minmax(0, 1fr) !important; border-bottom: 2px solid #121212; }
+  .mi .m-watch__item { flex-direction: row !important; align-items: flex-start; gap: 14px !important; padding: 18px 0 !important; }
+  .mi .m-watch__dot { flex: none; width: 14px !important; height: 14px !important; margin-top: 8px; }
+  .mi .m-watch__text { gap: 4px !important; }
+  .mi .m-watch__title { font-size: 28px !important; line-height: 1.05; }
+
+  /* 06 One source, many outputs (wv-06-content-ai-a), 07 Timeline (wv-07-included-a),
+     08 Roster (wv-08-agency-c), 09 Fit lists (wv-09-why-c), 11 Short answers (wv-11-faq-a). */
+  .mi.m-srcout, .mi.m-timeline, .mi.m-roster, .mi.m-fit, .mi.m-short { padding: 64px 24px !important; }
+  .mi.m-srcout .m-fan__title { font-size: 36px; line-height: 0.98; }
+
+  .mi.m-timeline .m-timeline__cta { margin-top: 6px !important; }
+
+  .mi.m-roster > .wrap { display: flex; flex-direction: column; gap: 28px; }
+  .mi .m-roster__diagram { margin-top: 0 !important; gap: 8px !important; }
+  .mi .m-roster__band { flex-direction: column; align-items: flex-start !important; gap: 4px !important; padding: 20px !important; }
+  .mi .m-roster__title { font-size: 32px !important; }
+  .mi .m-roster__band .body { font-size: 16px; }
+  .mi .m-roster__clients { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 8px !important; }
+  .mi .m-roster__client { padding: 12px !important; min-height: 64px !important; gap: 8px; }
+  .mi .m-roster__client .h4 { font-size: 16px; }
+  .mi .m-roster__dot { width: 12px !important; height: 12px !important; }
+
+  .mi .m-fit__cols { margin-top: 32px !important; grid-template-columns: minmax(0, 1fr) !important; gap: 32px !important; }
+  .mi .m-fit__label { padding-bottom: 12px !important; }
+  .mi .m-fit__label--muted { color: #6E6658 !important; }
+  .mi .m-fit__item { font-size: 26px !important; line-height: 1.1; padding: 14px 0 !important; }
+  .mi .m-fit__cta { margin-top: 32px !important; }
+
+  .mi.m-short dl { margin-top: 24px !important; border-bottom: 2px solid #121212; }
+  .mi .m-short__row { grid-template-columns: minmax(0, 1fr) !important; gap: 10px !important; padding: 22px 0 !important; }
+  .mi .m-short__q { font-size: 19px; }
+  .mi .m-short__a { font-size: 48px !important; line-height: 0.98 !important; }
+  .mi .m-short__foot { border-top: 0 !important; padding-top: 24px !important; justify-content: flex-start !important; }
+
+  /* 12 Closing, full yellow block (wv-12-cta-b). */
+  .mi.m-closeblock { min-height: 0 !important; padding: 80px 24px !important; }
+  .mi .m-closeblock__h { font-size: 52px !important; line-height: 0.92 !important; }
+  .mi .m-closeblock__row { margin-top: 32px !important; padding-top: 28px !important; flex-direction: column !important; align-items: flex-start !important; gap: 20px !important; }
+}

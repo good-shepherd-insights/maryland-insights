@@ -1,0 +1,21 @@
+---
+// 02 One big number beside smaller ones (canvas: wv-02-intro-b).
+const { heading, stat, statLabel, statNote, rows = [] } = Astro.props;
+---
+<section class="mi m-numgrid" style="padding: 88px 24px">
+  <div class="wrap">
+    <h2 class="h2">{heading}</h2>
+    <div class="m-numgrid__grid" style="margin-top: 40px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0; border: 2px solid #121212">
+      <div class="m-numgrid__big" style={`grid-row: span ${Math.max(rows.length, 1)}; background: #FFB612; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; border-right: 2px solid #121212`}>
+        <p class="stat m-numgrid__stat" style="font-size: clamp(96px, 11vw, 168px); line-height: 0.85; letter-spacing: -0.06em">{stat}</p>
+        <p class="body">{statLabel}{statNote && <> <span class="tiny">{statNote}</span></>}</p>
+      </div>
+      {rows.map((r: { title: string; detail: string }, i: number) => (
+        <div class="m-numgrid__row" style={`padding: 28px 32px; display: flex; align-items: baseline; gap: 20px;${i < rows.length - 1 ? " border-bottom: 2px solid #121212;" : ""}`}>
+          <p class="stat m-numgrid__value" style="font-size: 56px; min-width: 140px">{r.title}</p>
+          <p class="body">{r.detail}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

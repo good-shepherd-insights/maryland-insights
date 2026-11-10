@@ -1,0 +1,15 @@
+---
+// 09 Where the work earns its keep, and where a builder is fine (canvas: wv-09-why-c).
+import Cta from "./Cta.astro";
+const { heading, fitTitle, fitItems = [], notFitTitle, notFitItems = [], cta } = Astro.props;
+---
+<section class="mi m-fit" style="padding: 96px 24px; background: #F6F0E5">
+  <div class="wrap">
+    <h2 class="h2" style="max-width: 760px">{heading}</h2>
+    <div class="m-fit__cols" style="margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 48px 64px">
+      <div><p class="h4 m-fit__label" style="padding-bottom: 14px"><span aria-hidden="true" style="display: inline-block; width: 14px; height: 14px; background: #FFB612; margin-right: 10px"></span>{fitTitle}</p><ul>{fitItems.map((t: string) => <li class="stat m-fit__item" style="font-size: 36px; padding: 18px 0; border-top: 2px solid #121212">{t}</li>)}</ul></div>
+      <div><p class="h4 m-fit__label m-fit__label--muted" style="padding-bottom: 14px; color: #8A8173">{notFitTitle}</p><ul>{notFitItems.map((t: string) => <li class="stat m-fit__item" style="font-size: 36px; padding: 18px 0; border-top: 1px solid #C9BFAE; color: #8A8173">{t}</li>)}</ul></div>
+    </div>
+    <div class="m-fit__cta" style="margin-top: 48px"><Cta cta={cta} /></div>
+  </div>
+</section>
