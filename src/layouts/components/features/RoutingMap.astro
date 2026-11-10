@@ -1,0 +1,23 @@
+---
+// 05 Leads that arrive with context: the county map (canvas: v-aut-05-context-a).
+import Cta from "./Cta.astro";
+import { ROUTING_MAP_VIEWBOX, ROUTING_MAP_INNER } from "@/lib/features/geo/routingMap";
+const { heading, lead, legendTitle, legend = [], mapDescription, cta } = Astro.props;
+const colors = ["#FFB612", "#D9651A", "#121212"];
+---
+<section class="mi m-sec m-routemap" style="padding: 96px 24px">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <div class="m-contents" style="max-width: 760px; display: flex; flex-direction: column; gap: 18px">
+        <h2 class="h2">{heading}</h2>
+        <p class="lead muted">{lead}</p>
+      </div>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <div class="m-routemap__map" style="margin-top: 48px"><svg role="img" aria-label={mapDescription} viewBox={ROUTING_MAP_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={ROUTING_MAP_INNER} /></div>
+    <div class="m-routemap__legend" style="margin-top: 24px; padding-top: 20px; border-top: 2px solid #121212; display: flex; flex-wrap: wrap; gap: 12px 36px; align-items: center">
+      <span class="small" style="font-weight: 700">{legendTitle}</span>
+      {legend.map((l: string, i: number) => <span class="small" style="display: inline-flex; align-items: center; gap: 10px"><span aria-hidden="true" style={`display: inline-block; flex: none; width: 16px; height: 16px; background: ${colors[i] ?? "#121212"}`}></span>{l}</span>)}
+    </div>
+  </div>
+</section>

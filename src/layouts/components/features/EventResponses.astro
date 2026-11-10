@@ -1,0 +1,38 @@
+---
+// 02 Real events pass through one consent record and trigger a response (canvas: v-aut-02-intro-c).
+import Cta from "./Cta.astro";
+const { heading, leftLabel, rightLabel, hubTitle, hubDetail, pairs = [], chartDescription, cta } = Astro.props;
+const n = Math.max(pairs.length, 1);
+const box = "border: 2px solid #121212; padding: 22px; display: flex; align-items: center";
+---
+<section class="mi m-sec m-events" style="padding: 96px 24px">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 720px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-d" style={`margin-top: 56px; display: grid; grid-template-columns: minmax(0, 1fr) clamp(16px, 4vw, 56px) clamp(96px, 16vw, 220px) clamp(16px, 4vw, 56px) minmax(0, 1fr); grid-template-rows: auto repeat(${n}, minmax(104px, auto)); row-gap: 14px`}>
+      <p class="small muted" style="grid-column: 1; grid-row: 1; align-self: end">{leftLabel}</p>
+      <p class="small muted" style="grid-column: 5; grid-row: 1; align-self: end">{rightLabel}</p>
+      <div class="on-dark" style={`grid-column: 3; grid-row: 2 / ${n + 2}; background: #121212; padding: 24px; display: flex; flex-direction: column; justify-content: space-between`}><p class="stat" style="font-size: clamp(22px, 2.6vw, 34px)">{hubTitle}</p><p class="small muted">{hubDetail}</p></div>
+      {pairs.map((p: { title: string; detail: string }, i: number) => (
+        <>
+          <div style={`grid-column: 1; grid-row: ${i + 2}; background: #FDFBF7; ${box}`}><p class="stat" style="font-size: clamp(18px, 2vw, 26px)">{p.title}</p></div>
+          <span aria-hidden="true" style={`grid-column: 2; grid-row: ${i + 2}; align-self: center; height: 2px; background: #121212`}></span>
+          <span aria-hidden="true" style={`grid-column: 4; grid-row: ${i + 2}; align-self: center; height: 2px; background: #121212`}></span>
+          <div style={`grid-column: 5; grid-row: ${i + 2}; background: #FFB612; ${box}`}><p class="stat" style="font-size: clamp(18px, 2vw, 26px)">{p.detail}</p></div>
+        </>
+      ))}
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-m">
+      <div class="on-dark" style="background: #121212; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px"><p class="stat" style="font-size: 26px; line-height: 1.05">{hubTitle}</p><p class="small muted" style="font-size: 14px">{hubDetail}</p></div>
+      <div aria-hidden="true" style="margin-left: 50%; width: 2px; height: 20px; background: #121212"></div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr); margin-bottom: 8px"><p class="small muted" style="font-size: 14px">{leftLabel}</p><span></span><p class="small muted" style="font-size: 14px">{rightLabel}</p></div>
+      <ul style="display: flex; flex-direction: column; gap: 10px">
+        {pairs.map((p: { title: string; detail: string }) => (
+          <li style="display: grid; grid-template-columns: minmax(0, 1fr) 18px minmax(0, 1fr); align-items: stretch"><div style="border: 2px solid #121212; background: #FDFBF7; padding: 14px; display: flex; align-items: center"><p class="stat" style="font-size: 18px; line-height: 1.05">{p.title}</p></div><span aria-hidden="true" style="align-self: center; height: 2px; background: #121212"></span><div style="background: #FFB612; border: 2px solid #121212; padding: 14px; display: flex; align-items: center"><p class="stat" style="font-size: 18px; line-height: 1.05">{p.detail}</p></div></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,28 @@
+---
+// 08 Nested layers: customers, client, agency, Maryland Insights (canvas: v-aut-08-agency-a).
+import Cta from "./Cta.astro";
+const { heading, body, layers = [], chartDescription, cta } = Astro.props;
+const looks = [
+  { bg: "#FDFBF7", fg: "#121212", sub: "#5B554B" },
+  { bg: "#F6F0E5", fg: "#121212", sub: "#5B554B" },
+  { bg: "#121212", fg: "#F5F5F5", sub: "rgba(245,245,245,0.7)" },
+  { bg: "#FFB612", fg: "#121212", sub: "#3A352E" },
+];
+const build = (i: number): string => {
+  if (i >= layers.length) return "";
+  const l = looks[i] ?? looks[looks.length - 1];
+  const esc = (s: string) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const indent = i === 0 ? "margin: 0" : "margin-top: 20px; margin-left: var(--nest, clamp(0px, 5vw, 64px))";
+  return `<div style="background: ${l.bg}; color: ${l.fg}; border: 2px solid #121212; padding: var(--nest-pad, clamp(16px, 2.2vw, 28px)); ${indent}"><p class="stat m-nested__t" style="font-size: clamp(22px, 2.6vw, 34px)">${esc(layers[i].title)}</p><p class="small" style="margin-top: 6px; color: ${l.sub}">${esc(layers[i].detail)}</p>${build(i + 1)}</div>`;
+};
+---
+<section class="mi m-nested" style="padding: 96px 24px">
+  <div class="wrap m-nested__wrap" style="display: flex; flex-wrap: wrap; gap: 56px 72px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 22px">
+      <h2 class="h2 m-o1">{heading}</h2>
+      <p class="body muted m-o2">{body}</p>
+      <div class="m-o4" style="margin-top: 6px"><Cta cta={cta} /></div>
+    </div>
+    <div role="img" aria-label={chartDescription} class="m-o3 m-nested__diagram" style="flex: 1.5 1 560px; min-width: 0" set:html={build(0)} />
+  </div>
+</section>

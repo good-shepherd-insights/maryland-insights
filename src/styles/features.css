@@ -499,3 +499,124 @@
   .mi .m-closeblock__h { font-size: 52px !important; line-height: 0.92 !important; }
   .mi .m-closeblock__row { margin-top: 32px !important; padding-top: 28px !important; flex-direction: column !important; align-items: flex-start !important; gap: 20px !important; }
 }
+
+/* Text links, from the board stylesheet. */
+.mi a.link { font-weight: 600; color: #B4510F; text-decoration: underline; text-underline-offset: 3px; }
+.mi .on-dark a.link { color: #FFB612; }
+
+/* Automatic Customer Nurturing: phone layouts follow the mobile (390px) boards m-v-aut-*. */
+@media (max-width: 767px) {
+  /* 01 Hero, text then photo (v-aut-01-hero-a). */
+  .mi.m-split { min-height: 0 !important; flex-direction: column; flex-wrap: nowrap !important; }
+  .mi .m-split__text { flex: none !important; padding: 48px 24px 40px !important; gap: 24px !important; }
+  .mi .m-split__h1 { font-size: 48px !important; line-height: 0.94 !important; }
+  .mi .m-split__foot { gap: 24px !important; padding-top: 24px !important; }
+  .mi.m-split .lead { font-size: 18px; }
+  .mi .m-split__photo { flex: none !important; min-height: 0 !important; height: 300px; }
+
+  /* 03 Stat beside the week (v-aut-03-events-b). */
+  .mi.m-week { padding: 64px 24px !important; }
+  .mi .m-week__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 16px !important; }
+  .mi .m-week__wrap > * { flex: none !important; margin-top: 0 !important; }
+  .mi .m-week__h { font-size: 26px !important; line-height: 1.12; }
+  .mi .m-week__stat { font-size: 104px !important; }
+  .mi.m-week .h4 { font-size: 20px; }
+  .mi .m-week__chart { margin-top: 16px !important; }
+  .mi .m-week__grid { grid-template-columns: 38px repeat(24, minmax(0, 1fr)) !important; gap: 2px !important; }
+  .mi .m-week__day { font-size: 13px; }
+  .mi .m-week__cell { min-height: 26px !important; }
+  .mi .m-week__grid .tiny { font-size: 12px; }
+  .mi .m-week__legend { margin-top: 18px !important; flex-direction: column; gap: 10px !important; }
+  .mi .m-week__legend .small { font-size: 14px; }
+  .mi.m-week .m-o6 { margin-top: 8px !important; }
+
+  /* 04 Missed call minutes (v-aut-04-missed-b). */
+  .mi.m-minutes .tiny { margin-top: 0 !important; }
+
+  /* 05 Routing map (v-aut-05-context-a): map full width, legend as a list. */
+  .mi.m-routemap > .wrap { gap: 16px !important; }
+  .mi .m-routemap__map { margin: 12px -24px 0 !important; }
+  .mi .m-routemap__map svg text, .mi .m-routemap__map svg line { display: none; }
+  .mi .m-routemap__legend { margin-top: 4px !important; padding-top: 18px !important; flex-direction: column; align-items: flex-start !important; gap: 10px !important; }
+  .mi .m-routemap__legend .small { font-size: 15px; }
+  .mi .m-routemap__legend .small:first-child { font-size: 14px; margin-bottom: 2px; }
+  .mi .m-routemap__legend span[aria-hidden] { width: 18px !important; height: 18px !important; border: 1px solid #121212; box-sizing: border-box; }
+  .mi.m-routemap .m-last { margin-top: 12px !important; }
+
+  /* City level, address to crew (v-aut-city-b). */
+  .mi .m-routefig__row { flex-direction: column; flex-wrap: nowrap !important; gap: 8px !important; margin-top: 0 !important; }
+  .mi .m-routefig__fig { flex: none !important; gap: 12px !important; }
+  .mi .m-routefig__fig:not(:last-child)::after { content: ""; display: block; margin: 0 0 0 170px; width: 2px; height: 24px; background: #121212; }
+  .mi .m-routefig__fig .h4 { font-size: 20px; }
+  .mi .m-routefig__fig .small { font-size: 14px; }
+  .mi .m-routefig__crewframe { aspect-ratio: auto !important; }
+  .mi .m-routefig__crew { height: auto !important; padding: 22px !important; gap: 20px; }
+  .mi .m-routefig__crewname { font-size: 40px !important; }
+  .mi .m-routefig__fact { font-size: 22px !important; }
+
+  /* 06 Consent hub, drawn vertically (v-aut-06-consent-a). */
+  .mi .m-consent__m { display: flex !important; flex-direction: column; }
+  .mi .m-consent__vlink { display: flex; flex-direction: column; align-items: center; width: 10px; margin-left: 166px; }
+  .mi .m-consent__note { font-size: 19px; margin-top: 0 !important; padding-top: 18px !important; }
+
+  /* 07 Registration timeline (v-aut-07-included-a). */
+  .mi.m-reg .lead { font-size: 18px; }
+  .mi .m-reg__chart { margin-top: 12px !important; }
+  .mi .m-reg__bar { padding: 16px !important; gap: 10px !important; }
+  .mi .m-reg__value { font-size: 30px !important; line-height: 0.95 !important; }
+  .mi .m-reg__detail { font-size: 13px; }
+  .mi .m-reg__lbl { font-size: 13px; top: 14px !important; }
+  .mi .m-reg__list { margin-top: 0 !important; flex-direction: column; gap: 18px !important; }
+  .mi .m-reg__list li { flex: none !important; padding: 16px 0 0 !important; }
+  .mi .m-reg__title { font-size: 21px !important; line-height: 1.05; }
+  .mi .m-reg__list .small { font-size: 14px; }
+
+  /* 08 Nested layers (v-aut-08-agency-a). */
+  .mi.m-nested { padding: 64px 24px !important; }
+  .mi .m-nested__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 24px !important; }
+  .mi .m-nested__wrap > * { flex: none !important; margin-top: 0 !important; }
+  .mi .m-nested__diagram { --nest: 14px; --nest-pad: 16px; }
+  .mi .m-nested__diagram div { margin-top: 16px; }
+  .mi .m-nested__diagram > div { margin-top: 0; }
+  .mi .m-nested__t { font-size: 22px !important; line-height: 1.05; }
+  .mi .m-nested__diagram .small { font-size: 14px; }
+
+  /* 09 Automated and human (v-aut-09-why-c). */
+  .mi .m-autohuman__row { margin-top: 0 !important; flex-direction: column; flex-wrap: nowrap !important; }
+  .mi .m-autohuman__auto, .mi .m-autohuman__human { flex: none !important; padding: 24px 22px !important; }
+  .mi .m-autohuman__human { gap: 20px !important; }
+  .mi.m-autohuman .h4 { font-size: 19px; }
+  .mi .m-autohuman__auto ul { margin-top: 14px !important; }
+  .mi .m-autohuman__item { font-size: 22px !important; line-height: 1.05; padding: 12px 0 !important; }
+  .mi .m-autohuman__stat { font-size: 40px !important; }
+  .mi .m-autohuman__human .small { font-size: 14px; }
+
+  /* 10 What we watch (v-aut-10-evidence-c). */
+  .mi.m-watchbig > .wrap { gap: 22px !important; }
+  .mi.m-watchbig .h4 { font-size: 19px; }
+  .mi .m-watchbig__list { margin-top: 0 !important; }
+  .mi .m-watchbig__item { font-size: 30px !important; line-height: 1.05 !important; letter-spacing: -0.045em !important; padding: 14px 0 !important; gap: 14px !important; }
+  .mi .m-watchbig__box { width: 20px !important; height: 20px !important; box-sizing: border-box; }
+  .mi.m-watchbig .small { font-size: 14px; }
+  .mi .m-watchbig__ctas { flex-direction: column; align-items: flex-start !important; gap: 18px !important; }
+  .mi .m-watchbig__ctas .link { font-size: 17px; min-height: 44px; display: inline-flex; align-items: center; }
+
+  /* 11 Included and not (v-aut-11-faq-b). */
+  .mi.m-incl .lead { font-size: 18px; }
+  .mi .m-incl__row { margin-top: 0 !important; flex-direction: column; flex-wrap: nowrap !important; }
+  .mi .m-incl__in, .mi .m-incl__out { flex: none !important; padding: 22px 20px 24px !important; }
+  .mi.m-incl .h4 { font-size: 19px; padding-bottom: 10px !important; }
+  .mi .m-incl__row li { gap: 12px !important; padding: 12px 0 !important; }
+  .mi .m-incl__row li span[aria-hidden] { width: 14px !important; height: 14px !important; box-sizing: border-box; }
+  .mi .m-incl__item { font-size: 18px !important; line-height: 1.05; }
+  .mi .m-incl__out .body { font-size: 16px; }
+
+  /* 12 Closing band (v-aut-12-cta-a). */
+  .mi .m-band__photo { height: 240px !important; }
+  .mi .m-band__body { padding: 48px 24px 64px !important; }
+  .mi .m-band__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 22px !important; }
+  .mi .m-band__wrap > * { flex: none !important; }
+  .mi .m-band__h { font-size: 44px !important; line-height: 0.95 !important; }
+  .mi .m-band__side { gap: 22px !important; }
+  .mi.m-band .m-secondary { font-size: 14px; }
+}

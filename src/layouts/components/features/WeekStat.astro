@@ -1,0 +1,32 @@
+---
+// 03 Big stat beside an hour-by-hour week (canvas: v-aut-03-events-b).
+import Cta from "./Cta.astro";
+const { heading, stat, statLabel, source, days = [], hourLabels = [], onLabel, offLabel, note, chartDescription, cta } = Astro.props;
+// Weekday evenings from 6pm and all of Saturday and Sunday are shaded.
+const shaded = (d: number, h: number) => d >= 5 || h >= 18;
+---
+<section class="mi m-week" style="padding: 96px 24px">
+  <div class="wrap m-week__wrap" style="display: flex; flex-wrap: wrap; gap: 56px 72px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 360px; display: flex; flex-direction: column; gap: 18px">
+      <h2 class="h3 m-o1 m-week__h">{heading}</h2>
+      <p class="stat m-o2 m-week__stat" style="font-size: clamp(120px, 13vw, 190px); line-height: 0.85; letter-spacing: -0.06em">{stat}</p>
+      <p class="h4 m-o3">{statLabel}</p>
+      <p class="tiny muted m-o4">{source}</p>
+      <div class="m-o6" style="margin-top: 14px"><Cta cta={cta} /></div>
+    </div>
+    <div class="m-o5 m-week__chart" style="flex: 1.6 1 560px; min-width: 0">
+      <div role="img" aria-label={chartDescription} class="m-week__grid" style="display: grid; grid-template-columns: 44px repeat(24, minmax(0, 1fr)); gap: 3px">
+        {days.map((d: string, di: number) => (
+          <>
+            <span class="small muted m-week__day" style="align-self: center">{d}</span>
+            {Array.from({ length: 24 }, (_, h) => <span class="m-week__cell" style={`background: ${shaded(di, h) ? "#FFB612" : "#E7DFD0"}; min-height: 38px`}></span>)}
+          </>
+        ))}
+        <span></span>
+        {hourLabels.map((l: string) => <span class="tiny muted" style="grid-column: span 6">{l}</span>)}
+      </div>
+      <div class="m-week__legend" style="margin-top: 22px; display: flex; flex-wrap: wrap; gap: 12px 28px"><span class="small" style="display: inline-flex; align-items: center; gap: 10px"><span aria-hidden="true" style="display: inline-block; flex: none; width: 16px; height: 16px; background: #FFB612"></span>{onLabel}</span><span class="small" style="display: inline-flex; align-items: center; gap: 10px"><span aria-hidden="true" style="display: inline-block; flex: none; width: 16px; height: 16px; background: #E7DFD0"></span>{offLabel}</span></div>
+      <p class="tiny muted" style="margin-top: 10px">{note}</p>
+    </div>
+  </div>
+</section>
