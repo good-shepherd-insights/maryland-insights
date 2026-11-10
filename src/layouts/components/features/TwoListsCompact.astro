@@ -1,0 +1,21 @@
+---
+// What the agency keeps beside what is carried, compact (canvas: rev-08-agency-b, cel-08-agency-b).
+import Cta from "./Cta.astro";
+const { leftTitle, leftItems = [], rightTitle, rightItems = [], note, cta, itemStyle = "heading" } = Astro.props;
+const isStat = itemStyle === "stat";
+const li = "padding: 14px 0; border-top: 2px solid #121212" + (isStat ? "; font-size: 40px" : "");
+const cls = isStat ? "stat m-tlc__item" : "h2 m-tlc__item";
+const ulStyle = isStat ? "margin-top: 24px; border-bottom: 2px solid #121212" : "";
+---
+<section class="mi m-tlc" style="display: flex; flex-wrap: wrap">
+  <div class="m-tlc__left" style={`flex: 1 1 ${isStat ? 520 : 560}px; padding: 88px 56px; background: #FDFBF7; display: flex; flex-direction: column; gap: ${isStat ? 0 : 28}px`}>
+    {isStat ? <h2 class="h4">{leftTitle}</h2> : <p class="h4">{leftTitle}</p>}
+    <ul class="m-tlc__list" style={ulStyle}>{leftItems.map((t: string) => <li class={cls} style={li}>{t}</li>)}</ul>
+    <div class="m-tlc__cta" style={isStat ? "margin-top: 40px" : ""}><Cta cta={cta} /></div>
+  </div>
+  <div class="m-tlc__right" style={`flex: 1 1 ${isStat ? 520 : 560}px; padding: 88px 56px; background: #FFB612; display: flex; flex-direction: column; gap: ${isStat ? 0 : 28}px`}>
+    {isStat ? <h2 class="h4">{rightTitle}</h2> : <p class="h4">{rightTitle}</p>}
+    <ul class="m-tlc__list" style={ulStyle}>{rightItems.map((t: string) => <li class={cls} style={li}>{t}</li>)}</ul>
+    <p class="small m-tlc__note" style={isStat ? "margin-top: 40px" : ""}>{note}</p>
+  </div>
+</section>

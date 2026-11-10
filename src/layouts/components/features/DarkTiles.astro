@@ -1,0 +1,22 @@
+---
+// Intro on dark beside four tiles, the first on yellow (canvas: cel-02-intro-b).
+import Cta from "./Cta.astro";
+const { heading, lead, cta, tiles = [] } = Astro.props;
+---
+<section class="mi on-dark m-sec m-darktiles" style="background: #121212; padding: 96px 24px">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 48px 80px; align-items: flex-start">
+    <div class="m-contents" style="flex: 1 1 360px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="h2">{heading}</h2>
+      <p class="lead muted">{lead}</p>
+      <div class="m-last"><Cta cta={cta} /></div>
+    </div>
+    <div class="m-darktiles__grid" style="flex: 1.4 1 520px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); padding-left: 1px">
+      {tiles.map((t: { title: string; detail: string }, i: number) => (
+        <div class="m-darktiles__tile" style={`padding: 32px; border: 1px solid rgba(245,245,245,0.3); margin: 0 0 -1px -1px;${i === 0 ? " background: #FFB612; color: #121212;" : ""}`}>
+          <p class="stat m-darktiles__t" style="font-size: 44px">{t.title}</p>
+          <p class="small" style={`margin-top: 10px;${i === 0 ? "" : " color: rgba(245,245,245,0.75)"}`}>{t.detail}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

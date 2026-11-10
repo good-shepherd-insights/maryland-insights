@@ -1,0 +1,20 @@
+---
+// Two giant numbers side by side, the second in orange (canvas: cel-04-speed-a).
+import Cta from "./Cta.astro";
+const { heading, body, items = [], source, cta } = Astro.props;
+---
+<section class="mi m-sec m-multi" style="padding: 96px 24px">
+  <div class="wrap">
+    <h2 class="h2" style="max-width: 760px">{heading}</h2>
+    <p class="body muted" style="margin-top: 16px; max-width: 620px">{body}</p>
+    <div class="m-multi__grid" style="margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); border-top: 2px solid #121212">
+      {items.map((it: { value: string; label: string }, i: number) => (
+        <div class="m-multi__cell" style={i === 0 ? "padding: 36px 32px 36px 0; border-right: 2px solid #121212" : "padding: 36px 0 36px 32px"}>
+          <p class="stat m-multi__v" style={`font-size: clamp(110px, 12vw, 170px); line-height: 0.85${i === 1 ? "; color: #D9651A" : ""}`}>{it.value}</p>
+          <p class="h4" style="margin-top: 16px">{it.label}</p>
+        </div>
+      ))}
+    </div>
+    <div class="m-contents" style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: center"><p class="tiny muted">{source}</p><Cta cta={cta} class="m-last" /></div>
+  </div>
+</section>

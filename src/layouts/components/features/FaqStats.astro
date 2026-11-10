@@ -1,0 +1,21 @@
+---
+// Two timed stats, then a short list of questions (canvas: cel-11-faq-c).
+import Cta from "./Cta.astro";
+const { heading, stats = [], items = [], cta } = Astro.props;
+---
+<section class="mi m-sec m-faqstats" style="padding: 96px 24px">
+  <div class="wrap">
+    <h2 class="h2">{heading}</h2>
+    <div class="m-faqstats__grid" style="margin-top: 48px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 0 40px">
+      {stats.map((s: { label: string; value: string; body: string; source: string }) => (
+        <div style="border-top: 2px solid #121212; padding-top: 24px"><p class="small muted">{s.label}</p><p class="stat m-faqstats__v" style="font-size: 96px; line-height: 1">{s.value}</p><p class="body" style="margin-top: 12px">{s.body}</p><p class="tiny muted" style="margin-top: 8px">{s.source}</p></div>
+      ))}
+    </div>
+    <div style="margin-top: 40px; border-bottom: 1px solid #121212">
+      {items.map((q: { question: string; answer: string }) => (
+        <details style="border-top: 1px solid #121212; padding: 18px 0"><summary class="h4" style="cursor: pointer; min-height: 44px; display: flex; align-items: center">{q.question}</summary><p class="body muted" style="margin-top: 8px">{q.answer}</p></details>
+      ))}
+    </div>
+    <div style="margin-top: 32px"><Cta cta={cta} /></div>
+  </div>
+</section>

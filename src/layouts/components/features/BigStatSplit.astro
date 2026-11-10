@@ -1,0 +1,19 @@
+---
+// A giant stat beside the heading and body (canvas: cel-05-texts-a).
+import Cta from "./Cta.astro";
+const { stat, statLabel, source, heading, body, cta } = Astro.props;
+---
+<section class="mi m-sec m-bigsplit" style="padding: 96px 24px">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px 80px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 460px">
+      <p class="stat m-o1 m-bigsplit__stat" style="font-size: clamp(140px, 16vw, 230px); line-height: 0.82; letter-spacing: -0.06em">{stat}</p>
+      <p class="h3 m-o2 m-bigsplit__label" style="margin-top: 20px; max-width: 520px">{statLabel}</p>
+      <p class="tiny muted m-o3 m-bigsplit__src" style="margin-top: 12px">{source}</p>
+    </div>
+    <div class="m-contents" style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="h2 m-o4 m-bigsplit__h">{heading}</h2>
+      <p class="body muted m-o5">{body}</p>
+      <div class="m-o6"><Cta cta={cta} /></div>
+    </div>
+  </div>
+</section>

@@ -620,3 +620,183 @@
   .mi .m-band__side { gap: 22px !important; }
   .mi.m-band .m-secondary { font-size: 14px; }
 }
+
+/* ---- 5-Star Review System and Capture Every Lead: phone layouts (mobile boards m-rev-*, m-cel-*). ---- */
+@media (max-width: 767px) {
+  .mi.m-herostat .stack-sm, .mi.m-herosq .stack-sm { align-items: flex-start !important; }
+  /* Phone gap for the new one-column sections (inline desktop gaps are larger). */
+  .mi.m-tilegrid > .wrap, .mi.m-barlist > .wrap, .mi.m-monthrows > .wrap, .mi.m-ranked > .wrap, .mi.m-statcells > .wrap, .mi.m-yearbars > .wrap, .mi.m-colpair > .wrap, .mi.m-faqstat > .wrap, .mi.m-darktiles > .wrap, .mi.m-barswide > .wrap, .mi.m-multi > .wrap, .mi.m-minbar > .wrap, .mi.m-bigsplit > .wrap, .mi.m-leadtable > .wrap, .mi.m-funnel > .wrap, .mi.m-faqstats > .wrap { gap: 28px !important; align-items: stretch !important; }
+
+  /* 01 Hero beside a stat panel (rev-01-hero-a). */
+  .mi.m-herostat { padding: 0 !important; }
+  .mi .m-herostat__wrap { flex-direction: column !important; flex-wrap: nowrap !important; gap: 0 !important; }
+  .mi .m-herostat__wrap > * { flex: none !important; }
+  .mi .m-herostat__wrap > div:first-child { padding: 40px 24px 40px; gap: 22px !important; }
+  .mi .m-herostat__h { font-size: 44px; line-height: 1; letter-spacing: -0.04em; }
+  .mi .m-herostat__panel { padding: 40px 24px 44px !important; gap: 24px !important; }
+  .mi .m-herostat__stars svg { width: 36px !important; height: 36px !important; }
+  .mi .m-herostat__stat { font-size: 112px !important; }
+  .mi.m-herostat .h3 { font-size: 22px; margin-top: 14px !important; }
+  .mi .m-herostat__panel .body { font-size: 16px; margin-top: 10px !important; }
+
+  /* 02 Tile grid (rev-02-intro-c). */
+  .mi .m-tilegrid__grid { grid-template-columns: 1fr !important; }
+  .mi .m-tilegrid__tile { min-height: 0 !important; padding: 22px 20px !important; gap: 8px !important; justify-content: flex-start !important; }
+  .mi .m-tilegrid__tile .h3 { font-size: 22px; }
+  .mi .m-tilegrid__tile .body { font-size: 16px; }
+
+  /* Labelled bars (rev-03-recency-a, rev-06-replies-a). */
+  .mi .m-barlist__bars { gap: 24px !important; }
+  .mi.m-barlist .body { font-size: 16px; }
+  .mi .m-barlist__value { font-size: 32px !important; }
+  .mi .m-barlist__track { height: 28px !important; margin-top: 8px !important; }
+
+  /* Rows of months (rev-03-recency-c). */
+  .mi .m-mrows { display: grid !important; gap: 22px; }
+  .mi .m-mrows__label { font-size: 18px; margin-bottom: 8px; }
+  .mi .m-mrows__cells { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
+  .mi .m-mrows__cells span { display: block; height: 40px; }
+  .mi .m-mrows__months { display: flex; justify-content: space-between; }
+  .mi .m-mrows__months span { font-size: 12px; line-height: 1.5; color: #5b554b; }
+
+  /* Ranked list (rev-04-volume-c). */
+  .mi.m-ranked ol { border-bottom: 2px solid #121212; }
+  .mi .m-ranked__row { grid-template-columns: 28px 1fr 56px !important; gap: 12px !important; padding: 14px 10px !important; }
+  .mi .m-ranked__n { font-size: 22px !important; }
+  .mi.m-ranked .h4 { font-size: 17px; line-height: 1.2; }
+  .mi .m-ranked__v { font-size: 24px !important; }
+
+  /* Big stats in cells (rev-05-ask-a). */
+  .mi .m-statcells__grid { grid-template-columns: 1fr !important; border: 0 !important; padding-top: 2px; }
+  .mi .m-statcells__cell { border: 2px solid #121212 !important; margin-top: -2px; padding: 24px 22px !important; }
+  .mi .m-statcells__v { font-size: 80px !important; }
+  .mi.m-statcells .h4 { font-size: 18px; line-height: 1.25; margin-top: 12px !important; }
+
+  /* Big stat beside a square grid, dark (rev-05-ask-c). */
+  .mi.m-statwaffle { padding: 64px 24px !important; }
+  .mi .m-statwaffle__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 28px !important; }
+  .mi .m-statwaffle__wrap > * { flex: none !important; }
+  .mi .m-statwaffle__stat { font-size: 120px !important; letter-spacing: -0.06em; }
+  .mi .m-statwaffle__h { font-size: 30px; line-height: 1.08; letter-spacing: -0.03em; }
+  .mi .m-statwaffle__grid { gap: 4px !important; }
+  .mi.m-statwaffle .small { margin-top: 14px !important; }
+
+  /* Two compact lists (rev-08-agency-b, cel-08-agency-b). */
+  .mi.m-tlc { flex-direction: column; }
+  .mi.m-tlc > div { flex: none !important; gap: 20px !important; }
+  .mi .m-tlc__left { padding: 56px 24px 44px !important; }
+  .mi .m-tlc__right { padding: 44px 24px 56px !important; }
+  .mi .m-tlc__list { margin-top: 0 !important; border-bottom: 2px solid #121212; }
+  .mi .m-tlc__item { font-family: "MI Archivo", Arial, sans-serif; font-weight: 700; font-size: 30px !important; line-height: 1; letter-spacing: -0.035em; padding: 12px 0 !important; }
+  .mi .m-tlc__cta, .mi .m-tlc__note { margin-top: 0 !important; }
+
+  /* Year-on-year bars (rev-09-why-a). */
+  .mi.m-yearbars .wrap > div:last-child { gap: 30px !important; }
+  .mi.m-yearbars .h4 { font-size: 18px; }
+  .mi .m-yearbars__row { grid-template-columns: 44px 1fr 52px !important; gap: 10px !important; }
+  .mi .m-yearbars__row > div { height: 26px !important; }
+  .mi .m-yearbars__row .stat { font-size: 22px !important; text-align: right; }
+
+  /* Two columns (rev-10-ai-a). */
+  .mi .m-colpair__chart { height: 300px !important; gap: 20px !important; }
+  .mi .m-colpair__v { font-size: 48px !important; }
+  .mi .m-colpair__chart > div > div { margin-top: 10px !important; }
+
+  /* Questions beside a stat panel (rev-11-faq-b). */
+  .mi .m-faqstat__grid { grid-template-columns: 1fr !important; border-top: 0 !important; gap: 28px !important; }
+  .mi .m-faqstat__grid > div:last-child { border-top: 2px solid #121212; }
+  .mi .m-faqstat__panel { padding: 28px 22px !important; gap: 16px !important; }
+  .mi .m-faqstat__panel .h3 { font-size: 22px; }
+  .mi .m-faqstat__v { font-size: 80px !important; }
+  .mi .m-faqstat__panel .body { font-size: 16px; }
+  .mi .m-faqstat__q summary { padding: 16px 0 !important; gap: 12px !important; }
+  .mi .m-faqstat__q summary .h4 { font-size: 18px; line-height: 1.25; }
+  .mi .m-faqstat__plus { font-size: 26px !important; }
+  .mi .m-faqstat__q > p { padding: 0 0 16px !important; }
+
+  /* Closing with stars (rev-12-cta-b). */
+  .mi.m-closestars { padding: 72px 24px !important; }
+  .mi .m-closestars__stars { gap: 8px !important; }
+  .mi .m-closestars__stars svg { width: 40px !important; height: 40px !important; }
+  .mi .m-closestars__h { font-size: 46px !important; line-height: 0.94 !important; margin-top: 28px !important; }
+  .mi.m-closestars .stack-sm { margin-top: 28px !important; gap: 28px !important; align-items: flex-start !important; }
+
+  /* 01 Hero beside a square grid (cel-01-hero-a). */
+  .mi.m-herosq { padding: 40px 24px 64px !important; }
+  .mi .m-herosq__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 22px !important; }
+  .mi .m-herosq__wrap > * { flex: none !important; }
+  .mi .m-herosq__wrap > div:first-child { gap: 22px !important; }
+  .mi .m-herosq__h { font-size: 44px; line-height: 1; letter-spacing: -0.04em; }
+  .mi.m-herosq figure { margin-top: 16px !important; gap: 14px !important; }
+  .mi .m-herosq__grid { gap: 4px !important; }
+  .mi.m-herosq figcaption { display: block !important; }
+  .mi .m-herosq__v { display: block; font-size: 48px !important; }
+  .mi.m-herosq figcaption .body { display: block; margin-top: 6px; }
+
+  /* Tiles on dark (cel-02-intro-b). */
+  .mi .m-darktiles__grid { grid-template-columns: 1fr !important; padding: 1px 0 0 !important; }
+  .mi .m-darktiles__tile { padding: 22px 20px !important; margin: -1px 0 0 !important; }
+  .mi .m-darktiles__t { font-size: 34px !important; }
+  .mi .m-darktiles__tile .small { font-size: 15px; margin-top: 6px !important; }
+
+  /* Full-width bars (cel-03-calls-b). */
+  .mi.m-barswide .wrap > div[role="img"] { gap: 24px !important; }
+  .mi.m-barswide .body { font-size: 16px; }
+  .mi .m-barswide__v { font-size: 40px !important; }
+  .mi .m-barswide__track { height: 32px !important; margin-top: 8px !important; }
+
+  /* Two giant numbers (cel-04-speed-a). */
+  .mi .m-multi__grid { grid-template-columns: 1fr !important; }
+  .mi .m-multi__cell { padding: 24px 0 !important; border-right: 0 !important; }
+  .mi .m-multi__cell:first-child { border-bottom: 2px solid #121212; }
+  .mi .m-multi__v { font-size: 112px !important; }
+  .mi.m-multi .h4 { font-size: 18px; margin-top: 12px !important; }
+
+  /* Minute timeline (cel-04-speed-b). */
+  .mi .m-minbar__chart { height: 80px !important; margin-top: 8px !important; }
+  .mi .m-minbar__chart > div { top: 20px !important; height: 14px !important; }
+  .mi .m-minbar__chart > span:not(.m-minbar__tick) { height: 50px !important; }
+  .mi .m-minbar__tick.mi-m { top: 56px; font-size: 12px; }
+  .mi .m-minbar__points { gap: 24px !important; grid-template-columns: 1fr !important; }
+  .mi .m-minbar__t { font-size: 36px !important; }
+  .mi .m-minbar__points .body { margin-top: 6px !important; }
+
+  /* Giant stat beside the heading (cel-05-texts-a). */
+  .mi .m-bigsplit__stat { font-size: 136px !important; }
+  .mi .m-bigsplit__label { font-size: 22px; }
+  .mi.m-sec .m-bigsplit__label { margin-top: -12px !important; }
+  .mi.m-sec .m-bigsplit__src { margin-top: -18px !important; }
+  .mi.m-sec .m-bigsplit__h { border-top: 2px solid #121212; padding-top: 24px; }
+
+  /* Table of leads (cel-06-oneplace-b). */
+  .mi .m-leadtable__box { padding: 4px 18px 16px !important; }
+  .mi .m-leadtable__list { display: block !important; }
+  .mi .m-leadtable__item { padding: 14px 0; display: grid; grid-template-columns: 72px 1fr; gap: 4px 12px; }
+  .mi .m-leadtable__item + .m-leadtable__item { border-top: 1px solid #E7DFD0; }
+  .mi .m-leadtable__type { font-size: 16px; font-weight: 600; }
+  .mi .m-leadtable__what { font-size: 16px; }
+  .mi .m-leadtable__src { grid-column: 2; font-size: 14px; color: #5b554b; }
+  .mi.m-leadtable .tiny { margin-top: 8px !important; }
+
+  /* Steps that shrink (cel-09-why-b). */
+  .mi.m-funnel ol { gap: 22px !important; }
+  .mi .m-funnel__row { display: block !important; }
+  .mi .m-funnel__row > span:first-child { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .mi .m-funnel__v { display: inline !important; font-size: 32px !important; }
+  .mi .m-funnel__row .small { font-size: 14px; text-align: right; }
+  .mi .m-funnel__track { margin-top: 8px; height: 30px !important; }
+
+  /* Two stats, then questions (cel-11-faq-c). */
+  .mi .m-faqstats__grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+  .mi .m-faqstats__grid > div { padding-top: 20px !important; }
+  .mi .m-faqstats__v { font-size: 72px !important; }
+  .mi.m-faqstats details { padding: 12px 0 !important; }
+  .mi.m-faqstats summary { font-size: 18px; line-height: 1.25; }
+
+  /* Closing with a lead line (cel-12-cta-b). */
+  .mi.m-closelead { padding: 72px 24px !important; }
+  .mi .m-closelead__h { font-size: 48px !important; line-height: 0.94 !important; }
+  .mi.m-closelead .stack-sm { margin-top: 28px !important; gap: 28px !important; align-items: flex-start !important; }
+  .mi.m-closelead .lead { font-size: 17px; }
+  .mi.m-closelead .m-secondary { margin-top: 28px !important; }
+}

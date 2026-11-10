@@ -1,0 +1,42 @@
+---
+// Intro beside a table of example leads (canvas: cel-06-oneplace-b).
+import Cta from "./Cta.astro";
+const { heading, body, cta, columns = [], rows = [], note } = Astro.props;
+---
+<section class="mi m-sec m-leadtable" style="padding: 96px 24px; background: #FDFBF7">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 48px 80px; align-items: flex-start">
+    <div class="m-contents" style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="h2">{heading}</h2>
+      <p class="body muted">{body}</p>
+      <div class="m-last"><Cta cta={cta} /></div>
+    </div>
+    <div class="m-leadtable__box" style="flex: 1.5 1 560px; border: 2px solid #121212; padding: 8px 28px 20px; background: #fff">
+      <table class="mi-d" style="width: 100%; border-collapse: collapse; text-align: left">
+        <thead><tr>
+          <th class="small muted" style="padding: 16px 16px 12px 0; font-weight: 600">{columns[0]}</th>
+          <th class="small muted" style="padding: 16px 16px 12px; font-weight: 600">{columns[1]}</th>
+          <th class="small muted" style="padding: 16px 0 12px 16px; font-weight: 600">{columns[2]}</th>
+        </tr></thead>
+        <tbody>
+          {rows.map((r: { type: string; what: string; source: string }) => (
+            <tr style="border-top: 1px solid #E7DFD0">
+              <td style="padding: 16px 16px 16px 0" class="body"><span style="font-weight: 600">{r.type}</span></td>
+              <td style="padding: 16px" class="body">{r.what}</td>
+              <td style="padding: 16px 0 16px 16px" class="body muted">{r.source}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <ul class="mi-m m-leadtable__list">
+        {rows.map((r: { type: string; what: string; source: string }) => (
+          <li class="m-leadtable__item">
+            <p class="m-leadtable__type">{r.type}</p>
+            <p class="m-leadtable__what">{r.what}</p>
+            <p class="m-leadtable__src"><span class="m-leadtable__k">{columns[2]}: </span>{r.source}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="tiny muted" style="margin-top: 12px">{note}</p>
+    </div>
+  </div>
+</section>

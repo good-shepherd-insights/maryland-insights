@@ -1,0 +1,25 @@
+---
+// Intro beside labelled horizontal bars (canvas: rev-03-recency-a, rev-06-replies-a).
+import Cta from "./Cta.astro";
+import { tone } from "./tones";
+const { heading, body, cta, caption, bars = [], source } = Astro.props;
+---
+<section class="mi m-sec m-barlist" style="padding: 96px 24px">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px 80px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="h2">{heading}</h2>
+      <p class="body muted">{body}</p>
+      <div class="m-last"><Cta cta={cta} /></div>
+    </div>
+    <div class="m-barlist__bars" style="flex: 1.3 1 520px; display: grid; gap: 32px">
+      {caption && <p class="small" style="font-weight: 600">{caption}</p>}
+      {bars.map((b: { label: string; note?: string; value: string; percent: number; tone?: string }) => (
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px"><p class="body">{b.label}{b.note && <> <span class="small muted">{b.note}</span></>}</p><p class="stat m-barlist__value" style="font-size: 40px">{b.value}</p></div>
+          <div class="m-barlist__track" style="margin-top: 10px; height: 40px; background: #E7DFD0"><div style={`height: 100%; width: ${b.percent}%; background: ${tone(b.tone)}`}></div></div>
+        </div>
+      ))}
+      <p class="tiny muted">{source}</p>
+    </div>
+  </div>
+</section>

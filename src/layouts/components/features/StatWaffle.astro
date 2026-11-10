@@ -1,0 +1,22 @@
+---
+// Big stat on dark beside a 100-square grid (canvas: rev-05-ask-c).
+import Cta from "./Cta.astro";
+const { stat, heading, source, cta, filled = 0, chartDescription, caption } = Astro.props;
+const cells = Array.from({ length: 100 }, (_, i) => i < filled);
+---
+<section class="mi on-dark m-statwaffle" style="background: #121212; padding: 96px 24px">
+  <div class="wrap m-statwaffle__wrap" style="display: flex; flex-wrap: wrap; gap: 56px 80px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 24px">
+      <p class="stat m-o1 m-statwaffle__stat" style="font-size: clamp(120px, 13vw, 180px); line-height: 0.85; color: #FFB612">{stat}</p>
+      <h2 class="h2 m-o2 m-statwaffle__h">{heading}</h2>
+      <p class="tiny muted m-o5">{source}</p>
+      <div class="m-o6"><Cta cta={cta} /></div>
+    </div>
+    <div class="m-o4" style="flex: 1 1 440px">
+      <div role="img" aria-label={chartDescription} class="m-statwaffle__grid" style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px">
+        {cells.map((on) => <span style={`display: block; aspect-ratio: 1; background: ${on ? "#FFB612" : "#3A3A3A"}`}></span>)}
+      </div>
+      <p class="small muted" style="margin-top: 16px">{caption}</p>
+    </div>
+  </div>
+</section>

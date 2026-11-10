@@ -1,0 +1,21 @@
+---
+// Big stats in bordered cells, the first on yellow (canvas: rev-05-ask-a).
+import Cta from "./Cta.astro";
+const { heading, cells = [], source, cta } = Astro.props;
+---
+<section class="mi m-sec m-statcells" style="padding: 96px 24px">
+  <div class="wrap">
+    <h2 class="h2" style="max-width: 760px">{heading}</h2>
+    <div class="m-statcells__grid" style="margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0; border: 2px solid #121212">
+      {cells.map((c: { value: string; label: string }, i: number) => (
+        <div class="m-statcells__cell" style={`padding: 40px 36px;${i === 0 ? " background: #FFB612;" : ""}${i < cells.length - 1 ? " border-right: 2px solid #121212;" : ""}`}>
+          <p class="stat m-statcells__v" style="font-size: 112px; line-height: 0.85">{c.value}</p><p class="h4" style="margin-top: 16px">{c.label}</p>
+        </div>
+      ))}
+    </div>
+    <div class="m-contents" style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 16px 32px; justify-content: space-between; align-items: center">
+      <p class="tiny muted">{source}</p>
+      <Cta cta={cta} class="m-last" />
+    </div>
+  </div>
+</section>
