@@ -182,3 +182,17 @@ export async function getIntegrations() {
 export async function getIntegrationsGuidance() {
   return sanityClient.fetch(`*[_type == "integrationsGuidance"][0]`);
 }
+
+export async function getFeaturePageSlugs(): Promise<string[]> {
+  const rows = await sanityClient.fetch(
+    `*[_type == "featurePage" && draft != true]{ "slug": slug.current }`,
+  );
+  return rows.map((r: { slug: string }) => r.slug).filter(Boolean);
+}
+
+export async function getFeaturePage(slug: string) {
+  return sanityClient.fetch(
+    `*[_type == "featurePage" && draft != true && slug.current == $slug][0]`,
+    { slug },
+  );
+}
