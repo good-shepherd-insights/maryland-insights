@@ -1,0 +1,30 @@
+---
+// One dark block, what it carries listed beside it (canvas: v-rep-03-calls-b).
+import Cta from "./Cta.astro";
+const { heading, sourceLabel, sourceTitle, items = [], chartDescription, cta } = Astro.props;
+---
+<section class="mi" style="padding: clamp(64px, 7vw, 104px) 24px">
+  <div class="wrap">
+    <div style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 680px">{heading}</h2>
+      <Cta cta={cta} />
+    </div>
+    <div role="img" aria-label={chartDescription} style="margin-top: 56px; display: flex; flex-wrap: wrap; gap: 12px 0">
+      <div class="on-dark" style="flex: 1 1 300px; background: #121212; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px">
+        <p class="small muted" style="font-weight: 600">{sourceLabel}</p>
+        <p class="stat" style="font-size: clamp(56px, 7vw, 104px); line-height: 0.85; color: #FFB612">{sourceTitle}</p>
+      </div>
+      <div style="flex: 2 1 560px; display: flex; flex-direction: column; gap: 10px">
+        {items.map((item: { title: string; detail: string; muted?: boolean }) => (
+          <div style="display: flex; align-items: stretch">
+            <span aria-hidden="true" style="flex: 0 0 56px; align-self: center; height: 2px; background: #121212"></span>
+            <div style={`flex: 1; background: ${item.muted ? "#E7DFD0" : "#FFB612"}; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 4px 20px; align-items: baseline`}>
+              <p class="stat" style="font-size: clamp(30px, 3.4vw, 46px); min-width: 180px">{item.title}</p>
+              <p class="small" style="font-weight: 600">{item.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

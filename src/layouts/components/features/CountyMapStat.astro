@@ -1,0 +1,21 @@
+---
+// Big number beside the 24-county map, on dark (canvas: v-rep-10-evidence-b).
+import Cta from "./Cta.astro";
+import { COUNTY_OUTLINE_VIEWBOX, COUNTY_OUTLINE_INNER } from "@/lib/features/geo/countyOutlineMap";
+const { heading, stat, statLabel, mapDescription, cta } = Astro.props;
+---
+<section class="mi on-dark" style="background: #121212; padding: clamp(64px, 7vw, 104px) 24px">
+  <div class="wrap">
+    <h2 class="h2">{heading}</h2>
+    <div style="margin-top: 48px; display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: flex-end">
+      <div style="flex: 0 1 300px">
+        <p class="stat" style="font-size: clamp(140px, 18vw, 260px); line-height: 0.8; color: #FFB612">{stat}</p>
+        <p class="h3" style="margin-top: 20px">{statLabel}</p>
+        <div style="margin-top: 32px"><Cta cta={cta} /></div>
+      </div>
+      <div style="flex: 3 1 560px; min-width: 0">
+        <svg role="img" aria-label={mapDescription} viewBox={COUNTY_OUTLINE_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={COUNTY_OUTLINE_INNER} />
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,20 @@
+---
+// 01 Hero: giant headline over a full-width photo strip (canvas: v-rep-01-hero-b).
+import Cta from "./Cta.astro";
+import { FEATURE_PHOTOS } from "./photos";
+const { eyebrow, heading, lead, cta, secondaryCta, photo, imageAlt } = Astro.props;
+---
+<section class="mi" style="padding: clamp(56px, 7vw, 104px) 24px 24px">
+  <div class="wrap">
+    {eyebrow && <p class="eyebrow" style="margin-bottom: 20px">{eyebrow}</p>}
+    <h1 class="stat" style="font-size: clamp(54px, 8.2vw, 124px); line-height: 0.9; letter-spacing: -0.05em; max-width: 1200px">{heading}</h1>
+    <div style="margin-top: 48px; border-top: 2px solid #121212; padding-top: 28px; display: flex; flex-wrap: wrap; gap: 24px 40px; align-items: center; justify-content: space-between">
+      <p class="lead muted" style="max-width: 600px">{lead}</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px">
+        <Cta cta={cta} variant="btn-y" />
+        <Cta cta={secondaryCta} variant="btn-ghost" />
+      </div>
+    </div>
+  </div>
+  <img src={FEATURE_PHOTOS[photo]} alt={imageAlt} style="margin-top: 56px; width: 100%; aspect-ratio: 21 / 8; min-height: 280px; object-fit: cover; object-position: 60% 40%; display: block" />
+</section>

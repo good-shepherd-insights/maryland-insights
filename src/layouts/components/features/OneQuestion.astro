@@ -1,0 +1,25 @@
+---
+// One question answered with a short line and its parts (canvas: v-rep-11-faq-a).
+import Cta from "./Cta.astro";
+const { heading, question, answer, parts = [], note, chartDescription, cta } = Astro.props;
+const fills = (i: number) => (i === 0 ? "background: #121212; color: #FDFBF7" : "background: #FFB612; color: #121212");
+---
+<section class="mi" style="padding: clamp(64px, 7vw, 104px) 24px">
+  <div class="wrap">
+    <h2 class="h2">{heading}</h2>
+    <h3 class="h3" style="margin-top: 40px; font-weight: 600; max-width: 820px">{question}</h3>
+    <p class="stat" style="margin-top: 24px; font-size: clamp(56px, 7vw, 104px); line-height: 0.9">{answer}</p>
+    <div role="img" aria-label={chartDescription} style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 10px">
+      {parts.map((p: { title: string; detail: string }, i: number) => (
+        <div style={`flex: 1 1 240px; ${fills(i)}; min-height: 240px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px`}>
+          <p class="stat" style="font-size: clamp(26px, 2.6vw, 36px)">{p.title}</p>
+          <p class="small" style="font-weight: 600">{p.detail}</p>
+        </div>
+      ))}
+    </div>
+    <div style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between">
+      <p class="body muted">{note}</p>
+      <Cta cta={cta} />
+    </div>
+  </div>
+</section>

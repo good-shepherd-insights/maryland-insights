@@ -1,0 +1,31 @@
+---
+// Numbered county map beside leads and jobs per county (canvas: v-rep-05-county-b).
+import Cta from "./Cta.astro";
+import { COUNTY_LEADS_VIEWBOX, COUNTY_LEADS_INNER } from "@/lib/features/geo/countyLeadsMap";
+const { heading, rows = [], note, mapDescription, listDescription, cta } = Astro.props;
+---
+<section class="mi on-dark" style="background: #121212; padding: clamp(64px, 7vw, 104px) 24px">
+  <div class="wrap">
+    <div style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 700px">{heading}</h2>
+      <Cta cta={cta} />
+    </div>
+    <div style="margin-top: 48px; display: flex; flex-wrap: wrap; gap: 40px 56px; align-items: center">
+      <div style="flex: 3 1 600px; min-width: 0">
+        <svg role="img" aria-label={mapDescription} viewBox={COUNTY_LEADS_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={COUNTY_LEADS_INNER} />
+      </div>
+      <ul role="img" aria-label={listDescription} style="flex: 1 1 300px">
+        {rows.map((r: { name: string; leadsLabel: string; leadsPercent: number; jobsLabel: string; jobsPercent: number; highlight?: boolean }, i: number) => (
+          <li style="padding: 14px 0; border-top: 1px solid rgba(245,245,245,0.25)">
+            <p class="h4"><span class="stat" style="color: #FFB612; margin-right: 10px">{i + 1}</span>{r.name}</p>
+            <div style="margin-top: 10px; display: grid; grid-template-columns: 70px 1fr; gap: 6px 10px; align-items: center">
+              <span class="tiny muted">{r.leadsLabel}</span><span style={`display: block; height: 12px; width: ${r.leadsPercent}%; background: #8A8173`}></span>
+              <span class="tiny muted">{r.jobsLabel}</span><span style={`display: block; height: 12px; width: ${r.jobsPercent}%; background: ${r.highlight ? "#D9651A" : "#FFB612"}`}></span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <p class="small muted" style="margin-top: 32px">{note}</p>
+  </div>
+</section>

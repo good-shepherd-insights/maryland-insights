@@ -140,3 +140,20 @@
   .mi .mi-bars .h4 { font-size: 16px; }
   .mi .mi-bars .stat { font-size: 22px !important; }
 }
+
+/* Rising steps at phone width: four columns are about 80px wide, so tighten the
+   padding and title size so "Decision" fits inside its step. */
+@media (max-width: 760px) {
+  .mi .mi-steps { gap: 6px !important; }
+  .mi .mi-steps > div > div { padding: 10px !important; }
+  .mi .mi-steps .stat { font-size: 13px !important; letter-spacing: -0.02em; }
+  .mi .mi-steps .small { font-size: 12px; }
+}
+
+/* Fixed-size diagrams (inputs into one report, client/agency/engineers): at
+   phone width their text would shrink to ~6px, so keep them at a readable size
+   and let them scroll sideways in their own box, as the record fan-out does. */
+@media (max-width: 760px) {
+  .mi .mi-scroll { overflow-x: auto; }
+  .mi .mi-scroll > svg { min-width: 720px; }
+}

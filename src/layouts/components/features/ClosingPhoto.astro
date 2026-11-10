@@ -1,0 +1,19 @@
+---
+// Closing call to action beside a photo (canvas: v-rep-12-cta-b).
+import Cta from "./Cta.astro";
+import { FEATURE_PHOTOS } from "./photos";
+const { heading, body, cta, secondaryPrompt, secondaryLink, photo, imageAlt } = Astro.props;
+---
+<section class="mi" style="display: flex; flex-wrap: wrap; min-height: 820px">
+  <div style="flex: 1 1 560px; padding: clamp(56px, 7vw, 104px) clamp(24px, 5vw, 80px); display: flex; flex-direction: column; justify-content: center; gap: 32px">
+    <h2 class="stat" style="font-size: clamp(48px, 6vw, 92px); line-height: 0.9; letter-spacing: -0.05em">{heading}</h2>
+    <p class="lead muted" style="max-width: 520px">{body}</p>
+    <div style="border-top: 2px solid #121212; padding-top: 28px; display: flex; flex-direction: column; gap: 20px; align-items: flex-start">
+      <Cta cta={cta} />
+      {secondaryLink?.label && <p class="small">{secondaryPrompt} <a href={secondaryLink.link} style="color: inherit; font-weight: 600">{secondaryLink.label}</a></p>}
+    </div>
+  </div>
+  <div style="flex: 1 1 480px; min-height: 420px; position: relative">
+    <img src={FEATURE_PHOTOS[photo]} alt={imageAlt} loading="lazy" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block" />
+  </div>
+</section>

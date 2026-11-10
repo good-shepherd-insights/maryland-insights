@@ -1,0 +1,38 @@
+---
+// Inputs curving into one report, then what to do next (canvas: v-rep-06-report-a).
+// Drawn as SVG like the board; the text comes from Sanity.
+import Cta from "./Cta.astro";
+const { heading, inputs = [], reportLines = [], nextLines = [], note, chartDescription, cta } = Astro.props;
+const HANKEN = "MI Hanken, Arial, sans-serif";
+const ARCHIVO = "MI Archivo, Arial, sans-serif";
+---
+<section class="mi" style="padding: clamp(64px, 7vw, 104px) 24px">
+  <div class="wrap">
+    <div style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 700px">{heading}</h2>
+      <Cta cta={cta} />
+    </div>
+    <div class="mi-scroll" style="margin-top: 56px">
+      <svg role="img" aria-label={chartDescription} viewBox="0 0 1200 440" style="display: block; width: 100%; height: auto">
+        {inputs.slice(0, 6).map((label: string, i: number) => {
+          const y = 40 + i * 72;
+          return (
+            <>
+              <text x="0" y={y + 8} font-family={HANKEN} font-size="24" font-weight="600" fill="#121212">{label}</text>
+              <path d={`M380 ${y} C520 ${y} 520 220 640 220`} fill="none" stroke="#121212" stroke-width="3"></path>
+            </>
+          );
+        })}
+        <rect x="640" y="130" width="300" height="180" fill="#121212"></rect>
+        {reportLines.map((line: string, i: number) => (
+          <text x="664" y={200 + i * 44} font-family={ARCHIVO} font-weight="700" font-size="34" fill="#FDFBF7">{line}</text>
+        ))}
+        <rect x="940" y="130" width="260" height="180" fill="#FFB612"></rect>
+        {nextLines.map((line: string, i: number) => (
+          <text x="964" y={200 + i * 44} font-family={ARCHIVO} font-weight="700" font-size="34" fill="#121212">{line}</text>
+        ))}
+      </svg>
+    </div>
+    <p class="small muted" style="margin-top: 32px">{note}</p>
+  </div>
+</section>
