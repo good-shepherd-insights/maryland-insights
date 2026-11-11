@@ -113,6 +113,11 @@ export async function getServicePage(slug: string) {
             "datePublished": date
           }
         }
+      },
+      "relatedFeatures": relatedFeatures[]->{
+        title,
+        "slug": slug.current,
+        "subtitle": *[_id == "homeFeatures"][0].features[title == ^.title][0].subtitle
       }
     }`,
     { slug },

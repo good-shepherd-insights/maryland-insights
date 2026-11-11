@@ -1,0 +1,43 @@
+---
+import { markdownify, slugify } from "@/lib/utils/textConverter";
+
+type Feature = {
+  title: string;
+  slug: string;
+  subtitle?: string;
+};
+
+type Props = {
+  title?: string;
+  items: Feature[];
+};
+
+const { title = "What this delivers for your clients", items } = Astro.props as Props;
+const headingId = `service-${slugify(title)}`;
+---
+
+<section class="section-sm border-y border-border/70 bg-light" aria-labelledby={headingId}>
+  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+    <div class="mb-10 max-w-2xl">
+      <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
+    </div>
+
+    <div class="grid gap-x-8 gap-y-0 md:grid-cols-2 lg:grid-cols-3">
+      {
+        items.map((item) => (
+          <a
+            href={`/features/${item.slug}`}
+            class="group flex flex-col border-t border-border py-7 no-underline lg:py-8"
+          >
+            <h3 class="h5 mb-2 text-balance text-text-dark group-hover:text-primary">{item.title}</h3>
+            {item.subtitle && <p class="text-text-dark/75">{item.subtitle}</p>}
+            <span class="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-text-dark group-hover:text-primary">
+              See {item.title}
+              <span aria-hidden="true">→</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
