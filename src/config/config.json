@@ -57,8 +57,6 @@
   "consult_url": "https://cal.id/maryland-insights/business-growth-consult?overlayCalendar=true",
   "privacy_url": "/privacy-policy",
   "redirects": {
-    "get_started": "https://app.marylandinsights.com",
-    "start_for_free": "https://app.marylandinsights.com",
     "enterprise_support": "https://cal.id/maryland-insights/partnership"
   }
 }
