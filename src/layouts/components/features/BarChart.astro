@@ -1,0 +1,24 @@
+---
+// Horizontal bar chart: first bar highlighted, last in the accent colour (canvas: v-ls-09-why-a).
+import Cta from "./Cta.astro";
+const { heading, rows = [], caption, chartDescription, cta } = Astro.props;
+const colour = (i: number) => (i === 0 ? "#FFB612" : i === rows.length - 1 ? "#D9651A" : "#121212");
+---
+<section class="mi m-sec m-barchart" style="padding: 96px 24px">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 760px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <ul role="img" aria-label={chartDescription} class="mi-bars" style="margin-top: 56px; display: grid; gap: 14px; overflow-x: auto">
+      {rows.map((r: { label: string; value: string; percent: number }, i: number) => (
+        <li style="display: grid; grid-template-columns: 240px minmax(0, 1fr) 72px; gap: 20px; align-items: center">
+          <span class="h4 m-bars__label">{r.label}</span>
+          <span class="m-bars__bar" style="height: 44px; display: block"><span style={`display: block; height: 100%; width: ${r.percent}%; background: ${colour(i)}`}></span></span>
+          <span class="stat m-bars__value" style="font-size: 32px; text-align: right">{r.value}</span>
+        </li>
+      ))}
+    </ul>
+    <p class="tiny muted" style="margin-top: 24px">{caption}</p>
+  </div>
+</section>

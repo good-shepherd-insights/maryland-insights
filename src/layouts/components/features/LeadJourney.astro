@@ -1,0 +1,54 @@
+---
+// One example lead in four panels: town, county, page, outcome (canvas: v-rep-city-c).
+import Cta from "./Cta.astro";
+import { TOWN_MAP_VIEWBOX, TOWN_MAP_INNER, COUNTY_MAP_VIEWBOX, COUNTY_MAP_INNER } from "@/lib/features/geo/leadJourneyMaps";
+const {
+  heading, body, townLabel, townName, townMapDescription, countyLabel, countyName, countyMapDescription,
+  pageLabel, pageHeading, pageName, outcomeLabel, outcomeValue, outcomeName, caption, chartDescription, cta,
+} = Astro.props;
+const panel = "padding: 24px; display: flex; flex-direction: column; gap: 18px; background: #FDFBF7";
+const P = "m-journey__panel";
+---
+<section class="mi m-sec m-journey" style="background: #F6F0E5; padding: clamp(64px, 7vw, 104px) 24px">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 64px; align-items: flex-end; justify-content: space-between">
+      <h2 class="h2" style="flex: 1 1 520px; max-width: 680px">{heading}</h2>
+      <p class="body" style="flex: 1 1 360px; max-width: 440px">{body}</p>
+    </div>
+    <div role="img" aria-label={chartDescription} class="m-journey__grid" style="margin-top: 52px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2px; border: 2px solid #121212; background: #121212">
+      <div class={P} style={panel}>
+        <p class="small muted">{townLabel}</p>
+        <div class="m-journey__frame" style="aspect-ratio: 1; overflow: hidden; display: flex; align-items: center">
+          <svg role="img" aria-label={townMapDescription} viewBox={TOWN_MAP_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={TOWN_MAP_INNER} />
+        </div>
+        <p class="h3">{townName}</p>
+      </div>
+      <div class={P} style={panel}>
+        <p class="small muted">{countyLabel}</p>
+        <div class="m-journey__frame" style="aspect-ratio: 1; overflow: hidden; display: flex; align-items: center">
+          <svg role="img" aria-label={countyMapDescription} viewBox={COUNTY_MAP_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={COUNTY_MAP_INNER} />
+        </div>
+        <p class="h3">{countyName}</p>
+      </div>
+      <div class={P} style={panel}>
+        <p class="small muted">{pageLabel}</p>
+        <div class="m-journey__page" style="aspect-ratio: 1; background: #121212; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+          <span style="display: block; height: 10px; width: 40%; background: #5B554B"></span>
+          <p class="stat" style="color: #FDFBF7; font-size: 34px; line-height: 1; margin-top: 18px">{pageHeading}</p>
+          <span style="display: block; height: 8px; width: 90%; background: #3A3632"></span><span style="display: block; height: 8px; width: 75%; background: #3A3632"></span><span style="display: block; height: 8px; width: 82%; background: #3A3632"></span>
+          <span style="display: block; margin-top: auto; height: 34px; width: 46%; background: #FFB612"></span>
+        </div>
+        <p class="h3">{pageName}</p>
+      </div>
+      <div class={P} style="padding: 24px; display: flex; flex-direction: column; gap: 18px; background: #FFB612">
+        <p class="small" style="color: #121212">{outcomeLabel}</p>
+        <div class="m-journey__outcome" style="aspect-ratio: 1; display: flex; align-items: flex-end"><p class="stat m-journey__value" style="font-size: clamp(44px, 4.2vw, 62px); line-height: 0.9; letter-spacing: -0.045em">{outcomeValue}</p></div>
+        <p class="h3">{outcomeName}</p>
+      </div>
+    </div>
+    <div class="m-contents" style="margin-top: 32px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between">
+      <p class="small muted">{caption}</p>
+      <Cta cta={cta} class="m-last" />
+    </div>
+  </div>
+</section>

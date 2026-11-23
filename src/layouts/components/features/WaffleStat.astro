@@ -1,0 +1,20 @@
+---
+// 05 Big percentage beside a 100-square grid (canvas: wv-05-security-a).
+import Cta from "./Cta.astro";
+const { stat, statLabel, source, filled = 0, heading, chartDescription, cta } = Astro.props;
+const cells = Array.from({ length: 100 }, (_, i) => i < filled);
+---
+<section class="mi m-waffle" style="padding: 96px 24px">
+  <div class="wrap m-waffle__wrap" style="display: flex; flex-wrap: wrap; gap: 56px 80px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 24px">
+      <p class="stat m-o1 m-waffle__stat" style="font-size: clamp(120px, 14vw, 200px); line-height: 0.85; color: #D9651A">{stat}</p>
+      <p class="h3 m-o2">{statLabel}</p>
+      <p class="tiny muted m-o3">{source}</p>
+      <h2 class="h4 m-o5 m-waffle__h" style="margin-top: 16px">{heading}</h2>
+      <div class="m-o6"><Cta cta={cta} /></div>
+    </div>
+    <div role="img" aria-label={chartDescription} class="m-o4 m-waffle__grid" style="flex: 1 1 480px; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px">
+      {cells.map((on) => <span style={`display: block; aspect-ratio: 1; background: ${on ? "#D9651A" : "#D9D0C0"}`}></span>)}
+    </div>
+  </div>
+</section>

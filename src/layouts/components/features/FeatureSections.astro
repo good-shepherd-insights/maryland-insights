@@ -1,0 +1,166 @@
+---
+// Renders a featurePage's sections in order. One component per design pattern.
+import HeroMap from "./HeroMap.astro";
+import MonthlyGrid from "./MonthlyGrid.astro";
+import HoursStat from "./HoursStat.astro";
+import EveryJob from "./EveryJob.astro";
+import CountyPages from "./CountyPages.astro";
+import CityPlaces from "./CityPlaces.astro";
+import StatBars from "./StatBars.astro";
+import Fanout from "./Fanout.astro";
+import ChecklistMap from "./ChecklistMap.astro";
+import TwoLists from "./TwoLists.astro";
+import BarChart from "./BarChart.astro";
+import CountyCount from "./CountyCount.astro";
+import Faq from "./Faq.astro";
+import ClosingMap from "./ClosingMap.astro";
+import HeroWide from "./HeroWide.astro";
+import RisingSteps from "./RisingSteps.astro";
+import Carries from "./Carries.astro";
+import Stages from "./Stages.astro";
+import CountyLeads from "./CountyLeads.astro";
+import LeadJourney from "./LeadJourney.astro";
+import InputsReport from "./InputsReport.astro";
+import TrendList from "./TrendList.astro";
+import Relationship from "./Relationship.astro";
+import GridStats from "./GridStats.astro";
+import CountyMapStat from "./CountyMapStat.astro";
+import OneQuestion from "./OneQuestion.astro";
+import ClosingPhoto from "./ClosingPhoto.astro";
+import HeroInkBlock from "./HeroInkBlock.astro";
+import NumberGrid from "./NumberGrid.astro";
+import Squares from "./Squares.astro";
+import BuildStack from "./BuildStack.astro";
+import WaffleStat from "./WaffleStat.astro";
+import WatchList from "./WatchList.astro";
+import StatCode from "./StatCode.astro";
+import SourceOutputs from "./SourceOutputs.astro";
+import Timeline from "./Timeline.astro";
+import Roster from "./Roster.astro";
+import FitLists from "./FitLists.astro";
+import CountyMapLight from "./CountyMapLight.astro";
+import ShortAnswers from "./ShortAnswers.astro";
+import ClosingBlock from "./ClosingBlock.astro";
+import HeroSplit from "./HeroSplit.astro";
+import EventResponses from "./EventResponses.astro";
+import WeekStat from "./WeekStat.astro";
+import MinuteTimeline from "./MinuteTimeline.astro";
+import RoutingMap from "./RoutingMap.astro";
+import RoutingFigures from "./RoutingFigures.astro";
+import ConsentHub from "./ConsentHub.astro";
+import Registration from "./Registration.astro";
+import Nested from "./Nested.astro";
+import AutoHuman from "./AutoHuman.astro";
+import WatchBig from "./WatchBig.astro";
+import IncludedLists from "./IncludedLists.astro";
+import ClosingBand from "./ClosingBand.astro";
+import HeroStatPanel from "./HeroStatPanel.astro";
+import TileGrid from "./TileGrid.astro";
+import BarList from "./BarList.astro";
+import MonthRows from "./MonthRows.astro";
+import RankedList from "./RankedList.astro";
+import StatCells from "./StatCells.astro";
+import StatWaffle from "./StatWaffle.astro";
+import TwoListsCompact from "./TwoListsCompact.astro";
+import YearBars from "./YearBars.astro";
+import ColumnPair from "./ColumnPair.astro";
+import FaqStat from "./FaqStat.astro";
+import ClosingStars from "./ClosingStars.astro";
+import HeroSquares from "./HeroSquares.astro";
+import DarkTiles from "./DarkTiles.astro";
+import BarsWide from "./BarsWide.astro";
+import Multipliers from "./Multipliers.astro";
+import MinuteBar from "./MinuteBar.astro";
+import BigStatSplit from "./BigStatSplit.astro";
+import LeadTable from "./LeadTable.astro";
+import Funnel from "./Funnel.astro";
+import FaqStats from "./FaqStats.astro";
+import ClosingLead from "./ClosingLead.astro";
+
+const COMPONENTS: Record<string, any> = {
+  featureHeroMap: HeroMap,
+  featureMonthlyGrid: MonthlyGrid,
+  featureHoursStat: HoursStat,
+  featureEveryJob: EveryJob,
+  featureCountyPages: CountyPages,
+  featureCityPlaces: CityPlaces,
+  featureStatBars: StatBars,
+  featureFanout: Fanout,
+  featureChecklistMap: ChecklistMap,
+  featureTwoLists: TwoLists,
+  featureBarChart: BarChart,
+  featureCountyCount: CountyCount,
+  featureFaq: Faq,
+  featureClosingMap: ClosingMap,
+  featureHeroWide: HeroWide,
+  featureRisingSteps: RisingSteps,
+  featureCarries: Carries,
+  featureStages: Stages,
+  featureCountyLeads: CountyLeads,
+  featureLeadJourney: LeadJourney,
+  featureInputsReport: InputsReport,
+  featureTrendList: TrendList,
+  featureRelationship: Relationship,
+  featureGridStats: GridStats,
+  featureCountyMapStat: CountyMapStat,
+  featureOneQuestion: OneQuestion,
+  featureClosingPhoto: ClosingPhoto,
+  featureHeroInkBlock: HeroInkBlock,
+  featureNumberGrid: NumberGrid,
+  featureSquares: Squares,
+  featureBuildStack: BuildStack,
+  featureWaffleStat: WaffleStat,
+  featureWatchList: WatchList,
+  featureStatCode: StatCode,
+  featureSourceOutputs: SourceOutputs,
+  featureTimeline: Timeline,
+  featureRoster: Roster,
+  featureFitLists: FitLists,
+  featureCountyMapLight: CountyMapLight,
+  featureShortAnswers: ShortAnswers,
+  featureClosingBlock: ClosingBlock,
+  featureHeroSplit: HeroSplit,
+  featureEventResponses: EventResponses,
+  featureWeekStat: WeekStat,
+  featureMinuteTimeline: MinuteTimeline,
+  featureRoutingMap: RoutingMap,
+  featureRoutingFigures: RoutingFigures,
+  featureConsentHub: ConsentHub,
+  featureRegistration: Registration,
+  featureNested: Nested,
+  featureAutoHuman: AutoHuman,
+  featureWatchBig: WatchBig,
+  featureIncludedLists: IncludedLists,
+  featureClosingBand: ClosingBand,
+  featureHeroStatPanel: HeroStatPanel,
+  featureTileGrid: TileGrid,
+  featureBarList: BarList,
+  featureMonthRows: MonthRows,
+  featureRankedList: RankedList,
+  featureStatCells: StatCells,
+  featureStatWaffle: StatWaffle,
+  featureTwoListsCompact: TwoListsCompact,
+  featureYearBars: YearBars,
+  featureColumnPair: ColumnPair,
+  featureFaqStat: FaqStat,
+  featureClosingStars: ClosingStars,
+  featureHeroSquares: HeroSquares,
+  featureDarkTiles: DarkTiles,
+  featureBarsWide: BarsWide,
+  featureMultipliers: Multipliers,
+  featureMinuteBar: MinuteBar,
+  featureBigStatSplit: BigStatSplit,
+  featureLeadTable: LeadTable,
+  featureFunnel: Funnel,
+  featureFaqStats: FaqStats,
+  featureClosingLead: ClosingLead,
+};
+
+const { sections = [] } = Astro.props;
+---
+<div class="mi-page">
+  {sections.map((section: { _type: string; _key: string }) => {
+    const Component = COMPONENTS[section._type];
+    return Component ? <Component {...section} /> : null;
+  })}
+</div>

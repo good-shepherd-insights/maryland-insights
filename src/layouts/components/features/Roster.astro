@@ -1,0 +1,23 @@
+---
+// 08 The agency above its roster, Maryland Insights underneath (canvas: wv-08-agency-c).
+import Cta from "./Cta.astro";
+const { heading, topTitle, topDetail, clientLabel, clientCount = 8, bottomTitle, bottomDetail, chartDescription, cta } = Astro.props;
+const clients = Array.from({ length: clientCount });
+---
+<section class="mi m-roster" style="padding: 96px 24px; background: #F6F0E5">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 760px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <div role="img" aria-label={chartDescription} class="m-roster__diagram" style="margin-top: 56px; display: grid; gap: 10px">
+      <div class="m-roster__band" style="background: #121212; color: #F5F5F5; padding: 28px; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px"><p class="stat m-roster__title" style="font-size: 44px">{topTitle}</p><p class="body" style="color: rgba(245,245,245,0.7)">{topDetail}</p></div>
+      <ul class="m-roster__clients" style={`display: grid; grid-template-columns: repeat(${clientCount}, minmax(0, 1fr)); gap: 10px`}>
+        {clients.map(() => (
+          <li class="m-roster__client" style="border: 2px solid #121212; background: #FDFBF7; padding: 18px; min-height: 96px; display: flex; flex-direction: column; justify-content: space-between"><span aria-hidden="true" class="m-roster__dot" style="width: 14px; height: 14px; background: #FFB612"></span><span class="h4">{clientLabel}</span></li>
+        ))}
+      </ul>
+      <div class="m-roster__band" style="background: #FFB612; padding: 28px; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px"><p class="stat m-roster__title" style="font-size: 44px">{bottomTitle}</p><p class="body">{bottomDetail}</p></div>
+    </div>
+  </div>
+</section>

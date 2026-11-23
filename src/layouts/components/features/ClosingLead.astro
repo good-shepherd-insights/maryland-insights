@@ -1,0 +1,15 @@
+---
+// 12 Closing call to action on yellow with a lead line (canvas: cel-12-cta-b).
+import Cta from "./Cta.astro";
+const { heading, lead, cta, secondaryPrompt, secondaryLink } = Astro.props;
+---
+<section class="mi m-closelead" style="padding: 112px 24px; background: #FFB612">
+  <div class="wrap">
+    <h2 class="stat m-closelead__h" style="font-size: clamp(56px, 7.6vw, 112px); line-height: 0.92; letter-spacing: -0.05em; max-width: 1080px">{heading}</h2>
+    <div class="stack-sm" style="margin-top: 48px; display: flex; flex-wrap: wrap; gap: 24px 48px; align-items: center; justify-content: space-between">
+      <p class="lead" style="max-width: 560px">{lead}</p>
+      <Cta cta={cta} variant="btn-ink" />
+    </div>
+    {secondaryPrompt && <p class="small m-secondary" style="margin-top: 32px">{secondaryPrompt} {secondaryLink?.link && <a href={secondaryLink.link} style="color: inherit; font-weight: 600">{secondaryLink.label}</a>}</p>}
+  </div>
+</section>

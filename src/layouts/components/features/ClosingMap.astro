@@ -1,0 +1,22 @@
+---
+// Closing call to action under the Bay Bridge photo, beside a blank county map (canvas: v-ls-12-cta-a).
+import Cta from "./Cta.astro";
+import { BLANK_MAP_VIEWBOX, BLANK_MAP_INNER } from "@/lib/features/geo/blankMap";
+const { heading, body, cta, secondaryPrompt, secondaryLink, imageAlt, mapDescription } = Astro.props;
+---
+<section class="mi m-closingmap" style="background: #FDFBF7">
+  <img src="/images/features/chesapeake-bay-bridge.webp" alt={imageAlt} loading="lazy" class="m-closingmap__photo" style="display: block; width: 100%; height: 340px; object-fit: cover; object-position: center 60%" />
+  <div class="wrap m-closingmap__body" style="padding: 72px 24px 88px; display: flex; flex-wrap: wrap; gap: 48px 64px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="h2 m-o1">{heading}</h2>
+      <p class="body muted m-o2">{body}</p>
+      <div class="m-o5"><Cta cta={cta} /></div>
+      {secondaryLink?.label && (
+        <p class="small m-o6 m-secondary">{secondaryPrompt} <a href={secondaryLink.link} style="color: inherit; font-weight: 600">{secondaryLink.label}</a></p>
+      )}
+    </div>
+    <div class="m-o4" style="flex: 1.4 1 520px; min-width: 0">
+      <svg role="img" aria-label={mapDescription} viewBox={BLANK_MAP_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={BLANK_MAP_INNER} />
+    </div>
+  </div>
+</section>

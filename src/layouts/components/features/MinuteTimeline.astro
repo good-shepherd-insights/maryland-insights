@@ -1,0 +1,47 @@
+---
+// 04 Minutes after a missed call (canvas: v-aut-04-missed-b).
+import Cta from "./Cta.astro";
+const { heading, steps = [], scaleLabels = [], withinLabel, laterLabel, note, chartDescription, cta } = Astro.props;
+const ticks = Array.from({ length: 13 }, (_, i) => i);
+const labelAt = [0, 20, 40, 60, 80];
+---
+<section class="mi m-sec m-minutes" style="padding: 96px 24px; background: #F6F0E5">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 760px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-d" style="margin-top: 72px">
+      <ul style="display: flex; flex-direction: column; gap: 14px; padding-left: 0">
+        {steps.map((s: string, i: number) => <li style="display: flex; align-items: center; gap: 14px"><span aria-hidden="true" style={`flex: none; width: 22px; height: 22px; background: ${i === 0 ? "#121212" : "#FFB612"}; border: 2px solid #121212`}></span><span class="stat" style="font-size: clamp(22px, 2.4vw, 32px)">{s}</span></li>)}
+      </ul>
+      <div aria-hidden="true" style="margin-left: 10px; width: 2px; height: 48px; background: #121212"></div>
+      <div style="position: relative; height: 56px; border-top: 2px solid #121212">
+        {ticks.map((i) => <span aria-hidden="true" style={`position: absolute; left: ${(i * 6.6667).toFixed(3)}%; top: ${i % 3 === 0 ? -10 : -6}px; width: 2px; height: ${i % 3 === 0 ? 20 : 12}px; background: #121212`}></span>)}
+        {scaleLabels.map((l: string, i: number) => i === 0
+          ? <span class="small muted" style="position: absolute; left: 0; top: 18px">{l}</span>
+          : <span class="small muted" style={`position: absolute; left: ${labelAt[i]}%; top: 18px; transform: translateX(-50%)`}>{l}</span>)}
+      </div>
+      <div style="display: flex; min-height: 120px">
+        <div style="flex: 0 0 80%; background: #FFB612; border: 2px solid #121212; padding: 22px; display: flex; align-items: flex-end"><p class="stat" style="font-size: clamp(24px, 3vw, 40px)">{withinLabel}</p></div>
+        <div style="flex: 1 1 20%; background: #D9651A; border: 2px solid #121212; border-left: 0; padding: 22px; display: flex; align-items: flex-end"><p class="h4" style="font-weight: 700; color: #121212">{laterLabel}</p></div>
+      </div>
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-m">
+      <ul style="display: flex; flex-direction: column; gap: 12px">
+        {steps.map((s: string, i: number) => <li style="display: flex; align-items: center; gap: 12px"><span aria-hidden="true" style={`flex: none; width: 20px; height: 20px; box-sizing: border-box; background: ${i === 0 ? "#121212" : "#FFB612"}; border: 2px solid #121212`}></span><span class="stat" style="font-size: 22px; line-height: 1.05">{s}</span></li>)}
+      </ul>
+      <div aria-hidden="true" style="margin-left: 9px; width: 2px; height: 32px; background: #121212"></div>
+      <div style="display: flex; height: 28px"><div style="flex: 0 0 80%; background: #FFB612; border: 2px solid #121212; box-sizing: border-box"></div><div style="flex: 1; background: #D9651A; border: 2px solid #121212; border-left: 0; box-sizing: border-box"></div></div>
+      <div style="position: relative; height: 40px; border-top: 2px solid #121212; margin-top: 10px">
+        {ticks.map((i) => <span aria-hidden="true" style={`position: absolute; left: ${(i * 6.6667).toFixed(3)}%; top: -8px; width: 2px; height: ${i % 3 === 0 ? 16 : 10}px; margin-left: -1px; background: #121212`}></span>)}
+        {scaleLabels.map((l: string, i: number) => <span class="m-minutes__lbl" style={`position: absolute; left: ${labelAt[i]}%; top: 14px; ${i === 0 ? "" : "transform: translateX(-50%);"} font-size: 13px; color: #5B554B; white-space: nowrap`}>{l}</span>)}
+      </div>
+      <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 12px">
+        <p style="display: flex; gap: 12px; align-items: flex-start"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; margin-top: 4px; background: #FFB612; border: 2px solid #121212; box-sizing: border-box"></span><span class="stat" style="font-size: 22px; line-height: 1.05">{withinLabel}</span></p>
+        <p style="display: flex; gap: 12px; align-items: flex-start"><span aria-hidden="true" style="flex: none; width: 18px; height: 18px; margin-top: 3px; background: #D9651A; border: 2px solid #121212; box-sizing: border-box"></span><span class="h4" style="font-size: 19px; font-weight: 700">{laterLabel}</span></p>
+      </div>
+    </div>
+    <p class="tiny muted m-o5" style="margin-top: 16px">{note}</p>
+  </div>
+</section>

@@ -1,0 +1,32 @@
+---
+// City level: an address, its county, and the crew it reaches (canvas: v-aut-city-b).
+import Cta from "./Cta.astro";
+import { ROUTING_TOWN_VIEWBOX, ROUTING_TOWN_INNER, ROUTING_COUNTY_VIEWBOX, ROUTING_COUNTY_INNER } from "@/lib/features/geo/routingFigures";
+const { heading, townTitle, townDetail, townDescription, countyTitle, countyDetail, countyDescription, crewName, crewFacts = [], crewTitle, crewDetail, crewDescription, cta } = Astro.props;
+const frame = "border: 2px solid #121212; aspect-ratio: 1; overflow: hidden; background: #FDFBF7";
+---
+<section class="mi m-sec m-routefig" style="padding: 104px 24px">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 760px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <div class="m-routefig__row" style="margin-top: 48px; display: flex; flex-wrap: wrap; gap: 32px">
+      <figure class="m-routefig__fig" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px; margin: 0">
+        <div style={frame}><svg role="img" aria-label={townDescription} viewBox={ROUTING_TOWN_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={ROUTING_TOWN_INNER} /></div>
+        <figcaption><p class="h4">{townTitle}</p><p class="small muted" style="margin-top: 6px">{townDetail}</p></figcaption>
+      </figure>
+      <figure class="m-routefig__fig" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px; margin: 0">
+        <div style={frame}><svg role="img" aria-label={countyDescription} viewBox={ROUTING_COUNTY_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={ROUTING_COUNTY_INNER} /></div>
+        <figcaption><p class="h4">{countyTitle}</p><p class="small muted" style="margin-top: 6px">{countyDetail}</p></figcaption>
+      </figure>
+      <figure class="m-routefig__fig" style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 16px; margin: 0">
+        <div class="m-routefig__crewframe" style={frame}><div class="on-dark m-routefig__crew" role="img" aria-label={crewDescription} style="height: 100%; background: #121212; padding: clamp(20px, 2.4vw, 32px); display: flex; flex-direction: column; justify-content: space-between">
+          <p class="stat m-routefig__crewname" style="font-size: clamp(36px, 4.4vw, 64px); line-height: 0.95; color: #F5F5F5">{crewName}</p>
+          <ul style="border-bottom: 1px solid rgba(245,245,245,0.3)">{crewFacts.map((f: string, i: number) => <li class="stat m-routefig__fact" style={`font-size: clamp(20px, 2vw, 28px); padding: 12px 0; border-top: 1px solid rgba(245,245,245,0.3); color: ${i === 0 ? "#FFB612" : "#F5F5F5"}`}>{f}</li>)}</ul>
+        </div></div>
+        <figcaption><p class="h4">{crewTitle}</p><p class="small muted" style="margin-top: 6px">{crewDetail}</p></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>

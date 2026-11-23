@@ -1,0 +1,29 @@
+---
+// Stats, each with a 100-square grid (canvas: v-rep-09-why-b).
+import Cta from "./Cta.astro";
+const { heading, body, stats = [], chartDescription, cta } = Astro.props;
+const hundred = Array.from({ length: 100 }, (_, i) => i);
+---
+<section class="mi m-sec m-gridstats" style="padding: clamp(64px, 7vw, 104px) 24px">
+  <div class="wrap">
+    <h2 class="h2" style="max-width: 820px">{heading}</h2>
+    <p class="body muted" style="margin-top: 16px">{body}</p>
+    <div role="img" aria-label={chartDescription} class="m-gridstats__list" style="margin-top: 56px; display: flex; flex-wrap: wrap; gap: 56px 72px">
+      {stats.map((s: { value: string; filled: number; accent?: boolean; label: string; source: string }) => (
+        <div style="flex: 1 1 380px">
+          <div class="m-gridstats__top" style="display: flex; flex-wrap: wrap; gap: 24px 32px; align-items: flex-end">
+            <div class="m-gridstats__grid" style="flex: 0 1 260px; min-width: 200px">
+              <div class="m-gridstats__cells" style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 5px">
+                {hundred.map((i) => <span style={`display: block; aspect-ratio: 1; background: ${i < s.filled ? (s.accent ? "#D9651A" : "#FFB612") : "#E7DFD0"}`}></span>)}
+              </div>
+            </div>
+            <p class="stat m-gridstats__value" style="font-size: clamp(88px, 10vw, 150px); line-height: 0.8">{s.value}</p>
+          </div>
+          <p class="h4 m-gridstats__label" style="margin-top: 24px; border-top: 2px solid #121212; padding-top: 14px">{s.label}</p>
+          <p class="tiny muted" style="margin-top: 6px">{s.source}</p>
+        </div>
+      ))}
+    </div>
+    <div style="margin-top: 48px"><Cta cta={cta} /></div>
+  </div>
+</section>

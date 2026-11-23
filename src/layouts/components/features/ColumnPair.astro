@@ -1,0 +1,25 @@
+---
+// Intro beside two tall columns (canvas: rev-10-ai-a).
+import Cta from "./Cta.astro";
+import { tone } from "./tones";
+const { heading, body, cta, source, columns = [], chartDescription } = Astro.props;
+---
+<section class="mi m-sec m-colpair" style="padding: 96px 24px">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px 80px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 400px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="h2 m-o1">{heading}</h2>
+      <p class="body muted m-o2">{body}</p>
+      <div class="m-o6"><Cta cta={cta} /></div>
+      <p class="tiny muted m-o5">{source}</p>
+    </div>
+    <div role="img" aria-label={chartDescription} class="m-o4 m-colpair__chart" style="flex: 1 1 460px; display: flex; align-items: flex-end; gap: 32px; height: 420px">
+      {columns.map((c: { label: string; value: string; percent: number; tone?: string }) => (
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%">
+          <p class="stat m-colpair__v" style={`font-size: 64px${c.tone === "grey" ? "; color: #8A8173" : ""}`}>{c.value}</p>
+          <div style={`margin-top: 12px; height: ${c.percent}%; min-height: 8px; background: ${tone(c.tone)}`}></div>
+          <p class="h4" style="margin-top: 12px">{c.label}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

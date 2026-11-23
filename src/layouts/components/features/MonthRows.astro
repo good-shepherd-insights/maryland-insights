@@ -1,0 +1,36 @@
+---
+// Rows of twelve months, filled where something happened (canvas: rev-03-recency-c).
+import Cta from "./Cta.astro";
+import { tone } from "./tones";
+const { heading, cta, months = [], rows = [], chartDescription, body, source } = Astro.props;
+const twelve = Array.from({ length: 12 }, (_, i) => i + 1);
+const cols = "grid-template-columns: 220px repeat(12, minmax(0, 1fr)); gap: 6px; align-items: center";
+---
+<section class="mi m-sec m-monthrows" style="padding: 96px 24px; background: #F6F0E5">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 760px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-d m-monthrows__chart" style="margin-top: 56px; display: grid; gap: 28px">
+      <div class="m-monthrows__row m-monthrows__row--months" style={`display: grid; ${cols}`}><span></span>{months.map((m: string) => <span class="tiny muted">{m}</span>)}</div>
+      {rows.map((r: { label: string; onMonths?: number[]; tone?: string }) => (
+        <div class="m-monthrows__row" style={`display: grid; ${cols}`}>
+          <p class="h4 m-monthrows__label">{r.label}</p>
+          {twelve.map((m) => <span class="m-monthrows__cell" style={`display: block; height: 56px; background: ${(r.onMonths ?? []).includes(m) ? tone(r.tone) : "#E7DFD0"}`}></span>)}
+        </div>
+      ))}
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-m m-mrows">
+      {rows.map((r: { label: string; onMonths?: number[]; tone?: string }) => (
+        <div>
+          <p class="h4 m-mrows__label">{r.label}</p>
+          <div class="m-mrows__cells">{twelve.map((m) => <span style={`background: ${(r.onMonths ?? []).includes(m) ? tone(r.tone) : "#E7DFD0"}`}></span>)}</div>
+        </div>
+      ))}
+      <div class="m-mrows__months"><span>{months[0]}</span><span>{months[5]}</span><span>{months[11]}</span></div>
+    </div>
+    <p class="body" style="margin-top: 36px; max-width: 760px">{body}</p>
+    <p class="tiny muted" style="margin-top: 10px">{source}</p>
+  </div>
+</section>

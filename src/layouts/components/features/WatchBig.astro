@@ -1,0 +1,22 @@
+---
+// 10 What we watch for every client, and what we never count (canvas: v-aut-10-evidence-c).
+import Cta from "./Cta.astro";
+const { heading, label, items = [], neverItem, neverNote, note, researchLink, cta } = Astro.props;
+const li = "line-height: 1; letter-spacing: -0.05em; padding: 18px 0; border-top: 2px solid #121212; display: flex; align-items: center; gap: 22px";
+---
+<section class="mi m-sec m-watchbig" style="padding: 96px 24px">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 760px">{heading}</h2>
+      <p class="h4 m-o2" style="font-weight: 700">{label}</p>
+    </div>
+    <ul class="m-o3 m-watchbig__list" style="margin-top: 40px">
+      {items.map((t: string) => <li class="stat m-watchbig__item" style={`font-size: clamp(40px, 6vw, 88px); ${li}`}><span aria-hidden="true" class="m-watchbig__box" style="flex: none; width: 28px; height: 28px; background: #FFB612; border: 2px solid #121212"></span>{t}</li>)}
+      {neverItem && <li class="stat m-watchbig__item" style={`font-size: clamp(40px, 6vw, 88px); ${li}; border-bottom: 2px solid #121212; color: #8A8173`}><span aria-hidden="true" class="m-watchbig__box" style="flex: none; width: 28px; height: 28px; border: 2px solid #8A8173"></span><span><s>{neverItem}</s><span class="sr-only" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)"> {neverNote}</span></span></li>}
+    </ul>
+    <div class="m-contents" style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 20px 40px; justify-content: space-between; align-items: center">
+      <p class="small muted m-o4" style="max-width: 560px">{note}</p>
+      <div class="m-o5 m-watchbig__ctas" style="display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center">{researchLink?.link && <a class="link body" href={researchLink.link}>{researchLink.label}</a>}<Cta cta={cta} /></div>
+    </div>
+  </div>
+</section>

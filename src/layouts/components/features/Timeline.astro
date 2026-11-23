@@ -1,0 +1,24 @@
+---
+// 07 Steps along a timeline, the last one done (canvas: wv-07-included-a).
+import Cta from "./Cta.astro";
+const { heading, steps = [], cta } = Astro.props;
+const last = steps.length - 1;
+---
+<section class="mi m-timeline" style="padding: 96px 24px">
+  <div class="wrap">
+    <h2 class="h2">{heading}</h2>
+    <ol class="mi-d" style="margin-top: 64px; position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px">
+      <li aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 13px; height: 2px; background: #121212"></li>
+      {steps.map((s: { title: string; detail: string }, i: number) => (
+        <li style="position: relative; padding-top: 44px"><span aria-hidden="true" style={`position: absolute; top: 0; left: 0; width: 28px; height: 28px; background: ${i === last ? "#121212" : "#FFB612"}; border: 2px solid #121212`}></span><p class="stat" style="font-size: 44px">{s.title}</p><p class="small muted" style="margin-top: 8px">{s.detail}</p></li>
+      ))}
+    </ol>
+    <ol class="mi-m" style="margin-top: 32px; position: relative">
+      <li aria-hidden="true" style="position: absolute; left: 13px; top: 18px; bottom: 56px; width: 2px; background: #121212"></li>
+      {steps.map((s: { title: string; detail: string }, i: number) => (
+        <li style="position: relative; padding: 0 0 26px 48px"><span aria-hidden="true" style={`position: absolute; left: 0; top: 4px; width: 28px; height: 28px; box-sizing: border-box; background: ${i === last ? "#121212" : "#FFB612"}; border: 2px solid #121212`}></span><p class="stat" style="font-size: 34px; line-height: 1.05">{s.title}</p><p class="small muted" style="margin-top: 6px">{s.detail}</p></li>
+      ))}
+    </ol>
+    <div class="m-timeline__cta" style="margin-top: 56px"><Cta cta={cta} /></div>
+  </div>
+</section>

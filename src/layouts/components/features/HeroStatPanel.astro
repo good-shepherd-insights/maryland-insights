@@ -1,0 +1,25 @@
+---
+// 01 Hero: headline beside a dark stat panel with stars (canvas: rev-01-hero-a).
+import Cta from "./Cta.astro";
+import Stars from "./Stars.astro";
+const { eyebrow, heading, lead, cta, secondaryCta, starsDescription, stat, statLabel, statNote, source } = Astro.props;
+---
+<section class="mi m-herostat" style="padding: 88px 24px 96px; background: #FDFBF7">
+  <div class="wrap m-herostat__wrap" style="display: flex; flex-wrap: wrap; gap: 56px 72px; align-items: stretch">
+    <div style="flex: 1.2 1 520px; display: flex; flex-direction: column; justify-content: center; gap: 28px">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 class="d1 m-herostat__h">{heading}</h1>
+      <p class="lead muted">{lead}</p>
+      <div class="stack-sm" style="display: flex; flex-wrap: wrap; gap: 12px"><Cta cta={cta} /><Cta cta={secondaryCta} variant="btn-ghost" /></div>
+    </div>
+    <div class="on-dark m-herostat__panel" style="flex: 1 1 400px; background: #121212; padding: 48px 44px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px">
+      <Stars size={44} gap={6} color="#FFB612" label={starsDescription} class="m-herostat__stars" />
+      <div>
+        <p class="stat m-herostat__stat" style="font-size: clamp(120px, 12vw, 176px); line-height: 0.85; letter-spacing: -0.06em; color: #FFB612">{stat}</p>
+        <p class="h3" style="margin-top: 16px">{statLabel}</p>
+        <p class="body muted" style="margin-top: 12px">{statNote}</p>
+      </div>
+      <p class="tiny muted">{source}</p>
+    </div>
+  </div>
+</section>

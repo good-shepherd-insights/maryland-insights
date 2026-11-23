@@ -1,0 +1,23 @@
+---
+// Bars that shrink step by step (canvas: cel-09-why-b).
+import Cta from "./Cta.astro";
+import { tone } from "./tones";
+const { heading, cta, steps = [], chartDescription, source } = Astro.props;
+---
+<section class="mi m-sec m-funnel" style="padding: 96px 24px">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 720px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <ol role="img" aria-label={chartDescription} style="margin-top: 56px; display: grid; gap: 24px">
+      {steps.map((s: { label: string; value: string; percent: number; tone?: string }) => (
+        <li class="m-funnel__row" style="display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 24px; align-items: center">
+          <span><span class="stat m-funnel__v" style="display: block; font-size: 40px">{s.value}</span><span class="small muted">{s.label}</span></span>
+          <span class="m-funnel__track" style="display: block; height: 40px; background: #F6F0E5"><span style={`display: block; height: 100%; width: ${s.percent}%; background: ${tone(s.tone)}`}></span></span>
+        </li>
+      ))}
+    </ol>
+    <p class="tiny muted" style="margin-top: 28px">{source}</p>
+  </div>
+</section>

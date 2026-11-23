@@ -1,0 +1,802 @@
+/*
+ * Feature-page sections (/features/*). Ported from the feature-page design
+ * canvas stylesheet; every rule is scoped to .mi so nothing leaks into the
+ * rest of the site. Fonts are the canvas's own Archivo and Hanken Grotesk files.
+ */
+@font-face {
+  font-family: "MI Archivo";
+  src: url("/fonts/features/archivo.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "MI Hanken";
+  src: url("/fonts/features/hanken-grotesk.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.mi {
+  font-family: "MI Hanken", Arial, sans-serif;
+  font-size: 16px;
+  color: #121212;
+  background: #fdfbf7;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.mi *,
+.mi *::before,
+.mi *::after {
+  box-sizing: border-box;
+}
+.mi h1,
+.mi h2,
+.mi h3,
+.mi h4 {
+  font-family: "MI Archivo", Arial, sans-serif;
+  font-weight: 700;
+  margin: 0;
+  color: inherit;
+  text-wrap: balance;
+}
+.mi p,
+.mi ul,
+.mi ol,
+.mi figure {
+  margin: 0;
+}
+.mi ul,
+.mi ol {
+  padding: 0;
+  list-style: none;
+}
+.mi .wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+.mi .d1 { font-size: 72px; line-height: 1; letter-spacing: -0.04em; }
+.mi .d2 { font-size: 56px; line-height: 1.02; letter-spacing: -0.035em; }
+.mi .h2 { font-size: 48px; line-height: 1.04; letter-spacing: -0.035em; }
+.mi .h3 { font-size: 28px; line-height: 1.12; letter-spacing: -0.025em; }
+.mi .h4 { font-family: "MI Archivo", Arial, sans-serif; font-weight: 700; font-size: 20px; line-height: 1.15; }
+.mi .lead { font-size: 20px; line-height: 1.6; }
+.mi .body { font-size: 18px; line-height: 1.62; }
+.mi .small { font-size: 14px; line-height: 1.5; }
+.mi .tiny { font-size: 13px; line-height: 1.5; }
+.mi .muted { color: #5b554b; }
+.mi .on-dark,
+.mi.on-dark { color: #f5f5f5; }
+.mi .on-dark .muted,
+.mi.on-dark .muted { color: rgba(245, 245, 245, 0.68); }
+.mi .eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #b4510f;
+}
+.mi .on-dark .eyebrow,
+.mi.on-dark .eyebrow { color: #ffb612; }
+.mi .stat {
+  font-family: "MI Archivo", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+.mi .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 28px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  /* The site's global .btn adds capitalize and its own padding; the boards don't. */
+  text-transform: none;
+  line-height: 1;
+}
+.mi .btn-y { background: #ffb612; border-color: #ffb612; color: #000; }
+.mi .btn-y:hover { background: #f0a800; border-color: #f0a800; }
+.mi .btn-ink { background: #121212; border-color: #121212; color: #fff; }
+.mi .btn-ghost { border-color: currentColor; color: inherit; background: transparent; }
+.mi .btn:focus-visible,
+.mi a:focus-visible,
+.mi summary:focus-visible {
+  outline: 2px solid #ffb612;
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  .mi .d1 { font-size: 44px; }
+  .mi .d2 { font-size: 38px; }
+  .mi .h2 { font-size: 34px; }
+  .mi .h3 { font-size: 24px; }
+  .mi .stack-sm { flex-direction: column !important; align-items: stretch !important; }
+}
+
+/* The site's header is fixed and floats over the page (bottom edge at 124px on
+   desktop, 73px on phones). Clear it so the hero starts below it, on the
+   hero's own background. */
+.mi-page {
+  padding-top: 124px;
+  background: #fdfbf7;
+}
+@media (max-width: 1023px) {
+  .mi-page { padding-top: 73px; }
+}
+
+/* Desktop-only and phone-only variants. Phone layouts follow the mobile (390px)
+   boards on the design canvas; desktop is untouched above 767px. */
+.mi .mi-m { display: none !important; }
+
+@media (max-width: 767px) {
+  .mi .mi-d { display: none !important; }
+  .mi .mi-m { display: block !important; }
+  .mi svg.mi-m { display: block !important; }
+
+  /* Type on phones (mobile boards). */
+  .mi .h2 { font-size: 34px; line-height: 1.04; letter-spacing: -0.035em; }
+  .mi .lead, .mi .body { font-size: 17px; }
+  .mi .h4 { font-size: 18px; }
+  .mi .btn { min-height: 52px; }
+  .mi .m-secondary { font-size: 15px; }
+  .mi .m-secondary a { display: inline-block; padding: 12px 0; }
+
+  /* Generic phone section: one column, heading first, call to action last. */
+  .mi.m-sec { padding: 64px 24px !important; }
+  .mi.m-sec > .wrap { display: flex; flex-direction: column; align-items: stretch; gap: 28px; }
+  .mi.m-sec > .wrap > *, .mi.m-sec .m-contents > * { margin-top: 0 !important; max-width: none !important; flex: none !important; }
+  .mi .m-contents { display: contents !important; }
+  .mi .m-last { order: 99; align-self: flex-start; }
+  .mi .m-ctarow { order: 99; }
+  .mi .m-o1 { order: 1; } .mi .m-o2 { order: 2; } .mi .m-o3 { order: 3; }
+  .mi .m-o4 { order: 4; } .mi .m-o5 { order: 5; } .mi .m-o6 { order: 6; }
+
+  /* Column layouts that reorder their two halves into one column. */
+  .mi.m-heromap > .wrap, .mi.m-hours > .wrap, .mi.m-checklist > .wrap, .mi.m-countycount > .wrap,
+  .mi.m-closingmap .m-closingmap__body, .mi.m-rising > .wrap {
+    flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important;
+  }
+  .mi.m-heromap > .wrap > *, .mi.m-hours > .wrap > *, .mi.m-checklist > .wrap > *, .mi.m-countycount > .wrap > *,
+  .mi.m-closingmap .m-closingmap__body > *, .mi.m-rising > .wrap > * { flex: none !important; }
+
+  /* 01 Hero, map (v-ls-01-hero-a). */
+  .mi.m-heromap { padding: 40px 24px 48px !important; }
+  .mi.m-heromap > .wrap { gap: 22px !important; }
+  .mi.m-heromap h1 { font-size: 42px; line-height: 1; letter-spacing: -0.04em; }
+  .mi.m-heromap .m-heromap__map { margin: 4px 0 8px; }
+
+  /* 02 Year grid (v-ls-02-intro-b). */
+  .mi.m-sec > .wrap > .m-year { display: flex !important; flex-direction: column; gap: 18px; }
+  .mi .m-year__row { display: flex; flex-direction: column; gap: 8px; }
+  .mi .m-year__row--contrast { border-top: 2px solid #121212; padding-top: 14px; }
+  .mi .m-year__label { font-size: 16px; color: #121212; }
+  .mi .m-year__label--muted { font-size: 13px; color: #5B554B; }
+  .mi .m-year__cells { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
+  .mi .m-year__cells--months { gap: 2px; }
+  .mi .m-year__cells--months span { font-size: 12px; line-height: 1; color: #5B554B; text-align: center; letter-spacing: -0.02em; }
+  .mi .m-year__on { height: 26px; background: #FFB612; }
+  .mi .m-year__once { height: 26px; background: #8A8173; }
+  .mi .m-year__off { height: 0; align-self: center; border-top: 1px dashed #8A8173; }
+
+  /* 03 Hours (v-ls-03-profiles-c). */
+  .mi.m-hours { padding: 64px 24px !important; }
+  .mi.m-hours > .wrap { gap: 22px !important; }
+  .mi.m-hours .m-hours__stat { font-size: 132px !important; }
+  .mi.m-hours h2 { font-size: 24px; line-height: 1.15; }
+  .mi.m-hours .m-o4 { margin-top: 12px; }
+  .mi .m-hours__grid { grid-template-columns: repeat(7, minmax(0, 1fr)) minmax(0, 1.6fr) !important; gap: 4px !important; }
+  .mi .m-hours__col { gap: 2px !important; }
+  .mi .m-hours__col--holiday { padding-left: 6px !important; }
+  .mi .m-hours__day { font-size: 12px; line-height: 1; height: 20px !important; color: rgba(245,245,245,0.75) !important; }
+  .mi .m-hours__cell { height: 9px !important; }
+  .mi .m-hours__caption { font-size: 13px; }
+
+  /* 04 Every job (v-ls-04-reviews-c). */
+  .mi .m-everyjob__row { gap: 4px !important; }
+  .mi .m-everyjob__link { height: 40px !important; }
+  .mi .m-everyjob__label { font-size: 14px; }
+  .mi .m-everyjob__req { box-sizing: border-box; }
+  .mi .m-everyjob__label:first-child { margin-bottom: 10px !important; }
+
+  /* 05 County pages (v-ls-05-counties-c). */
+  .mi.m-county > .wrap { gap: 24px; }
+  .mi .m-county__stat { flex-wrap: nowrap !important; gap: 14px !important; }
+  .mi .m-county__stat .stat { font-size: 60px !important; }
+  .mi .m-county__stat .small { font-size: 14px; line-height: 1.45; max-width: none !important; }
+  .mi .m-county__grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+  .mi .m-county__shape { height: 108px !important; padding: 14px !important; }
+  .mi .m-county__name { font-size: 16px; padding: 10px 12px 2px !important; }
+  .mi .m-county__path { font-size: 13px; padding: 0 12px 12px !important; }
+  .mi .m-county__empty { min-height: 170px !important; padding: 12px !important; }
+  .mi .m-county__empty .h4 { font-size: 16px; }
+
+  /* City level (v-ls-city-b). */
+  .mi.m-city > .wrap { gap: 24px; }
+  .mi .m-city__body { flex-direction: column; flex-wrap: nowrap !important; gap: 24px !important; align-items: stretch !important; }
+  .mi .m-city__body > * { flex: none !important; }
+  .mi .m-city__list { margin-top: 14px !important; }
+  .mi .m-city__list li { flex-wrap: nowrap !important; align-items: baseline; }
+  .mi .m-city__list .small { font-size: 14px; }
+
+  /* 06 Stat bars (v-ls-06-record-b). */
+  .mi.m-statbars > .wrap { gap: 32px; }
+  .mi .m-statbars__list { gap: 32px !important; }
+  .mi .m-statbars__head { flex-direction: column; align-items: flex-start !important; gap: 10px !important; }
+  .mi .m-statbars__value { font-size: 92px !important; }
+  .mi .m-statbars__label { font-size: 22px; }
+  .mi .m-statbars__bar { height: 40px !important; }
+  .mi .m-statbars__foot { padding-top: 24px !important; flex-direction: column; align-items: flex-start !important; }
+  .mi .m-statbars__foot .small { font-size: 14px; }
+
+  /* 06 One record, fanned out vertically (v-ls-06-record-a). */
+  .mi .m-fan__source { background: #121212; color: #F5F5F5; padding: 22px 20px; display: flex; flex-direction: column; gap: 8px; }
+  .mi .m-fan__title { font-size: 32px; color: #FFB612; }
+  .mi .m-fan__detail { font-size: 16px; color: rgba(245,245,245,0.8); }
+  .mi .m-fan__list { position: relative; display: flex; flex-direction: column; gap: 10px; padding-top: 22px; }
+  .mi .m-fan__rail { position: absolute; left: 11px; top: 0; bottom: 31px; width: 2px; background: #121212; }
+  .mi .m-fan__list li { position: relative; padding-left: 34px; }
+  .mi .m-fan__tick { position: absolute; left: 11px; top: 50%; width: 23px; height: 2px; background: #121212; }
+  .mi .m-fan__box { display: block; font-size: 17px; border: 2px solid #121212; background: #FDFBF7; padding: 14px; }
+
+  /* 07 Checklist and service-area map (v-ls-07-included-a). */
+  .mi.m-checklist { padding: 64px 24px !important; }
+  .mi.m-checklist > .wrap { gap: 24px !important; }
+  .mi .m-checklist__legend { font-size: 14px; margin-top: 12px !important; }
+
+  /* 08 Two lists (v-ls-08-agency-b). */
+  .mi.m-twolists { min-height: 0 !important; flex-direction: column; }
+  .mi .m-twolists__left, .mi .m-twolists__right { flex: none !important; gap: 20px !important; }
+  .mi .m-twolists__left { padding: 56px 24px 48px !important; }
+  .mi .m-twolists__right { padding: 48px 24px 56px !important; }
+  .mi.m-twolists .h3 { font-size: 24px; }
+  .mi.m-twolists li.stat { font-size: 34px !important; padding: 12px 0 !important; }
+  .mi.m-twolists .body { margin-top: 0 !important; }
+  .mi.m-twolists .mi-m .btn { align-self: flex-start; }
+
+  /* 09 Bar chart: label and value over each bar (v-ls-09-why-a). */
+  .mi.m-barchart h2 { font-size: 30px; line-height: 1.06; }
+  .mi.m-barchart .mi-bars { gap: 16px !important; overflow: visible !important; }
+  .mi.m-barchart .mi-bars li { grid-template-columns: minmax(0, 1fr) auto !important; gap: 6px 12px !important; align-items: baseline !important; }
+  .mi .m-bars__label { font-size: 16px; grid-column: 1; grid-row: 1; }
+  .mi .m-bars__value { font-size: 24px !important; grid-column: 2; grid-row: 1; }
+  .mi .m-bars__bar { grid-column: 1 / -1; grid-row: 2; height: 22px !important; }
+
+  /* 10 County count (v-ls-10-evidence-a). */
+  .mi.m-countycount { padding: 64px 24px !important; }
+  .mi.m-countycount > .wrap { gap: 18px !important; }
+  .mi .m-countycount__stat { font-size: 140px !important; }
+  .mi.m-countycount h2 { font-size: 24px; }
+  .mi.m-countycount .small { font-size: 14px; }
+  .mi .m-countycount__map { margin: 8px -8px; }
+
+  /* 12 Closing with map (v-ls-12-cta-a). */
+  .mi .m-closingmap__photo { height: 220px !important; }
+  .mi .m-closingmap__body { padding: 48px 24px 64px !important; gap: 22px !important; }
+
+  /* RTG 01 Hero, wide (v-rep-01-hero-b). */
+  .mi.m-herowide { padding: 40px 24px 24px !important; }
+  .mi.m-herowide .eyebrow { margin-bottom: 16px !important; }
+  .mi .m-herowide__h1 { font-size: 46px !important; line-height: 0.94 !important; letter-spacing: -0.045em !important; }
+  .mi .m-herowide__rule { margin-top: 28px !important; padding-top: 22px !important; flex-direction: column; align-items: stretch !important; gap: 22px !important; }
+  .mi .m-herowide__photo { margin-top: 36px !important; aspect-ratio: auto !important; min-height: 0 !important; height: 260px; object-position: 66% 40% !important; }
+
+  /* RTG 02 Rising steps as horizontal bars (v-rep-02-intro-c). */
+  .mi.m-rising { padding: 64px 24px !important; }
+  .mi.m-rising > .wrap { gap: 24px !important; }
+  .mi .m-rising__h2 { font-size: 46px !important; line-height: 0.94 !important; }
+  .mi.m-rising > .wrap > .m-rise { display: flex !important; flex-direction: column; gap: 16px; margin: 8px 0; }
+  .mi .m-rise__step { display: flex; flex-direction: column; gap: 6px; }
+  .mi .m-rise__head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .mi .m-rise__title { font-size: 26px; line-height: 1; }
+  .mi .m-rise__detail { font-size: 14px; font-weight: 600; }
+  .mi .m-rise__bar { height: 40px; border: 2px solid #121212; box-sizing: border-box; }
+
+  /* RTG 03 What a call carries, vertically (v-rep-03-calls-b). */
+  .mi .m-carry__source { background: #121212; padding: 22px 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; min-height: 160px; }
+  .mi .m-carry__label { font-size: 14px; font-weight: 600; }
+  .mi .m-carry__title { font-size: 64px; line-height: 0.85; color: #FFB612; }
+  .mi .m-carry__list { position: relative; display: flex; flex-direction: column; gap: 10px; padding-top: 18px; }
+  .mi .m-carry__rail { position: absolute; left: 11px; top: 0; bottom: 38px; width: 2px; background: #121212; }
+  .mi .m-carry__list li { position: relative; padding-left: 34px; }
+  .mi .m-carry__tick { position: absolute; left: 11px; top: 50%; width: 23px; height: 2px; background: #121212; }
+  .mi .m-carry__box { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .mi .m-carry__item { font-size: 26px; }
+  .mi .m-carry__detail { font-size: 14px; font-weight: 600; }
+
+  /* RTG 04 Stages as a timeline (v-rep-04-origin-a). */
+  .mi .m-tl__list { position: relative; }
+  .mi .m-tl__rail { position: absolute; left: 8px; top: 8px; bottom: 30px; width: 6px; background: #FFB612; }
+  .mi .m-tl__list li { position: relative; padding: 0 0 22px 40px; }
+  .mi .m-tl__dot { position: absolute; left: 0; top: 4px; width: 22px; height: 22px; border: 2px solid #121212; box-sizing: border-box; }
+  .mi .m-tl__title { font-size: 28px; line-height: 1; }
+  .mi .m-tl__detail { font-size: 14px; font-weight: 600; margin-top: 4px; }
+  .mi .m-tl__band { background: #FFB612; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; border: 2px solid #121212; }
+  .mi .m-tl__bandtitle { font-size: 24px; }
+
+  /* RTG 05 County leads (v-rep-05-county-b). */
+  .mi.m-countyleads > .wrap { gap: 24px; }
+  .mi .m-countyleads__body { flex-direction: column; flex-wrap: nowrap !important; gap: 24px !important; align-items: stretch !important; }
+  .mi .m-countyleads__body > * { flex: none !important; }
+  .mi .m-countyleads__list .h4 { font-size: 18px; }
+  .mi .m-countyleads__rows { grid-template-columns: 74px 1fr !important; }
+  .mi .m-countyleads__rows .tiny { font-size: 13px; }
+  .mi .m-countyleads__note { font-size: 14px; }
+
+  /* RTG city level: one example lead (v-rep-city-c). */
+  .mi.m-journey > .wrap { gap: 22px; }
+  .mi .m-journey__grid { grid-template-columns: 1fr !important; }
+  .mi .m-journey__panel { padding: 20px !important; gap: 14px !important; }
+  .mi .m-journey__panel .small { font-size: 14px; }
+  .mi.m-journey .h3 { font-size: 22px; }
+  .mi .m-journey__frame { aspect-ratio: auto !important; display: block !important; }
+  .mi .m-journey__page { aspect-ratio: auto !important; height: 210px; box-sizing: border-box; }
+  .mi .m-journey__outcome { aspect-ratio: auto !important; padding-top: 24px; }
+  .mi .m-journey__value { font-size: 56px !important; }
+
+  /* RTG 06 Inputs into one report, vertically (v-rep-06-report-a). */
+  .mi .m-in__list { position: relative; }
+  .mi .m-in__rail { position: absolute; left: 10px; top: 20px; bottom: -28px; width: 3px; background: #121212; }
+  .mi .m-in__list li { position: relative; padding: 9px 0 9px 46px; font-size: 16px; font-weight: 600; }
+  .mi .m-in__tick { position: absolute; left: 11px; top: 50%; width: 23px; height: 3px; background: #121212; }
+  .mi .m-in__out { margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; }
+  .mi .m-in__report, .mi .m-in__next { padding: 20px 16px; min-height: 120px; display: flex; align-items: flex-end; }
+  .mi .m-in__report { background: #121212; color: #FDFBF7; }
+  .mi .m-in__next { background: #FFB612; color: #121212; }
+  .mi .m-in__out .stat { font-size: 26px; line-height: 1.05; }
+  .mi .m-inputs__note { font-size: 14px; }
+
+  /* RTG 07 Trend and list (v-rep-07-included-a). */
+  .mi.m-trend > .wrap { gap: 24px; }
+  .mi .m-trend__body { flex-direction: column; flex-wrap: nowrap !important; align-items: stretch !important; gap: 24px !important; }
+  .mi .m-trend__body > * { flex: none !important; }
+  .mi .m-trend__title { font-size: 24px !important; }
+  .mi .m-trend__chart { margin-top: 18px !important; }
+  .mi .m-trend__listtitle { font-size: 14px; margin-bottom: 10px !important; }
+
+  /* RTG 08 Client, agency, engineers stacked (v-rep-08-agency-c). */
+  .mi.m-rel > .wrap { gap: 24px; }
+  .mi .m-relm { margin-top: 8px; }
+  .mi .m-relm__box { padding: 20px; min-height: 88px; display: flex; align-items: flex-end; box-sizing: border-box; }
+  .mi .m-relm__box .stat { font-size: 30px; line-height: 1; }
+  .mi .m-relm__client { background: #FDFBF7; color: #121212; border: 4px solid #121212; }
+  .mi .m-relm__agency { background: #FFB612; color: #121212; }
+  .mi .m-relm__eng { background: #121212; color: #FDFBF7; }
+  .mi .m-relm__link { display: flex; align-items: stretch; gap: 16px; min-height: 64px; }
+  .mi .m-relm__link p { align-self: center; font-size: 14px; font-weight: 600; }
+  .mi .m-relm__thick { flex: 0 0 12px; margin-left: 22px; background: #121212; }
+  .mi .m-relm__thin { flex: 0 0 4px; margin-left: 26px; background: #121212; }
+  .mi .m-rel__foot { padding-top: 24px !important; }
+
+  /* RTG 09 Grid stats (v-rep-09-why-b). */
+  .mi.m-gridstats > .wrap { gap: 22px; }
+  .mi .m-gridstats__list { flex-direction: column; flex-wrap: nowrap !important; gap: 44px !important; margin-top: 14px !important; }
+  .mi .m-gridstats__list > * { flex: none !important; }
+  .mi .m-gridstats__top { flex-direction: column; align-items: flex-start !important; gap: 18px !important; }
+  .mi .m-gridstats__grid { flex: none !important; width: 230px; min-width: 0 !important; }
+  .mi .m-gridstats__cells { gap: 4px !important; }
+  .mi .m-gridstats__value { font-size: 92px !important; line-height: 0.85 !important; }
+  .mi .m-gridstats__label { margin-top: 18px !important; padding-top: 12px !important; }
+
+  /* RTG 10 County map stat (v-rep-10-evidence-b). */
+  .mi.m-cms > .wrap { gap: 18px; }
+  .mi .m-cms__stat { font-size: 150px !important; margin-top: 12px !important; }
+  .mi.m-cms .h3 { font-size: 24px; }
+  .mi .m-cms__map { margin: 8px 0 !important; }
+
+  /* RTG 11 One question (v-rep-11-faq-a). */
+  .mi.m-oneq > .wrap { gap: 22px; }
+  .mi .m-oneq__q { font-size: 22px; margin-top: 8px !important; }
+  .mi .m-oneq__a { font-size: 48px !important; line-height: 0.92 !important; }
+  .mi .m-oneq__parts { flex-direction: column; gap: 8px !important; }
+  .mi .m-oneq__part { flex: none !important; min-height: 120px !important; padding: 18px 20px !important; gap: 18px !important; }
+  .mi .m-oneq__title { font-size: 26px !important; }
+  .mi .m-oneq__part .small { font-size: 14px; }
+
+  /* RTG 12 Closing with photo (v-rep-12-cta-b). */
+  .mi.m-closingphoto { min-height: 0 !important; flex-direction: column; }
+  .mi .m-closingphoto__photo { order: -1; flex: none !important; min-height: 0 !important; height: 240px; }
+  .mi .m-closingphoto__body { flex: none !important; padding: 48px 24px 64px !important; gap: 24px !important; }
+  .mi .m-closingphoto__h2 { font-size: 44px !important; line-height: 0.94 !important; letter-spacing: -0.045em !important; }
+  .mi .m-closingphoto__foot { padding-top: 24px !important; gap: 12px !important; }
+}
+
+/* 24/7 Sales Website: phone layouts follow the mobile (390px) boards m-wv-*. */
+@media (max-width: 767px) {
+  /* 01 Hero, photo with ink block (wv-01-hero-a). */
+  .mi.m-ink { padding: 0 !important; background: #121212; }
+  .mi .m-ink__frame { min-height: 0 !important; display: block !important; }
+  .mi .m-ink__photo { position: static !important; height: 300px !important; object-position: 30% 50%; }
+  .mi .m-ink__block { max-width: none !important; padding: 36px 24px 44px !important; gap: 22px !important; }
+  .mi .m-ink__h1 { font-size: 44px; line-height: 1; letter-spacing: -0.04em; }
+  .mi.m-ink .lead { font-size: 18px; }
+
+  /* 02 Number grid (wv-02-intro-b). */
+  .mi.m-numgrid { padding: 64px 24px !important; }
+  .mi .m-numgrid__grid { grid-template-columns: minmax(0, 1fr) !important; margin-top: 28px !important; }
+  .mi .m-numgrid__big { grid-row: auto !important; border-right: 0 !important; padding: 28px 22px !important; gap: 16px !important; }
+  .mi .m-numgrid__stat { font-size: 104px !important; }
+  .mi .m-numgrid__big .body { font-size: 16px; }
+  .mi .m-numgrid__row { flex-direction: column; align-items: flex-start !important; gap: 4px !important; padding: 20px 22px !important; border-top: 2px solid #121212; border-bottom: 0 !important; }
+  .mi .m-numgrid__value { font-size: 44px !important; line-height: 1; min-width: 0 !important; }
+  .mi .m-numgrid__row .body { font-size: 16px; }
+
+  /* 03 Squares (wv-03-speed-c), 04 Build stack (wv-04-edits-b), 05 Waffle (wv-05-security-a),
+     06 Stat with code (wv-06-content-ai-b), 10 County map (wv-10-evidence-c): one column. */
+  .mi.m-squares, .mi.m-builds, .mi.m-waffle, .mi.m-statcode, .mi.m-cml { padding: 64px 24px !important; }
+  .mi .m-squares__wrap, .mi .m-builds__wrap, .mi .m-waffle__wrap, .mi .m-statcode__wrap, .mi .m-cml__wrap {
+    flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 24px !important;
+  }
+  .mi .m-squares__wrap > *, .mi .m-builds__wrap > *, .mi .m-waffle__wrap > *, .mi .m-statcode__wrap > *, .mi .m-cml__wrap > * { flex: none !important; margin-top: 0 !important; }
+  .mi .m-squares__grid { grid-template-columns: repeat(15, minmax(0, 1fr)) !important; gap: 5px !important; }
+  .mi.m-squares .body, .mi.m-builds .body { font-size: 17px; }
+  .mi .m-builds__m { display: flex !important; }
+
+  .mi .m-waffle__wrap { gap: 18px !important; }
+  .mi .m-waffle__stat { font-size: 120px !important; }
+  .mi.m-waffle .h3 { font-size: 24px; }
+  .mi .m-waffle__grid { gap: 5px !important; margin-top: 10px !important; }
+  .mi .m-waffle__h { font-size: 20px; margin-top: 14px !important; }
+
+  .mi .m-statcode__wrap { gap: 18px !important; }
+  .mi .m-statcode__stat { font-size: 96px !important; }
+  .mi.m-statcode .h3 { font-size: 24px; }
+  .mi.m-statcode .m-o4 { margin-top: 6px !important; }
+
+  .mi .m-cml__wrap { gap: 18px !important; }
+  .mi .m-cml__stat { font-size: 120px !important; }
+  .mi.m-cml .h3 { font-size: 26px; }
+  .mi .m-cml__map { margin: 12px 0 8px !important; }
+
+  /* 05 Things watched (wv-05-security-c). */
+  .mi.m-watch { padding: 64px 24px !important; }
+  .mi.m-watch > .wrap { display: flex; flex-direction: column; gap: 28px; }
+  .mi .m-watch__list { margin-top: 0 !important; grid-template-columns: minmax(0, 1fr) !important; border-bottom: 2px solid #121212; }
+  .mi .m-watch__item { flex-direction: row !important; align-items: flex-start; gap: 14px !important; padding: 18px 0 !important; }
+  .mi .m-watch__dot { flex: none; width: 14px !important; height: 14px !important; margin-top: 8px; }
+  .mi .m-watch__text { gap: 4px !important; }
+  .mi .m-watch__title { font-size: 28px !important; line-height: 1.05; }
+
+  /* 06 One source, many outputs (wv-06-content-ai-a), 07 Timeline (wv-07-included-a),
+     08 Roster (wv-08-agency-c), 09 Fit lists (wv-09-why-c), 11 Short answers (wv-11-faq-a). */
+  .mi.m-srcout, .mi.m-timeline, .mi.m-roster, .mi.m-fit, .mi.m-short { padding: 64px 24px !important; }
+  .mi.m-srcout .m-fan__title { font-size: 36px; line-height: 0.98; }
+
+  .mi.m-timeline .m-timeline__cta { margin-top: 6px !important; }
+
+  .mi.m-roster > .wrap { display: flex; flex-direction: column; gap: 28px; }
+  .mi .m-roster__diagram { margin-top: 0 !important; gap: 8px !important; }
+  .mi .m-roster__band { flex-direction: column; align-items: flex-start !important; gap: 4px !important; padding: 20px !important; }
+  .mi .m-roster__title { font-size: 32px !important; }
+  .mi .m-roster__band .body { font-size: 16px; }
+  .mi .m-roster__clients { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 8px !important; }
+  .mi .m-roster__client { padding: 12px !important; min-height: 64px !important; gap: 8px; }
+  .mi .m-roster__client .h4 { font-size: 16px; }
+  .mi .m-roster__dot { width: 12px !important; height: 12px !important; }
+
+  .mi .m-fit__cols { margin-top: 32px !important; grid-template-columns: minmax(0, 1fr) !important; gap: 32px !important; }
+  .mi .m-fit__label { padding-bottom: 12px !important; }
+  .mi .m-fit__label--muted { color: #6E6658 !important; }
+  .mi .m-fit__item { font-size: 26px !important; line-height: 1.1; padding: 14px 0 !important; }
+  .mi .m-fit__cta { margin-top: 32px !important; }
+
+  .mi.m-short dl { margin-top: 24px !important; border-bottom: 2px solid #121212; }
+  .mi .m-short__row { grid-template-columns: minmax(0, 1fr) !important; gap: 10px !important; padding: 22px 0 !important; }
+  .mi .m-short__q { font-size: 19px; }
+  .mi .m-short__a { font-size: 48px !important; line-height: 0.98 !important; }
+  .mi .m-short__foot { border-top: 0 !important; padding-top: 24px !important; justify-content: flex-start !important; }
+
+  /* 12 Closing, full yellow block (wv-12-cta-b). */
+  .mi.m-closeblock { min-height: 0 !important; padding: 80px 24px !important; }
+  .mi .m-closeblock__h { font-size: 52px !important; line-height: 0.92 !important; }
+  .mi .m-closeblock__row { margin-top: 32px !important; padding-top: 28px !important; flex-direction: column !important; align-items: flex-start !important; gap: 20px !important; }
+}
+
+/* Text links, from the board stylesheet. */
+.mi a.link { font-weight: 600; color: #B4510F; text-decoration: underline; text-underline-offset: 3px; }
+.mi .on-dark a.link { color: #FFB612; }
+
+/* Automatic Customer Nurturing: phone layouts follow the mobile (390px) boards m-v-aut-*. */
+@media (max-width: 767px) {
+  /* 01 Hero, text then photo (v-aut-01-hero-a). */
+  .mi.m-split { min-height: 0 !important; flex-direction: column; flex-wrap: nowrap !important; }
+  .mi .m-split__text { flex: none !important; padding: 48px 24px 40px !important; gap: 24px !important; }
+  .mi .m-split__h1 { font-size: 48px !important; line-height: 0.94 !important; }
+  .mi .m-split__foot { gap: 24px !important; padding-top: 24px !important; }
+  .mi.m-split .lead { font-size: 18px; }
+  .mi .m-split__photo { flex: none !important; min-height: 0 !important; height: 300px; }
+
+  /* 03 Stat beside the week (v-aut-03-events-b). */
+  .mi.m-week { padding: 64px 24px !important; }
+  .mi .m-week__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 16px !important; }
+  .mi .m-week__wrap > * { flex: none !important; margin-top: 0 !important; }
+  .mi .m-week__h { font-size: 26px !important; line-height: 1.12; }
+  .mi .m-week__stat { font-size: 104px !important; }
+  .mi.m-week .h4 { font-size: 20px; }
+  .mi .m-week__chart { margin-top: 16px !important; }
+  .mi .m-week__grid { grid-template-columns: 38px repeat(24, minmax(0, 1fr)) !important; gap: 2px !important; }
+  .mi .m-week__day { font-size: 13px; }
+  .mi .m-week__cell { min-height: 26px !important; }
+  .mi .m-week__grid .tiny { font-size: 12px; }
+  .mi .m-week__legend { margin-top: 18px !important; flex-direction: column; gap: 10px !important; }
+  .mi .m-week__legend .small { font-size: 14px; }
+  .mi.m-week .m-o6 { margin-top: 8px !important; }
+
+  /* 04 Missed call minutes (v-aut-04-missed-b). */
+  .mi.m-minutes .tiny { margin-top: 0 !important; }
+
+  /* 05 Routing map (v-aut-05-context-a): map full width, legend as a list. */
+  .mi.m-routemap > .wrap { gap: 16px !important; }
+  .mi .m-routemap__map { margin: 12px -24px 0 !important; }
+  .mi .m-routemap__map svg text, .mi .m-routemap__map svg line { display: none; }
+  .mi .m-routemap__legend { margin-top: 4px !important; padding-top: 18px !important; flex-direction: column; align-items: flex-start !important; gap: 10px !important; }
+  .mi .m-routemap__legend .small { font-size: 15px; }
+  .mi .m-routemap__legend .small:first-child { font-size: 14px; margin-bottom: 2px; }
+  .mi .m-routemap__legend span[aria-hidden] { width: 18px !important; height: 18px !important; border: 1px solid #121212; box-sizing: border-box; }
+  .mi.m-routemap .m-last { margin-top: 12px !important; }
+
+  /* City level, address to crew (v-aut-city-b). */
+  .mi .m-routefig__row { flex-direction: column; flex-wrap: nowrap !important; gap: 8px !important; margin-top: 0 !important; }
+  .mi .m-routefig__fig { flex: none !important; gap: 12px !important; }
+  .mi .m-routefig__fig:not(:last-child)::after { content: ""; display: block; margin: 0 0 0 170px; width: 2px; height: 24px; background: #121212; }
+  .mi .m-routefig__fig .h4 { font-size: 20px; }
+  .mi .m-routefig__fig .small { font-size: 14px; }
+  .mi .m-routefig__crewframe { aspect-ratio: auto !important; }
+  .mi .m-routefig__crew { height: auto !important; padding: 22px !important; gap: 20px; }
+  .mi .m-routefig__crewname { font-size: 40px !important; }
+  .mi .m-routefig__fact { font-size: 22px !important; }
+
+  /* 06 Consent hub, drawn vertically (v-aut-06-consent-a). */
+  .mi .m-consent__m { display: flex !important; flex-direction: column; }
+  .mi .m-consent__vlink { display: flex; flex-direction: column; align-items: center; width: 10px; margin-left: 166px; }
+  .mi .m-consent__note { font-size: 19px; margin-top: 0 !important; padding-top: 18px !important; }
+
+  /* 07 Registration timeline (v-aut-07-included-a). */
+  .mi.m-reg .lead { font-size: 18px; }
+  .mi .m-reg__chart { margin-top: 12px !important; }
+  .mi .m-reg__bar { padding: 16px !important; gap: 10px !important; }
+  .mi .m-reg__value { font-size: 30px !important; line-height: 0.95 !important; }
+  .mi .m-reg__detail { font-size: 13px; }
+  .mi .m-reg__lbl { font-size: 13px; top: 14px !important; }
+  .mi .m-reg__list { margin-top: 0 !important; flex-direction: column; gap: 18px !important; }
+  .mi .m-reg__list li { flex: none !important; padding: 16px 0 0 !important; }
+  .mi .m-reg__title { font-size: 21px !important; line-height: 1.05; }
+  .mi .m-reg__list .small { font-size: 14px; }
+
+  /* 08 Nested layers (v-aut-08-agency-a). */
+  .mi.m-nested { padding: 64px 24px !important; }
+  .mi .m-nested__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 24px !important; }
+  .mi .m-nested__wrap > * { flex: none !important; margin-top: 0 !important; }
+  .mi .m-nested__diagram { --nest: 14px; --nest-pad: 16px; }
+  .mi .m-nested__diagram div { margin-top: 16px; }
+  .mi .m-nested__diagram > div { margin-top: 0; }
+  .mi .m-nested__t { font-size: 22px !important; line-height: 1.05; }
+  .mi .m-nested__diagram .small { font-size: 14px; }
+
+  /* 09 Automated and human (v-aut-09-why-c). */
+  .mi .m-autohuman__row { margin-top: 0 !important; flex-direction: column; flex-wrap: nowrap !important; }
+  .mi .m-autohuman__auto, .mi .m-autohuman__human { flex: none !important; padding: 24px 22px !important; }
+  .mi .m-autohuman__human { gap: 20px !important; }
+  .mi.m-autohuman .h4 { font-size: 19px; }
+  .mi .m-autohuman__auto ul { margin-top: 14px !important; }
+  .mi .m-autohuman__item { font-size: 22px !important; line-height: 1.05; padding: 12px 0 !important; }
+  .mi .m-autohuman__stat { font-size: 40px !important; }
+  .mi .m-autohuman__human .small { font-size: 14px; }
+
+  /* 10 What we watch (v-aut-10-evidence-c). */
+  .mi.m-watchbig > .wrap { gap: 22px !important; }
+  .mi.m-watchbig .h4 { font-size: 19px; }
+  .mi .m-watchbig__list { margin-top: 0 !important; }
+  .mi .m-watchbig__item { font-size: 30px !important; line-height: 1.05 !important; letter-spacing: -0.045em !important; padding: 14px 0 !important; gap: 14px !important; }
+  .mi .m-watchbig__box { width: 20px !important; height: 20px !important; box-sizing: border-box; }
+  .mi.m-watchbig .small { font-size: 14px; }
+  .mi .m-watchbig__ctas { flex-direction: column; align-items: flex-start !important; gap: 18px !important; }
+  .mi .m-watchbig__ctas .link { font-size: 17px; min-height: 44px; display: inline-flex; align-items: center; }
+
+  /* 11 Included and not (v-aut-11-faq-b). */
+  .mi.m-incl .lead { font-size: 18px; }
+  .mi .m-incl__row { margin-top: 0 !important; flex-direction: column; flex-wrap: nowrap !important; }
+  .mi .m-incl__in, .mi .m-incl__out { flex: none !important; padding: 22px 20px 24px !important; }
+  .mi.m-incl .h4 { font-size: 19px; padding-bottom: 10px !important; }
+  .mi .m-incl__row li { gap: 12px !important; padding: 12px 0 !important; }
+  .mi .m-incl__row li span[aria-hidden] { width: 14px !important; height: 14px !important; box-sizing: border-box; }
+  .mi .m-incl__item { font-size: 18px !important; line-height: 1.05; }
+  .mi .m-incl__out .body { font-size: 16px; }
+
+  /* 12 Closing band (v-aut-12-cta-a). */
+  .mi .m-band__photo { height: 240px !important; }
+  .mi .m-band__body { padding: 48px 24px 64px !important; }
+  .mi .m-band__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 22px !important; }
+  .mi .m-band__wrap > * { flex: none !important; }
+  .mi .m-band__h { font-size: 44px !important; line-height: 0.95 !important; }
+  .mi .m-band__side { gap: 22px !important; }
+  .mi.m-band .m-secondary { font-size: 14px; }
+}
+
+/* ---- 5-Star Review System and Capture Every Lead: phone layouts (mobile boards m-rev-*, m-cel-*). ---- */
+@media (max-width: 767px) {
+  .mi.m-herostat .stack-sm, .mi.m-herosq .stack-sm { align-items: flex-start !important; }
+  /* Phone gap for the new one-column sections (inline desktop gaps are larger). */
+  .mi.m-tilegrid > .wrap, .mi.m-barlist > .wrap, .mi.m-monthrows > .wrap, .mi.m-ranked > .wrap, .mi.m-statcells > .wrap, .mi.m-yearbars > .wrap, .mi.m-colpair > .wrap, .mi.m-faqstat > .wrap, .mi.m-darktiles > .wrap, .mi.m-barswide > .wrap, .mi.m-multi > .wrap, .mi.m-minbar > .wrap, .mi.m-bigsplit > .wrap, .mi.m-leadtable > .wrap, .mi.m-funnel > .wrap, .mi.m-faqstats > .wrap { gap: 28px !important; align-items: stretch !important; }
+
+  /* 01 Hero beside a stat panel (rev-01-hero-a). */
+  .mi.m-herostat { padding: 0 !important; }
+  .mi .m-herostat__wrap { flex-direction: column !important; flex-wrap: nowrap !important; gap: 0 !important; }
+  .mi .m-herostat__wrap > * { flex: none !important; }
+  .mi .m-herostat__wrap > div:first-child { padding: 40px 24px 40px; gap: 22px !important; }
+  .mi .m-herostat__h { font-size: 44px; line-height: 1; letter-spacing: -0.04em; }
+  .mi .m-herostat__panel { padding: 40px 24px 44px !important; gap: 24px !important; }
+  .mi .m-herostat__stars svg { width: 36px !important; height: 36px !important; }
+  .mi .m-herostat__stat { font-size: 112px !important; }
+  .mi.m-herostat .h3 { font-size: 22px; margin-top: 14px !important; }
+  .mi .m-herostat__panel .body { font-size: 16px; margin-top: 10px !important; }
+
+  /* 02 Tile grid (rev-02-intro-c). */
+  .mi .m-tilegrid__grid { grid-template-columns: 1fr !important; }
+  .mi .m-tilegrid__tile { min-height: 0 !important; padding: 22px 20px !important; gap: 8px !important; justify-content: flex-start !important; }
+  .mi .m-tilegrid__tile .h3 { font-size: 22px; }
+  .mi .m-tilegrid__tile .body { font-size: 16px; }
+
+  /* Labelled bars (rev-03-recency-a, rev-06-replies-a). */
+  .mi .m-barlist__bars { gap: 24px !important; }
+  .mi.m-barlist .body { font-size: 16px; }
+  .mi .m-barlist__value { font-size: 32px !important; }
+  .mi .m-barlist__track { height: 28px !important; margin-top: 8px !important; }
+
+  /* Rows of months (rev-03-recency-c). */
+  .mi .m-mrows { display: grid !important; gap: 22px; }
+  .mi .m-mrows__label { font-size: 18px; margin-bottom: 8px; }
+  .mi .m-mrows__cells { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 3px; }
+  .mi .m-mrows__cells span { display: block; height: 40px; }
+  .mi .m-mrows__months { display: flex; justify-content: space-between; }
+  .mi .m-mrows__months span { font-size: 12px; line-height: 1.5; color: #5b554b; }
+
+  /* Ranked list (rev-04-volume-c). */
+  .mi.m-ranked ol { border-bottom: 2px solid #121212; }
+  .mi .m-ranked__row { grid-template-columns: 28px 1fr 56px !important; gap: 12px !important; padding: 14px 10px !important; }
+  .mi .m-ranked__n { font-size: 22px !important; }
+  .mi.m-ranked .h4 { font-size: 17px; line-height: 1.2; }
+  .mi .m-ranked__v { font-size: 24px !important; }
+
+  /* Big stats in cells (rev-05-ask-a). */
+  .mi .m-statcells__grid { grid-template-columns: 1fr !important; border: 0 !important; padding-top: 2px; }
+  .mi .m-statcells__cell { border: 2px solid #121212 !important; margin-top: -2px; padding: 24px 22px !important; }
+  .mi .m-statcells__v { font-size: 80px !important; }
+  .mi.m-statcells .h4 { font-size: 18px; line-height: 1.25; margin-top: 12px !important; }
+
+  /* Big stat beside a square grid, dark (rev-05-ask-c). */
+  .mi.m-statwaffle { padding: 64px 24px !important; }
+  .mi .m-statwaffle__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 28px !important; }
+  .mi .m-statwaffle__wrap > * { flex: none !important; }
+  .mi .m-statwaffle__stat { font-size: 120px !important; letter-spacing: -0.06em; }
+  .mi .m-statwaffle__h { font-size: 30px; line-height: 1.08; letter-spacing: -0.03em; }
+  .mi .m-statwaffle__grid { gap: 4px !important; }
+  .mi.m-statwaffle .small { margin-top: 14px !important; }
+
+  /* Two compact lists (rev-08-agency-b, cel-08-agency-b). */
+  .mi.m-tlc { flex-direction: column; }
+  .mi.m-tlc > div { flex: none !important; gap: 20px !important; }
+  .mi .m-tlc__left { padding: 56px 24px 44px !important; }
+  .mi .m-tlc__right { padding: 44px 24px 56px !important; }
+  .mi .m-tlc__list { margin-top: 0 !important; border-bottom: 2px solid #121212; }
+  .mi .m-tlc__item { font-family: "MI Archivo", Arial, sans-serif; font-weight: 700; font-size: 30px !important; line-height: 1; letter-spacing: -0.035em; padding: 12px 0 !important; }
+  .mi .m-tlc__cta, .mi .m-tlc__note { margin-top: 0 !important; }
+
+  /* Year-on-year bars (rev-09-why-a). */
+  .mi.m-yearbars .wrap > div:last-child { gap: 30px !important; }
+  .mi.m-yearbars .h4 { font-size: 18px; }
+  .mi .m-yearbars__row { grid-template-columns: 44px 1fr 52px !important; gap: 10px !important; }
+  .mi .m-yearbars__row > div { height: 26px !important; }
+  .mi .m-yearbars__row .stat { font-size: 22px !important; text-align: right; }
+
+  /* Two columns (rev-10-ai-a). */
+  .mi .m-colpair__chart { height: 300px !important; gap: 20px !important; }
+  .mi .m-colpair__v { font-size: 48px !important; }
+  .mi .m-colpair__chart > div > div { margin-top: 10px !important; }
+
+  /* Questions beside a stat panel (rev-11-faq-b). */
+  .mi .m-faqstat__grid { grid-template-columns: 1fr !important; border-top: 0 !important; gap: 28px !important; }
+  .mi .m-faqstat__grid > div:last-child { border-top: 2px solid #121212; }
+  .mi .m-faqstat__panel { padding: 28px 22px !important; gap: 16px !important; }
+  .mi .m-faqstat__panel .h3 { font-size: 22px; }
+  .mi .m-faqstat__v { font-size: 80px !important; }
+  .mi .m-faqstat__panel .body { font-size: 16px; }
+  .mi .m-faqstat__q summary { padding: 16px 0 !important; gap: 12px !important; }
+  .mi .m-faqstat__q summary .h4 { font-size: 18px; line-height: 1.25; }
+  .mi .m-faqstat__plus { font-size: 26px !important; }
+  .mi .m-faqstat__q > p { padding: 0 0 16px !important; }
+
+  /* Closing with stars (rev-12-cta-b). */
+  .mi.m-closestars { padding: 72px 24px !important; }
+  .mi .m-closestars__stars { gap: 8px !important; }
+  .mi .m-closestars__stars svg { width: 40px !important; height: 40px !important; }
+  .mi .m-closestars__h { font-size: 46px !important; line-height: 0.94 !important; margin-top: 28px !important; }
+  .mi.m-closestars .stack-sm { margin-top: 28px !important; gap: 28px !important; align-items: flex-start !important; }
+
+  /* 01 Hero beside a square grid (cel-01-hero-a). */
+  .mi.m-herosq { padding: 40px 24px 64px !important; }
+  .mi .m-herosq__wrap { flex-direction: column !important; flex-wrap: nowrap !important; align-items: stretch !important; gap: 22px !important; }
+  .mi .m-herosq__wrap > * { flex: none !important; }
+  .mi .m-herosq__wrap > div:first-child { gap: 22px !important; }
+  .mi .m-herosq__h { font-size: 44px; line-height: 1; letter-spacing: -0.04em; }
+  .mi.m-herosq figure { margin-top: 16px !important; gap: 14px !important; }
+  .mi .m-herosq__grid { gap: 4px !important; }
+  .mi.m-herosq figcaption { display: block !important; }
+  .mi .m-herosq__v { display: block; font-size: 48px !important; }
+  .mi.m-herosq figcaption .body { display: block; margin-top: 6px; }
+
+  /* Tiles on dark (cel-02-intro-b). */
+  .mi .m-darktiles__grid { grid-template-columns: 1fr !important; padding: 1px 0 0 !important; }
+  .mi .m-darktiles__tile { padding: 22px 20px !important; margin: -1px 0 0 !important; }
+  .mi .m-darktiles__t { font-size: 34px !important; }
+  .mi .m-darktiles__tile .small { font-size: 15px; margin-top: 6px !important; }
+
+  /* Full-width bars (cel-03-calls-b). */
+  .mi.m-barswide .wrap > div[role="img"] { gap: 24px !important; }
+  .mi.m-barswide .body { font-size: 16px; }
+  .mi .m-barswide__v { font-size: 40px !important; }
+  .mi .m-barswide__track { height: 32px !important; margin-top: 8px !important; }
+
+  /* Two giant numbers (cel-04-speed-a). */
+  .mi .m-multi__grid { grid-template-columns: 1fr !important; }
+  .mi .m-multi__cell { padding: 24px 0 !important; border-right: 0 !important; }
+  .mi .m-multi__cell:first-child { border-bottom: 2px solid #121212; }
+  .mi .m-multi__v { font-size: 112px !important; }
+  .mi.m-multi .h4 { font-size: 18px; margin-top: 12px !important; }
+
+  /* Minute timeline (cel-04-speed-b). */
+  .mi .m-minbar__chart { height: 80px !important; margin-top: 8px !important; }
+  .mi .m-minbar__chart > div { top: 20px !important; height: 14px !important; }
+  .mi .m-minbar__chart > span:not(.m-minbar__tick) { height: 50px !important; }
+  .mi .m-minbar__tick.mi-m { top: 56px; font-size: 12px; }
+  .mi .m-minbar__points { gap: 24px !important; grid-template-columns: 1fr !important; }
+  .mi .m-minbar__t { font-size: 36px !important; }
+  .mi .m-minbar__points .body { margin-top: 6px !important; }
+
+  /* Giant stat beside the heading (cel-05-texts-a). */
+  .mi .m-bigsplit__stat { font-size: 136px !important; }
+  .mi .m-bigsplit__label { font-size: 22px; }
+  .mi.m-sec .m-bigsplit__label { margin-top: -12px !important; }
+  .mi.m-sec .m-bigsplit__src { margin-top: -18px !important; }
+  .mi.m-sec .m-bigsplit__h { border-top: 2px solid #121212; padding-top: 24px; }
+
+  /* Table of leads (cel-06-oneplace-b). */
+  .mi .m-leadtable__box { padding: 4px 18px 16px !important; }
+  .mi .m-leadtable__list { display: block !important; }
+  .mi .m-leadtable__item { padding: 14px 0; display: grid; grid-template-columns: 72px 1fr; gap: 4px 12px; }
+  .mi .m-leadtable__item + .m-leadtable__item { border-top: 1px solid #E7DFD0; }
+  .mi .m-leadtable__type { font-size: 16px; font-weight: 600; }
+  .mi .m-leadtable__what { font-size: 16px; }
+  .mi .m-leadtable__src { grid-column: 2; font-size: 14px; color: #5b554b; }
+  .mi.m-leadtable .tiny { margin-top: 8px !important; }
+
+  /* Steps that shrink (cel-09-why-b). */
+  .mi.m-funnel ol { gap: 22px !important; }
+  .mi .m-funnel__row { display: block !important; }
+  .mi .m-funnel__row > span:first-child { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .mi .m-funnel__v { display: inline !important; font-size: 32px !important; }
+  .mi .m-funnel__row .small { font-size: 14px; text-align: right; }
+  .mi .m-funnel__track { margin-top: 8px; height: 30px !important; }
+
+  /* Two stats, then questions (cel-11-faq-c). */
+  .mi .m-faqstats__grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+  .mi .m-faqstats__grid > div { padding-top: 20px !important; }
+  .mi .m-faqstats__v { font-size: 72px !important; }
+  .mi.m-faqstats details { padding: 12px 0 !important; }
+  .mi.m-faqstats summary { font-size: 18px; line-height: 1.25; }
+
+  /* Closing with a lead line (cel-12-cta-b). */
+  .mi.m-closelead { padding: 72px 24px !important; }
+  .mi .m-closelead__h { font-size: 48px !important; line-height: 0.94 !important; }
+  .mi.m-closelead .stack-sm { margin-top: 28px !important; gap: 28px !important; align-items: flex-start !important; }
+  .mi.m-closelead .lead { font-size: 17px; }
+  .mi.m-closelead .m-secondary { margin-top: 28px !important; }
+}

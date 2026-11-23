@@ -1,0 +1,16 @@
+---
+// 12 Closing call to action on yellow under five stars (canvas: rev-12-cta-b).
+import Cta from "./Cta.astro";
+import Stars from "./Stars.astro";
+const { starsDescription, heading, cta, secondaryPrompt, secondaryLink } = Astro.props;
+---
+<section class="mi m-closestars" style="padding: 104px 24px; background: #FFB612">
+  <div class="wrap">
+    <Stars size={56} gap={10} color="#121212" label={starsDescription} class="m-closestars__stars" />
+    <h2 class="stat m-closestars__h" style="margin-top: 32px; font-size: clamp(56px, 8vw, 116px); line-height: 0.92; letter-spacing: -0.05em; max-width: 1200px">{heading}</h2>
+    <div class="stack-sm" style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 24px 48px; align-items: center; justify-content: space-between">
+      <Cta cta={cta} variant="btn-ink" />
+      {secondaryPrompt && <p class="small m-secondary">{secondaryPrompt} {secondaryLink?.link && <a href={secondaryLink.link} style="color: inherit; font-weight: 600">{secondaryLink.label}</a>}</p>}
+    </div>
+  </div>
+</section>

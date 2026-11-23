@@ -8,6 +8,7 @@ import PageHeader from "@/partials/PageHeader.astro";
 import Faqs from "@/partials/Faqs.astro";
 import ServiceBlocks from "@/components/services/ServiceBlocks.astro";
 import ServiceCTA from "@/components/services/ServiceCTA.astro";
+import ServiceRelatedFeatures from "@/components/services/ServiceRelatedFeatures.astro";
 
 export async function getStaticPaths() {
   const slugs = await getServicePageSlugs();
@@ -23,6 +24,7 @@ if (!service) return Astro.redirect("/404");
 const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const { title, description, faqs_list, blocks = [], faq_title_prefix, faqsUi } = service;
+const relatedFeatures = (service.relatedFeatures ?? []).filter((f: { slug?: string }) => f?.slug);
 const hasLeadHero = blocks.some((block: { _type: string }) => block._type === "leadCapture");
 const ctaProps = {
   title: service.cta_title,
@@ -37,6 +39,8 @@ const ctaProps = {
   {!hasLeadHero && <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />}
 
   <ServiceBlocks blocks={blocks} locale={settings.locale} />
+
+  {relatedFeatures.length > 0 && <ServiceRelatedFeatures title={service.relatedFeaturesTitle} items={relatedFeatures} />}
 
   {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: (faq_title_prefix ?? "").replace("{title}", title ?? "") }} prefix="service-faq" ui={faqsUi} />}
 

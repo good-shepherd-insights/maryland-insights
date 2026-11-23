@@ -1,0 +1,21 @@
+---
+// 05 Things watched on every site (canvas: wv-05-security-c).
+import Cta from "./Cta.astro";
+const { heading, items = [], cta } = Astro.props;
+---
+<section class="mi m-watch" style="padding: 96px 24px">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 720px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <ul class="m-watch__list" style="margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); column-gap: 32px">
+      {items.map((it: { title: string; detail: string }) => (
+        <li class="m-watch__item" style="padding: 32px 28px; border-top: 2px solid #121212; display: flex; flex-direction: column; gap: 10px">
+          <span aria-hidden="true" class="m-watch__dot" style="width: 18px; height: 18px; background: #FFB612"></span>
+          <span class="m-watch__text" style="display: flex; flex-direction: column; gap: 10px"><span class="stat m-watch__title" style="font-size: 40px">{it.title}</span><span class="small muted">{it.detail}</span></span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

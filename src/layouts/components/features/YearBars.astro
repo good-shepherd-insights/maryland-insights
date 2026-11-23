@@ -1,0 +1,32 @@
+---
+// Intro beside before-and-after bars (canvas: rev-09-why-a).
+import Cta from "./Cta.astro";
+import { tone } from "./tones";
+const { heading, body, cta, groups = [], source } = Astro.props;
+---
+<section class="mi m-sec m-yearbars" style="padding: 96px 24px">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 56px 80px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="h2">{heading}</h2>
+      <p class="body muted">{body}</p>
+      <div class="m-last"><Cta cta={cta} /></div>
+    </div>
+    <div style="flex: 1.2 1 500px; display: grid; gap: 40px">
+      {groups.map((g: { title: string; rows: { label: string; value: string; percent: number; tone?: string }[] }) => (
+        <div>
+          <p class="h4">{g.title}</p>
+          <div style="margin-top: 14px; display: grid; gap: 8px">
+            {(g.rows ?? []).map((r, i) => (
+              <div class="m-yearbars__row" style="display: grid; grid-template-columns: 64px 1fr 64px; gap: 12px; align-items: center">
+                <span class={i === (g.rows ?? []).length - 1 ? "small" : "small muted"} style={i === (g.rows ?? []).length - 1 ? "font-weight: 600" : ""}>{r.label}</span>
+                <div style="height: 28px; background: #E7DFD0"><div style={`height: 100%; width: ${r.percent}%; background: ${tone(r.tone)}`}></div></div>
+                <span class="stat" style="font-size: 24px">{r.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+      <p class="tiny muted">{source}</p>
+    </div>
+  </div>
+</section>

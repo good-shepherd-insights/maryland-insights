@@ -1,0 +1,32 @@
+---
+// Checklist beside the service-area map (canvas: v-ls-07-included-a).
+import Cta from "./Cta.astro";
+import { SERVICE_AREA_VIEWBOX, SERVICE_AREA_INNER, SERVICE_AREA_LEGEND_INNER } from "@/lib/features/geo/serviceAreaMap";
+import { SERVICE_AREA_MOBILE_VIEWBOX, SERVICE_AREA_MOBILE_INNER } from "@/lib/features/geo/serviceAreaMapMobile";
+const { heading, items = [], mapLabel = "", legend, mapDescription, cta } = Astro.props;
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const inner = SERVICE_AREA_INNER.replace("{{LABEL}}", esc(mapLabel));
+const innerMobile = SERVICE_AREA_MOBILE_INNER.replace("{{LABEL}}", esc(mapLabel));
+---
+<section class="mi m-checklist" style="padding: 88px 24px">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 28px">
+      <h2 class="h2 m-o1">{heading}</h2>
+      <ul aria-label={heading} class="m-o2 m-checklist__list" style="border-bottom: 2px solid #121212">
+        {items.map((item: string, i: number) => (
+          <li class="h4" style={`padding: 14px 0; border-top: 2px solid #121212; display: flex; align-items: center; gap: 12px; color: ${i === 0 ? "#121212" : "#8A8173"}`}>
+            <span aria-hidden="true" style={`flex: 0 0 14px; height: 14px; background: ${i === 0 ? "#FFB612" : "transparent"}`}></span>{item}
+          </li>
+        ))}
+      </ul>
+      <div class="m-o5"><Cta cta={cta} /></div>
+    </div>
+    <div class="m-o4" style="flex: 1.7 1 600px; min-width: 0">
+      <svg role="img" aria-label={mapDescription} class="mi-d" viewBox={SERVICE_AREA_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={inner} />
+      <svg role="img" aria-label={mapDescription} class="mi-m" viewBox={SERVICE_AREA_MOBILE_VIEWBOX} style="width: 100%; height: auto" set:html={innerMobile} />
+      <p class="small m-checklist__legend" style="margin-top: 14px; display: flex; align-items: center; gap: 10px">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" style="flex: 0 0 18px" set:html={SERVICE_AREA_LEGEND_INNER} />{legend}
+      </p>
+    </div>
+  </div>
+</section>

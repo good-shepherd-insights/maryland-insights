@@ -1,0 +1,16 @@
+---
+// 10 Big number beside the 24-county map, on light (canvas: wv-10-evidence-c).
+import Cta from "./Cta.astro";
+import { COUNTY_FILL_VIEWBOX, COUNTY_FILL_INNER } from "@/lib/features/geo/countyFillMap";
+const { stat, heading, mapDescription, cta } = Astro.props;
+---
+<section class="mi m-cml" style="padding: 96px 24px; background: #F6F0E5">
+  <div class="wrap m-cml__wrap" style="display: flex; flex-wrap: wrap; gap: 48px 72px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 20px">
+      <p class="stat m-o1 m-cml__stat" style="font-size: clamp(120px, 14vw, 200px); line-height: 0.85">{stat}</p>
+      <h2 class="h3 m-o2">{heading}</h2>
+      <div class="m-o4" style="margin-top: 8px"><Cta cta={cta} /></div>
+    </div>
+    <figure class="m-o3 m-cml__map" style="flex: 1.7 1 640px; margin: 0; min-width: 0"><svg role="img" aria-label={mapDescription} viewBox={COUNTY_FILL_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={COUNTY_FILL_INNER} /></figure>
+  </div>
+</section>

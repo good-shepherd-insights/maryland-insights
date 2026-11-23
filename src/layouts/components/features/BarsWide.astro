@@ -1,0 +1,24 @@
+---
+// Full-width labelled bars under a heading row (canvas: cel-03-calls-b).
+import Cta from "./Cta.astro";
+import { tone } from "./tones";
+const { heading, cta, body, bars = [], chartDescription, source } = Astro.props;
+---
+<section class="mi m-sec m-barswide" style="padding: 96px 24px; background: #FDFBF7">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 720px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <p class="body muted" style="margin-top: 20px; max-width: 640px">{body}</p>
+    <div role="img" aria-label={chartDescription} style="margin-top: 48px; display: grid; gap: 32px">
+      {bars.map((b: { label: string; value: string; percent: number; tone?: string }) => (
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px"><p class="body" style="font-weight: 600">{b.label}</p><p class="stat m-barswide__v" style="font-size: 56px">{b.value}</p></div>
+          <div class="m-barswide__track" style="margin-top: 10px; height: 44px; background: #F6F0E5"><div style={`height: 100%; width: ${b.percent}%; background: ${tone(b.tone)}`}></div></div>
+        </div>
+      ))}
+    </div>
+    <div style="margin-top: 32px"><p class="tiny muted">{source}</p></div>
+  </div>
+</section>

@@ -1,0 +1,44 @@
+---
+// 06 Big stat beside a JSON-LD sample (canvas: wv-06-content-ai-b).
+import Cta from "./Cta.astro";
+const { stat, statLabel, source, body, code, codeDescription, cta } = Astro.props;
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const hi = (s: string) => `<span style="color: #FFB612">${esc(JSON.stringify(s))}</span>`;
+let data: any = null;
+try { data = JSON.parse(code ?? ""); } catch { data = null; }
+// Desktop keeps short arrays inline; the phone breaks arrays and long values onto their own lines.
+function render(v: any, ind: string, key: string | null, phone: boolean): string {
+  if (Array.isArray(v)) {
+    const items = v.map((x) => (typeof x === "string" ? hi(x) : render(x, ind + "  ", null, phone)));
+    return phone ? "[\n" + items.map((x) => ind + "  " + x).join(",\n") + "\n" + ind + "]" : "[" + items.join(", ") + "]";
+  }
+  if (v && typeof v === "object") {
+    const lines = Object.entries(v).map(([k, x]) => {
+      const head = ind + "  " + esc(JSON.stringify(k)) + ":";
+      if (typeof x === "string") {
+        const val = k === "@type" ? esc(JSON.stringify(x)) : hi(x);
+        return phone && x.length > 22 ? head + "\n" + ind + "    " + val : head + " " + val;
+      }
+      return head + " " + render(x, ind + "  ", k, phone);
+    });
+    return "&#123;\n" + lines.join(",\n") + "\n" + ind + "&#125;";
+  }
+  return esc(JSON.stringify(v));
+}
+const desktop = data ? render(data, "", null, false) : esc(code ?? "");
+const phone = data ? render(data, "", null, true) : esc(code ?? "");
+const pre = "margin: 0; background: #1E1E1E; border: 1px solid rgba(245,245,245,0.2); color: #D9D0C0; white-space: pre-wrap;";
+---
+<section class="mi on-dark m-statcode" style="background: #121212; padding: 96px 24px">
+  <div class="wrap m-statcode__wrap" style="display: flex; flex-wrap: wrap; gap: 56px 72px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 20px">
+      <p class="stat m-o1 m-statcode__stat" style="font-size: clamp(96px, 10vw, 152px); line-height: 0.88; color: #FFB612">{stat}</p>
+      <p class="h3 m-o2">{statLabel}</p>
+      <p class="tiny muted m-o3">{source}</p>
+      <p class="body muted m-o4" style="margin-top: 12px">{body}</p>
+      <div class="m-o6" style="margin-top: 8px"><Cta cta={cta} /></div>
+    </div>
+    <pre aria-label={codeDescription} class="mi-d" style={`flex: 1 1 480px; padding: 32px; font: 15px/1.7 ui-monospace, Menlo, monospace; overflow: hidden; ${pre}`} set:html={desktop} />
+    <pre aria-label={codeDescription} class="mi-m m-o5" style={`margin-top: 8px; padding: 18px 16px; font: 13px/1.65 ui-monospace, Menlo, monospace; word-break: break-word; ${pre}`} set:html={phone} />
+  </div>
+</section>

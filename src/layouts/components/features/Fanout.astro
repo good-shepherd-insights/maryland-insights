@@ -1,0 +1,46 @@
+---
+// One record feeding every surface (canvas: v-ls-06-record-a).
+import Cta from "./Cta.astro";
+const { heading, sourceTitle, sourceDetail, targets = [], chartDescription, cta } = Astro.props;
+const n = Math.max(targets.length, 1);
+---
+<section class="mi m-sec m-fanout" style="padding: 96px 24px">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 720px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-d" style="margin-top: 56px; overflow-x: auto">
+      <div style="min-width: 960px">
+        <div style="background: #121212; color: #F5F5F5; padding: 28px 32px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px">
+          <p class="stat" style="font-size: 48px; color: #FFB612">{sourceTitle}</p>
+          <p class="body" style="color: rgba(245,245,245,0.75)">{sourceDetail}</p>
+        </div>
+        <span aria-hidden="true" style="display: block; margin: 0 auto; width: 2px; height: 32px; background: #121212"></span>
+        <div style="position: relative">
+          <span aria-hidden="true" style={`position: absolute; top: 0; left: calc(100% / ${n * 2}); right: calc(100% / ${n * 2}); height: 2px; background: #121212`}></span>
+          <ul style={`display: grid; grid-template-columns: repeat(${n}, minmax(0, 1fr)); gap: 12px`}>
+            {targets.map((t: string) => (
+              <li style="display: flex; flex-direction: column; align-items: stretch">
+                <span aria-hidden="true" style="align-self: center; width: 2px; height: 48px; background: #121212"></span>
+                <span class="h4" style="border: 2px solid #121212; background: #FDFBF7; padding: 18px 16px; min-height: 120px; display: flex; align-items: flex-end">{t}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-m m-fan">
+      <div class="m-fan__source">
+        <p class="stat m-fan__title">{sourceTitle}</p>
+        <p class="body m-fan__detail">{sourceDetail}</p>
+      </div>
+      <ul class="m-fan__list">
+        <span aria-hidden="true" class="m-fan__rail"></span>
+        {targets.map((t: string) => (
+          <li><span aria-hidden="true" class="m-fan__tick"></span><span class="h4 m-fan__box">{t}</span></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>

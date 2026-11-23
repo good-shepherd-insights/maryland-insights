@@ -1,0 +1,20 @@
+---
+// 01 Hero: headline column beside a photo (canvas: v-aut-01-hero-a).
+import Cta from "./Cta.astro";
+import { FEATURE_PHOTOS } from "./photos";
+const { eyebrow, heading, lead, cta, secondaryCta, photo, imageAlt } = Astro.props;
+---
+<section class="mi m-split" style="display: flex; flex-wrap: wrap; min-height: 780px; border-bottom: 2px solid #121212">
+  <div class="m-split__text" style="flex: 1 1 520px; padding: 88px 56px 64px; display: flex; flex-direction: column; justify-content: space-between; gap: 56px">
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="stat m-split__h1" style="font-size: clamp(50px, 6.2vw, 92px); line-height: 0.92; letter-spacing: -0.055em">{heading}</h1>
+    <div class="m-split__foot" style="display: flex; flex-direction: column; gap: 28px; border-top: 2px solid #121212; padding-top: 28px">
+      <p class="lead muted" style="max-width: 470px">{lead}</p>
+      <div class="stack-sm" style="display: flex; flex-wrap: wrap; gap: 12px">
+        <Cta cta={cta} variant="btn-y" />
+        <Cta cta={secondaryCta} variant="btn-ghost" />
+      </div>
+    </div>
+  </div>
+  <img src={FEATURE_PHOTOS[photo]} alt={imageAlt} class="m-split__photo" style="flex: 1.25 1 560px; min-width: 0; min-height: 440px; width: 100%; object-fit: cover; object-position: 80% 50%; display: block" />
+</section>

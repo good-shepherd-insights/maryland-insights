@@ -1,0 +1,19 @@
+---
+// Big number beside Maryland's 24 counties pulled apart (canvas: v-ls-10-evidence-a).
+import Cta from "./Cta.astro";
+import { COUNTIES_APART_VIEWBOX, COUNTIES_APART_INNER } from "@/lib/features/geo/countiesApart";
+const { stat, heading, note, mapDescription, cta } = Astro.props;
+---
+<section class="mi m-countycount" style="padding: 88px 24px; background: #F6F0E5">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 320px; display: flex; flex-direction: column; gap: 20px">
+      <p class="stat m-o1 m-countycount__stat" style="font-size: clamp(140px, 16vw, 230px); line-height: 0.8; letter-spacing: -0.06em">{stat}</p>
+      <h2 class="h3 m-o2">{heading}</h2>
+      <p class="small muted m-o3">{note}</p>
+      <div class="m-o5"><Cta cta={cta} /></div>
+    </div>
+    <div class="m-o4 m-countycount__map" style="flex: 2 1 620px; min-width: 0">
+      <svg role="img" aria-label={mapDescription} viewBox={COUNTIES_APART_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={COUNTIES_APART_INNER} />
+    </div>
+  </div>
+</section>

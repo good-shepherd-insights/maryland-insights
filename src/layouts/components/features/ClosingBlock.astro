@@ -1,0 +1,14 @@
+---
+// 12 Closing call to action in a full yellow block (canvas: wv-12-cta-b).
+import Cta from "./Cta.astro";
+const { heading, cta, secondaryPrompt, secondaryLink } = Astro.props;
+---
+<section class="mi m-closeblock" style="background: #FFB612; padding: 112px 24px; min-height: 780px; display: flex; align-items: center">
+  <div class="wrap" style="width: 100%">
+    <h2 class="stat m-closeblock__h" style="font-size: clamp(64px, 8.6vw, 128px); line-height: 0.9; letter-spacing: -0.05em; max-width: 1180px">{heading}</h2>
+    <div class="stack-sm m-closeblock__row" style="margin-top: 56px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; border-top: 2px solid #121212; padding-top: 32px">
+      <Cta cta={cta} variant="btn-ink" />
+      {secondaryPrompt && <p class="small m-secondary">{secondaryPrompt} {secondaryLink?.link && <a href={secondaryLink.link} style="color: #121212; font-weight: 600">{secondaryLink.label}</a>}</p>}
+    </div>
+  </div>
+</section>

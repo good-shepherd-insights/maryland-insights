@@ -1,0 +1,23 @@
+---
+// 01 Hero: photo clipped to Maryland's counties (canvas: v-ls-01-hero-a).
+import Cta from "./Cta.astro";
+import { HERO_MAP_VIEWBOX, HERO_MAP_INNER } from "@/lib/features/geo/heroMap";
+const { eyebrow, heading, lead, cta, secondaryCta, imageAlt } = Astro.props;
+const inner = HERO_MAP_INNER.replace("{{IMAGE}}", "/images/features/maryland-main-street.webp");
+---
+<section class="mi m-heromap" style="padding: 88px 24px 96px; background: #FDFBF7">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 48px 56px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 28px">
+      {eyebrow && <p class="eyebrow m-o1">{eyebrow}</p>}
+      <h1 class="d1 m-o2">{heading}</h1>
+      <p class="lead muted m-o3">{lead}</p>
+      <div class="stack-sm m-o5" style="display: flex; flex-wrap: wrap; gap: 12px">
+        <Cta cta={cta} variant="btn-y" />
+        <Cta cta={secondaryCta} variant="btn-ghost" />
+      </div>
+    </div>
+    <div class="m-o4 m-heromap__map" style="flex: 1.7 1 560px; min-width: 0">
+      <svg role="img" aria-label={imageAlt} viewBox={HERO_MAP_VIEWBOX} style="display: block; width: 100%; height: auto" set:html={inner} />
+    </div>
+  </div>
+</section>

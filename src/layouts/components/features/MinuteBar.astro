@@ -1,0 +1,40 @@
+---
+// A 0-30 minute timeline with a marked point, then two named points (canvas: cel-04-speed-b).
+import Cta from "./Cta.astro";
+const { heading, cta, ticks = [], markPercent = 0, chartDescription, points = [], source } = Astro.props;
+const last = ticks.length - 1;
+const markIdx = Math.round((markPercent / 100) * last);
+const midIdx = Math.round(last / 2);
+const onPhone = (i: number) => i === 0 || i === last || i === markIdx || i === midIdx;
+const short = (t: string, i: number) => (i === last ? t : t.replace(/\s*min$/, ""));
+---
+<section class="mi m-sec m-minbar" style="padding: 96px 24px; background: #F6F0E5">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 680px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <div role="img" aria-label={chartDescription} class="m-minbar__chart" style="margin-top: 72px; position: relative; height: 96px">
+      <div style="position: absolute; left: 0; right: 0; top: 24px; height: 16px; background: #E7DFD0"></div>
+      <div style={`position: absolute; left: 0; width: ${markPercent}%; top: 24px; height: 16px; background: #FFB612`}></div>
+      <span style={`position: absolute; left: ${markPercent}%; top: 0; width: 2px; height: 56px; background: #121212`}></span>
+      <span style="position: absolute; right: 0; top: 0; width: 2px; height: 56px; background: #121212"></span>
+      {ticks.map((t: string, i: number) => {
+        const pos = i === 0 ? "left: 0" : i === last ? "right: 0" : `left: ${(i / last) * 100}%; transform: translateX(-50%)`;
+        const posM = i === 0 ? "left: 0" : i === last ? "left: 100%; transform: translateX(-100%)" : `left: ${(i / last) * 100}%; transform: translateX(-50%)`;
+        return (
+          <>
+            <span class="tiny muted m-minbar__tick mi-d" style={`position: absolute; ${pos}; top: 64px; white-space: nowrap`}>{t}</span>
+            {onPhone(i) && <span class="tiny muted m-minbar__tick mi-m" style={`position: absolute; ${posM}; white-space: nowrap`}>{short(t, i)}</span>}
+          </>
+        );
+      })}
+    </div>
+    <div class="m-minbar__points" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px">
+      {points.map((p: { title: string; body: string; muted?: boolean }) => (
+        <div><p class="stat m-minbar__t" style={`font-size: 44px${p.muted ? "; color: #8A8173" : ""}`}>{p.title}</p><p class={p.muted ? "body muted" : "body"} style="margin-top: 8px">{p.body}</p></div>
+      ))}
+    </div>
+    <div style="margin-top: 32px"><p class="tiny muted">{source}</p></div>
+  </div>
+</section>

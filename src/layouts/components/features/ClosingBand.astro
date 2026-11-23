@@ -1,0 +1,19 @@
+---
+// 12 Closing call to action under a photo, on dark (canvas: v-aut-12-cta-a).
+import Cta from "./Cta.astro";
+import { FEATURE_PHOTOS } from "./photos";
+const { heading, body, cta, secondaryPrompt, secondaryLink, photo, imageAlt } = Astro.props;
+---
+<section class="mi on-dark m-band" style="background: #121212">
+  <img src={FEATURE_PHOTOS[photo]} alt={imageAlt} class="m-band__photo" style="display: block; width: 100%; height: clamp(260px, 32vw, 460px); object-fit: cover; object-position: 50% 55%" />
+  <div class="m-band__body" style="padding: 72px 24px 88px">
+    <div class="wrap m-band__wrap" style="display: flex; flex-wrap: wrap; gap: 40px 72px; align-items: flex-end; justify-content: space-between">
+      <h2 class="stat m-band__h" style="flex: 1 1 620px; font-size: clamp(48px, 6vw, 88px); line-height: 0.92; letter-spacing: -0.05em">{heading}</h2>
+      <div class="m-band__side" style="flex: 0 1 380px; display: flex; flex-direction: column; gap: 22px">
+        <p class="body muted">{body}</p>
+        <div><Cta cta={cta} /></div>
+        {secondaryPrompt && <div style="color: rgba(245,245,245,0.75)"><p class="small m-secondary">{secondaryPrompt} {secondaryLink?.link && <a href={secondaryLink.link} style="color: inherit; font-weight: 600">{secondaryLink.label}</a>}</p></div>}
+      </div>
+    </div>
+  </div>
+</section>

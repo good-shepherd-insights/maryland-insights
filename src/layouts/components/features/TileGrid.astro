@@ -1,0 +1,26 @@
+---
+// Intro beside a 2x2 grid of tiles (canvas: rev-02-intro-c).
+import Cta from "./Cta.astro";
+import { tone } from "./tones";
+const { heading, body, cta, tiles = [] } = Astro.props;
+---
+<section class="mi m-sec m-tilegrid" style="padding: 96px 24px; background: #F6F0E5">
+  <div class="wrap" style="display: flex; flex-wrap: wrap; gap: 48px 72px; align-items: center">
+    <div class="m-contents" style="flex: 1 1 360px; display: flex; flex-direction: column; gap: 24px">
+      <h2 class="h2">{heading}</h2>
+      <p class="body muted">{body}</p>
+      <div class="m-last"><Cta cta={cta} /></div>
+    </div>
+    <div class="m-tilegrid__grid" style="flex: 1.4 1 560px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 2px 0 0 2px">
+      {tiles.map((t: { title: string; body: string; tone?: string }) => {
+        const bg = tone(t.tone);
+        const fg = t.tone === "dark" ? "#F5F5F5" : "#121212";
+        return (
+          <div class="m-tilegrid__tile" style={`background: ${bg}; color: ${fg}; padding: 36px 32px; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; border: 2px solid #121212; margin: -2px 0 0 -2px`}>
+            <h3 class="h3">{t.title}</h3><p class="body" style={`color: ${fg}`}>{t.body}</p>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

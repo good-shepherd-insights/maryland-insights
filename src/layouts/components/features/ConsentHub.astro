@@ -1,0 +1,52 @@
+---
+// 06 One consent record connected both ways to every system (canvas: v-aut-06-consent-a).
+import Cta from "./Cta.astro";
+const { heading, hubTitle, hubDetail, leftItems = [], rightItems = [], note, chartDescription, cta } = Astro.props;
+const rows = Math.max(leftItems.length, 3);
+const rightRows = rightItems.length === 2 ? [1, 3] : rightItems.map((_: string, i: number) => i + 1);
+const box = "border: 2px solid #121212; background: #FDFBF7; padding: 20px; display: flex; align-items: center; min-height: 104px";
+const link = `<span style="flex: none; width: 10px; height: 10px; background: #121212"></span><span style="flex: 1; height: 2px; background: #121212"></span><span style="flex: none; width: 10px; height: 10px; background: #121212"></span>`;
+const vlink = `<span style="width: 10px; height: 10px; background: #121212"></span><span style="width: 2px; height: 14px; background: #121212"></span><span style="width: 10px; height: 10px; background: #121212"></span>`;
+---
+<section class="mi m-sec m-consent" style="padding: 96px 24px; background: #F6F0E5">
+  <div class="wrap">
+    <div class="m-contents" style="display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; align-items: flex-end">
+      <h2 class="h2" style="max-width: 760px">{heading}</h2>
+      <Cta cta={cta} class="m-last" />
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-d" style={`margin-top: 56px; display: grid; grid-template-columns: minmax(0, 1fr) clamp(24px, 5vw, 72px) minmax(0, 1.05fr) clamp(24px, 5vw, 72px) minmax(0, 1fr); grid-template-rows: repeat(${rows}, minmax(104px, auto)); row-gap: 16px`}>
+      <div style={`grid-column: 3; grid-row: 1 / ${rows + 1}; background: #FFB612; border: 2px solid #121212; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px`}>
+        <p class="stat" style="font-size: clamp(30px, 3.6vw, 52px); line-height: 0.95">{hubTitle}</p>
+        <p class="body">{hubDetail}</p>
+      </div>
+      {leftItems.map((t: string, i: number) => (
+        <>
+          <div style={`grid-column: 1; grid-row: ${i + 1}; ${box}`}><p class="stat" style="font-size: clamp(18px, 1.8vw, 24px)">{t}</p></div>
+          <span aria-hidden="true" style={`grid-column: 2; grid-row: ${i + 1}; align-self: center; display: flex; align-items: center`} set:html={link} />
+        </>
+      ))}
+      {rightItems.map((t: string, i: number) => (
+        <>
+          <div style={`grid-column: 5; grid-row: ${rightRows[i]}; ${box}`}><p class="stat" style="font-size: clamp(18px, 1.8vw, 24px)">{t}</p></div>
+          <span aria-hidden="true" style={`grid-column: 4; grid-row: ${rightRows[i]}; align-self: center; display: flex; align-items: center`} set:html={link} />
+        </>
+      ))}
+    </div>
+    <div role="img" aria-label={chartDescription} class="mi-m m-consent__m">
+      {leftItems.map((t: string) => (
+        <>
+          <div style="border: 2px solid #121212; background: #FDFBF7; padding: 16px 18px"><p class="stat" style="font-size: 19px; line-height: 1.05">{t}</p></div>
+          <div aria-hidden="true" class="m-consent__vlink" set:html={vlink} />
+        </>
+      ))}
+      <div style="background: #FFB612; border: 2px solid #121212; padding: 22px; display: flex; flex-direction: column; gap: 14px"><p class="stat" style="font-size: 34px; line-height: 0.95">{hubTitle}</p><p class="body" style="font-size: 17px">{hubDetail}</p></div>
+      {rightItems.map((t: string) => (
+        <>
+          <div aria-hidden="true" class="m-consent__vlink" set:html={vlink} />
+          <div style="border: 2px solid #121212; background: #FDFBF7; padding: 16px 18px"><p class="stat" style="font-size: 19px; line-height: 1.05">{t}</p></div>
+        </>
+      ))}
+    </div>
+    <p class="h4 m-consent__note" style="margin-top: 32px; padding-top: 20px; border-top: 2px solid #121212">{note}</p>
+  </div>
+</section>
