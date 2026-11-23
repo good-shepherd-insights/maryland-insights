@@ -9,7 +9,7 @@
   "scripts": {
     "predev": "node scripts/syncCmsPublicFiles.mjs",
     "dev": "concurrently \"node scripts/themeGenerator.js --watch\" \"astro dev\"",
-    "prebuild": "node scripts/seo.mjs check && node scripts/syncCmsPublicFiles.mjs",
+    "prebuild": "node scripts/syncCmsPublicFiles.mjs",
     "build": "node scripts/themeGenerator.js && astro build",
     "preview": "astro preview",
     "check": "astro check",

@@ -11,14 +11,23 @@ import remarkToc from "remark-toc";
 import sharp from "sharp";
 import config from "./src/config/config.json";
 import frontman from "@frontman-ai/astro";
+import { existsSync } from "node:fs";
 import { createClient } from "@sanity/client";
-import { ALL_PAGES_QUERY, SITE_QUERY } from "./src/lib/seo/contract.mjs";
+import { ALL_QUERY } from "./src/lib/seo/contract.mjs";
 import { sitemapEntries } from "./src/lib/seo/graph.mjs";
+import { resolveAll } from "./src/lib/seo/resolve.mjs";
+import { formatProblems } from "./src/lib/seo/validate.mjs";
+
+// Share Sanity reads across pages, in a build only (see src/lib/sanity/client.ts).
+if (process.argv.includes("build")) globalThis.__sanityBuildReads = new Map();
 
 // Sitemap dates and noindex come from each page's `seo` object in Sanity.
 const sanity = createClient({ projectId: "089yj83f", dataset: "production", apiVersion: "2026-01-01", useCdn: false });
-const [seoPages, seoSite] = await Promise.all([sanity.fetch(ALL_PAGES_QUERY), sanity.fetch(SITE_QUERY)]);
-const seoEntries = sitemapEntries(seoPages, seoSite.seoUrl);
+const seoData = await sanity.fetch(ALL_QUERY);
+const seo = resolveAll(seoData, { fileExists: (p) => existsSync(new URL(`./public${p}`, import.meta.url)) });
+if (seo.stop.length) throw new Error(`Site-wide SEO problems:\n${formatProblems(seo.stop)}`);
+if (seo.report.length) console.warn(`Pages needing SEO attention (the build continues):\n${formatProblems(seo.report)}`);
+const seoEntries = sitemapEntries(seo.pages, seoData.site.seoUrl);
 const seoEntry = (url) => seoEntries.get(url.replace(/\/$/, ""));
 
 // https://astro.build/config
@@ -64,7 +73,7 @@ export default defineConfig({
         !page.includes("/start-for-free") &&
         !page.includes("/enterprise-support") &&
         !page.includes("/search") &&
-        !seoEntry(page)?.noindex,
+        !seoEntry(page)?.exclude,
       serialize: (item) => {
         const lastmod = seoEntry(item.url)?.lastmod;
         return lastmod ? { ...item, lastmod } : item;

@@ -1,200 +1,265 @@
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { JSON_LD_ITEMS, PAGE_FIELDS, ROUTES, SITE_FIELDS } from "../src/lib/seo/contract.mjs";
+import { imageAddress, parseImage, sanityUrl } from "../src/lib/images.mjs";
+import { DEFAULT_FIELDS, JSON_LD_ITEMS, PAGE_FIELDS, ROUTES, SITE_FIELDS, isRepeatable, overrideId } from "../src/lib/seo/contract.mjs";
 import { buildHead, serializeGraph, sitemapEntries } from "../src/lib/seo/graph.mjs";
 import { editorGuide } from "../src/lib/seo/guide.mjs";
-import { validateAll, validatePage, validateSite } from "../src/lib/seo/validate.mjs";
+import { clip, findFaqs, resolveAll } from "../src/lib/seo/resolve.mjs";
+import { keepVisibleFaqs } from "../src/lib/seo/visible.mjs";
 
 const today = "2026-11-23";
-const on = (type: string, extra = {}) => ({ _type: type, _key: type, enabled: true, ...extra });
-const site = (): any => ({
-  _id: "siteSettings", seoUrl: "https://site.test", socialLinks: ["https://x.com/site"],
-  business: { streetAddress: "1 Main St", addressLocality: "Lanham", addressRegion: "MD", postalCode: "20706", addressCountry: "US", telephone: "+1-240-555-0100" },
-  seo: {
-    robotsTxt: "User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: https://site.test/sitemap-index.xml\n",
-    notFoundTitle: "Page not found", notFoundDescription: "That page does not exist. Go back to the homepage to keep reading.",
-    organization: { type: "Organization", name: "Site", description: "A company that does a specific thing for specific people.", logo: "/logo.svg" },
-    website: { name: "Site", language: "en-US" },
+const item = (_type: string, rest = {}) => ({ _type, _key: _type, ...rest });
+const crumbs = (...p: [string, string][]) => item("schemaBreadcrumb", { parents: [["Home", "/"], ...p].map(([name, path]) => ({ _key: path, name, path })) });
+const entry = (docType: string, ...items: any[]) => ({ _key: docType, docType, title: "{title} | Site", description: "{description}", jsonLd: [item("schemaWebPage", { pageType: "WebPage" }), ...items] });
+const text = (s: string) => `${s} gives Maryland agencies a plain description that is long enough to use.`;
+const page = (_type: string, slug?: string, rest = {}): any => ({ _id: slug ? `${_type}-${slug}` : _type, _type, title: `Page ${slug ?? _type}`, description: text(slug ?? _type), ...(slug ? { slug: { current: slug } } : {}), ...rest });
+const faq = (q: string, a = "Because.") => ({ _type: "faqItem", question: q, answer: a });
+
+const world = (): any => ({
+  site: {
+    seoUrl: "https://site.test", socialLinks: ["https://x.com/site"],
+    business: { streetAddress: "1 Main St", addressLocality: "Lanham", addressRegion: "MD", postalCode: "20706", addressCountry: "US", telephone: "+1 (240) 555-0100" },
+    seo: {
+      _id: "seo-site", robotsTxt: "User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: https://site.test/sitemap-index.xml\n",
+      notFoundTitle: "Page not found", notFoundDescription: text("Nothing here"),
+      organization: { type: "Organization", name: "Site", description: text("Site"), logo: "/logo.svg", areaServed: [{ _key: "a", type: "State", name: "Maryland" }] },
+      website: { name: "Site", language: "en-US" },
+      defaults: Object.keys(ROUTES).map((t) => t === "home" ? entry(t, item("schemaFaq"))
+        : t === "servicePage" ? entry(t, crumbs(["Services", "/services"]), item("schemaService", { serviceType: "{title}" }), item("schemaFaq"))
+        : t === "blogPost" ? entry(t, crumbs(["Blog", "/blog"]), item("schemaArticle"), item("schemaFaq"))
+        : entry(t, crumbs(), item("schemaFaq"))),
+    },
   },
+  pages: Object.keys(ROUTES).map((t) => isRepeatable(t) ? page(t, `${t.toLowerCase()}-one`, t === "blogPost" ? { date: "2026-04-13", author: { name: "Site" }, image: "/images/p.png" } : {}) : page(t)),
+  overrides: [], faqDocs: [],
 });
-const service = (): any => ({
-  _id: "servicePage-a", _type: "servicePage", title: "A", slug: "a", faqs: [{ question: "Why?", answer: "Because." }],
-  seo: {
-    title: "A service for Maryland", description: "A plain description of the service that is long enough to pass.", dateModified: "2026-10-14",
-    jsonLd: [
-      on("schemaWebPage", { pageType: "WebPage" }),
-      on("schemaBreadcrumb", { items: [{ _key: "a", name: "Home", path: "/" }, { _key: "b", name: "A", path: "/services/a" }] }),
-      on("schemaService", { name: "Service A", serviceType: "Consulting", description: "A plain description of the service that is long enough to pass." }),
-      on("schemaFaq"),
-    ],
-  },
-});
-const post = (): any => ({
-  _id: "blogPost-p", _type: "blogPost", title: "P", slug: "p", datePublished: "2026-04-13", byline: "Jo Doe", faqs: [],
-  seo: {
-    title: "A post about something", description: "A different description that is also long enough to pass the rule.",
-    jsonLd: [
-      on("schemaWebPage", { pageType: "ItemPage" }),
-      on("schemaBreadcrumb", { items: [{ _key: "a", name: "Home", path: "/" }, { _key: "b", name: "P", path: "/blog/p" }] }),
-      on("schemaArticle", { headline: "A post about something", image: "/p.png", authorType: "Organization" }),
-    ],
-  },
-});
-const problems = (doc: any, change: (d: any) => void) => { change(doc); return validatePage(doc, { today, baseUrl: "https://site.test" }).map((p) => `${p.path} ${p.message}`).join("\n"); };
-const item = (d: any, type: string) => d.seo.jsonLd.find((i: any) => i._type === type);
+const run = (change: (w: any) => void = () => {}, options = {}) => { const w = world(); change(w); return { w, ...resolveAll(w, { today, ...options }) }; };
+const lines = (ps: any[]) => ps.map((p) => `${p.path} ${p.message}`).join("\n");
+const find = (r: any, id: string) => r.pages.find((p: any) => p.doc._id === id);
+const types = (r: any, id: string) => buildHead(find(r, id), r.w.site).graph.map((n: any) => n["@type"]);
+const svc = "servicePage-servicepage-one", post = "blogPost-blogpost-one";
+const override = (id: string, fields: any) => (w: any) => w.overrides.push({ _id: overrideId(id), _type: "pageSeo", page: {}, ...fields });
 
 describe("contract", () => {
   const walk = (fields: any, at: string): [string, any][] => Object.entries(fields).flatMap(([k, f]: any) => [[`${at}.${k}`, f], ...(f.fields ? walk(f.fields, `${at}.${k}`) : [])] as any);
-  const all = [...walk(PAGE_FIELDS, "page"), ...walk(SITE_FIELDS, "site"), ...Object.entries(JSON_LD_ITEMS).flatMap(([n, i]) => walk(i.fields, n))];
-
-  it.each(all)("%s explains itself to an editor", (_name, field) => {
-    expect(field.description.length).toBeGreaterThan(5);
-    expect(field.description).toMatch(/[.]$/);
-  });
-  it("docs/SEO.md is current (run npm run seo:docs)", () => {
-    expect(readFileSync(path.resolve(__dirname, "../docs/SEO.md"), "utf8")).toBe(editorGuide());
-  });
-  it("every page passes seoId or notFound to Base", () => {
+  it.each([...walk(PAGE_FIELDS, "override"), ...walk(SITE_FIELDS, "site"), ...walk(DEFAULT_FIELDS, "default"), ...Object.entries(JSON_LD_ITEMS).flatMap(([n, i]) => walk(i.fields, n))])("%s explains itself to an editor", (_n, f) => expect(f.description).toMatch(/.{5,}\.$/));
+  it("docs/SEO.md is current (run npm run seo:docs)", () => expect(readFileSync(path.resolve(__dirname, "../docs/SEO.md"), "utf8")).toBe(editorGuide()));
+  it("every page route is in ROUTES, and every entry has a page", () => {
     const dir = path.resolve(__dirname, "../src/pages");
-    const files = (readdirSync(dir, { recursive: true }) as string[]).filter((f) => f.endsWith(".astro"));
-    for (const f of files) {
-      const tag = readFileSync(path.join(dir, f), "utf8").match(/<Base\b[\s\S]*?\n?>\n/)?.[0];
-      if (tag) expect(tag, f).toMatch(/seoId=|notFound/);
+    const routes = new Set<string>();
+    for (const f of (readdirSync(dir, { recursive: true }) as string[]).filter((f) => f.endsWith(".astro"))) {
+      const src = readFileSync(path.join(dir, f), "utf8");
+      if (f === "404.astro") { expect(src).toMatch(/<Base\b[^>]*\bnotFound\b/); continue; }
+      if (!/<Base\b/.test(src)) { expect(src, `${f} must render Base or redirect`).toMatch(/Astro\.redirect\(/); continue; }
+      expect(src, `${f} must pass seoId`).toMatch(/<Base\b[^]*?seoId=/);
+      routes.add(`/${f.replace(/\.astro$/, "").replace(/(^|\/)index$/, "").replace(/\[\w+\]/, "{slug}")}`);
+    }
+    expect([...routes].sort()).toEqual(Object.values(ROUTES).sort());
+  });
+});
+
+describe("a new page needs no SEO work", () => {
+  it.each(Object.keys(ROUTES).filter(isRepeatable))("%s", (t) => {
+    const r = run((w) => w.pages.push(page(t, "brand-new", { faqs: [faq("New?")], ...(t === "blogPost" ? { date: "2026-11-01", image: "/images/n.png" } : {}) })));
+    expect(lines([...r.stop, ...r.report])).toBe("");
+    const p = find(r, `${t}-brand-new`), head = buildHead(p, r.w.site);
+    expect(head.title).toBe("Page brand-new | Site");
+    expect(head.noindex).toBe(false);
+    expect(head.canonical).toBe(`https://site.test${ROUTES[t as keyof typeof ROUTES].replace("{slug}", "brand-new")}`);
+    expect(head.graph.map((n: any) => n["@type"])).toEqual(expect.arrayContaining(["Organization", "WebSite", "WebPage", "BreadcrumbList", "FAQPage"]));
+    const trail = head.graph.find((n: any) => n["@type"] === "BreadcrumbList").itemListElement;
+    expect(trail.at(-1).item).toBe(head.canonical);
+  });
+  it("500 new pages at once, quickly", () => {
+    const start = performance.now();
+    const r = run((w) => { for (let i = 0; i < 500; i++) w.pages.push(page("servicePage", `s-${i}`, { faqs: [faq(`Q${i}?`)] })); });
+    for (const p of r.pages) buildHead(p, r.w.site);
+    expect(lines([...r.stop, ...r.report])).toBe("");
+    expect(r.pages.length).toBe(512);
+    expect(performance.now() - start).toBeLessThan(2000);
+  });
+  it("finds FAQs in a section design that does not exist yet, and in linked documents", () => {
+    expect(findFaqs({ a: [{ _type: "futureSection", deep: { list: [faq("A?")] } }, { _ref: "f1" }, { _ref: "f1" }] }, [{ _id: "f1", items: [faq("B?"), faq(" a? ")] }]).map((f: any) => f.question)).toEqual(["A?", "B?"]);
+  });
+});
+
+describe("one bad page never affects another", () => {
+  const bad: [string, any][] = [
+    ["no title", { title: undefined }], ["no description", { description: undefined }], ["no slug", { slug: undefined }], ["bad slug", { slug: { current: "a b/../c" } }],
+    ["title is an object", { title: { x: 1 } }], ["description is a list", { description: [1] }], ["placeholder title", { title: "TBD" }], ["null slug", { slug: null }],
+  ];
+  it.each(bad)("%s: kept out of search, reported, build continues", (_n, fields) => {
+    const r = run((w) => w.pages.push({ ...page("servicePage", "bad"), ...fields }));
+    expect(r.stop).toEqual([]);
+    expect(r.report.length).toBeGreaterThan(0);
+    const p = find(r, "servicePage-bad"), head = buildHead(p, r.w.site);
+    expect(head.noindex).toBe(true);
+    expect(head.graph).toEqual([]);
+    expect(typeof head.title).toBe("string");
+    if (p.route) expect(sitemapEntries(r.pages, "https://site.test").get(`https://site.test${p.route}`)!.exclude).toBe(true);
+    expect(types(r, svc)).toContain("Service");
+  });
+  it("odd values never throw", () => {
+    for (const junk of [null, 5, "x", [], {}, [[null]], { _type: "constructor" }]) {
+      const r = run((w) => { w.pages.push({ ...page("blogPost", "junk"), date: junk, author: junk, image: junk, faqs: junk, dateModified: junk, seo: junk }); override(svc, { jsonLd: junk, title: junk, noindex: junk, canonical: junk, dateModified: junk, bogus: junk })(w); w.overrides.push({ _id: "seo-x", jsonLd: [junk] }); });
+      expect(r.stop).toEqual([]);
+      for (const p of r.pages) buildHead(p, r.w.site);
     }
   });
 });
 
-describe("valid data", () => {
-  it("has no problems", () => {
-    expect(validatePage(service(), { today })).toEqual([]);
-    expect(validatePage(post(), { today })).toEqual([]);
-    expect(validateSite(site(), { today })).toEqual([]);
+describe("overrides", () => {
+  it("replace only what they set", () => {
+    const r = run(override(svc, { title: "A better title here", jsonLd: [item("schemaService", { serviceType: "Consulting" }), item("schemaFaq", { enabled: false })] }));
+    expect(lines(r.report)).toBe("");
+    const head = buildHead(find(r, svc), r.w.site);
+    expect(head.title).toBe("A better title here");
+    expect(head.description).toBe(text("servicepage-one"));
+    expect(head.graph.find((n: any) => n["@type"] === "Service")).toMatchObject({ serviceType: "Consulting", areaServed: [{ name: "Maryland" }], provider: { "@id": "https://site.test/#organization" } });
+  });
+  const cases: [string, any, RegExp][] = [
+    ["long description", { description: "x".repeat(161) }, /161 characters/], ["short description", { description: "Too short" }, /at least 50/],
+    ["HTML", { title: "A <b>bold</b> title" }, /not HTML/], ["Markdown", { title: "A **bold** title" }, /not Markdown/], ["placeholder", { title: "A title for [your company]" }, /placeholder/],
+    ["misspelled field", { descripton: "x" }, /descripton is not a known field/], ["wrong type", { noindex: "true" }, /on or off/],
+    ["impossible date", { dateModified: "2026-02-31" }, /real date/], ["future date", { dateModified: "2027-01-01" }, /future/],
+    ["http canonical", { canonical: "http://site.test/" }, /https/], ["foreign canonical", { canonical: "https://other.test/" }, /another site/],
+    ["own canonical", { canonical: "https://site.test/services/servicepage-one" }, /own address/], ["dead canonical", { canonical: "https://site.test/nope" }, /not the address/],
+    ["unknown item", { jsonLd: [item("schemaNope")] }, /unknown item type/], ["prototype item", { jsonLd: [item("constructor")] }, /unknown item type/],
+    ["repeated item", { jsonLd: [item("schemaFaq"), { ...item("schemaFaq"), _key: "b" }] }, /repeats schemaFaq/], ["WebPage off", { jsonLd: [item("schemaWebPage", { enabled: false })] }, /not a known field|cannot be switched off/],
+    ["bad option", { jsonLd: [item("schemaWebPage", { pageType: "Webpage" })] }, /must be one of/],
+    ["trail not from home", { jsonLd: [item("schemaBreadcrumb", { parents: [{ _key: "a", name: "X", path: "/services" }] })] }, /start at the homepage/],
+    ["trail to nowhere", { jsonLd: [item("schemaBreadcrumb", { parents: [{ _key: "h", name: "Home", path: "/" }, { _key: "a", name: "X", path: "/nope" }] })] }, /not a page/],
+    ["unknown token", { jsonLd: [item("schemaService", { serviceType: "{titel}" })] }, /uses \{titel\}/],
+    ["custom bad JSON", { jsonLd: [item("schemaCustom", { label: "Video", json: "{" })] }, /not valid JSON/],
+    ["custom ratings", { jsonLd: [item("schemaCustom", { label: "Video", json: '{"@type":"Product","aggregateRating":{}}' })] }, /aggregateRating/],
+    ["custom nested review", { jsonLd: [item("schemaCustom", { label: "Thing", json: '{"@type":"Thing","x":{"@type":["Review"]}}' })] }, /reviews or ratings/],
+    ["custom reserved", { jsonLd: [item("schemaCustom", { label: "Org", json: '{"@type":"Organization"}' })] }, /its own field/],
+    ["custom context", { jsonLd: [item("schemaCustom", { label: "Video", json: '{"@type":"VideoObject","x":[{"@context":"y"}]}' })] }, /@context/],
+  ];
+  it.each(cases)("reports and ignores: %s", (_n, fields, message) => {
+    const r = run(override(svc, fields));
+    expect(r.stop).toEqual([]);
+    expect(lines(r.report)).toMatch(message);
+    for (const p of r.report) expect(p.help.length).toBeGreaterThan(5);
+    const head = buildHead(find(r, svc), r.w.site);
+    expect(head.title).toBe("Page servicepage-one | Site");
+    expect(head.canonical).toBe("https://site.test/services/servicepage-one");
+    expect(head.noindex).toBe(fields.noindex === "true");
+    expect(head.graph.map((n: any) => n["@type"])).toEqual(expect.arrayContaining(["WebPage", "Service"]));
+  });
+  it("reports one that belongs to no page", () => expect(lines(run(override("gone", {})).report)).toMatch(/belongs to no published page/));
+  it("accepts ordinary wording", () => { for (const title of ["What Is Coming Soon to Maryland Business Law", "Guide to SEO [Updated] for Agencies", "Help for [Business Owners] in Maryland"]) expect(lines(run(override(svc, { title })).report)).toBe(""); });
+  it("adds schemaCustom and allows several", () => {
+    const c = (k: string) => ({ ...item("schemaCustom", { label: "Video", json: `{"@type":"VideoObject","name":"${k}"}` }), _key: k });
+    expect(types(run(override(svc, { jsonLd: [c("a"), c("b")] })), svc).filter((t: string) => t === "VideoObject").length).toBe(2);
   });
 });
 
-describe("page rules", () => {
-  const cases: [string, () => any, (d: any) => void, RegExp][] = [
-    ["missing seo", service, (d) => delete d.seo, /seo is required/],
-    ["missing title", service, (d) => delete d.seo.title, /title is required/],
-    ["long description", service, (d) => (d.seo.description = "x".repeat(161)), /161 characters/],
-    ["short description", service, (d) => (d.seo.description = "Too short"), /at least 50/],
-    ["HTML", service, (d) => (d.seo.title = "A <b>bold</b> title"), /not HTML/],
-    ["Markdown", service, (d) => (d.seo.title = "A **bold** title"), /not Markdown/],
-    ["placeholder", service, (d) => (d.seo.title = "A title for [your company]"), /placeholder/],
-    ["misspelled field", service, (d) => (d.seo.descripton = "x"), /descripton is not a known field/],
-    ["wrong type", service, (d) => (d.seo.noindex = "true"), /on or off/],
-    ["impossible date", service, (d) => (d.seo.dateModified = "2026-02-31"), /real date/],
-    ["future date", service, (d) => (d.seo.dateModified = "2027-01-01"), /future/],
-    ["http canonical", service, (d) => (d.seo.canonical = "http://site.test/"), /https/],
-    ["foreign canonical", service, (d) => (d.seo.canonical = "https://other.test/"), /another site/],
-    ["unknown item", service, (d) => d.seo.jsonLd.push({ _type: "schemaNope", _key: "n" }), /unknown item type/],
-    ["duplicate item", service, (d) => d.seo.jsonLd.push({ ...item(d, "schemaFaq"), _key: "z" }), /has 2 schemaFaq/],
-    ["duplicate key", service, (d) => (d.seo.jsonLd[1]._key = "schemaWebPage"), /unique _key/],
-    ["rich-text FAQ answer", service, (d) => (d.faqs[0].answer = { a: 1 }), /no question or answer/],
-    ["prototype item type", service, (d) => d.seo.jsonLd.push({ _type: "constructor", _key: "c" }), /unknown item type/],
-    ["own canonical", service, (d) => (d.seo.canonical = "https://site.test/services/a"), /own address/],
-    ["Service off", service, (d) => (item(d, "schemaService").enabled = false), /schemaService must stay on/],
-    ["date differs from page", service, (d) => (d.docModified = "2026-10-01"), /must match the "updated" date/],
-    ["future post", post, (d) => (d.datePublished = "2027-01-01"), /in the future/],
-    ["nested review type", post, (d) => d.seo.jsonLd.push(on("schemaCustom", { label: "Thing", json: '{"@type":"Thing","x":{"@type":["Review"]}}' })), /reviews or ratings/],
-    ["missing slug", service, (d) => (d.slug = null), /slug is required/],
-    ["no WebPage", service, (d) => d.seo.jsonLd.shift(), /needs a schemaWebPage/],
-    ["WebPage off", service, (d) => (item(d, "schemaWebPage").enabled = false), /must stay on/],
-    ["no Service", service, (d) => d.seo.jsonLd.splice(2, 1), /needs a schemaService/],
-    ["bad option", service, (d) => (item(d, "schemaWebPage").pageType = "Webpage"), /must be one of/],
-    ["trail not from home", service, (d) => (item(d, "schemaBreadcrumb").items[0].path = "/x"), /start at the homepage/],
-    ["trail to another page", service, (d) => (item(d, "schemaBreadcrumb").items[1].path = "/services/b"), /end at this page/],
-    ["FAQ without questions", service, (d) => (d.faqs = null), /shows no FAQ/],
-    ["FAQ with empty answer", service, (d) => (d.faqs[0].answer = " "), /no question or answer/],
-    ["person without name", post, (d) => (item(d, "schemaArticle").authorType = "Person"), /needs authorName/],
-    ["author differs from byline", post, (d) => Object.assign(item(d, "schemaArticle"), { authorType: "Person", authorName: "Al" }), /match the byline/],
-    ["post without date", post, (d) => delete d.datePublished, /publish date/],
-    ["modified before published", post, (d) => (d.seo.dateModified = "2026-01-01"), /before the publish date/],
-    ["custom bad JSON", post, (d) => d.seo.jsonLd.push(on("schemaCustom", { label: "Video", json: "{" })), /not valid JSON/],
-    ["custom ratings", post, (d) => d.seo.jsonLd.push(on("schemaCustom", { label: "Video", json: '{"@type":"Product","aggregateRating":{}}' })), /aggregateRating/],
-    ["custom reserved type", post, (d) => d.seo.jsonLd.push(on("schemaCustom", { label: "Org", json: '{"@type":"Organization"}' })), /its own field/],
-    ["custom nested context", post, (d) => d.seo.jsonLd.push(on("schemaCustom", { label: "Video", json: '{"@type":"VideoObject","x":[{"@context":"y"}]}' })), /@context/],
-  ];
-  it.each(cases)("rejects: %s", (_n, make, change, message) => expect(problems(make(), change)).toMatch(message));
-  it("does not reject legitimate text", () => {
-    for (const title of ["What Is Coming Soon to Maryland Business Law", "Guide to SEO [Updated] for Agencies"]) expect(problems(service(), (d) => (d.seo.title = title))).toBe("");
-    const d = service(); d.slug = "null-safety"; item(d, "schemaBreadcrumb").items[1].path = "/services/null-safety";
-    expect(validatePage(d, { today })).toEqual([]);
-    const s = site(); s.business.telephone = "+1 (240) 441-5259";
-    expect(validateSite(s, { today })).toEqual([]);
+describe("pages", () => {
+  const change = (id: string, fields: any) => (w: any) => Object.assign(w.pages.find((p: any) => p._id === id), fields);
+  it("post dates: the page's own date wins", () => {
+    const r = run((w) => { change(post, { dateModified: "2026-05-01" })(w); override(post, { dateModified: "2026-06-01" })(w); });
+    expect(lines(r.report)).toMatch(/differs from the date on the page/);
+    expect(buildHead(find(r, post), r.w.site).graph.find((n: any) => n["@type"] === "BlogPosting")).toMatchObject({ datePublished: "2026-04-13", dateModified: "2026-05-01" });
   });
-  it("allows a narrow query rule", () => {
-    const s = site(); s.seo.robotsTxt += "User-agent: somebot\nDisallow: /*?utm_\n";
-    expect(validateSite(s, { today })).toEqual([]);
+  it.each([["no date", { date: null }, /publish date/], ["future date", { date: "2027-01-01" }, /future/]])("post with %s has no article markup", (_n, f, m) => { const r = run(change(post, f)); expect(lines(r.report)).toMatch(m); expect(types(r, post)).not.toContain("BlogPosting"); });
+  it("byline decides the author", () => {
+    const author = (name?: string) => { const r = run(change(post, { author: name ? { name } : undefined })); return buildHead(find(r, post), r.w.site).graph.find((n: any) => n["@type"] === "BlogPosting").author; };
+    expect(author("Site ")).toEqual({ "@id": "https://site.test/#organization" });
+    expect(author()).toEqual({ "@id": "https://site.test/#organization" });
+    expect(author("Jo Doe")).toEqual({ "@type": "Person", name: "Jo Doe" });
   });
-  it("a robots mistake does not cost other pages their markup", () => {
-    const s = site(); s.seo.robotsTxt = "x";
-    expect(validateSite(s, { today, everything: false })).toEqual([]);
-    expect(validateSite(s, { today }).length).toBeGreaterThan(0);
+  it("reports repeated titles and addresses", () => {
+    const r = run((w) => w.pages.push({ ...page("servicePage", "servicepage-one"), _id: "servicePage-copy" }));
+    expect(lines(r.report)).toMatch(/same title/); expect(lines(r.report)).toMatch(/shares the address/);
   });
-  it("rejects a byline that is not the organization", () => {
-    expect(validatePage(post(), { today, orgName: "Site" }).map((p) => p.message).join()).toMatch(/use Person/);
+  it("reports an image file that does not exist and leaves it out", () => {
+    const r = run(() => {}, { fileExists: () => false });
+    expect(lines(r.report)).toMatch(/not in the site's files/);
+    expect(JSON.stringify(buildHead(find(r, post), r.w.site).graph)).not.toMatch(/p\.png/);
   });
-  it("a canonical must be a real page", () => {
-    const d = service(); d.seo.canonical = "https://site.test/nope";
-    expect(validatePage(d, { today, baseUrl: "https://site.test", paths: new Set(["/", "/services/a"]) }).map((p) => p.message).join()).toMatch(/not the address of a page/);
-  });
-  it("every problem says how to fix it", () => {
-    const d = service(); d.seo = { jsonLd: [{}] };
-    for (const p of validatePage(d, { today })) expect(p.help?.length).toBeGreaterThan(5);
+  it("shortens long text at a sentence or word", () => {
+    expect(clip("Short.")).toBe("Short.");
+    const s = `${"a".repeat(70)} one. ${"b".repeat(40)} two. ${"c".repeat(90)}`;
+    expect(clip(s)).toMatch(/two\.$/);
+    expect(clip("word ".repeat(80)).length).toBeLessThanOrEqual(160);
+    expect(clip("x".repeat(400)).length).toBeLessThanOrEqual(160);
   });
 });
 
-describe("site rules", () => {
-  const cases: [string, (s: any) => void, RegExp][] = [
-    ["crawl delay", (s) => (s.seo.robotsTxt += "Crawl-delay: 10\n"), /Crawl-delay/],
-    ["two wildcard groups", (s) => (s.seo.robotsTxt += "User-agent: *\nAllow: /\n"), /exactly one/],
-    ["query block", (s) => (s.seo.robotsTxt += "Disallow: /*?*\n"), /blocks images/],
-    ["blocks everyone", (s) => (s.seo.robotsTxt = "User-agent: *\nDisallow: /\nSitemap: https://site.test/sitemap-index.xml"), /blocks search engines/],
-    ["wildcard block", (s) => (s.seo.robotsTxt = s.seo.robotsTxt.replace("Allow: /", "Disallow: /*")), /blocks search engines/],
-    ["bare query block", (s) => (s.seo.robotsTxt += "Disallow: *?*\n"), /blocks images/],
-    ["star-slash block", (s) => (s.seo.robotsTxt = s.seo.robotsTxt.replace("Allow: /", "Disallow: */")), /blocks search engines/],
-    ["blocks Google", (s) => (s.seo.robotsTxt += "User-agent: Googlebot\nDisallow: /\n"), /blocks search engines/],
-    ["no sitemap", (s) => (s.seo.robotsTxt = "User-agent: *\nAllow: /\n"), /needs: Sitemap/],
-    ["bad phone", (s) => (s.business.telephone = "240-555"), /country code/],
-    ["bad profile", (s) => s.socialLinks.push("x.com/a"), /full https/],
-    ["no organization", (s) => delete s.seo.organization, /organization is required/],
+describe("site-wide data stops the build", () => {
+  const robots = (f: (s: string) => string) => (w: any) => (w.site.seo.robotsTxt = f(w.site.seo.robotsTxt));
+  const cases: [string, (w: any) => void, RegExp][] = [
+    ["no seo-site", (w) => (w.site.seo = null), /seo-site document is missing/], ["a type with no defaults", (w) => w.site.seo.defaults.shift(), /no entry for home/],
+    ["a type twice", (w) => w.site.seo.defaults.push({ ...w.site.seo.defaults[0], _key: "z" }), /appears twice/],
+    ["no WebPage", (w) => w.site.seo.defaults[0].jsonLd.shift(), /needs a schemaWebPage/],
+    ["same title for all", (w) => (w.site.seo.defaults.find((d: any) => d.docType === "servicePage").title = "Services by Site"), /must use \{title\}/],
+    ["unknown token", (w) => (w.site.seo.defaults[0].title = "{name} | Site"), /uses \{name\}/],
+    ["dead breadcrumb", (w) => (w.site.seo.defaults[1].jsonLd[1].parents.push({ _key: "q", name: "Q", path: "/q" })), /not a page/],
+    ["missing singleton", (w) => (w.pages = w.pages.filter((p: any) => p._id !== "home")), /home document is missing/],
+    ["bad phone", (w) => (w.site.business.telephone = "240-555"), /country code/], ["bad profile", (w) => w.site.socialLinks.push("x.com/a"), /full https/],
+    ["no organization", (w) => delete w.site.seo.organization, /organization is required/],
+    ["crawl delay", robots((s) => `${s}Crawl-delay: 10\n`), /Crawl-delay/], ["two wildcard groups", robots((s) => `${s}User-agent: *\nAllow: /\n`), /exactly one/],
+    ["query block", robots((s) => `${s}Disallow: /*?*\n`), /blocks images/], ["bare query block", robots((s) => `${s}Disallow: *?*\n`), /blocks images/],
+    ["blocks everyone", robots((s) => s.replace("Allow: /", "Disallow: /")), /blocks search engines/], ["wildcard block", robots((s) => s.replace("Allow: /", "Disallow: /*")), /blocks search engines/],
+    ["star-slash block", robots((s) => s.replace("Allow: /", "Disallow: */")), /blocks search engines/], ["blocks Google", robots((s) => `${s}User-agent: Googlebot\nDisallow: /\n`), /blocks search engines/],
+    ["no sitemap", robots(() => "User-agent: *\nAllow: /\n"), /needs: Sitemap/],
   ];
-  it.each(cases)("rejects: %s", (_n, change, message) => { const s = site(); change(s); expect(validateSite(s, { today }).map((p) => `${p.path} ${p.message}`).join("\n")).toMatch(message); });
-  it("rejects repeated titles and missing singletons", () => {
-    const a = service(), b = service(); b._id = "servicePage-b"; b.slug = "b";
-    const text = validateAll(site(), [a, b], { today }).map((p) => `${p.path} ${p.message}`).join("\n");
-    expect(text).toMatch(/seo.title is the same as servicePage-a/);
-    expect(text).toMatch(/home document is missing/);
-    expect(text).toMatch(/\/services\/b/);
-  });
+  it.each(cases)("%s", (_n, change, message) => { const r = run(change); expect(lines(r.stop)).toMatch(message); for (const p of r.stop) expect(p.help.length).toBeGreaterThan(5); });
+  it("valid data has no problems", () => { const r = run(); expect(lines([...r.stop, ...r.report])).toBe(""); });
+  it("allows a narrow query rule", () => expect(run(robots((s) => `${s}User-agent: somebot\nDisallow: /*?utm_\n`)).stop).toEqual([]));
 });
 
 describe("output", () => {
-  const head = (d: any) => buildHead(d, site(), { toText: (s: string) => s });
-  it("prints only Sanity values, linked together", () => {
-    const { graph, canonical } = head(service());
-    expect(canonical).toBe("https://site.test/services/a");
-    expect(graph.map((n: any) => n["@type"])).toEqual(["Organization", "WebSite", "WebPage", "BreadcrumbList", "Service", "FAQPage"]);
-    const ids = new Set(graph.map((n: any) => n["@id"]));
-    JSON.stringify(graph, (k, v) => { if (v && typeof v === "object" && Object.keys(v).length === 1 && v["@id"]) expect(ids.has(v["@id"])).toBe(true); return v; });
-  });
-  it("leaves out empty facts and switched-off items", () => {
-    const d = service(); item(d, "schemaFaq").enabled = false;
-    const { graph } = head(d);
-    expect(JSON.stringify(graph)).not.toMatch(/FAQPage|legalName|null/);
+  it("links its nodes together and prints no empty facts", () => {
+    const r = run();
+    for (const p of r.pages) {
+      const { graph } = buildHead(p, r.w.site), ids = new Set(graph.map((n: any) => n["@id"]));
+      JSON.stringify(graph, (_k, v) => { if (v && typeof v === "object" && Object.keys(v).length === 1 && v["@id"]) expect(ids.has(v["@id"])).toBe(true); return v; });
+      expect(JSON.stringify(graph)).not.toMatch(/legalName|null|undefined/);
+    }
   });
   it("cannot break out of the script tag and keeps values intact", () => {
     const out = serializeGraph([{ "@type": "Thing", name: "</script><!-- & \" '" }]);
     expect(out).not.toMatch(/<\/script|<!--/);
     expect(JSON.parse(out)["@graph"][0].name).toBe("</script><!-- & \" '");
   });
-  it("keeps noindex pages out of the sitemap and dates only known pages", () => {
-    const hidden = post(); hidden.seo.noindex = true;
-    const map = sitemapEntries([service(), hidden], "https://site.test");
-    expect(map.get("https://site.test/services/a")).toEqual({ noindex: false, lastmod: "2026-10-14" });
-    expect(map.get("https://site.test/blog/p")!.noindex).toBe(true);
+  it("sitemap: no noindex pages, real dates only", () => {
+    const map = sitemapEntries(run((w) => { override(svc, { noindex: true })(w); }).pages, "https://site.test");
+    expect(map.get("https://site.test/services/servicepage-one")!.exclude).toBe(true);
+    expect(map.get("https://site.test/blog/blogpost-one")).toEqual({ exclude: false, lastmod: "2026-04-13" });
+    expect(map.get("https://site.test/about")!.lastmod).toBeUndefined();
   });
-  it("covers every route type", () => expect(Object.keys(ROUTES).length).toBe(12));
+  const html = (main: string, qs: [string, string][]) => `<html><head><script type="application/ld+json">${serializeGraph([{ "@type": "WebPage" }, { "@type": "FAQPage", mainEntity: qs.map(([name, t]) => ({ "@type": "Question", name, acceptedAnswer: { "@type": "Answer", text: t } })) }])}</script></head><body><main id="m">${main}</main></body></html>`;
+  const left = (h: string) => JSON.parse(h.match(/ld\+json">(.*?)<\/script>/)![1])["@graph"];
+  it("drops FAQs visitors cannot see", () => {
+    const out = keepVisibleFaqs(html("<h3>Why &amp; how?</h3><p>It <b>is</b> &#39;so&#39;.</p><script>var s='Hidden? No.'</script><!-- Hidden? No. -->", [["Why & how?", "It is 'so'."], ["Hidden?", "No."]]), () => {});
+    expect(left(out)[1].mainEntity.map((q: any) => q.name)).toEqual(["Why & how?"]);
+  });
+  it("drops the whole block when none are visible, and changes nothing when all are", () => {
+    expect(left(keepVisibleFaqs(html("x", [["Hidden?", "No."]]), () => {})).map((n: any) => n["@type"])).toEqual(["WebPage"]);
+    const same = html("<p>Q one? A one.</p>", [["Q one?", "A one."]]);
+    expect(keepVisibleFaqs(same)).toBe(same);
+    expect(keepVisibleFaqs("<html></html>")).toBe("<html></html>");
+  });
+});
+
+describe("images", () => {
+  const ref = "image-f3f5fd78492462bfc46f31a0c0a3de59784d9b5f-1024x768-webp";
+  const url = "https://cdn.sanity.io/images/089yj83f/production/f3f5fd78492462bfc46f31a0c0a3de59784d9b5f-1024x768.webp";
+  it("accepts a Sanity image, its address, or a site path", () => {
+    expect(imageAddress({ _type: "image", asset: { _ref: ref } })).toBe(url);
+    expect(imageAddress(`${url}?w=200`)).toBe(url);
+    expect(imageAddress("/images/blog/a.webp")).toBe("/images/blog/a.webp");
+  });
+  it.each([undefined, null, "", "a.webp", "//evil.test/a.png", "/../secret", "javascript:alert(1)", "https://evil.test/a.png", url.replace("089yj83f", "other"), url.replace("https", "http"), {}, { asset: {} }, { asset: { _ref: "file-x" } }, 5, []])("rejects %j", (v) => expect(parseImage(v as any)).toBeUndefined());
+  it("resizes, honours crop and hotspot, and leaves SVG alone", () => {
+    const img = parseImage({ asset: { _ref: ref }, alt: " Alt ", crop: { left: 0.25, right: 0.25, top: 0, bottom: 0.5 }, hotspot: { x: 0.4, y: 0.6 } }) as any;
+    expect(img.alt).toBe("Alt");
+    const q = new URL(sanityUrl(img, { width: 600, height: 300 })).searchParams;
+    expect([q.get("rect"), q.get("w"), q.get("h"), q.get("fp-x"), q.get("auto")]).toEqual(["256,0,512,384", "600", "300", "0.4", "format"]);
+    const svg = parseImage({ asset: { _ref: "image-abc-10x10-svg" } }) as any;
+    expect(sanityUrl(svg, { width: 5, height: 5 })).toBe(svg.url);
+  });
 });
