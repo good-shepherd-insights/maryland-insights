@@ -1,7 +1,6 @@
 // Content too incomplete to render is left out and logged, so one bad document
-// never blocks a deploy. A code fault looks different: it breaks most uses of
-// the same block or page kind at once. That stops the build. Preview builds
-// stop on any broken content, so a pull request cannot hide a fault.
+// never blocks a deploy. A code fault looks different: it breaks every use of a
+// block or page kind. Pull request previews stop on that.
 
 /** Counts exist only during `astro build`. */
 export const startCounting = () => { globalThis.__contentCounts = { kinds: new Map(), pages: new Set() }; };
@@ -17,9 +16,9 @@ export function record(kind, ok, page) {
 export const isUnpublished = (path) => globalThis.__contentCounts?.pages.has(path.replace(/(.)\/$/, "$1")) ?? false;
 
 /** Why the build should stop, or undefined. */
-export function buildFault(counts, strict) {
-  const broken = [...(counts?.kinds ?? [])].filter(([, k]) => k.broken > 0);
-  if (strict && broken.length) return `Content that cannot render: ${broken.map(([n, k]) => `${n} (${k.broken})`).join(", ")}. Preview builds stop on this; production leaves it out. See the [content] lines above.`;
-  const faults = broken.filter(([, k]) => k.broken >= 3 && k.broken > k.ok);
-  return faults.length ? `Most uses of ${faults.map(([n, k]) => `${n} (${k.broken} of ${k.broken + k.ok})`).join(", ")} failed to render, which looks like a code fault. See the [content] lines above.` : undefined;
+export function buildFault(counts, preview) {
+  // Every use of something failing is a code fault. Production stops only when
+  // no page of a kind works; new content cannot cause that while others render.
+  const failed = [...(counts?.kinds ?? [])].filter(([name, k]) => k.ok === 0 && k.broken > 0 && (preview || (name.startsWith("page ") && k.broken >= 3)));
+  return failed.length ? `Nothing of this kind rendered: ${failed.map(([n, k]) => `${n} (${k.broken})`).join(", ")}. See the [content] lines above.` : undefined;
 }

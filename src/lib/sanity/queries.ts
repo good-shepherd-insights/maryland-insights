@@ -15,6 +15,10 @@ async function slugsOf(type: string): Promise<string[]> {
 async function idOf(type: string, slug: string): Promise<string | undefined> {
   return (await publishedPages()).find((r) => r._type === type && r.slug.current === slug)?._id;
 }
+/** The one document used for a fixed page, however many copies exist. */
+async function fixedId(type: string): Promise<string> {
+  return (await publishedPages()).find((r) => r._type === type)?._id ?? "";
+}
 const isText = (v: unknown): v is string => typeof v === "string" && v.trim() !== "";
 const isDay = (v: unknown) => isText(v) && !Number.isNaN(Date.parse(v));
 /** Lists of posts appear on other pages, so a half-filled post must be safe there. */
@@ -39,7 +43,7 @@ export async function getSiteSettings() {
 }
 
 export async function getHomePage() {
-  return sanityClient.fetch(`*[_type == "home"][0]{
+  return sanityClient.fetch(`*[_type == "home" && _id == $id][0]{
     ...,
     hero->,
     trustStrip->,
@@ -50,22 +54,22 @@ export async function getHomePage() {
     facts->,
     faq->,
     cta->
-  }`);
+  }`, { id: await fixedId("home") });
 }
 
 export async function getAboutPage() {
-  return sanityClient.fetch(`*[_type == "aboutPage"][0]{
+  return sanityClient.fetch(`*[_type == "aboutPage" && _id == $id][0]{
     ...,
     header->,
     narrative->,
     story->,
     facts->,
     cta->
-  }`);
+  }`, { id: await fixedId("aboutPage") });
 }
 
 export async function getContactPage() {
-  return sanityClient.fetch(`*[_type == "contactPage"][0]{
+  return sanityClient.fetch(`*[_type == "contactPage" && _id == $id][0]{
     ...,
     header->,
     info->,
@@ -73,30 +77,30 @@ export async function getContactPage() {
     form->,
     guidance->,
     cta->
-  }`);
+  }`, { id: await fixedId("contactPage") });
 }
 
 export async function getFaqsPage() {
-  return sanityClient.fetch(`*[_type == "faqsPage"][0]{
+  return sanityClient.fetch(`*[_type == "faqsPage" && _id == $id][0]{
     ...,
     header->,
     list->,
     support->,
     cta->
-  }`);
+  }`, { id: await fixedId("faqsPage") });
 }
 
 export async function getIntegrationsPage() {
-  return sanityClient.fetch(`*[_type == "integrationsPage"][0]{
+  return sanityClient.fetch(`*[_type == "integrationsPage" && _id == $id][0]{
     ...,
     header->,
     grid->{..., "integrations": integrations[]->},
     cta->
-  }`);
+  }`, { id: await fixedId("integrationsPage") });
 }
 
 export async function getToolsPage() {
-  return sanityClient.fetch(`*[_type == "toolsPage"][0]{
+  return sanityClient.fetch(`*[_type == "toolsPage" && _id == $id][0]{
     ...,
     header->,
     grid->{..., "tools": tools[]->{
@@ -105,11 +109,11 @@ export async function getToolsPage() {
       "logoAlt": logo.alt
     }},
     cta->
-  }`);
+  }`, { id: await fixedId("toolsPage") });
 }
 
 export async function getServicesPage() {
-  const page = await sanityClient.fetch(`*[_type == "servicesPage"][0]{
+  const page = await sanityClient.fetch(`*[_type == "servicesPage" && _id == $id][0]{
     ...,
     header->,
     grid->{..., "services": services[]->{
@@ -119,7 +123,7 @@ export async function getServicesPage() {
     }},
     useCases->,
     cta->
-  }`);
+  }`, { id: await fixedId("servicesPage") });
   if (!page?.grid) return page;
   const slugs = new Set(await slugsOf("servicePage"));
   const services = (page.grid.services ?? []).filter((x: any) => slugs.has(x?.slug) && isText(x.title)).map((x: any) => ({ ...x, description: isText(x.description) ? x.description : undefined }));
@@ -131,13 +135,14 @@ export async function getServicePageSlugs(): Promise<string[]> {
 }
 
 export async function getServicePage(slug: string) {
-  return sanityClient.fetch(
+  const page = await sanityClient.fetch(
     `*[_type == "servicePage" && _id == $id][0]{
       ...,
       blocks[]{
         ...,
         _type == "relatedArticles" => {
           "articles": articles[]->{
+            _id,
             title,
             description,
             "slug": slug.current,
@@ -146,6 +151,7 @@ export async function getServicePage(slug: string) {
         }
       },
       "relatedFeatures": relatedFeatures[]->{
+        _id,
         title,
         "slug": slug.current,
         "subtitle": *[_id == "homeFeatures"][0].features[title == ^.title][0].subtitle
@@ -153,10 +159,19 @@ export async function getServicePage(slug: string) {
     }`,
     { id: (await idOf("servicePage", slug)) ?? "" },
   );
+  if (!page) return page;
+  // Never link to something that is not published.
+  const ids = new Set((await publishedPages()).map((r) => r._id));
+  const live = (list: any) => (Array.isArray(list) ? list : []).filter((x: any) => x && ids.has(x._id) && isText(x.title));
+  return {
+    ...page,
+    relatedFeatures: live(page.relatedFeatures),
+    blocks: Array.isArray(page.blocks) ? page.blocks.map((b: any) => (b?._type === "relatedArticles" ? { ...b, articles: live(b.articles) } : b)) : page.blocks,
+  };
 }
 
 export async function getBlogPage() {
-  const page = await sanityClient.fetch(`*[_type == "blogPage"][0]{
+  const page = await sanityClient.fetch(`*[_type == "blogPage" && _id == $id][0]{
     ...,
     header->,
     guide->,
@@ -167,7 +182,7 @@ export async function getBlogPage() {
       author{name}
     },
     cta->
-  }`);
+  }`, { id: await fixedId("blogPage") });
   return page && { ...page, featuredPosts: await listable(page.featuredPosts) };
 }
 

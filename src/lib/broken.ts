@@ -1,11 +1,10 @@
 import { record } from "./brokenLimit.mjs";
 
-/** Anything a connection, Sanity or the file system caused is not a content fault. */
+/** Only errors that missing or misshapen values cause. Anything else, such as an outage, still fails the build. */
 export const isDataError = (error: any) =>
-  error instanceof Error &&
+  (error instanceof TypeError || error instanceof RangeError || /^Unable to render \S+ because it is (null|undefined)/.test(error?.message ?? "")) &&
   !("code" in error || "statusCode" in error || "response" in error || error.cause) &&
-  !/^(ClientError|ServerError|AbortError|TimeoutError)$/.test(error.name) &&
-  !/fetch failed|network|socket|timed? ?out|ECONN|ENOTFOUND|Sanity/i.test(error.message);
+  !/fetch|terminated|network|socket|timed? ?out|ECONN|EAI_|ENOTFOUND|abort/i.test(error.message);
 
 /** `kind` is a block type or a page pattern. */
 export const reportOk = (kind: string) => record(kind, true);

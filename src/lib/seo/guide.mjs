@@ -39,7 +39,7 @@ Publish it, then deploy. Nothing else is needed for ${repeatable.map((t) => `\`$
 | A page with a missing, invalid or already used address | It is not published. Fixed pages always keep theirs; otherwise the older page does |
 | A block too incomplete to render | It is left out. Others are unaffected |
 | A page too broken to render at all | Its address shows the not-found page, noindex, not in the sitemap |
-| Most uses of one block or page kind fail | The build stops, because that is a code fault. Preview builds stop on any broken content |
+| No page of one kind renders (three or more tried) | The build stops, because that is a code fault. Preview builds also stop when every use of a block fails |
 | A bad override or JSON-LD item | That value is skipped and the default is used. Others are unaffected |
 | An FAQ not shown on the page with its answer right after it | It is left out of the markup |
 

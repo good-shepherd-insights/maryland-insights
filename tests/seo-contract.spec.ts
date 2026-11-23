@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { isDataError } from "../src/lib/broken";
 import { buildFault } from "../src/lib/brokenLimit.mjs";
 import { imageAddress, parseImage, sanityUrl } from "../src/lib/images.mjs";
 import { DEFAULT_FIELDS, JSON_LD_ITEMS, PAGE_FIELDS, ROUTES, SITE_FIELDS, isRepeatable, overrideId } from "../src/lib/seo/contract.mjs";
@@ -310,8 +311,23 @@ describe("images", () => {
 });
 
 describe("broken content", () => {
-  const counts = (ok: number, broken: number) => ({ kinds: new Map([["block a", { ok, broken }], ["block b", { ok: 9, broken: 0 }]]), pages: new Set() });
-  it("a few bad documents never stop a production build", () => { for (const [ok, broken] of [[10, 1], [10, 9], [0, 2]]) expect(buildFault(counts(ok, broken), false)).toBeUndefined(); });
-  it("a block failing on most pages does", () => expect(buildFault(counts(1, 6), false)).toMatch(/block a \(6 of 7\).*code fault/));
-  it("previews stop on any", () => { expect(buildFault(counts(10, 1), true)).toMatch(/block a/); expect(buildFault(counts(10, 0), true)).toBeUndefined(); });
+  const counts = (name: string, ok: number, broken: number) => ({ kinds: new Map([[name, { ok, broken }], ["block b", { ok: 9, broken: 0 }]]), pages: new Set() });
+  it("bad documents never stop a production build while any page of the kind works", () => {
+    for (const c of [counts("block a", 1, 3), counts("block a", 0, 9), counts("page /x", 1, 50), counts("page /x", 0, 2)]) expect(buildFault(c, false)).toBeUndefined();
+  });
+  it("a whole kind of page failing does", () => expect(buildFault(counts("page /x", 0, 6), false)).toMatch(/page \/x \(6\)/));
+  it("previews stop when every use of a block fails, not when one does", () => { expect(buildFault(counts("block a", 0, 1), true)).toMatch(/block a/); expect(buildFault(counts("block a", 5, 1), true)).toBeUndefined(); });
+  it("outages are never treated as bad content", () => {
+    const e = (E: any, m: string, x = {}) => Object.assign(new E(m), x);
+    for (const err of [e(Error, "connect EAI_AGAIN"), e(TypeError, "terminated"), e(TypeError, "fetch failed"), e(Error, "Sanity is down"), e(TypeError, "x", { cause: new Error("y") }), e(TypeError, "x", { code: "ECONNRESET" }), "text", null]) expect(isDataError(err), String(err)).toBe(false);
+    for (const err of [e(TypeError, "Cannot read properties of null (reading 'map')"), e(RangeError, "Invalid time value"), e(Error, "Unable to render Heading because it is null!")]) expect(isDataError(err)).toBe(true);
+  });
+  it("a copy of a fixed page is never used, and every fixed page is fetched by the chosen id", () => {
+    const src = readFileSync(path.resolve(__dirname, "../src/lib/sanity/queries.ts"), "utf8");
+    for (const t of Object.keys(ROUTES).filter((t) => !isRepeatable(t))) {
+      const { routes, refused } = pickPages([{ _id: "0abc", _type: t, _createdAt: "2027" }, { _id: t, _type: t, _createdAt: "2026" }]);
+      expect([...routes.keys()]).toEqual([t]); expect(refused.length).toBe(1);
+      expect(src, t).toContain(`*[_type == "${t}" && _id == $id][0]`); expect(src, t).toContain(`fixedId("${t}")`);
+    }
+  });
 });
