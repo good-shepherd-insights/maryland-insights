@@ -5,6 +5,8 @@ import {
   getBlogPage,
   getBlogPosts,
   getContactPage,
+  getFeaturePage,
+  getFeaturePageSlugs,
   getFaqsPage,
   getIntegrationsPage,
   getLegalPage,
@@ -61,6 +63,7 @@ export const getOpenGraphPages = async (options?: {
     blogPosts,
     legalSlugs,
     serviceSlugs,
+    featureSlugs,
     siteSettings,
   ] = await Promise.all([
     getHomePage(),
@@ -74,6 +77,7 @@ export const getOpenGraphPages = async (options?: {
     getBlogPosts(),
     getLegalPageSlugs(),
     getServicePageSlugs(),
+    getFeaturePageSlugs(),
     getSiteSettings(),
   ]);
 
@@ -116,6 +120,11 @@ export const getOpenGraphPages = async (options?: {
   for (const slug of serviceSlugs) {
     const entry = await getServicePage(slug);
     if (entry) pages[`services/${slug}`] = toOpenGraphPage(siteSettings, entry);
+  }
+
+  for (const slug of featureSlugs) {
+    const entry = await getFeaturePage(slug);
+    if (entry) pages[`features/${slug}`] = toOpenGraphPage(siteSettings, entry);
   }
 
   return pages;
