@@ -19,53 +19,43 @@ const {
 } = Astro.props;
 
 const settings = (await getSiteSettings()) ?? {};
-const {
-  logo,
-  logo_width,
-  logo_height,
-  logo_text,
-  title,
-}: {
-  logo: string;
-  logo_width: any;
-  logo_height: any;
-  logo_text: string;
-  title: string;
-} = {
-  logo: settings.logo,
-  logo_width: settings.logoWidth,
-  logo_height: settings.logoHeight,
-  logo_text: settings.logoText,
-  title: settings.siteTitle,
-};
+const brand = String(settings.logoText || settings.siteTitle || "");
+const brandWords = brand.split(/\s+/).filter(Boolean);
+const logo = src || settings.logo;
+const logoHeight = String(settings.logoHeight ?? "").replace("px", "");
+
+// The mark is square; logoHeight from siteSettings drives its size.
+const iconSize = height ? height : Number(logoHeight);
 ---
 
-<a href={homeUrl ?? "/"} class={`navbar-brand inline-block flex items-center gap-2`}>
+<a href={homeUrl ?? "/"} class={`navbar-brand inline-flex items-center gap-2 ${className ? className : ""}`}>
   {
-    src || logo ? (
-      <>
-        <ImageMod
-          src={src ? src : logo}
-          class={`inline-block ${className ? className : ""}`}
-          width={width ? width * 2 : logo_width.replace("px", "") * 2}
-          height={height ? height * 2 : logo_height.replace("px", "") * 2}
-          alt={title}
-          style={
-            style
-              ? style
-              : {
-                  height:
-                    (height ? height : logo_height.replace("px", "")) + "px",
-                  width: (width ? width : logo_width.replace("px", "")) + "px",
-                }
-          }
-          format={(src || logo).endsWith(".svg") ? "svg" : "webp"}
-        />
-      </>
-    ) : logo_text ? (
-      logo_text
-    ) : (
-      title
-    )
+    logo ? (
+      <ImageMod
+        src={logo}
+        class="inline-block shrink-0"
+        width={iconSize * 2}
+        height={iconSize * 2}
+        alt={brand}
+        style={
+          style
+            ? style
+            : {
+                height: iconSize + "px",
+                width: iconSize + "px",
+              }
+        }
+        format={logo.endsWith(".svg") ? "svg" : "webp"}
+      />
+    ) : null
+  }
+  {
+    brandWords.length > 0 ? (
+      <span class="logo-wordmark text-text-dark text-[25px] font-semibold leading-[1.05] md:text-[29px]">
+        {brandWords.map((word: string, i: number) => (
+          <>{i > 0 && <br />}{word}</>
+        ))}
+      </span>
+    ) : null
   }
 </a>
