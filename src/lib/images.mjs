@@ -11,7 +11,8 @@ const FILE = /^([A-Za-z0-9]+)-(\d+)x(\d+)\.([a-z0-9]+)$/;
 export function parseImage(value) {
   if (typeof value === "string") {
     const v = value.trim();
-    if (/^\/(?!\/)[^?#\s]+$/.test(v) && !v.includes("..")) return { kind: "local", path: v };
+    if (v.length > 1000) return undefined;
+    if (/^\/(?!\/)[^?#\s\\]+$/.test(v) && !v.includes("..")) return { kind: "local", path: v };
     let url;
     try { url = new URL(v); } catch { return undefined; }
     const file = url.pathname.match(new RegExp(`^/images/${PROJECT}/${DATASET}/([^/]+)$`))?.[1];
@@ -22,10 +23,14 @@ export function parseImage(value) {
   const m = typeof value?.asset?._ref === "string" ? value.asset._ref.match(REF) : undefined;
   if (!m) return undefined;
   const [, id, w, h, ext] = m;
-  const width = +w, height = +h, query = {};
+  let width = +w, height = +h;
+  const query = {};
   const c = value.crop;
   if (c && [c.left, c.right, c.top, c.bottom].every((n) => typeof n === "number" && n >= 0 && n < 1) && c.left + c.right < 1 && c.top + c.bottom < 1) {
     query.rect = [c.left * width, c.top * height, (1 - c.left - c.right) * width, (1 - c.top - c.bottom) * height].map(Math.round).join(",");
+    // What is left after the crop, so nothing is enlarged.
+    width = Math.max(1, Math.round((1 - c.left - c.right) * width));
+    height = Math.max(1, Math.round((1 - c.top - c.bottom) * height));
   }
   const f = value.hotspot;
   if (f && [f.x, f.y].every((n) => typeof n === "number" && n >= 0 && n <= 1)) { query["fp-x"] = String(f.x); query["fp-y"] = String(f.y); query.crop = "focalpoint"; }

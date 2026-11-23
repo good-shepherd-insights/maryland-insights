@@ -20,9 +20,13 @@ Publish it, then deploy. Nothing else is needed for `servicePage`, `featurePage`
 | Problem | Result |
 |---|---|
 | Site-wide data (`seo-site`, business, social links) | The build stops. Pages rendered per request stay up with their own title and no JSON-LD |
-| A page with no usable title, description or slug | That page is noindex, has no JSON-LD and is not in the sitemap. Others are unaffected |
+| A page with no usable title or description | That page is noindex, has no JSON-LD and is not in the sitemap. Others are unaffected |
+| A page with a missing, invalid or already used address | It is not published. Fixed pages always keep theirs; otherwise the older page does |
+| A block too incomplete to render | It is left out. Others are unaffected |
+| A page too broken to render at all | Its address shows the not-found page, noindex, not in the sitemap |
+| Most uses of one block or page kind fail | The build stops, because that is a code fault. Preview builds stop on any broken content |
 | A bad override or JSON-LD item | That value is skipped and the default is used. Others are unaffected |
-| An FAQ not visible on the page | It is left out of the markup |
+| An FAQ not shown on the page with its answer right after it | It is left out of the markup |
 
 Every problem is listed in the build log and by `npm run seo:check`, with how to fix it.
 
@@ -144,7 +148,7 @@ Any other schema.org item, as JSON. Use only when no type above fits. Describe o
 |---|---|---|---|
 | `enabled` | boolean | optional | Off hides this item on this page. Leave empty for on. |
 | `label` | string | optional; 3 to 60 characters | What this is, for other editors. |
-| `json` | json | optional | One JSON object with an @type and no @context. No reviews or ratings of ourselves. Example: `{"@type":"VideoObject","name":"..."}` |
+| `json` | json | optional; up to 5000 characters | One JSON object with an @type and no @context. No reviews or ratings of ourselves. Example: `{"@type":"VideoObject","name":"..."}` |
 
 ## Adding a kind of page or item
 

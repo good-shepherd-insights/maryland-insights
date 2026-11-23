@@ -1,3 +1,5 @@
+import { buildHead } from "./graph.mjs";
+import { pickPages } from "./pages.mjs";
 import { JSON_LD_ITEMS, PAGE_FIELDS, ROUTES, overrideId, routeOf } from "./contract.mjs";
 import { imageAddress, parseImage } from "../images.mjs";
 import { PLACEHOLDER, checkField, checkItems, filled, isDate, isObject, norm, now, validateSite } from "./validate.mjs";
@@ -36,7 +38,8 @@ export function findFaqs(doc, faqDocs = []) {
 
 /** Own text of a page, as plain text. */
 function source(doc, toText) {
-  const text = (...values) => { const v = values.find(filled); return v ? toText(v).trim().replace(/\s+/g, " ") : undefined; };
+  // Only the start is ever used; cutting first keeps huge text cheap.
+  const text = (...values) => { const v = values.find(filled); return v ? toText(v.slice(0, 2000)).trim().replace(/\s+/g, " ") || undefined : undefined; };
   return {
     title: text(doc.title, doc.header_?.title, doc.hero_?.title),
     description: text(doc.description, doc.header_?.description, doc.hero_?.description),
@@ -55,7 +58,6 @@ export function resolvePage(doc, override, site, { faqDocs = [], paths, fileExis
   const problems = [];
   const report = (path, message, help) => problems.push({ path: `${doc._id}${path}`, message, help });
   const route = routeOf(doc);
-  if (!route) report(".slug", "is missing or is not a valid address", "Use lowercase words joined with hyphens.");
 
   // Keep only override values that pass their rules.
   const own = {};
@@ -80,7 +82,7 @@ export function resolvePage(doc, override, site, { faqDocs = [], paths, fileExis
     report(".image", `points to ${picture.path}, which is not in the site's files, so no image shows`, "Upload the image to Sanity and use the image field or its https://cdn.sanity.io address.");
     values.image = undefined;
   }
-  const usable = (v) => (filled(v) && !PLACEHOLDER.test(v) ? v : undefined);
+  const usable = (v) => (filled(v) && !PLACEHOLDER.test(v.slice(0, 500)) ? v : undefined);
   const title = own.title ?? usable(fill(defaults.title, values));
   const rawDescription = own.description ?? usable(fill(defaults.description, values));
   const description = rawDescription && (own.description ?? clip(rawDescription));
@@ -96,7 +98,7 @@ export function resolvePage(doc, override, site, { faqDocs = [], paths, fileExis
   }
 
   // Dates: what the page shows wins.
-  const published = day(doc.date);
+  const published = day(doc.date) ?? day(doc.datePublished);
   const shown = day(doc.dateModified) ?? day(doc.lastUpdated);
   let modified = shown ?? own.dateModified;
   if (shown && own.dateModified && shown !== own.dateModified) report(".dateModified", `override differs from the date on the page (${shown}); the page's date is used`, PAGE_FIELDS.dateModified.description);
@@ -136,6 +138,7 @@ export function resolvePage(doc, override, site, { faqDocs = [], paths, fileExis
     if (item._type === "schemaBreadcrumb") {
       const lost = item.parents.filter((c) => paths && !paths.has(c.path));
       if (lost.length) { skip(`links to ${lost.map((c) => c.path).join(", ")}, which is not a page`); continue; }
+      if (item.parents.some((c) => c.path === route)) { skip("lists this page as its own parent"); continue; }
       if (!item.parents.length) { skip("has no parent pages"); continue; }
       items.push({ ...item, parents: [...item.parents, { name: values.title ?? title, path: route }] });
     } else if (item._type === "schemaService") {
@@ -165,19 +168,37 @@ export function resolvePage(doc, override, site, { faqDocs = [], paths, fileExis
   };
 }
 
+/** One page, including its finished head. Never throws: a page that cannot be worked out is noindex. */
+export function resolveSafely(doc, override, site, options) {
+  try {
+    const page = { doc, ...resolvePage(doc, override, site, options) };
+    return { ...page, head: buildHead(page, site) };
+  } catch (error) {
+    const route = routeOf(doc);
+    const seo = { title: site.seo.website.name, noindex: true, items: [] };
+    return { doc, route, seo, incomplete: true, head: buildHead({ seo, route }, site), problems: [{ path: doc._id, message: `could not be read (${error.message}); kept out of search`, help: "Check this page's fields and its override." }] };
+  }
+}
+
 /** Everything. `stop` blocks a build; `report` lists pages that need attention. */
 export function resolveAll({ site, pages, overrides, faqDocs }, options = {}) {
   const stop = validateSite(site, options);
   if (stop.length) return { stop, report: [], pages: [] };
-  const paths = new Set(pages.map(routeOf).filter(Boolean));
+  pages = pages.filter(isObject);
+  const { routes, refused } = pickPages(pages);
+  const paths = new Set(routes.values());
   for (const t of Object.keys(ROUTES)) if (!ROUTES[t].includes("{slug}") && !pages.some((p) => p._type === t)) stop.push({ path: t, message: "document is missing", help: `The page ${ROUTES[t]} needs it.` });
   for (const d of site.seo.defaults) for (const i of d.jsonLd) for (const c of i.parents ?? []) if (!paths.has(c.path)) stop.push({ path: `seo-site.defaults[${d.docType}]`, message: `breadcrumb links to ${c.path}, which is not a page`, help: JSON_LD_ITEMS.schemaBreadcrumb.description });
 
-  const byId = new Map(overrides.map((o) => [o._id, o]));
-  const resolved = pages.map((doc) => ({ doc, ...resolvePage(doc, byId.get(overrideId(doc._id)), site, { ...options, faqDocs, paths }) }));
-  const report = resolved.flatMap((r) => r.problems);
+  const byId = new Map(overrides.filter(isObject).map((o) => [o._id, o]));
+  const resolved = [], report = refused.map(({ row, message }) => ({ path: row._id, message, help: "Give it its own slug: words joined with hyphens, not used by another page." }));
+  for (const doc of pages) {
+    if (!routes.has(doc._id)) continue;
+    resolved.push(resolveSafely(doc, byId.get(overrideId(doc._id)), site, { ...options, faqDocs, paths }));
+  }
+  report.push(...resolved.flatMap((r) => r.problems));
   const ids = new Set(pages.map((p) => overrideId(p._id)));
-  for (const o of overrides) if (!ids.has(o._id)) report.push({ path: o._id, message: "belongs to no published page", help: "Its _id must be seo-<page id>." });
+  for (const o of overrides.filter(isObject)) if (!ids.has(o._id)) report.push({ path: o._id, message: "belongs to no published page", help: "Its _id must be seo-<page id>." });
   for (const field of ["title", "description"]) {
     const first = new Map();
     for (const r of resolved) {
@@ -186,12 +207,6 @@ export function resolveAll({ site, pages, overrides, faqDocs }, options = {}) {
       if (first.has(v)) report.push({ path: r.doc._id, message: `has the same ${field} as ${first.get(v)}`, help: "Each should be unique. Change the page's own text or add an override." });
       else first.set(v, r.doc._id);
     }
-  }
-  const at = new Map();
-  for (const r of resolved) {
-    if (!r.route) continue;
-    if (at.has(r.route)) report.push({ path: r.doc._id, message: `shares the address ${r.route} with ${at.get(r.route)}`, help: "Each page needs its own slug." });
-    else at.set(r.route, r.doc._id);
   }
   return { stop, report, pages: resolved };
 }

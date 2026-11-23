@@ -39,11 +39,12 @@ export const ROUTES = {
 };
 export const isRepeatable = (type) => ROUTES[type].includes("{slug}");
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
+const SLUG_MAX = 150;
 export const routeOf = (doc) => {
   if (!Object.hasOwn(ROUTES, doc?._type ?? "")) return undefined;
   if (!isRepeatable(doc._type)) return ROUTES[doc._type];
   const slug = doc.slug?.current;
-  return typeof slug === "string" && SLUG.test(slug) ? ROUTES[doc._type].replace("{slug}", slug) : undefined;
+  return typeof slug === "string" && slug.length <= SLUG_MAX && SLUG.test(slug) ? ROUTES[doc._type].replace("{slug}", slug) : undefined;
 };
 
 /** What a template may use. Each is read from the page document. */
@@ -106,7 +107,7 @@ export const JSON_LD_ITEMS = {
     fields: {
       enabled,
       label: { type: "string", min: 3, max: 60, description: "What this is, for other editors." },
-      json: { type: "json", description: "One JSON object with an @type and no @context. No reviews or ratings of ourselves.", example: '{"@type":"VideoObject","name":"..."}' },
+      json: { type: "json", max: 5000, description: "One JSON object with an @type and no @context. No reviews or ratings of ourselves.", example: '{"@type":"VideoObject","name":"..."}' },
     },
     required: ["label", "json"],
   },
@@ -182,12 +183,15 @@ const faqDocs = `*[count(items[_type == "faqItem"]) > 0]{_id, items}`;
 export const ALL_QUERY = `{
   "site": ${site},
   "pages": *[_type in ${types} && draft != true]${page},
-  "overrides": *[_type == "pageSeo"],
+  "overrides": *[_type == "pageSeo" && defined(_id)],
   "faqDocs": ${faqDocs}
 }`;
 export const ONE_QUERY = `{
+  "all": *[_type in ${types} && draft != true]{_id, _type, slug, _createdAt},
   "site": ${site},
   "pages": *[_id == $id]${page},
   "overrides": *[_id == $seoId],
   "faqDocs": ${faqDocs}
 }`;
+/** Just enough to know which documents become pages. */
+export const PAGE_LIST_QUERY = `*[_type in ${types} && draft != true]{_id, _type, slug, _createdAt}`;

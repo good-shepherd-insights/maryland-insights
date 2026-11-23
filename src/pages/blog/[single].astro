@@ -190,8 +190,7 @@ const dateModifiedRaw = doc?.dateModified || doc?.datePublished;
                         />
                         <div>
                           <span class="text-[10px]">
-                            {settings.blogChrome?.bylinePrefix && `${settings.blogChrome.bylinePrefix.trim()} `}{post?.data.author?.name} -{" "}
-                            {dateFormat(post?.data.date, settings.locale)}
+                            {settings.blogChrome?.bylinePrefix && `${settings.blogChrome.bylinePrefix.trim()} `}{[post?.data.author?.name, post?.data.date && dateFormat(post.data.date, settings.locale)].filter(Boolean).join(" - ")}
                           </span>
                           <p class="text-sm line-clamp-1 font-medium text-text-dark">
                             {post?.data.title}

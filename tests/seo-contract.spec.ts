@@ -1,11 +1,14 @@
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
+import { buildFault } from "../src/lib/brokenLimit.mjs";
 import { imageAddress, parseImage, sanityUrl } from "../src/lib/images.mjs";
 import { DEFAULT_FIELDS, JSON_LD_ITEMS, PAGE_FIELDS, ROUTES, SITE_FIELDS, isRepeatable, overrideId } from "../src/lib/seo/contract.mjs";
 import { buildHead, serializeGraph, sitemapEntries } from "../src/lib/seo/graph.mjs";
 import { editorGuide } from "../src/lib/seo/guide.mjs";
+import { plainify } from "../src/lib/utils/plainify.mjs";
 import { clip, findFaqs, resolveAll } from "../src/lib/seo/resolve.mjs";
+import { RESERVED, pickPages } from "../src/lib/seo/pages.mjs";
 import { keepVisibleFaqs } from "../src/lib/seo/visible.mjs";
 
 const today = "2026-11-23";
@@ -34,12 +37,14 @@ const world = (): any => ({
   pages: Object.keys(ROUTES).map((t) => isRepeatable(t) ? page(t, `${t.toLowerCase()}-one`, t === "blogPost" ? { date: "2026-04-13", author: { name: "Site" }, image: "/images/p.png" } : {}) : page(t)),
   overrides: [], faqDocs: [],
 });
-const run = (change: (w: any) => void = () => {}, options = {}) => { const w = world(); change(w); return { w, ...resolveAll(w, { today, ...options }) }; };
+const run = (change: (w: any) => void = () => {}, options = {}) => { const w = world(); change(w); return { w, ...resolveAll(w, { today, toText: plainify, ...options }) }; };
 const lines = (ps: any[]) => ps.map((p) => `${p.path} ${p.message}`).join("\n");
 const find = (r: any, id: string) => r.pages.find((p: any) => p.doc._id === id);
 const types = (r: any, id: string) => buildHead(find(r, id), r.w.site).graph.map((n: any) => n["@type"]);
 const svc = "servicePage-servicepage-one", post = "blogPost-blogpost-one";
 const override = (id: string, fields: any) => (w: any) => w.overrides.push({ _id: overrideId(id), _type: "pageSeo", page: {}, ...fields });
+
+const html = (main: string, qs: [string, string][]) => `<html><head><script type="application/ld+json">${serializeGraph([{ "@type": "WebPage" }, { "@type": "FAQPage", mainEntity: qs.map(([name, t]) => ({ "@type": "Question", name, acceptedAnswer: { "@type": "Answer", text: t } })) }])}</script></head><body><main id="m">${main}</main></body></html>`;
 
 describe("contract", () => {
   const walk = (fields: any, at: string): [string, any][] => Object.entries(fields).flatMap(([k, f]: any) => [[`${at}.${k}`, f], ...(f.fields ? walk(f.fields, `${at}.${k}`) : [])] as any);
@@ -86,8 +91,8 @@ describe("a new page needs no SEO work", () => {
 
 describe("one bad page never affects another", () => {
   const bad: [string, any][] = [
-    ["no title", { title: undefined }], ["no description", { description: undefined }], ["no slug", { slug: undefined }], ["bad slug", { slug: { current: "a b/../c" } }],
-    ["title is an object", { title: { x: 1 } }], ["description is a list", { description: [1] }], ["placeholder title", { title: "TBD" }], ["null slug", { slug: null }],
+    ["no title", { title: undefined }], ["no description", { description: undefined }], ["empty after formatting", { title: "***" }],
+    ["title is an object", { title: { x: 1 } }], ["description is a list", { description: [1] }], ["placeholder title", { title: "TBD" }],
   ];
   it.each(bad)("%s: kept out of search, reported, build continues", (_n, fields) => {
     const r = run((w) => w.pages.push({ ...page("servicePage", "bad"), ...fields }));
@@ -99,6 +104,37 @@ describe("one bad page never affects another", () => {
     expect(typeof head.title).toBe("string");
     if (p.route) expect(sitemapEntries(r.pages, "https://site.test").get(`https://site.test${p.route}`)!.exclude).toBe(true);
     expect(types(r, svc)).toContain("Service");
+  });
+  const unpublished: [string, any][] = [["no slug", undefined], ["null slug", null], ["slash", { current: "a/b" }], ["dots", { current: ".." }], ["percent", { current: "100%" }], ["spaces", { current: "a b?c" }], ["backslash", { current: "a\\b" }], ["number", { current: 5 }], ["huge", { current: "x".repeat(151) }], ["copy of another page", { current: "servicepage-one" }], ["same but capitals", { current: "SERVICEPAGE-ONE" }]];
+  it.each(unpublished)("bad address (%s): not published, reported, others unaffected", (_n, slug) => {
+    const r = run((w) => w.pages.push({ ...page("servicePage", "bad"), slug, _createdAt: "2027", description: undefined }));
+    expect(r.stop).toEqual([]);
+    expect(lines(r.report)).toMatch(/was not published/);
+    expect(find(r, "servicePage-bad")).toBeUndefined();
+    expect(sitemapEntries(r.pages, "https://site.test").get("https://site.test/services/servicepage-one")!.exclude).toBe(false);
+  });
+  it("a page can never take over a fixed page or site path", () => {
+    for (const slug of ["contact", "about", "Blog", "faqs", ...RESERVED].filter((x) => /^[a-z0-9-]+$/i.test(x))) {
+      const { routes, refused } = pickPages([{ ...page("legalPage", slug), _createdAt: "2000" }, ...Object.keys(ROUTES).filter((t) => !isRepeatable(t)).map((t) => ({ ...page(t), _createdAt: "2026" }))]);
+      expect(refused.length, slug).toBe(1);
+      expect(routes.has("contactPage")).toBe(true);
+    }
+  });
+  it("RESERVED covers every page folder and public folder", () => {
+    const top = (d: string) => readdirSync(path.resolve(__dirname, d)).map((f) => f.replace(/\..*$/, "")).filter((f) => /^[a-z0-9-]+$/i.test(f) && !["index", ...Object.values(ROUTES).map((r) => r.slice(1))].includes(f));
+    for (const f of [...top("../src/pages"), ...readdirSync(path.resolve(__dirname, "../public"), { withFileTypes: true }).filter((d) => d.isDirectory() && /^[a-z0-9-]+$/i.test(d.name)).map((d) => d.name)]) expect(RESERVED.has(f), f).toBe(true);
+  });
+  it.each(["/\\[", "/\\", "/a\\b"])("hostile image path %s never throws", (bad) => {
+    const r = run((w) => { override(svc, { ogImage: bad })(w); w.pages.find((p: any) => p._id === post).image = bad; });
+    expect(r.stop).toEqual([]); expect(r.report.length).toBe(2);
+  });
+  it("deeply nested or huge values are refused quickly", () => {
+    const start = performance.now();
+    const r = run((w) => { override(svc, { title: "[your ".repeat(50000), description: "<a".repeat(100000), jsonLd: [item("schemaCustom", { label: "Deep", json: "[".repeat(20000) })] })(w); Object.assign(w.pages.find((p: any) => p._id === post), { title: "<".repeat(200000), description: "[insert ".repeat(50000) }); });
+    expect(r.stop).toEqual([]); expect(performance.now() - start).toBeLessThan(1000);
+    const t = performance.now();
+    keepVisibleFaqs(html("<div a=\"".repeat(20000) + "&".repeat(50000) + "<!--".repeat(20000), [["Q?", "A."]]), () => {});
+    expect(performance.now() - t).toBeLessThan(1500);
   });
   it("odd values never throw", () => {
     for (const junk of [null, 5, "x", [], {}, [[null]], { _type: "constructor" }]) {
@@ -171,8 +207,8 @@ describe("pages", () => {
     expect(author("Jo Doe")).toEqual({ "@type": "Person", name: "Jo Doe" });
   });
   it("reports repeated titles and addresses", () => {
-    const r = run((w) => w.pages.push({ ...page("servicePage", "servicepage-one"), _id: "servicePage-copy" }));
-    expect(lines(r.report)).toMatch(/same title/); expect(lines(r.report)).toMatch(/shares the address/);
+    const r = run((w) => w.pages.push({ ...page("servicePage", "other"), title: "Page servicepage-one" }));
+    expect(lines(r.report)).toMatch(/same title/);
   });
   it("reports an image file that does not exist and leaves it out", () => {
     const r = run(() => {}, { fileExists: () => false });
@@ -231,12 +267,21 @@ describe("output", () => {
     expect(map.get("https://site.test/blog/blogpost-one")).toEqual({ exclude: false, lastmod: "2026-04-13" });
     expect(map.get("https://site.test/about")!.lastmod).toBeUndefined();
   });
-  const html = (main: string, qs: [string, string][]) => `<html><head><script type="application/ld+json">${serializeGraph([{ "@type": "WebPage" }, { "@type": "FAQPage", mainEntity: qs.map(([name, t]) => ({ "@type": "Question", name, acceptedAnswer: { "@type": "Answer", text: t } })) }])}</script></head><body><main id="m">${main}</main></body></html>`;
   const left = (h: string) => JSON.parse(h.match(/ld\+json">(.*?)<\/script>/)![1])["@graph"];
   it("drops FAQs visitors cannot see", () => {
     const out = keepVisibleFaqs(html("<h3>Why &amp; how?</h3><p>It <b>is</b> &#39;so&#39;.</p><script>var s='Hidden? No.'</script><!-- Hidden? No. -->", [["Why & how?", "It is 'so'."], ["Hidden?", "No."]]), () => {});
     expect(left(out)[1].mainEntity.map((q: any) => q.name)).toEqual(["Why & how?"]);
   });
+  const keeps = (main: string, q: string, a: string) => left(keepVisibleFaqs(html(main, [[q, a]]), () => {})).length === 2;
+  it.each([
+    ["words run together", "We sell SEO to eyes of others", "SEO?", "Yes."], ["letters split", "the art icle is good", "Article?", "Is good"],
+    ["far apart", `Local SEO? ${"filler ".repeat(40)} Monthly.`, "Local SEO?", "Monthly."], ["hidden", "<div hidden><p>Q one?</p><p>A one.</p></div>", "Q one?", "A one."],
+    ["hidden attribute later", '<div class="x" hidden="">Q one? A one.</div>', "Q one?", "A one."], ["answer first", "A one. Q one?", "Q one?", "A one."], ["template", "<template>Q one? A one.</template>", "Q one?", "A one."],
+  ])("not shown: %s", (_n, main, q, a) => expect(keeps(main, q, a)).toBe(false));
+  it.each([
+    ["entities", "<h3>Wait&hellip; what&mdash;now?</h3><p>Caf&eacute; isn&rsquo;t&nbsp;open.</p>", "Wait… what—now?", "Café isn't open."], ["inline tags", "<b>Un</b>real?<p>It <em>is</em>.</p>", "Unreal?", "It is."],
+    ["accordion icon", '<div class="hidden-x" data-hidden="1"><h3>Q one?</h3><span>+</span><p>A one.</p></div>', "Q one?", "A one."], ["second place it appears", `Q one? ${"x ".repeat(200)} Q one? A one.`, "Q one?", "A one."], ["after a hidden block", "<p hidden>x</p><p>Q one? A one.</p>", "Q one?", "A one."],
+  ])("shown: %s", (_n, main, q, a) => expect(keeps(main, q, a)).toBe(true));
   it("drops the whole block when none are visible, and changes nothing when all are", () => {
     expect(left(keepVisibleFaqs(html("x", [["Hidden?", "No."]]), () => {})).map((n: any) => n["@type"])).toEqual(["WebPage"]);
     const same = html("<p>Q one? A one.</p>", [["Q one?", "A one."]]);
@@ -262,4 +307,11 @@ describe("images", () => {
     const svg = parseImage({ asset: { _ref: "image-abc-10x10-svg" } }) as any;
     expect(sanityUrl(svg, { width: 5, height: 5 })).toBe(svg.url);
   });
+});
+
+describe("broken content", () => {
+  const counts = (ok: number, broken: number) => ({ kinds: new Map([["block a", { ok, broken }], ["block b", { ok: 9, broken: 0 }]]), pages: new Set() });
+  it("a few bad documents never stop a production build", () => { for (const [ok, broken] of [[10, 1], [10, 9], [0, 2]]) expect(buildFault(counts(ok, broken), false)).toBeUndefined(); });
+  it("a block failing on most pages does", () => expect(buildFault(counts(1, 6), false)).toMatch(/block a \(6 of 7\).*code fault/));
+  it("previews stop on any", () => { expect(buildFault(counts(10, 1), true)).toMatch(/block a/); expect(buildFault(counts(10, 0), true)).toBeUndefined(); });
 });

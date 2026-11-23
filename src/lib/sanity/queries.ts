@@ -1,4 +1,34 @@
 import { sanityClient } from "./client";
+import { PAGE_LIST_QUERY } from "@/lib/seo/contract.mjs";
+import { pickPages } from "@/lib/seo/pages.mjs";
+
+/** Documents that become pages: valid, unclashing addresses only. */
+async function publishedPages() {
+  const rows: any[] = await sanityClient.fetch(PAGE_LIST_QUERY);
+  const { routes } = pickPages(rows);
+  return rows.filter((r) => routes.has(r._id));
+}
+async function slugsOf(type: string): Promise<string[]> {
+  return (await publishedPages()).filter((r) => r._type === type).map((r) => r.slug.current);
+}
+/** The document published at an address, however many claim it. */
+async function idOf(type: string, slug: string): Promise<string | undefined> {
+  return (await publishedPages()).find((r) => r._type === type && r.slug.current === slug)?._id;
+}
+const isText = (v: unknown): v is string => typeof v === "string" && v.trim() !== "";
+const isDay = (v: unknown) => isText(v) && !Number.isNaN(Date.parse(v));
+/** Lists of posts appear on other pages, so a half-filled post must be safe there. */
+const safePost = (p: any) => ({
+  ...p,
+  description: isText(p.description) ? p.description : undefined,
+  datePublished: isDay(p.datePublished) ? p.datePublished : undefined,
+  author: isText(p.author?.name) ? p.author : undefined,
+  categories: (Array.isArray(p.categories) ? p.categories : []).filter((c: any) => isText(c?.title)),
+});
+async function listable(posts: any[]) {
+  const ids = new Set((await publishedPages()).map((r) => r._id));
+  return (posts ?? []).filter((p) => p && ids.has(p._id) && isText(p.title)).map(safePost);
+}
 
 export async function getSiteSettings() {
   const settings = await sanityClient.fetch(`*[_type == "siteSettings"][0]`);
@@ -79,7 +109,7 @@ export async function getToolsPage() {
 }
 
 export async function getServicesPage() {
-  return sanityClient.fetch(`*[_type == "servicesPage"][0]{
+  const page = await sanityClient.fetch(`*[_type == "servicesPage"][0]{
     ...,
     header->,
     grid->{..., "services": services[]->{
@@ -90,18 +120,19 @@ export async function getServicesPage() {
     useCases->,
     cta->
   }`);
+  if (!page?.grid) return page;
+  const slugs = new Set(await slugsOf("servicePage"));
+  const services = (page.grid.services ?? []).filter((x: any) => slugs.has(x?.slug) && isText(x.title)).map((x: any) => ({ ...x, description: isText(x.description) ? x.description : undefined }));
+  return { ...page, grid: { ...page.grid, services } };
 }
 
 export async function getServicePageSlugs(): Promise<string[]> {
-  const rows = await sanityClient.fetch(
-    `*[_type == "servicePage" && draft != true]{ "slug": slug.current }`,
-  );
-  return rows.map((r: { slug: string }) => r.slug).filter(Boolean);
+  return slugsOf("servicePage");
 }
 
 export async function getServicePage(slug: string) {
   return sanityClient.fetch(
-    `*[_type == "servicePage" && draft != true && slug.current == $slug][0]{
+    `*[_type == "servicePage" && _id == $id][0]{
       ...,
       blocks[]{
         ...,
@@ -110,7 +141,7 @@ export async function getServicePage(slug: string) {
             title,
             description,
             "slug": slug.current,
-            "datePublished": date
+            "datePublished": coalesce(date, datePublished)
           }
         }
       },
@@ -120,57 +151,57 @@ export async function getServicePage(slug: string) {
         "subtitle": *[_id == "homeFeatures"][0].features[title == ^.title][0].subtitle
       }
     }`,
-    { slug },
+    { id: (await idOf("servicePage", slug)) ?? "" },
   );
 }
 
 export async function getBlogPage() {
-  return sanityClient.fetch(`*[_type == "blogPage"][0]{
+  const page = await sanityClient.fetch(`*[_type == "blogPage"][0]{
     ...,
     header->,
     guide->,
     "featuredPosts": featuredPosts[]->{
       _id, title, description, image,
       "slug": slug.current,
-      "datePublished": date,
+      "datePublished": coalesce(date, datePublished),
       author{name}
     },
     cta->
   }`);
+  return page && { ...page, featuredPosts: await listable(page.featuredPosts) };
 }
 
 export async function getBlogPosts() {
-  return sanityClient.fetch(`*[_type == "blogPost" && draft != true] | order(date desc) {
+  const posts = await sanityClient.fetch(`*[_type == "blogPost" && draft != true] | order(coalesce(date, datePublished) desc) {
     _id, title, description, image,
     "slug": slug.current,
-    "datePublished": date,
+    "datePublished": coalesce(date, datePublished),
     author{name},
     categories[]->{title, "slug": slug.current}
   }`);
+  return listable(posts);
 }
 
 export async function getBlogPost(slug: string) {
   return sanityClient.fetch(
-    `*[_type == "blogPost" && draft != true && slug.current == $slug][0]{
+    `*[_type == "blogPost" && _id == $id][0]{
       ...,
+      "datePublished": coalesce(date, datePublished),
       author,
       categories[]->{_id, title, "slug": slug.current}
     }`,
-    { slug },
+    { id: (await idOf("blogPost", slug)) ?? "" },
   );
 }
 
 export async function getLegalPageSlugs(): Promise<string[]> {
-  const rows = await sanityClient.fetch(
-    `*[_type == "legalPage" && draft != true]{ "slug": slug.current }`,
-  );
-  return rows.map((r: { slug: string }) => r.slug).filter(Boolean);
+  return slugsOf("legalPage");
 }
 
 export async function getLegalPage(slug: string) {
   return sanityClient.fetch(
-    `*[_type == "legalPage" && draft != true && slug.current == $slug][0]`,
-    { slug },
+    `*[_type == "legalPage" && _id == $id][0]`,
+    { id: (await idOf("legalPage", slug)) ?? "" },
   );
 }
 
@@ -189,15 +220,12 @@ export async function getIntegrationsGuidance() {
 }
 
 export async function getFeaturePageSlugs(): Promise<string[]> {
-  const rows = await sanityClient.fetch(
-    `*[_type == "featurePage" && draft != true]{ "slug": slug.current }`,
-  );
-  return rows.map((r: { slug: string }) => r.slug).filter(Boolean);
+  return slugsOf("featurePage");
 }
 
 export async function getFeaturePage(slug: string) {
   return sanityClient.fetch(
-    `*[_type == "featurePage" && draft != true && slug.current == $slug][0]`,
-    { slug },
+    `*[_type == "featurePage" && _id == $id][0]`,
+    { id: (await idOf("featurePage", slug)) ?? "" },
   );
 }

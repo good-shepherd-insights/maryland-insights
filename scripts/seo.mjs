@@ -7,10 +7,11 @@
 // file.json maps document _id to its complete fields:
 //   {"seo-site": {...}, "seo-<page id>": {...}, "seo-<other id>": null}   null deletes an override
 import { createClient } from "@sanity/client";
-import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { ALL_QUERY, SITE_ID, overrideId } from "../src/lib/seo/contract.mjs";
 import { editorGuide } from "../src/lib/seo/guide.mjs";
+import { imageExists } from "../src/lib/seo/files.mjs";
+import { plainify } from "../src/lib/utils/plainify.mjs";
 import { resolveAll } from "../src/lib/seo/resolve.mjs";
 import { formatProblems } from "../src/lib/seo/validate.mjs";
 
@@ -28,11 +29,11 @@ const report = ({ stop, report, pages }, strict) => {
   else console.log(`${pages.length} pages checked, ${pages.filter((p) => p.seo.noindex).length} kept out of search.`);
   return !failed;
 };
-const fileExists = (p) => existsSync(new URL(`../public${p}`, import.meta.url));
+const options = { fileExists: imageExists, toText: plainify };
 const clean = (doc) => Object.fromEntries(Object.entries(doc).filter(([k]) => !["_rev", "_createdAt", "_updatedAt", "_system"].includes(k)).sort(([a], [b]) => a.localeCompare(b)));
 
 if (command === "check") {
-  report(resolveAll(await client.fetch(ALL_QUERY), { fileExists }), flags.includes("--strict"));
+  report(resolveAll(await client.fetch(ALL_QUERY), options), flags.includes("--strict"));
 } else if (command === "docs") {
   await writeFile(new URL("../docs/SEO.md", import.meta.url), editorGuide());
 } else if (command === "write" && file) {
@@ -53,7 +54,13 @@ if (command === "check") {
   const result = resolveAll({
     ...data, site: { ...data.site, seo: after.get(SITE_ID) ?? null },
     overrides: [...after.values()].filter((d) => d && d._id !== SITE_ID),
-  }, { fileExists });
+  }, options);
+  // Problems already on the site are not this write's fault.
+  const key = (p) => `${p.path} ${p.message}`;
+  const before = new Set(resolveAll(data, options).report.map(key));
+  const known = result.report.filter((p) => before.has(key(p)));
+  result.report = result.report.filter((p) => !before.has(key(p)));
+  if (known.length) console.warn(`${known.length} existing page problem(s), not from this change; see npm run seo:check.`);
   // The whole site must be clean after a write, not just the edited page.
   if (report(result, true)) {
     const transaction = client.transaction();

@@ -1,0 +1,17 @@
+---
+// Renders one CMS block. If its data is too incomplete to render, the block is
+// left out and reported, and the rest of the page is unaffected.
+import { isDataError, reportBroken, reportOk } from "@/lib/broken";
+
+const { name } = Astro.props;
+let html = "";
+try {
+  html = (await Astro.slots.render("default")) ?? "";
+  reportOk(`block ${name}`);
+} catch (error) {
+  if (!isDataError(error)) throw error;
+  reportBroken(`block ${name}`, Astro.url.pathname, `block "${name}" left out: ${(error as Error).message}`);
+}
+---
+
+<Fragment set:html={html} />

@@ -1,5 +1,6 @@
 ---
 // Renders a featurePage's sections in order. One component per design pattern.
+import SafeBlock from "@/components/SafeBlock.astro";
 import HeroMap from "./HeroMap.astro";
 import MonthlyGrid from "./MonthlyGrid.astro";
 import HoursStat from "./HoursStat.astro";
@@ -156,11 +157,11 @@ const COMPONENTS: Record<string, any> = {
   featureClosingLead: ClosingLead,
 };
 
-const { sections = [] } = Astro.props;
+const sections = (Array.isArray(Astro.props.sections) ? Astro.props.sections : []).filter((s: any) => s && typeof s === "object");
 ---
 <div class="mi-page">
   {sections.map((section: { _type: string; _key: string }) => {
-    const Component = COMPONENTS[section._type];
-    return Component ? <Component {...section} /> : null;
+    const Component = Object.hasOwn(COMPONENTS, section._type ?? "") ? COMPONENTS[section._type] : undefined;
+    return Component ? <SafeBlock name={section._type}><Component {...section} /></SafeBlock> : null;
   })}
 </div>

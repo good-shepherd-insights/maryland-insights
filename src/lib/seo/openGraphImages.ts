@@ -41,9 +41,9 @@ const toOpenGraphPage = (
     description?: string;
   }
 ): OpenGraphPage => ({
-  title: plainify(data.title || data.meta_title || site.siteTitle),
+  title: plainify(typeof data.title === "string" && data.title.trim() ? data.title : site.siteTitle),
   description: shorten(
-    plainify(data.description || site.seoDescription),
+    plainify(typeof data.description === "string" && data.description.trim() ? data.description.slice(0, 2000) : site.seoDescription),
   ),
 });
 

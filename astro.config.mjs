@@ -11,20 +11,25 @@ import remarkToc from "remark-toc";
 import sharp from "sharp";
 import config from "./src/config/config.json";
 import frontman from "@frontman-ai/astro";
-import { existsSync } from "node:fs";
 import { createClient } from "@sanity/client";
 import { ALL_QUERY } from "./src/lib/seo/contract.mjs";
 import { sitemapEntries } from "./src/lib/seo/graph.mjs";
+import { buildFault, isUnpublished, startCounting } from "./src/lib/brokenLimit.mjs";
+import { imageExists } from "./src/lib/seo/files.mjs";
+import { plainify } from "./src/lib/utils/plainify.mjs";
 import { resolveAll } from "./src/lib/seo/resolve.mjs";
 import { formatProblems } from "./src/lib/seo/validate.mjs";
 
 // Share Sanity reads across pages, in a build only (see src/lib/sanity/client.ts).
-if (process.argv.includes("build")) globalThis.__sanityBuildReads = new Map();
+if (process.argv.includes("build")) {
+  globalThis.__sanityBuildReads = new Map();
+  startCounting();
+}
 
 // Sitemap dates and noindex come from each page's `seo` object in Sanity.
 const sanity = createClient({ projectId: "089yj83f", dataset: "production", apiVersion: "2026-01-01", useCdn: false });
 const seoData = await sanity.fetch(ALL_QUERY);
-const seo = resolveAll(seoData, { fileExists: (p) => existsSync(new URL(`./public${p}`, import.meta.url)) });
+const seo = resolveAll(seoData, { toText: plainify, fileExists: imageExists });
 if (seo.stop.length) throw new Error(`Site-wide SEO problems:\n${formatProblems(seo.stop)}`);
 if (seo.report.length) console.warn(`Pages needing SEO attention (the build continues):\n${formatProblems(seo.report)}`);
 const seoEntries = sitemapEntries(seo.pages, seoData.site.seoUrl);
@@ -50,6 +55,15 @@ export default defineConfig({
   },
   redirects: { "/sitemap.xml": { status: 301, destination: "/sitemap-index.xml" } },
   integrations: [
+    {
+      name: "content-faults",
+      hooks: {
+        "astro:build:done": () => {
+          const fault = buildFault(globalThis.__contentCounts, process.env.VERCEL_ENV === "preview");
+          if (fault) throw new Error(fault);
+        },
+      },
+    },
     frontman({
       projectRoot: import.meta.dirname,
       host: process.env.FRONTMAN_HOST || "frontman-dev.marylandinsights.com",
@@ -73,7 +87,8 @@ export default defineConfig({
         !page.includes("/start-for-free") &&
         !page.includes("/enterprise-support") &&
         !page.includes("/search") &&
-        !seoEntry(page)?.exclude,
+        !seoEntry(page)?.exclude &&
+        !isUnpublished(new URL(page).pathname),
       serialize: (item) => {
         const lastmod = seoEntry(item.url)?.lastmod;
         return lastmod ? { ...item, lastmod } : item;

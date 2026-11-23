@@ -7,7 +7,7 @@ export const norm = (v) => v.trim().replace(/\s+/g, " ").toLowerCase();
 export const isObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 export const isHttps = (v) => { try { return new URL(v).protocol === "https:"; } catch { return false; } };
 export const isDate = (v) => /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v)) && new Date(v).toISOString().startsWith(v);
-const isSitePath = (v) => /^\/(?!\/)[^\s?#]*$/.test(v);
+const isSitePath = (v) => /^\/(?!\/)[^\s?#\\]*$/.test(v);
 
 /** Parse a schemaCustom body. Returns {value} or {error}. */
 export function parseCustom(json) {
@@ -55,13 +55,15 @@ export function checkField(value, field, path, out, today) {
   if (typeof value !== "string") return fail("must be text");
   if (value !== value.trim() && !path.endsWith("robotsTxt")) fail("has spaces at the start or end");
   if (field.min && value.trim().length < field.min) fail(`is ${value.trim().length} characters; needs at least ${field.min}`);
-  if (field.max && value.length > field.max) fail(`is ${value.length} characters; allows at most ${field.max}`);
+  // Too long: stop here, so nothing below ever runs on huge text.
+  if (field.max && value.length > field.max) return fail(`is ${value.length} characters; allows at most ${field.max}`);
+  if (value.length > 10000) return fail("is far too long");
   if (field.options && !field.options.includes(value)) fail(`"${value}" must be one of: ${field.options.join(", ")}`);
   if (field.type === "template") {
     for (const [, token] of value.matchAll(/\{([^}]*)\}/g)) if (!TOKENS.includes(token)) fail(`uses {${token}}; use one of: ${TOKENS.map((t) => `{${t}}`).join(", ")}`);
   }
   if (["string", "text", "template"].includes(field.type) && !path.endsWith("robotsTxt")) {
-    if (/<[a-z/!][^>]*>/i.test(value)) fail("must be plain text, not HTML");
+    if (/<[a-z/!][^<>]{0,500}>/i.test(value)) fail("must be plain text, not HTML");
     if (/\*\*|\]\(/.test(value)) fail("must be plain text, not Markdown");
     if (PLACEHOLDER.test(value)) fail("contains placeholder text");
     if (field.type === "string" && /[\r\n]/.test(value)) fail("must be one line");
