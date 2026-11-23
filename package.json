@@ -13,8 +13,11 @@
     "build": "node scripts/themeGenerator.js && astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "seo:check": "node scripts/seo.mjs check",
+    "seo:docs": "node scripts/seo.mjs docs",
+    "seo:write": "node scripts/seo.mjs write",
     "format": "prettier -w ./src",
-    "test": "astro build && vitest run"
+    "test": "npm run build && vitest run"
   },
   "dependencies": {
     "@astrojs/check": "0.9.6",

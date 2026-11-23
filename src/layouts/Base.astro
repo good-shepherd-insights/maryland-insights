@@ -1,7 +1,6 @@
 ---
 import TwSizeIndicator from "@/components/TwSizeIndicator.astro";
 import theme from "@/config/theme.json";
-import { plainify } from "@/lib/utils/textConverter";
 import trackingConfig from "@/config/tracking.json";
 import TrackingManager from "../components/tracking/TrackingManager.astro";
 import Footer from "@/partials/Footer.astro";
@@ -12,6 +11,8 @@ import { AstroFont } from "astro-font";
 import { ClientRouter } from "astro:transitions";
 import { SEO } from "astro-seo";
 import { canonicalUrl } from "@/lib/seo/ids";
+import { loadNotFoundSeo, loadSeo } from "@/lib/seo/load";
+import JsonLd from "@/components/JsonLd.astro";
 import { getOpenGraphImagePath } from "@/lib/seo/openGraphImagePath";
 import { getSiteSettings } from "@/lib/sanity/queries";
 
@@ -30,13 +31,12 @@ if (theme.fonts.font_family.secondary) {
 
 // types for frontmatters
 export interface Props {
+  /** Sanity _id of the page. All meta and JSON-LD come from its `seo` object. */
+  seoId?: string;
+  /** The 404 page, whose meta lives in siteSettings.seo. */
+  notFound?: boolean;
   title?: string;
-  meta_title?: string;
-  metaTitle?: string;
   description?: string;
-  image?: string;
-  noindex?: boolean;
-  canonical?: string;
   head_links?: { rel: string; href: string; crossorigin?: string }[];
   og_type?: "website" | "article";
   date_published?: string;
@@ -68,14 +68,14 @@ for (const b of siteSettings.botDirectives ?? []) {
 
 // destructure frontmatter
 const {
-  title, meta_title, metaTitle, description, noindex, canonical,
+  seoId, notFound,
   og_type = "website", date_published, date_modified, author_name,
   author_twitter, article_tags, article_section, googlebot,
   head_links = [], ui
 } = Astro.props as any;
 
-// Sanity fields are camelCase; origin/main frontmatter used snake_case — accept both.
-const resolvedMetaTitle = meta_title ?? metaTitle;
+if (!seoId && !notFound) throw new Error(`${Astro.url.pathname} must pass seoId to Base.`);
+const seo = notFound ? await loadNotFoundSeo() : await loadSeo(seoId, Astro.isPrerendered);
 
 // Footer newsletter labels come from Sanity siteSettings; Base renders Footer
 // directly, so resolve them here and pass down.
@@ -101,10 +101,11 @@ const resolvedMetaTitle = meta_title ?? metaTitle;
   }
 }
 
-const resolvedImage = getOpenGraphImagePath(Astro.url.pathname);
 const baseUrl = siteSettings.seoUrl ?? "";
-const fallbackTitle = siteSettings.siteTitle ?? "";
-const fallbackDescription = siteSettings.seoDescription ?? "";
+const canonical = seo.canonical ?? canonicalUrl(baseUrl, Astro.url.pathname);
+const shareTitle = seo.ogTitle ?? seo.title;
+const shareDescription = seo.ogDescription ?? seo.description;
+const shareImage = seo.ogImage ?? `${baseUrl}${getOpenGraphImagePath(Astro.url.pathname)}`;
 const documentLocale = siteSettings.locale?.replace("_", "-");
 
 ---
@@ -118,30 +119,30 @@ const documentLocale = siteSettings.locale?.replace("_", "-");
     <TrackingManager />
     
     <SEO
-      title={plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle)}
-      description={plainify(description ? description : fallbackDescription)}
-      canonical={canonical || canonicalUrl(baseUrl, Astro.url.pathname)}
-      noindex={noindex}
+      title={seo.title}
+      description={seo.description}
+      canonical={canonical}
+      noindex={seo.noindex}
       openGraph={{
         basic: {
-          title: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle),
+          title: shareTitle,
           type: og_type,
-          image: `${baseUrl}${resolvedImage}`,
-          url: canonical || canonicalUrl(baseUrl, Astro.url.pathname)
+          image: shareImage,
+          url: canonical
         },
         optional: {
-          description: plainify(description ? description : fallbackDescription),
+          description: shareDescription,
           locale: siteSettings.locale,
           siteName: siteSettings.logoText || siteSettings.siteTitle,
         },
         image: {
-          alt: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle),
+          alt: shareTitle,
           width: siteSettings.metaImageWidth,
           height: siteSettings.metaImageHeight,
         },
         article: og_type === "article" ? {
           publishedTime: date_published,
-          modifiedTime: date_modified,
+          modifiedTime: seo.dateModified ?? date_modified,
           authors: author_name ? [author_name] : undefined,
           tags: article_tags,
           section: article_section,
@@ -151,15 +152,16 @@ const documentLocale = siteSettings.locale?.replace("_", "-");
         card: "summary_large_image",
         site: twitterHandle,
         creator: author_twitter ? `@${author_twitter}` : twitterHandle,
-        title: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle),
-        description: plainify(description ? description : fallbackDescription),
-        image: `${baseUrl}${resolvedImage}`,
-        imageAlt: plainify(resolvedMetaTitle ? resolvedMetaTitle : title ? title : fallbackTitle)
+        title: shareTitle,
+        description: shareDescription,
+        image: shareImage,
+        imageAlt: shareTitle
       }}
       extend={{
         meta: [
           { name: "referrer", content: "strict-origin-when-cross-origin" },
-          ...(Object.keys(botDirectivesMap).length > 0
+          // A noindex page must not tell individual bots to index it.
+          ...(!seo.noindex && Object.keys(botDirectivesMap).length > 0
             ? Object.entries(botDirectivesMap).map(
                 ([bot, directive]) => ({
                   name: bot,
@@ -181,6 +183,8 @@ const documentLocale = siteSettings.locale?.replace("_", "-");
         ]
       }}
     />
+
+    {seo.graph.length > 0 && <JsonLd graph={seo.graph} />}
 
     <meta name="generator" content={Astro.generator} />
 

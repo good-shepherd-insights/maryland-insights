@@ -7,7 +7,8 @@ import * as cheerio from "cheerio";
 // actual built HTML/JSON-LD rather than trusting source code, per the project's
 // astro-seo-infra-readiness audit method.
 
-const DIST = path.resolve(__dirname, "../dist");
+// The Vercel adapter writes prerendered pages and the sitemap to dist/client.
+const DIST = path.resolve(__dirname, "../dist/client");
 const ENTITY_PATTERN = /&(amp|lt|gt|quot|apos);/;
 
 function walkHtmlFiles(dir: string): string[] {
@@ -15,6 +16,7 @@ function walkHtmlFiles(dir: string): string[] {
   for (const entry of readdirSync(dir)) {
     const full = path.join(dir, entry);
     const stat = statSync(full);
+    if (entry === "~partytown") continue; // vendor worker page, not site content
     if (stat.isDirectory()) out.push(...walkHtmlFiles(full));
     else if (entry.endsWith(".html")) out.push(full);
   }
@@ -113,7 +115,7 @@ describe("SEO infra: rendered dist output", () => {
         .some((el) => ($(el).attr("content") || "").includes("noindex"));
 
       if (!isNoindex) {
-        it("active indexable page: WebSite + LocalBusiness graph nodes present", () => {
+        it("active indexable page: WebSite + organization graph nodes present", () => {
           const scripts = $('script[type="application/ld+json"]');
           let types: string[] = [];
           scripts.each((_, el) => {
@@ -122,7 +124,8 @@ describe("SEO infra: rendered dist output", () => {
             types.push(...graph.map((n: any) => n["@type"]));
           });
           expect(types).toContain("WebSite");
-          expect(types).toContain("LocalBusiness");
+          // Which one is chosen in Sanity (siteSettings.seo.organization.type).
+          expect(types.some((t) => ["Organization", "LocalBusiness", "ProfessionalService"].includes(t))).toBe(true);
         });
       }
     });

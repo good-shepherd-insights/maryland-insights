@@ -49,7 +49,7 @@ const toContactHref = (rawValue: string) => {
 
 ---
 
-<Base title={title} metaTitle={metaTitle} description={description} ui={settingsUi}>
+<Base title={title} metaTitle={metaTitle} description={description} ui={settingsUi} seoId={_contact._id}>
   <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
   <ContactGuidance {..._contact?.guidance} />
   <section class="section-sm bg-light">

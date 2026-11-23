@@ -32,6 +32,7 @@ const DynamicIcon: FC<IDynamicIcon> = ({ icon, ...props }) => {
 };
 
 const getIconLibrary = (icon: string): IconMap | undefined => {
+  if (typeof icon !== "string") return undefined;
   const libraryKey = icon.substring(0, 2).toLowerCase();
 
   return iconLibraries[libraryKey];

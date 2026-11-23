@@ -40,7 +40,7 @@ const supportProps = {
 
 ---
 
-<Base {...faqsPage} ui={settingsUi}>
+<Base {...faqsPage} ui={settingsUi} seoId={faqsPage._id}>
   <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
 
   <FaqSupport {...supportProps} />

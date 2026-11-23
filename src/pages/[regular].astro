@@ -27,7 +27,7 @@ const bodyHtml = renderPortableText(page?.body);
 
 ---
 
-<Base {...page} ui={settingsUi}>
+<Base {...page} ui={settingsUi} seoId={page._id}>
   <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
 
   <section class="section-sm bg-light">

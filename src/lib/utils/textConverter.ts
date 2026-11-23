@@ -3,13 +3,13 @@ import { marked } from "marked";
 import * as emoji from "node-emoji";
 
 const emojifyShortcodes = (content: string | undefined | null) => {
-  if (!content) return "";
+  if (typeof content !== "string" || !content) return "";
   return emoji.emojify(content);
 };
 
 // slugify
 export const slugify = (content: string | undefined | null) => {
-  if (!content) return "";
+  if (typeof content !== "string" || !content) return "";
   return slug(content);
 };
 
@@ -18,7 +18,7 @@ export const markdownify = (
   content: string | undefined | null,
   div?: boolean,
 ) => {
-  if (!content) return "";
+  if (typeof content !== "string" || !content) return "";
   const emojified = emojifyShortcodes(content) as string;
   return div
     ? marked.parse(emojified)
@@ -47,31 +47,5 @@ export const titleify = (content: string | undefined | null) => {
     .join(" ");
 };
 
-// plainify
-export const plainify = (content: string | undefined | null) => {
-  if (!content) return "";
-  const parseMarkdown: any = marked.parse(emojifyShortcodes(content) as string);
-  const filterBrackets = parseMarkdown.replace(/<\/?[^>]+(>|$)/gm, "");
-  const filterSpaces = filterBrackets.replace(/[\r\n]\s*[\r\n]/gm, "");
-  const stripHTML = htmlEntityDecoder(filterSpaces);
-  return stripHTML.trim();
-};
-
-// strip entities for plainify
-const htmlEntityDecoder = (htmlWithEntities: string) => {
-  let entityList: { [key: string]: string } = {
-    "&nbsp;": " ",
-    "&lt;": "<",
-    "&gt;": ">",
-    "&amp;": "&",
-    "&quot;": '"',
-    "&#39;": "'",
-  };
-  let htmlWithoutEntities: string = htmlWithEntities.replace(
-    /(&amp;|&lt;|&gt;|&quot;|&#39;)/g,
-    (entity: string): string => {
-      return entityList[entity];
-    },
-  );
-  return htmlWithoutEntities;
-};
+// plainify lives in plainify.mjs so build scripts can use it too
+export { plainify } from "./plainify.mjs";

@@ -35,7 +35,7 @@ const ctaProps = {
 
 ---
 
-<Base {...service} ui={settingsUi}>
+<Base {...service} ui={settingsUi} seoId={service._id}>
   {!hasLeadHero && <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />}
 
   <ServiceBlocks blocks={blocks} locale={settings.locale} />
