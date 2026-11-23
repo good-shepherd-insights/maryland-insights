@@ -9,7 +9,7 @@ import { DEFAULT_FIELDS, JSON_LD_ITEMS, PAGE_FIELDS, ROUTES, SITE_FIELDS, isRepe
 import { buildHead, serializeGraph, sitemapEntries } from "../src/lib/seo/graph.mjs";
 import { editorGuide } from "../src/lib/seo/guide.mjs";
 import { plainify } from "../src/lib/utils/plainify.mjs";
-import { clip, findFaqs, resolveAll } from "../src/lib/seo/resolve.mjs";
+import { clip, findFaqs, lastChanged, resolveAll } from "../src/lib/seo/resolve.mjs";
 import { RESERVED, pickPages } from "../src/lib/seo/pages.mjs";
 import { keepVisibleFaqs } from "../src/lib/seo/visible.mjs";
 
@@ -263,10 +263,21 @@ describe("output", () => {
     expect(out).not.toMatch(/<\/script|<!--/);
     expect(JSON.parse(out)["@graph"][0].name).toBe("</script><!-- & \" '");
   });
+  it("sitemap dates come from the page, its own sections, its SEO and new list entries, not shared sections", () => {
+    const at = (d: string) => `2026-11-${d}T10:00:00.000Z`;
+    const pages = [
+      { _id: "home", _type: "home", _updatedAt: at("01"), hero: { _ref: "own" }, cta: { _ref: "shared" } },
+      { _id: "aboutPage", _type: "aboutPage", _updatedAt: at("02"), cta: { _ref: "shared" } },
+      { _id: "blogPage", _type: "blogPage", _updatedAt: at("01") },
+      { _id: "p", _type: "blogPost", _updatedAt: at("20"), _createdAt: at("07") },
+    ];
+    const when = lastChanged(pages, [{ _id: "seo-aboutPage", _updatedAt: at("05") }], [{ _id: "own", _updatedAt: at("03"), x: { _ref: "own" } }, { _id: "shared", _updatedAt: at("29") }]);
+    expect(Object.fromEntries(when)).toEqual({ home: at("03"), aboutPage: at("05"), blogPage: at("07"), p: at("20") });
+  });
   it("sitemap: no noindex pages, real dates only", () => {
     const map = sitemapEntries(run((w) => { override(svc, { noindex: true })(w); }).pages, "https://site.test");
     expect(map.get("https://site.test/services/servicepage-one")!.exclude).toBe(true);
-    expect(map.get("https://site.test/blog/blogpost-one")).toEqual({ exclude: false, lastmod: "2026-04-13" });
+    expect(map.get("https://site.test/blog/blogpost-one")).toEqual({ exclude: false, lastmod: undefined });
     expect(map.get("https://site.test/about")!.lastmod).toBeUndefined();
   });
   const left = (h: string) => JSON.parse(h.match(/ld\+json">(.*?)<\/script>/)![1])["@graph"];

@@ -129,7 +129,7 @@ export const PAGE_FIELDS = {
   ogTitle: { type: "string", min: 10, max: 90, description: "Title on shared links. Leave empty to use the title." },
   ogDescription: { type: "text", min: 30, max: 200, description: "Summary on shared links. Leave empty to use the description." },
   ogImage: { type: "path", description: "Share image, 1200x630: a site path or https URL. Leave empty to use the generated image.", example: "/images/share/local-seo.png" },
-  dateModified: { type: "date", description: "The day the content last changed in a way a reader would notice. Only for pages with no date of their own; a date on the page always wins. Never a future date.", example: "2026-10-14" },
+  dateModified: { type: "date", description: "The day the content last changed in a way a reader would notice. Used in structured data only; sitemap dates are automatic. Only for pages with no date of their own; a date on the page always wins. Never a future date.", example: "2026-10-14" },
   jsonLd: { type: "list", max: 10, description: "Changes to the page type's structured data. Add an item to change or switch off that item, or to add a schemaCustom." },
 };
 
@@ -180,7 +180,12 @@ const site = `{
 }`;
 // FAQ documents that pages reference.
 const faqDocs = `*[count(items[_type == "faqItem"]) > 0]{_id, items}`;
+/** Pages that list others: a new one of these is an update to the list. */
+export const LISTS = { servicesPage: "servicePage", blogPage: "blogPost" };
+// Section documents, for finding when a page's own content last changed.
+const parts = `*[!(_type in ${types}) && !(_type in ["pageSeo", "seoSite", "siteSettings"]) && !(_type match "sanity.*") && !(_type match "system.*") && !(_id in path("_.**"))]`;
 export const ALL_QUERY = `{
+  "parts": ${parts},
   "site": ${site},
   "pages": *[_type in ${types} && draft != true]${page},
   "overrides": *[_type == "pageSeo" && defined(_id)],

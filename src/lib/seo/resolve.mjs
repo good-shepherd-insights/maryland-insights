@@ -1,6 +1,6 @@
 import { buildHead } from "./graph.mjs";
 import { pickPages } from "./pages.mjs";
-import { JSON_LD_ITEMS, PAGE_FIELDS, ROUTES, overrideId, routeOf } from "./contract.mjs";
+import { JSON_LD_ITEMS, LISTS, PAGE_FIELDS, ROUTES, overrideId, routeOf } from "./contract.mjs";
 import { imageAddress, parseImage } from "../images.mjs";
 import { PLACEHOLDER, checkField, checkItems, filled, isDate, isObject, norm, now, validateSite } from "./validate.mjs";
 
@@ -168,6 +168,37 @@ export function resolvePage(doc, override, site, { faqDocs = [], paths, fileExis
   };
 }
 
+/**
+ * When each page last changed, from Sanity's own edit times: the page, the
+ * sections only it uses, its SEO document and, for lists, the newest entry.
+ * Sections shared by several pages do not count, so one edit to a shared
+ * block does not re-date the whole site.
+ */
+export function lastChanged(pages, overrides = [], parts = []) {
+  const partById = new Map(parts.filter(isObject).map((d) => [d._id, d]));
+  const uses = new Map(), usedBy = new Map();
+  for (const doc of pages) {
+    const found = new Set();
+    (function walk(node) {
+      if (Array.isArray(node)) return node.forEach(walk);
+      if (!isObject(node)) return;
+      const part = partById.get(node._ref);
+      if (part && !found.has(part._id)) { found.add(part._id); walk(part); }
+      Object.values(node).forEach(walk);
+    })(doc);
+    uses.set(doc._id, found);
+    for (const id of found) usedBy.set(id, (usedBy.get(id) ?? 0) + 1);
+  }
+  const seo = new Map(overrides.filter(isObject).map((o) => [o._id, o]));
+  return new Map(pages.map((doc) => {
+    const times = [doc._updatedAt, seo.get(overrideId(doc._id))?._updatedAt];
+    for (const id of uses.get(doc._id)) if (usedBy.get(id) === 1) times.push(partById.get(id)._updatedAt);
+    if (Object.hasOwn(LISTS, doc._type)) for (const p of pages) if (p._type === LISTS[doc._type]) times.push(p._createdAt);
+    const valid = times.filter((t) => typeof t === "string" && !Number.isNaN(Date.parse(t))).map((t) => new Date(t).toISOString());
+    return [doc._id, valid.sort().at(-1)];
+  }));
+}
+
 /** One page, including its finished head. Never throws: a page that cannot be worked out is noindex. */
 export function resolveSafely(doc, override, site, options) {
   try {
@@ -181,7 +212,7 @@ export function resolveSafely(doc, override, site, options) {
 }
 
 /** Everything. `stop` blocks a build; `report` lists pages that need attention. */
-export function resolveAll({ site, pages, overrides, faqDocs }, options = {}) {
+export function resolveAll({ site, pages, overrides, faqDocs, parts }, options = {}) {
   const stop = validateSite(site, options);
   if (stop.length) return { stop, report: [], pages: [] };
   pages = pages.filter(isObject);
@@ -191,10 +222,11 @@ export function resolveAll({ site, pages, overrides, faqDocs }, options = {}) {
   for (const d of site.seo.defaults) for (const i of d.jsonLd) for (const c of i.parents ?? []) if (!paths.has(c.path)) stop.push({ path: `seo-site.defaults[${d.docType}]`, message: `breadcrumb links to ${c.path}, which is not a page`, help: JSON_LD_ITEMS.schemaBreadcrumb.description });
 
   const byId = new Map(overrides.filter(isObject).map((o) => [o._id, o]));
+  const changed = lastChanged(pages.filter((p) => routes.has(p._id)), overrides, parts);
   const resolved = [], report = refused.map(({ row, message }) => ({ path: row._id, message, help: "Give it its own slug: words joined with hyphens, not used by another page." }));
   for (const doc of pages) {
     if (!routes.has(doc._id)) continue;
-    resolved.push(resolveSafely(doc, byId.get(overrideId(doc._id)), site, { ...options, faqDocs, paths }));
+    resolved.push({ ...resolveSafely(doc, byId.get(overrideId(doc._id)), site, { ...options, faqDocs, paths }), lastmod: changed.get(doc._id) });
   }
   report.push(...resolved.flatMap((r) => r.problems));
   const ids = new Set(pages.map((p) => overrideId(p._id)));
