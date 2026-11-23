@@ -68,8 +68,8 @@ export function buildHead({ seo, route }, site) {
 /** JSON safe inside a <script> tag, without changing any value. */
 export const serializeGraph = (graph) => JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
 
-/** Sitemap entries by URL: which pages to leave out, and real dates only. */
+/** Sitemap entries by URL: which pages to leave out, and when each last changed. */
 export const sitemapEntries = (pages, baseUrl) => new Map(pages.filter((p) => p.route).map((p) => [
   new URL(p.route, `${baseUrl}/`).toString().replace(/\/$/, ""),
-  { exclude: p.seo.noindex || Boolean(p.seo.canonical), lastmod: p.seo.dateModified ?? p.seo.datePublished },
+  { exclude: p.seo.noindex || Boolean(p.seo.canonical), lastmod: p.lastmod },
 ]));

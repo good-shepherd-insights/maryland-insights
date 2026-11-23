@@ -85,7 +85,7 @@ Every list item needs a unique `_key`; JSON-LD items also need a `_type`. `metaT
 | `ogTitle` | string | optional; 10 to 90 characters | Title on shared links. Leave empty to use the title. |
 | `ogDescription` | text | optional; 30 to 200 characters | Summary on shared links. Leave empty to use the description. |
 | `ogImage` | path | optional | Share image, 1200x630: a site path or https URL. Leave empty to use the generated image. Example: `/images/share/local-seo.png` |
-| `dateModified` | date | optional | The day the content last changed in a way a reader would notice. Only for pages with no date of their own; a date on the page always wins. Never a future date. Example: `2026-10-14` |
+| `dateModified` | date | optional | The day the content last changed in a way a reader would notice. Used in structured data only; sitemap dates are automatic. Only for pages with no date of their own; a date on the page always wins. Never a future date. Example: `2026-10-14` |
 | `jsonLd` | list | optional; up to 10 items | Changes to the page type's structured data. Add an item to change or switch off that item, or to add a schemaCustom. |
 
 ## JSON-LD items: `jsonLd[]`
