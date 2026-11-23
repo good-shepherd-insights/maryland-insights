@@ -14,7 +14,7 @@ import frontman from "@frontman-ai/astro";
 import { createClient } from "@sanity/client";
 import { ALL_QUERY } from "./src/lib/seo/contract.mjs";
 import { sitemapEntries } from "./src/lib/seo/graph.mjs";
-import { buildFault, isUnpublished, startCounting } from "./src/lib/brokenLimit.mjs";
+import { buildFault, isUnpublished, onUnhandled, startCounting } from "./src/lib/brokenLimit.mjs";
 import { imageExists } from "./src/lib/seo/files.mjs";
 import { plainify } from "./src/lib/utils/plainify.mjs";
 import { resolveAll } from "./src/lib/seo/resolve.mjs";
@@ -24,6 +24,7 @@ import { formatProblems } from "./src/lib/seo/validate.mjs";
 if (process.argv.includes("build")) {
   globalThis.__sanityBuildReads = new Map();
   startCounting();
+  process.on("unhandledRejection", onUnhandled);
 }
 
 // Sitemap dates and noindex come from each page's `seo` object in Sanity.

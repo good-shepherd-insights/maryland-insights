@@ -2,7 +2,8 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { isDataError } from "../src/lib/broken";
-import { buildFault } from "../src/lib/brokenLimit.mjs";
+import { markdownify, slugify } from "../src/lib/utils/textConverter";
+import { buildFault, onUnhandled } from "../src/lib/brokenLimit.mjs";
 import { imageAddress, parseImage, sanityUrl } from "../src/lib/images.mjs";
 import { DEFAULT_FIELDS, JSON_LD_ITEMS, PAGE_FIELDS, ROUTES, SITE_FIELDS, isRepeatable, overrideId } from "../src/lib/seo/contract.mjs";
 import { buildHead, serializeGraph, sitemapEntries } from "../src/lib/seo/graph.mjs";
@@ -320,8 +321,13 @@ describe("broken content", () => {
   it("outages are never treated as bad content", () => {
     const e = (E: any, m: string, x = {}) => Object.assign(new E(m), x);
     for (const err of [e(Error, "connect EAI_AGAIN"), e(TypeError, "terminated"), e(TypeError, "fetch failed"), e(Error, "Sanity is down"), e(TypeError, "x", { cause: new Error("y") }), e(TypeError, "x", { code: "ECONNRESET" }), "text", null]) expect(isDataError(err), String(err)).toBe(false);
-    for (const err of [e(TypeError, "Cannot read properties of null (reading 'map')"), e(RangeError, "Invalid time value"), e(Error, "Unable to render Heading because it is null!")]) expect(isDataError(err)).toBe(true);
+    for (const err of [e(TypeError, "Cannot read properties of null (reading 'map')"), e(RangeError, "Invalid time value"), e(Error, "Element type is invalid: expected a string but got: number."), e(Error, "Unable to render Heading because it is null!")]) expect(isDataError(err)).toBe(true);
   });
+  it("a second fault in a block is logged, an outage still ends the build", () => {
+    expect(() => onUnhandled(new TypeError("Cannot read properties of null"))).not.toThrow();
+    expect(() => onUnhandled(new Error("connect EAI_AGAIN"))).toThrow();
+  });
+  it("text helpers accept any value", () => { for (const v of [null, {}, [], 5, true] as any[]) { expect(markdownify(v)).toBe(""); expect(slugify(v)).toBe(""); } });
   it("a copy of a fixed page is never used, and every fixed page is fetched by the chosen id", () => {
     const src = readFileSync(path.resolve(__dirname, "../src/lib/sanity/queries.ts"), "utf8");
     for (const t of Object.keys(ROUTES).filter((t) => !isRepeatable(t))) {

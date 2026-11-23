@@ -22,3 +22,18 @@ export function buildFault(counts, preview) {
   const failed = [...(counts?.kinds ?? [])].filter(([name, k]) => k.ok === 0 && k.broken > 0 && (preview || (name.startsWith("page ") && k.broken >= 3)));
   return failed.length ? `Nothing of this kind rendered: ${failed.map(([n, k]) => `${n} (${k.broken})`).join(", ")}. See the [content] lines above.` : undefined;
 }
+
+/** Only errors that missing or misshapen values cause. Anything else, such as an outage, still fails the build. */
+export const isDataError = (error) =>
+  (error instanceof TypeError || error instanceof RangeError || /^(Unable to render \S+ because it is (null|undefined)|Element type is invalid|Objects are not valid as a React child|Minified React error)/.test(error?.message ?? "")) &&
+  !("code" in error || "statusCode" in error || "response" in error || error.cause) &&
+  !/fetch|terminated|network|socket|timed? ?out|ECONN|EAI_|ENOTFOUND|abort/i.test(error.message);
+
+/**
+ * When two parts of one block fail, Astro reports the first and leaves the
+ * second unhandled, which would end the process. Build only.
+ */
+export const onUnhandled = (error) => {
+  if (!isDataError(error)) throw error;
+  console.error(`[content] second fault in the same block: ${error.message}`);
+};

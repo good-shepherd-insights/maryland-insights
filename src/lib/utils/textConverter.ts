@@ -3,13 +3,13 @@ import { marked } from "marked";
 import * as emoji from "node-emoji";
 
 const emojifyShortcodes = (content: string | undefined | null) => {
-  if (!content) return "";
+  if (typeof content !== "string" || !content) return "";
   return emoji.emojify(content);
 };
 
 // slugify
 export const slugify = (content: string | undefined | null) => {
-  if (!content) return "";
+  if (typeof content !== "string" || !content) return "";
   return slug(content);
 };
 
@@ -18,7 +18,7 @@ export const markdownify = (
   content: string | undefined | null,
   div?: boolean,
 ) => {
-  if (!content) return "";
+  if (typeof content !== "string" || !content) return "";
   const emojified = emojifyShortcodes(content) as string;
   return div
     ? marked.parse(emojified)
