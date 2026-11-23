@@ -11,6 +11,15 @@ import remarkToc from "remark-toc";
 import sharp from "sharp";
 import config from "./src/config/config.json";
 import frontman from "@frontman-ai/astro";
+import { createClient } from "@sanity/client";
+import { ALL_PAGES_QUERY, SITE_QUERY } from "./src/lib/seo/contract.mjs";
+import { sitemapEntries } from "./src/lib/seo/graph.mjs";
+
+// Sitemap dates and noindex come from each page's `seo` object in Sanity.
+const sanity = createClient({ projectId: "089yj83f", dataset: "production", apiVersion: "2026-01-01", useCdn: false });
+const [seoPages, seoSite] = await Promise.all([sanity.fetch(ALL_PAGES_QUERY), sanity.fetch(SITE_QUERY)]);
+const seoEntries = sitemapEntries(seoPages, seoSite.seoUrl);
+const seoEntry = (url) => seoEntries.get(url.replace(/\/$/, ""));
 
 // https://astro.build/config
 export default defineConfig({
@@ -30,6 +39,7 @@ export default defineConfig({
       ],
     },
   },
+  redirects: { "/sitemap.xml": { status: 301, destination: "/sitemap-index.xml" } },
   integrations: [
     frontman({
       projectRoot: import.meta.dirname,
@@ -53,7 +63,12 @@ export default defineConfig({
         !page.includes("/get-started") &&
         !page.includes("/start-for-free") &&
         !page.includes("/enterprise-support") &&
-        !page.includes("/search"),
+        !page.includes("/search") &&
+        !seoEntry(page)?.noindex,
+      serialize: (item) => {
+        const lastmod = seoEntry(item.url)?.lastmod;
+        return lastmod ? { ...item, lastmod } : item;
+      },
     }),
     AutoImport({
       imports: [

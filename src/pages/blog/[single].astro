@@ -67,6 +67,7 @@ const dateModifiedRaw = doc?.dateModified || doc?.datePublished;
 
 <Base
   {...doc}
+  seoId={doc._id}
   ui={settingsUi}
   og_type="article"
   date_published={doc?.datePublished ? new Date(doc.datePublished).toISOString() : undefined}

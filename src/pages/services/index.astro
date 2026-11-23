@@ -32,7 +32,7 @@ const services = (grid.services ?? []).map((s: any) => ({
 
 ---
 
-<Base {...servicesPage} ui={settingsUi}>
+<Base {...servicesPage} ui={settingsUi} seoId={servicesPage._id}>
   <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
 
   <section class="section-sm bg-light">

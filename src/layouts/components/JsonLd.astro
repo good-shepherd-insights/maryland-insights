@@ -1,0 +1,6 @@
+---
+import { serializeGraph } from "@/lib/seo/graph.mjs";
+const { graph } = Astro.props;
+---
+
+<script type="application/ld+json" set:html={serializeGraph(graph)} is:inline />

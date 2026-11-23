@@ -57,7 +57,7 @@ const categoryLabels = [...categoryLabelsBySlug.values()];
 const sortedPosts = sortByDate(posts);
 ---
 
-<Base {...blogPage} ui={settingsUi}>
+<Base {...blogPage} ui={settingsUi} seoId={blogPage._id}>
   <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
 
   {blogGuide?.enable && <BlogLibraryGuide

@@ -9,8 +9,9 @@ const client = createClient({
   useCdn: false,
 });
 
-const settings = await client.fetch(`*[_type == "siteSettings"][0]{llmsTxt,openSearchXml,humansTxt,redirects}`);
+const settings = await client.fetch(`*[_type == "siteSettings"][0]{"robotsTxt": seo.robotsTxt,llmsTxt,openSearchXml,humansTxt,redirects}`);
 const files = [
+  ["robotsTxt", "public/robots.txt"],
   ["llmsTxt", "public/llms.txt"],
   ["openSearchXml", "public/opensearch.xml"],
   ["humansTxt", "public/humans.txt"],

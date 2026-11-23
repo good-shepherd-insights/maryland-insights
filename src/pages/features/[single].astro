@@ -29,6 +29,7 @@ const settingsUi = settings?.ui ?? {};
   description={feature.description}
   date_modified={feature.dateModified}
   ui={settingsUi}
+  seoId={feature._id}
 >
   <FeatureSections sections={feature.sections ?? []} />
 </Base>
