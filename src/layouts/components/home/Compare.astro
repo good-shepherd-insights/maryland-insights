@@ -6,6 +6,18 @@ const { categories = [], plans = [], ui = {}, partnerLink, copy } = Astro.props 
 const yesLabel = ui.includedLabel ?? "Included", noLabel = ui.notIncludedLabel ?? "Not included";
 const state = (v: string): Cell => (v === "active" ? "yes" : v === "cross" || !v ? "no" : "part");
 const word = (v: string) => (state(v) === "yes" ? yesLabel : state(v) === "no" ? noLabel : v);
+// One line per answer instead of one box per platform: who has it, who half has it, who does not.
+const safe = (t: string) => t.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]!);
+function answers(values: string[]) {
+  const by = new Map<string, { state: Cell; word: string; list: string[] }>();
+  values.forEach((v, i) => {
+    const w = word(v), row = by.get(w) ?? { state: state(v), word: w, list: [] };
+    row.list.push(plans[i].isUs ? `<strong>${safe(plans[i].label)}</strong>` : safe(plans[i].label));
+    by.set(w, row);
+  });
+  const order: Cell[] = ["yes", "part", "no"];
+  return [...by.values()].sort((a, b) => order.indexOf(a.state) - order.indexOf(b.state)).map((a) => ({ ...a, names: a.list.join(", ") }));
+}
 const logo = (p: any) => (p.isUs ? "/images/logo.svg" : p.logo);
 let n = 0;
 const groups = categories.filter((c) => c?.category && c.rows?.length).map((c, gi) => ({ name: c.category, id: gi, rows: c.rows.filter((r: any) => r?.name).map((r: any) => ({ ...r, id: n++, values: plans.map((_, i) => r.values?.[i] ?? "cross") })) }));
@@ -73,7 +85,7 @@ const title = (t: string) => t.replace("{n}", String(all.length));
             <details class="hp-feat" data-feature={r.id}>
               <summary><h4>{r.name}</h4></summary>
               <p>{r.description}</p>
-              <dl>{r.values.map((v: string, i: number) => <div class:list={[{ "hp-us": plans[i].isUs }]}><dt>{plans[i].label}</dt><dd>{word(v)}</dd></div>)}</dl>
+              <dl>{answers(r.values).map((a) => <div><dt><i class:list={["hp-c", `hp-${a.state}`]} aria-hidden="true"></i>{a.word}</dt><dd set:html={a.names} /></div>)}</dl>
               {partnerLink && <p class="hp-modal-cta"><a class="hp-btn hp-btn-ink" href={partnerLink} aria-label={`${copy.ctaLabel}: ${r.name}`}>{copy.ctaLabel}</a></p>}
             </details>
           ))}
