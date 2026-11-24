@@ -1,0 +1,20 @@
+/* The one footer, on every page. Its own file so it never reorders the page stylesheets. */
+.hp-footer { --ink:#121212; --cream:#FAF7F2; --gold:#FFC20E; --red:#B8112B; --sand:#E9E1D2; --mut:#4A4742; --line:#D8D2C8; --gut:clamp(20px,3.9vw,56px); --disp:"Bricolage Grotesque",sans-serif; color:var(--ink); font-size:17px; line-height:1.5; }
+.hp-footer :is(h2,p,ul) { margin:0; padding:0; } .hp-footer ul { list-style:none; }
+.hp-footer h2 { font-family:var(--disp); font-weight:800; line-height:1.05; color:inherit; }
+.hp-footer p { color:inherit; font-size:inherit; line-height:inherit; max-width:none; } .hp-footer img { max-width:100%; }
+.hp-footer .hp-in { max-width:1440px; margin-inline:auto; padding-inline:var(--gut); box-sizing:border-box; }
+.hp-footer .hp-flag { overflow:hidden; background:var(--gold); } .hp-footer .hp-flag svg { display:block; max-width:none; }
+.hp-footer :is(a,button,input):focus-visible { outline:3px solid currentColor; outline-offset:3px; }
+.hp-footer .hp-h2 { text-wrap:balance; letter-spacing:-.035em; }
+.hp-footer { background:var(--gold); } .hp-footer > .hp-in { padding-block:44px 32px; } .hp-footer a { color:inherit; }
+.hp-footer-top { display:grid; grid-template-columns:minmax(0,1fr); gap:36px; padding-bottom:36px; } .hp-footer .hp-h2 { font-size:clamp(33px,10.8vw,72px); }
+.hp-footer .hp-footer-h { font:800 21px/1.2 var(--disp); letter-spacing:-.02em; padding-bottom:6px; }
+.hp-footer form { display:grid; grid-template-columns:minmax(0,1fr); gap:10px; font-size:16px; } .hp-news { display:flex; } .hp-news input { flex:1; min-width:0; font:inherit; min-height:54px; padding:0 15px; border:2px solid var(--ink); border-radius:0; background:#fff; color:var(--ink); } .hp-news button { width:56px; background:var(--ink); color:#fff; border:0; cursor:pointer; display:flex; align-items:center; justify-content:center; } .hp-news button:disabled { opacity:.5; }
+.hp-footer form p[data-newsletter-hint] { font-size:15px; } .hp-consent { display:flex; gap:10px; align-items:center; min-height:44px; font-size:15px; } .hp-consent input { width:20px; height:20px; border:2px solid var(--ink); border-radius:0; } .hp-consent a { font-weight:600; text-decoration:underline; }
+.hp-footer-cols { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:30px 20px; } .hp-footer-cols nav:last-child { grid-column:1/-1; } .hp-footer-cols nav:last-child ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:20px; } .hp-footer-cols a { display:flex; align-items:center; min-height:44px; font-size:16px; line-height:1.25; text-decoration:none; } .hp-footer-cols nav a:hover { text-decoration:underline; }
+.hp-footer-logo { grid-column:1/-1; order:9; } .hp-footer-logo > a { display:inline-flex; background:#fff; padding:10px 14px; }
+.hp-footer-end { border-top:2px solid var(--ink); margin-top:30px; padding-top:14px; display:grid; gap:8px; font-size:15px; } .hp-footer-end ul { display:flex; gap:24px; } .hp-footer-end ul a { display:inline-flex; align-items:center; min-height:44px; font-weight:600; text-decoration:underline; text-underline-offset:4px; } .hp-footer-end p a { font-weight:600; text-decoration:underline; }
+@media (min-width:1024px) {
+  .hp-footer > .hp-in { padding-block:64px 40px; } .hp-footer-top { grid-template-columns:minmax(0,760px) 380px; justify-content:space-between; align-items:start; gap:60px; padding-bottom:56px; } .hp-footer-cols, .hp-footer-cols nav:last-child ul { grid-template-columns:1.4fr 1fr 1fr 1fr; gap:44px; } .hp-footer-cols nav:last-child { grid-column:auto; } .hp-footer-cols nav:last-child ul { display:block; } .hp-footer-logo { grid-column:auto; order:0; } .hp-footer-cols a { min-height:36px; } .hp-footer-end { display:flex; justify-content:space-between; align-items:center; margin-top:48px; padding-top:22px; }
+}

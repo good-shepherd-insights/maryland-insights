@@ -4,7 +4,6 @@ import theme from "@/config/theme.json";
 import trackingConfig from "@/config/tracking.json";
 import TrackingManager from "../components/tracking/TrackingManager.astro";
 import Footer from "@/partials/Footer.astro";
-import HomeFooter from "@/components/home/HomeFooter.astro";
 import Header from "@/partials/Header.astro";
 import "@/styles/main.css";
 import { GoogleTagmanagerNoscript } from "@digi4care/astro-google-tagmanager";
@@ -47,8 +46,6 @@ export interface Props {
   article_tags?: string[];
   article_section?: string;
   googlebot?: string;
-  /** The redesigned footer, used by the homepage. */
-  homeFooter?: boolean;
   ui?: any;
 }
 
@@ -74,7 +71,7 @@ const {
   seoId, notFound,
   og_type = "website", date_published, date_modified, author_name,
   author_twitter, article_tags, article_section, googlebot,
-  head_links = [], ui, homeFooter = false
+  head_links = [], ui
 } = Astro.props as any;
 
 if (!seoId && !notFound) throw new Error(`${Astro.url.pathname} must pass seoId to Base.`);
@@ -256,7 +253,7 @@ const documentLocale = siteSettings.locale?.replace("_", "-");
         <path d="M12 4l-8 8h5v8h6v-8h5z"/>
       </svg>
     </button>
-    {homeFooter ? <HomeFooter newsletter={footerNewsletter} /> : <Footer newsletter={footerNewsletter} />}
+    <Footer newsletter={footerNewsletter} />
 
     <script>
       import Lenis from "lenis";
