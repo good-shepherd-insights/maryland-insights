@@ -1,9 +1,14 @@
-// Draws the homepage hero map from src/lib/home/calls.json (calls per county).
+// Draws the homepage hero map from src/lib/home/businesses.json:
+// business establishments per county, U.S. Census Bureau County Business Patterns 2023.
 // Run after changing the counts: node scripts/homeArt.mjs
 import { readFileSync, writeFileSync } from "node:fs";
 
 const geo = readFileSync("src/lib/features/geo/blankMap.ts", "utf8").match(/INNER = (".*?");?\s*$/m)[1];
-const calls = JSON.parse(readFileSync("src/lib/home/calls.json", "utf8"));
+const count = JSON.parse(readFileSync("src/lib/home/businesses.json", "utf8"));
+const most = Math.max(...Object.values(count));
+// Heights follow the square root of the counts, so small counties stay visible. The labels carry the numbers.
+const calls = Object.fromEntries(Object.entries(count).map(([k, v]) => [k, Math.sqrt(v / most) * 104]));
+const short = (n) => (n >= 9950 ? `${Math.round(n / 1000)}k` : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
 const INK = "#121212", GOLD = "#FFC20E";
 
 /** Ramer-Douglas-Peucker: fewer points, same shape at the sizes used here. */
@@ -32,7 +37,7 @@ const counties = [...JSON.parse(geo).matchAll(/<path d="([^"]+)"[^>]*><title>([^
   return { name, rings: rings.map((r) => simplify(r, 0.45)).filter((r) => r.length > 2), c: best.slice(1) };
 });
 const path = (rings) => rings.map((r) => "M" + r.map(([x, y]) => `${+x.toFixed(1)} ${+y.toFixed(1)}`).join("L") + "Z").join("");
-const ramp = (v) => (v < 15 ? "#FFF0BF" : v < 40 ? "#FFDF82" : v < 75 ? GOLD : "#F0A900");
+const ramp = (v) => (v < 24 ? "#FFF0BF" : v < 40 ? "#FFDF82" : v < 75 ? GOLD : "#F0A900");
 
 function draw({ sx, sy, ox, ty, gy, lift, only, font, small, offset, box, ground, stroke, dot, line }) {
   const at = ([x, y], o) => [x * sx + ox, y * sy + o];
@@ -58,15 +63,15 @@ function draw({ sx, sy, ox, ty, gy, lift, only, font, small, offset, box, ground
   }
   const labels = counties.filter((c) => !only || only.includes(c.name)).map((c) => {
     const [dx, dy] = offset[c.name] ?? [0, 0], [x, y] = at([c.c[0] + dx, c.c[1] + dy], ty);
-    return { name: c.name, calls: calls[c.name], x: Math.round(x), y: Math.round(y - calls[c.name] * lift - 5 + font / 3), size: small.includes(c.name) ? font - 3 : font };
+    return { name: c.name, calls: short(count[c.name]), x: Math.round(x), y: Math.round(y - calls[c.name] * lift - 5 + font / 3), size: small.includes(c.name) ? font - 3 : font };
   });
   return { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box}">${out}</svg>`, labels, box };
 }
 
-const wide = draw({ sx: .83, sy: .555, ox: 590, ty: 474, gy: 612, lift: .8, font: 15, small: ["Calvert", "Baltimore City", "Kent", "Talbot"], box: "580 370 850 545", ground: 7, stroke: 1.2, dot: 3.2, line: 1.4,
-  offset: { Garrett: [-6, -10], Allegany: [22, -8], Kent: [14, -14], Cecil: [12, -14], Wicomico: [8, 0], "Baltimore City": [0, 3], Harford: [16, -6], Howard: [21, 9], Carroll: [4, -10], Frederick: [0, -18] } });
+const wide = draw({ sx: .83, sy: .555, ox: 590, ty: 474, gy: 612, lift: .8, font: 15, small: ["Calvert", "Baltimore City", "Kent", "Talbot", "Howard", "Caroline", "Harford"], box: "580 370 850 545", ground: 7, stroke: 1.2, dot: 3.2, line: 1.4,
+  offset: { Garrett: [-6, -10], Allegany: [22, -8], Kent: [14, -17], Cecil: [12, -14], Wicomico: [8, 0], "Baltimore City": [0, 3], Harford: [20, -8], Howard: [31, 8], Caroline: [7, 0], Calvert: [-3, 0], Carroll: [6, -14], Frederick: [-4, -25] } });
 const narrow = draw({ sx: .95, sy: .74, ox: 10, ty: 130, gy: 300, lift: .95, font: 31, small: [], only: ["Garrett", "Frederick", "Montgomery", "Prince George's", "Anne Arundel", "Baltimore County", "Charles", "Worcester"], box: "0 30 980 670", ground: 8, stroke: 1.2, dot: 5, line: 2,
-  offset: { Garrett: [-6, -10], Frederick: [2, -20], "Baltimore County": [0, -26], Montgomery: [-2, 0], Worcester: [-4, 0], "Prince George's": [10, 8], "Anne Arundel": [2, -6] } });
+  offset: { Garrett: [-6, -10], Frederick: [-6, -22], "Baltimore County": [0, -26], Montgomery: [-2, 0], Worcester: [-4, 0], "Prince George's": [10, 8], "Anne Arundel": [2, -6] } });
 writeFileSync("public/images/home/hero-map.svg", wide.svg);
 writeFileSync("public/images/home/hero-map-mobile.svg", narrow.svg);
 writeFileSync("src/lib/home/heroMap.json", JSON.stringify({ wide: { box: wide.box, labels: wide.labels }, narrow: { box: narrow.box, labels: narrow.labels } }));

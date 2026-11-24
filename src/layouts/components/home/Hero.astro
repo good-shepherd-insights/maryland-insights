@@ -29,7 +29,7 @@ const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
     <div class="hp-hero-map">
       <picture>
         <source media="(min-width: 1024px)" srcset="/images/home/hero-map.svg" width="850" height="545" />
-        <img src="/images/home/hero-map-mobile.svg" width="980" height="670" alt="Maryland raised by calls per county above the same map left blank, sample data" fetchpriority="high" />
+        <img src="/images/home/hero-map-mobile.svg" width="980" height="670" alt="Maryland raised by the number of businesses in each county, above the same map left blank" fetchpriority="high" />
       </picture>
       <svg class="hp-wide" viewBox={map.wide.box} aria-hidden="true">
         {map.wide.labels.map((l) => <text x={l.x} y={l.y} text-anchor="middle" font-size={l.size} font-weight="800">{l.calls}</text>)}

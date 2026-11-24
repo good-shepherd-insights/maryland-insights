@@ -3,7 +3,7 @@
 export const COPY = {
   // Stands in for hero.title until that is changed in Sanity, which would change the live page now.
   heroTitle: "More calls for Maryland businesses. Measured, not guessed.",
-  heroNote: "Calls by county for one client.",
+  heroNote: "Business locations by county, U.S. Census Bureau, 2023.",
   heroMeasured: "Measured",
   heroGuessed: "Guessed",
   partnersTitle: "Maryland government partners",
