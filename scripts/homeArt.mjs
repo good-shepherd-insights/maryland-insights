@@ -65,19 +65,21 @@ function place(shapes, fonts, pad) {
     const all = (x0, y0, x1, y1) => x0 >= 0 && y0 >= 0 && x1 < w && y1 < h && cells[y1 * (w + 1) + x1] - cells[y0 * (w + 1) + x1] - cells[y1 * (w + 1) + x0] + cells[y0 * (w + 1) + x0] === (x1 - x0) * (y1 - y0);
     for (const font of fonts) {
       const tw = s.text.length * font * .64, th = font * .74;
+      // How far the number can slide each way before touching an edge. Centered means the two sides match.
       let best = null;
       for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
         if (grid[y * w + x] !== id) continue;
-        let m = pad;
-        if (!all(Math.round(x - tw / 2 - m), Math.round(y - th / 2 - m), Math.round(x + tw / 2 + m), Math.round(y + th / 2 + m))) continue;
-        while (m < 60 && all(Math.round(x - tw / 2 - m - 1), Math.round(y - th / 2 - m - 1), Math.round(x + tw / 2 + m + 1), Math.round(y + th / 2 + m + 1))) m++;
-        if (!best || m > best.m) best = { m, pts: [[x, y]] }; else if (m === best.m) best.pts.push([x, y]);
+        const box = (dx, dy) => all(Math.round(x + dx - tw / 2 - pad), Math.round(y + dy - th / 2 - pad), Math.round(x + dx + tw / 2 + pad), Math.round(y + dy + th / 2 + pad));
+        if (!box(0, 0)) continue;
+        const slide = (dx, dy) => { let k = 0; while (k < 70 && box(dx * (k + 1), dy * (k + 1))) k++; return k; };
+        const l = slide(-1, 0), r = slide(1, 0), t = slide(0, -1), b = slide(0, 1);
+        if (Math.abs(l - r) > 2 || Math.abs(t - b) > 2 || Math.min(l, r, t, b) < 1) continue;
+        const score = Math.min(l, r, 24) + Math.min(t, b, 24) * 1.4 - Math.abs(l - r) * .55 - Math.abs(t - b) * .75;
+        if (!best || score > best.score) best = { score, x, y, l, r, t, b };
       }
       if (best) {
-        // The middle of every equally roomy spot, snapped to one of them.
-        const cx = best.pts.reduce((a, q) => a + q[0], 0) / best.pts.length, cy = best.pts.reduce((a, q) => a + q[1], 0) / best.pts.length;
-        const [x, y] = best.pts.reduce((a, q) => (Math.hypot(q[0] - cx, q[1] - cy) < Math.hypot(a[0] - cx, a[1] - cy) ? q : a));
-        return [{ name: s.name, calls: s.text, x: x + minX, y: Math.round(y + minY + font * .365), size: font }];
+        if (process.env.SHOW) console.log(s.name.padEnd(18), s.text.padEnd(5), font, "left/right", best.l, best.r, "top/bottom", best.t, best.b);
+        return [{ name: s.name, calls: s.text, x: best.x + minX + .5, y: +(best.y + minY + .5 + font * .364).toFixed(1), size: font }];
       }
     }
     return [];
@@ -104,8 +106,8 @@ function draw({ sx, sy, ox, ty, gy, lift, fonts, pad, box, ground, stroke }) {
   return { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box}">${out}</svg>`, labels: place(shapes, fonts, pad), box };
 }
 
-const wide = draw({ sx: .83, sy: .6, ox: 590, ty: 470, gy: 596, lift: .2, fonts: [17, 15, 13, 12], pad: 1, box: "580 370 850 545", ground: 7, stroke: 1.3 });
-const narrow = draw({ sx: .95, sy: .8, ox: 10, ty: 130, gy: 280, lift: .24, fonts: [33, 31], pad: 2, box: "0 30 980 670", ground: 8, stroke: 1.6 });
+const wide = draw({ sx: .83, sy: .66, ox: 590, ty: 452, gy: 566, lift: .16, fonts: [16, 13], pad: 2, box: "580 370 850 545", ground: 7, stroke: 1.3 });
+const narrow = draw({ sx: .95, sy: .8, ox: 10, ty: 130, gy: 280, lift: .2, fonts: [31], pad: 3, box: "0 30 980 670", ground: 8, stroke: 1.6 });
 writeFileSync("public/images/home/hero-map.svg", wide.svg);
 writeFileSync("public/images/home/hero-map-mobile.svg", narrow.svg);
 writeFileSync("src/lib/home/heroMap.json", JSON.stringify({ wide: { box: wide.box, labels: wide.labels }, narrow: { box: narrow.box, labels: narrow.labels } }));
