@@ -145,6 +145,7 @@ export async function getServicePage(slug: string) {
             _id,
             title,
             description,
+            image,
             "slug": slug.current,
             "datePublished": coalesce(date, datePublished)
           }

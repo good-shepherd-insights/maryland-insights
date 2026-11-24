@@ -2,74 +2,28 @@
 import { markdownify, slugify } from "@/lib/utils/textConverter";
 
 type Props = {
-  title: string;
-  intro: string;
-  backupPolicy: string;
-  uptimePolicy: string;
-  migrationPolicy: string;
-  included: string[];
-  extraCost: string[];
-  ui?: {
-    backupsLabel?: string;
-    uptimeLabel?: string;
-    migrationLabel?: string;
-    includedLabel?: string;
-    extraCostLabel?: string;
-  };
+  title: string; intro: string; backupPolicy: string; uptimePolicy: string; migrationPolicy: string; included: string[]; extraCost: string[]; bg?: string;
+  ui?: { backupsLabel?: string; uptimeLabel?: string; migrationLabel?: string; includedLabel?: string; extraCostLabel?: string };
 };
-
-const {
-  title,
-  intro,
-  backupPolicy,
-  uptimePolicy,
-  migrationPolicy,
-  included,
-  extraCost,
-  ui,
-} = Astro.props as Props;
+const { title, intro, backupPolicy, uptimePolicy, migrationPolicy, included, extraCost, ui, bg = "white" } = Astro.props as Props;
 const headingId = `service-${slugify(title)}`;
+const policies = [[ui?.backupsLabel, backupPolicy], [ui?.uptimeLabel, uptimePolicy], [ui?.migrationLabel, migrationPolicy]];
 ---
 
-<section class="section border-y border-border/70 bg-light" aria-labelledby={headingId}>
-  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
-    <div class="grid items-start gap-12 lg:grid-cols-12 lg:gap-20">
-      <div class="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
-        <h2 id={headingId} class="text-balance text-3xl font-semibold leading-tight md:text-4xl" set:html={markdownify(title)} />
-        <p class="mt-5 max-w-md text-text-dark/75" set:html={markdownify(intro)} />
+<section aria-labelledby={headingId}>
+  <div class:list={["sp-sec", `hp-${bg}`]}>
+    <div class="hp-in sp-stack">
+      <div class="sp-title">
+        <h2 id={headingId} class="sp-h2 sp-h2-lg" set:html={markdownify(title)} />
+        <p class="sp-lead-p sp-mut" set:html={markdownify(intro)} />
       </div>
-
-      <div class="lg:col-span-8">
-        <dl class="border-t border-border">
-          <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-8">
-            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.backupsLabel}</dt>
-            <dd class="text-text-dark/80" set:html={markdownify(backupPolicy)} />
-          </div>
-          <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-8">
-            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.uptimeLabel}</dt>
-            <dd class="text-text-dark/80" set:html={markdownify(uptimePolicy)} />
-          </div>
-          <div class="grid gap-3 border-b border-border py-6 sm:grid-cols-[10rem_1fr] sm:gap-8 sm:py-8">
-            <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.migrationLabel}</dt>
-            <dd class="text-text-dark/80" set:html={markdownify(migrationPolicy)} />
-          </div>
-        </dl>
-
-        <div class="mt-10 grid gap-8 md:grid-cols-2">
-          <div>
-            <h3 class="h6 mb-4">{ui?.includedLabel}</h3>
-            <ul class="space-y-3 border-t border-border pt-4">
-              {included.map((item) => <li class="border-b border-border pb-3 text-sm text-text-dark/80" set:html={markdownify(item)} />)}
-            </ul>
-          </div>
-          <div>
-            <h3 class="h6 mb-4">{ui?.extraCostLabel}</h3>
-            <ul class="space-y-3 border-t border-border pt-4">
-              {extraCost.map((item) => <li class="border-b border-border pb-3 text-sm text-text-dark/80" set:html={markdownify(item)} />)}
-            </ul>
-          </div>
-        </div>
-      </div>
+      <dl class="sp-cols" style="--n:3">
+        {policies.map(([label, text]) => <div class="sp-rule sp-rule-3"><dt class="sp-label">{label}</dt><dd set:html={markdownify(text)} /></div>)}
+      </dl>
     </div>
+  </div>
+  <div class="sp-split">
+    <div class="hp-gold"><h3 class="sp-h3">{ui?.includedLabel}</h3><ul class="sp-checks">{included.map((item) => <li class="on"><span set:html={markdownify(item)} /></li>)}</ul></div>
+    <div class="hp-sand"><h3 class="sp-h3">{ui?.extraCostLabel}</h3><ul class="sp-checks">{extraCost.map((item) => <li><span set:html={markdownify(item)} /></li>)}</ul></div>
   </div>
 </section>

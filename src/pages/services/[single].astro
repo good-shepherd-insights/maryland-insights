@@ -5,7 +5,9 @@ import Base from "@/layouts/Base.astro";
 import { getServicePageSlugs, getServicePage, getSiteSettings } from "@/lib/sanity/queries";
 import { adaptServicePage } from "@/lib/sanity/adapters";
 import PageHeader from "@/partials/PageHeader.astro";
-import Faqs from "@/partials/Faqs.astro";
+import ServiceFaq from "@/components/services/ServiceFaq.astro";
+import "@/styles/home.css";
+import "@/styles/service.css";
 import ServiceBlocks from "@/components/services/ServiceBlocks.astro";
 import ServiceCTA from "@/components/services/ServiceCTA.astro";
 import ServiceRelatedFeatures from "@/components/services/ServiceRelatedFeatures.astro";
@@ -36,13 +38,15 @@ const ctaProps = {
 ---
 
 <Base {...service} ui={settingsUi} seoId={service._id}>
+  <div class="hp sp">
   {!hasLeadHero && <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />}
 
   <ServiceBlocks blocks={blocks} locale={settings.locale} />
 
   {relatedFeatures.length > 0 && <ServiceRelatedFeatures title={service.relatedFeaturesTitle} items={relatedFeatures} />}
 
-  {faqs_list && faqs_list.length > 0 && <Faqs data={{ faqs_list, section_title: (faq_title_prefix ?? "").replace("{title}", title ?? "") }} prefix="service-faq" ui={faqsUi} />}
+  {faqs_list && faqs_list.length > 0 && <ServiceFaq items={faqs_list} title={(faq_title_prefix ?? "").replace("{title}", title ?? "")} ui={faqsUi} />}
 
   <ServiceCTA {...ctaProps} />
+  </div>
 </Base>

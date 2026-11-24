@@ -1,7 +1,10 @@
 ---
 export const prerender = true;
 
-import CardPrimary from "@/components/CardPrimary.astro";
+import ClosingBand from "@/components/blog/ClosingBand.astro";
+import PostRow from "@/components/blog/PostRow.astro";
+import ServiceFaq from "@/components/services/ServiceFaq.astro";
+import UpdatedDateBadge from "@/components/UpdatedDateBadge.astro";
 import Share from "@/components/Share.astro";
 import Base from "@/layouts/Base.astro";
 import { getBlogPosts, getBlogPost, getSiteSettings } from "@/lib/sanity/queries";
@@ -10,10 +13,10 @@ import dateFormat from "@/lib/utils/dateFormat";
 import similarItems from "@/lib/utils/similarItems";
 import { sortByDate } from "@/lib/utils/sortFunctions";
 import { markdownify } from "@/lib/utils/textConverter";
-import CallToAction from "@/partials/CallToAction.astro";
 import ImageMod from "@/components/ImageMod.astro";
-import PageHeader from "@/partials/PageHeader.astro";
-import Faqs from "@/partials/Faqs.astro";
+import "@/styles/home.css";
+import "@/styles/service.css";
+import "@/styles/blog.css";
 
 export async function getStaticPaths() {
   const posts = await getBlogPosts();
@@ -63,6 +66,13 @@ const similarPosts = similarItems(currentItem, allPosts).slice(0, 3);
 
 const dateModifiedRaw = doc?.dateModified || doc?.datePublished;
 
+// One band per h2: the heading on the left, its text on the right.
+const sections = bodyHtml.split(/(?=<h2[\s>])/).filter((part: string) => part.trim()).map((part: string) => {
+  const m = part.match(/^(<h2[\s\S]*?<\/h2>)([\s\S]*)$/);
+  return m ? { heading: m[1], text: m[2] } : { heading: "", text: part };
+}).map((part: { heading: string; text: string }) => ({ ...part, text: part.text.replace(/<p>(\s*<strong>Key point:)/g, '<p class="bp-key">$1') }));
+if (sections.length > 0 && sections[0].heading) sections.unshift({ heading: "", text: "" });
+const asText = (value: unknown) => (value instanceof Date ? value.toISOString() : String(value));
 ---
 
 <Base
@@ -77,158 +87,71 @@ const dateModifiedRaw = doc?.dateModified || doc?.datePublished;
   article_tags={(doc?.categories ?? []).map((c: any) => c.title)}
   article_section={doc?.categories?.[0]?.title}
 >
-  <PageHeader title={title} blogData={blogData} locale={settings.locale} ui={authorUi} />
-  <section class="section-sm bg-light">
-    <div
-      class="container flex flex-col lg:flex-row justify-center gap-5 items-start"
-    >
-      {
-        headings.length > 0 && (
-          <aside class="bg-body rounded-2xl p-6 shrink-0 max-w-62 lg:sticky top-30 hidden lg:block border border-border/50 shadow-sm">
-            <nav>
-              <small class="block mb-4 font-semibold text-text-dark font-primary text-[10px] uppercase tracking-wider">
-                {ui.tocHeading}
-              </small>
-              <div class="toc-desktop-container">
-                <div class="toc-desktop-line" />
-                <ul class="space-y-1">
-                  {headings.map((heading) => (
-                    <li>
-                      <a href={`#${heading.id}`} class="toc-desktop-link">
-                        {heading.text}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </nav>
-          </aside>
-        )
-      }
-      <article
-        class="w-full lg:w-7/12 bg-body rounded-2xl px-6 sm:px-8 xl:px-10"
-      >
-        {
-          headings.length > 0 && (
-            <nav class="lg:hidden my-8 p-5 bg-light/50 border border-border rounded-2xl">
-              <small class="block mb-3 font-semibold text-text-dark font-primary text-[10px] uppercase tracking-wider">
-                {ui.tocMobileHeading}
-              </small>
-              <ul class="space-y-1">
-                {headings.map((heading) => (
-                  <li>
-                    <a href={`#${heading.id}`} class="toc-link group bg-body">
-                      <span class="font-medium">{heading.text}</span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="toc-link-icon opacity-100! translate-x-0!"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )
-        }
-        {
-          doc?.image && (
-            <ImageMod
-              src={doc.image}
-              width={900}
-              height={500}
-              alt={title}
-              class="rounded-2xl object-cover mb-8 w-full"
-            />
-          )
-        }
-        <div class="content" set:html={bodyHtml} />
+  <div class="hp sp">
+    <section class="bp-post-top hp-white">
+      <div class="hp-gold"><div class="hp-in"><h1 set:text={title} /></div></div>
+      <div class="hp-in bp-meta">
+        {blogData.author?.image && <ImageMod src={blogData.author.image} alt={blogData.author.name} height={48} width={48} />}
+        <p><span>{authorUi.writtenByLabel}</span> <strong>{blogData.author?.name}</strong></p>
+        {blogData.date && <UpdatedDateBadge dateModified={asText(blogData.lastmod || blogData.date)} datePublished={asText(blogData.date)} variant="badge" label={authorUi.badgeUpdatedLabel} locale={settings.locale} ui={authorUi} />}
+      </div>
+    </section>
 
-        <div
-          class="flex flex-wrap items-center justify-center gap-4 mt-12 py-10 border-t border-border/50"
-        >
-          {primaryCta?.link && (ui.ctaButtonLabel || primaryCta.label) && (
-            <a href={primaryCta.link} class="btn btn-primary px-10">{ui.ctaButtonLabel || primaryCta.label}</a>
-          )}
-          <a
-            href={settings.consultUrl ?? ""}
-            class="btn btn-outline px-10"
-          >
-            {ui.consultButtonLabel}
-          </a>
+    {headings.length > 0 && (
+      <section class="sp-sec sp-sec-s hp-ink">
+        <div class="hp-in">
+          <nav class="sp-toc" aria-label={ui.tocHeading}>
+            <details class="sp-toc-d" open>
+              <summary><span><span class="sp-h2 sp-h2-s">{ui.tocHeading}</span><span class="sp-mut">{ui.tocMobileHeading}</span></span><svg width="26" height="26" viewBox="0 0 30 30" aria-hidden="true"><path d="M3 15H27" /><path class="sp-toc-v" d="M15 3V27" /></svg></summary>
+              <ol class="bp-toc-l">{headings.map((heading, n) => <li><a href={`#${heading.id}`}><span class="sp-n" aria-hidden="true">{String(n + 1).padStart(2, "0")}</span> <span>{heading.text}</span></a></li>)}</ol>
+            </details>
+            <script is:inline>if (matchMedia("(max-width: 1023px)").matches) document.currentScript.previousElementSibling.removeAttribute("open");</script>
+          </nav>
         </div>
-      </article>
+      </section>
+    )}
 
-      <aside class="w-full lg:w-auto shrink-0 lg:max-w-62 lg:sticky top-30">
-        {
-          sortedPosts.length > 0 && (
-            <nav class="bg-body rounded-2xl p-4">
-              <small class="font-semibold text-text-dark font-primary text-sm">
-                {ui.recentPostsHeading}
-              </small>
-              <ul>
-                {sortedPosts.map((post: any) => (
-                  <li>
-                    <a
-                      href={`/blog/${post.id}`}
-                      class="block py-2 pl-2 text-sm hover:bg-light rounded"
-                    >
-                      <div class="flex">
-                        <ImageMod
-                          src={post?.data.image}
-                          alt={post?.data.title}
-                          width={50}
-                          height={40}
-                          class="inline-block mr-2 rounded object-cover"
-                        />
-                        <div>
-                          <span class="text-[10px]">
-                            {settings.blogChrome?.bylinePrefix && `${settings.blogChrome.bylinePrefix.trim()} `}{[post?.data.author?.name, post?.data.date && dateFormat(post.data.date, settings.locale)].filter(Boolean).join(" - ")}
-                          </span>
-                          <p class="text-sm line-clamp-1 font-medium text-text-dark">
-                            {post?.data.title}
-                          </p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )
-        }
-
-        <!-- Social Share  -->
-        <div class="bg-body rounded-2xl p-4 mt-5">
-          <small class="font-semibold text-text-dark font-primary text-sm">
-            {ui.shareHeading}
-          </small>
-          <Share
-            slug={`blog/${slug}`}
-            className="space-x-5 mt-2 text-xl pl-2"
-            title={title}
-            description={doc?.description}
-            ui={shareUi}
-          />
+    <article>
+      {sections.map((part: { heading: string; text: string }, n: number) => (
+        <div class={`sp-sec sp-sec-s ${n % 2 ? "hp-cream" : "hp-white"}`}>
+          <div class="hp-in bp-sec">
+            <div class="bp-sec-h">
+              {part.heading ? <Fragment set:html={part.heading} /> : doc?.image && <ImageMod src={doc.image} width={900} height={500} alt={title} />}
+            </div>
+            <div>
+              <div class="content bp-body" set:html={part.text} />
+              {n === sections.length - 1 && (
+                <div class="bp-ctas">
+                  {primaryCta?.link && (ui.ctaButtonLabel || primaryCta.label) && <a href={primaryCta.link} class="hp-btn hp-btn-ink">{ui.ctaButtonLabel || primaryCta.label}</a>}
+                  <a href={settings.consultUrl ?? ""} class="hp-btn hp-btn-line">{ui.consultButtonLabel}</a>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
+      ))}
+    </article>
 
-        <!-- Subscribe to newsletter  -->
-        {
-          
-            settings.newsletter && (
-              <div class="bg-body rounded-2xl p-4 mt-5 hidden lg:block">
-                <small class="font-semibold text-text-dark font-primary text-sm">
-                  {ui.newsletterHeading}
-                </small>
-
-                <form
+    <aside class="sp-sec sp-sec-s hp-gold">
+      <div class="hp-in bp-aside">
+        {sortedPosts.length > 0 && (
+          <nav aria-label={ui.recentPostsHeading}>
+            <p class="sp-label">{ui.recentPostsHeading}</p>
+            <ul class="bp-recent">
+              {sortedPosts.map((post: any) => (
+                <li><a href={`/blog/${post.id}`}>
+                  <ImageMod src={post?.data.image} alt={post?.data.title} width={96} height={76} loading="lazy" />
+                  <span><span class="bp-recent-by">{settings.blogChrome?.bylinePrefix && `${settings.blogChrome.bylinePrefix.trim()} `}{[post?.data.author?.name, post?.data.date && dateFormat(post.data.date, settings.locale)].filter(Boolean).join(" - ")}</span><strong>{post?.data.title}</strong></span>
+                </a></li>
+              ))}
+            </ul>
+          </nav>
+        )}
+        <div><p class="sp-label">{ui.shareHeading}</p><Share slug={`blog/${slug}`} className="bp-share" title={title} description={doc?.description} ui={shareUi} /></div>
+        {settings.newsletter && (
+          <div>
+            <p class="sp-label">{ui.newsletterHeading}</p>
+            <form
                   data-newsletter-form
                   action="/api/newsletter"
                   method="post"
@@ -289,47 +212,21 @@ const dateModifiedRaw = doc?.dateModified || doc?.datePublished;
                     )}
                   </label>
                 </form>
-              </div>
-            )
-        }
-      </aside>
-    </div>
-  </section>
-
-  <section
-    class="section bg-dark section-divider"
-    style="--section-divider-color: var(--color-dark)"
-  >
-    <div class="container">
-      {
-        similarPosts.length > 0 && (
-          <div>
-            <h2
-              class="text-center text-white text-balance mx-auto mb-12"
-              set:html={markdownify(
-                ui.similarPostsHeading ?? "",
-              )}
-            />
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {similarPosts.map((post: any) => (
-                <CardPrimary
-                  data={post.data}
-                  id={`/blog/${post.id}`}
-                  hasDarkArrow={true}
-                  locale={settings.locale}
-                  ui={settingsUi.cardPrimary}
-                />
-              ))}
-            </div>
           </div>
-        )
-      }
-    </div>
-  </section>
+        )}
+      </div>
+    </aside>
 
-  {doc?.faqs && doc.faqs.length > 0 && (
-    <Faqs data={{ faqs_list: doc.faqs, section_title: ui.faqSectionTitle }} prefix="blog-faq" ui={settingsUi.faqs} />
-  )}
+    {similarPosts.length > 0 && (
+      <section class="sp-sec hp-cream">
+        <div class="hp-in sp-side">
+          <h2 class="sp-h2" set:html={markdownify(ui.similarPostsHeading ?? "")} />
+          <div>{similarPosts.map((post: any) => <PostRow post={post} locale={settings.locale} ui={settingsUi.cardPrimary} />)}</div>
+        </div>
+      </section>
+    )}
 
-  <CallToAction />
+    {doc?.faqs && doc.faqs.length > 0 && <ServiceFaq items={doc.faqs} title={ui.faqSectionTitle} ui={settingsUi.faqs} />}
+    <ClosingBand />
+  </div>
 </Base>

@@ -1,12 +1,14 @@
 ---
-import CardPrimary from "@/components/CardPrimary.astro";
+import ClosingBand from "@/components/blog/ClosingBand.astro";
 import ImageMod from "@/components/ImageMod.astro";
 import DynamicIcon from "@/helpers/DynamicIcon";
 import Base from "@/layouts/Base.astro";
 import { getServicesPage, getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
-import CallToAction from "@/partials/CallToAction.astro";
-import PageHeader from "@/partials/PageHeader.astro";
+import { serviceIcon } from "@/lib/home/serviceArt";
+import "@/styles/home.css";
+import "@/styles/service.css";
+import "@/styles/blog.css";
 
 const servicesPage = await getServicesPage();
 const settings = await getSiteSettings();
@@ -30,43 +32,28 @@ const services = (grid.services ?? []).map((s: any) => ({
   },
 }));
 
+const TONE: Record<string, string> = { "website-hosting": "ink", "aeo-optimization": "gold", "local-seo": "cream", "analytics-reporting": "red", "marketing-automation": "sand", "ai-powered-content": "white" };
 ---
 
 <Base {...servicesPage} ui={settingsUi} seoId={servicesPage._id}>
-  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
-
-  <section class="section-sm bg-light">
-    <div class="container">
-      {
-        section_title && (
-          <h2
-            class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
-            set:html={markdownify(section_title)}
-          />
-        )
-      }
-
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-10">
-        {
-          services?.map((service: any) => (
-            <div class="h-auto! flex">
-              <div class="w-full">
-                <CardPrimary
-                  data={service.data}
-                  id={`/services/${service.id}`}
-                  locale={settings.locale}
-                  compactImage={true}
-                  imageFit="contain"
-                  imageSizes="(min-width: 1024px) 18rem, (min-width: 768px) 16rem, 14rem"
-                  ui={settingsUi.cardPrimary}
-                />
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  <div class="hp sp">
+    <section class="bp-top bp-top-s hp-cream">
+      <div class="hp-in"><h1>{title}</h1>{description && <p set:html={markdownify(description)} />}{section_title && <h2 class="sp-h2 sp-h2-lg" set:html={markdownify(section_title)} />}</div>
+    </section>
+    {services.map((service: any) => {
+      const tone = TONE[service.id] ?? "white";
+      const icon = serviceIcon(service.data.image, tone, "");
+      return (
+        <section class={`hp-${tone}`}>
+          <div class="hp-in bp-svc">
+            <div class="bp-svc-i" aria-hidden="true">{icon ? <Fragment set:html={icon} /> : service.data.image && <img src={service.data.image} alt="" width="120" height="96" />}</div>
+            <div><h3><a href={`/services/${service.id}`} aria-label={settingsUi.cardPrimary?.readMorePrefix ? `${settingsUi.cardPrimary.readMorePrefix} ${service.data.title}` : undefined}>{service.data.title}</a></h3><p set:html={markdownify(service.data.description)} /></div>
+            {service.data.button?.label && <a class:list={["hp-btn", tone === "ink" || tone === "red" ? "hp-btn-gold" : "hp-btn-ink"]} href={`/services/${service.id}`}>{service.data.button.label}</a>}
+          </div>
+        </section>
+      );
+    })}
+  </div>
 
   {
     use_cases?.enable && (
@@ -134,5 +121,5 @@ const services = (grid.services ?? []).map((s: any) => ({
     )
   }
 
-  <CallToAction />
+  <div class="hp sp"><ClosingBand /></div>
 </Base>

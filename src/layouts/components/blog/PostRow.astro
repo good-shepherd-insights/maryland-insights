@@ -1,0 +1,19 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import dateFormat from "@/lib/utils/dateFormat";
+import { markdownify } from "@/lib/utils/textConverter";
+
+// One article as a ruled row: cover, author and date, title, summary. The whole row is the link.
+const { post, locale, ui, size = "m" } = Astro.props;
+const { title, description, image, date, author } = post.data;
+const dateTime = date ? (/^\d{4}-\d{2}-\d{2}$/.test(String(date)) ? date : new Date(date).toISOString()) : undefined;
+---
+
+<article class={`bp-row bp-row-${size}`}>
+  {image && <ImageMod src={image} width={696} height={528} alt={title} loading="lazy" sizes="(min-width: 1024px) 460px, 100vw" widths={[348, 696, 1044]} format="webp" layout="constrained" />}
+  <div>
+    {date && author && <p><span>{author.name}</span> • <time datetime={dateTime}>{dateFormat(date, locale)}</time></p>}
+    <h3><a href={`/blog/${post.id}`} aria-label={ui?.readMorePrefix ? `${ui.readMorePrefix} ${title}` : undefined} set:html={markdownify(title)} /></h3>
+    <p set:html={markdownify(description)} />
+  </div>
+</article>

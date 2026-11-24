@@ -18,6 +18,7 @@ type Tier = {
 };
 
 type Props = {
+  bg?: string;
   eyebrow?: string;
   title: string;
   intro?: string;
@@ -44,10 +45,10 @@ const {
   intro,
   tiers = [],
   disclaimer,
-  variant = "cards",
   anchor,
   headingLevel = "h2",
   ui,
+  bg = "cream",
 } = Astro.props as Props;
 
 const headingId = `pricing-${slugify(title)}`;
@@ -65,34 +66,6 @@ const shown = tiers
 
 const count = shown.length;
 
-// Column logic mirrors ResourcesDirectory: single column below sm, never an orphan row at the widest step.
-const lgColClass: Record<number, string> = {
-  1: "lg:grid-cols-1",
-  2: "lg:grid-cols-2",
-  3: "lg:grid-cols-3",
-};
-const lgCols = count === 4 ? 2 : count >= 3 ? 3 : count;
-
-// One stroke weight, same check path as LeadCaptureForm's points list.
-const iconAttrs = {
-  viewBox: "0 0 16 16",
-  fill: "none",
-  stroke: "currentColor",
-  "stroke-width": "2",
-  "stroke-linecap": "round",
-  "stroke-linejoin": "round",
-  "aria-hidden": "true",
-} as const;
-
-const ctaClass =
-  "btn btn-primary inline-flex min-h-12 w-full items-center justify-center px-6 py-3 text-center font-secondary font-semibold text-dark hover:border-dark hover:bg-dark hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark sm:w-auto";
-
-const emailInputClass =
-  "w-full min-w-0 rounded-none border border-border bg-light/40 px-4 py-3.5 text-base text-text-dark placeholder:text-text-light transition-colors hover:border-text-light focus:border-primary focus:ring-1 focus:ring-primary/20";
-
-const pillClass =
-  "mb-4 inline-flex max-w-full items-center gap-2 rounded-full bg-secondary/25 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-text-dark";
-
 // Authored label wins; `true` falls back to the plain word. Never fabricated by the component itself.
 const recommendedLabel = (tier: Tier): string =>
   typeof tier.recommended === "string" && tier.recommended.trim() !== ""
@@ -104,210 +77,37 @@ const recommendedLabel = (tier: Tier): string =>
 
 {
   count > 0 && (
-    <section id={anchor} class="section-sm border-y border-border/70 bg-light overflow-x-hidden" aria-labelledby={headingId}>
-      <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
-        <header class="max-w-3xl">
-          {
-            eyebrow && (
-              <p class="mb-5 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                <span class="h-px w-8 bg-primary" aria-hidden="true"></span>
-                {eyebrow}
-              </p>
-            )
-          }
-
-          <Heading id={headingId} class="max-w-[18ch] text-balance">
-            {title}
-          </Heading>
-
-          {
-            intro && (
-              <p class="mt-4 max-w-[62ch] leading-relaxed text-text" set:html={markdownify(intro)} />
-            )
-          }
-        </header>
-
-        {variant === "cards" && (
-          <ul
-            class:list={[
-              "mt-8 grid grid-cols-1 gap-5 sm:gap-6",
-              count > 1 && "sm:grid-cols-2",
-              lgColClass[lgCols],
-            ]}
-          >
-            {shown.map((tier) => (
-              <li class="min-w-0">
-                <div
-                  class:list={[
-                    "flex h-full min-w-0 flex-col rounded-xl border bg-body p-6 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-7",
-                    tier.recommended ? "border-primary/60" : "border-border",
-                  ]}
-                >
-                  {recommendedLabel(tier) !== "" && (
-                    <p class={pillClass}>
-                      <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>
-                      {recommendedLabel(tier)}
-                    </p>
-                  )}
-
-                  <TierHeading class="min-w-0 break-words text-h6 font-bold text-text-dark [overflow-wrap:anywhere]">
-                    {tier.name}
-                  </TierHeading>
-
-                  {tier.priceRange && (
-                    <p class="mt-2 min-w-0 max-w-full break-words text-h5 font-bold tabular-nums text-text-dark [overflow-wrap:anywhere]">
-                      {tier.priceRange}
-                    </p>
-                  )}
-
-                  {tier.description && (
-                    <p class="mt-3 max-w-[58ch] text-sm leading-relaxed text-text" set:html={markdownify(tier.description)} />
-                  )}
-
-                  {(tier.includes.length > 0 || tier.excludes.length > 0) && (
-                    <div class="mt-6 border-t border-border pt-5">
-                      {tier.includes.length > 0 && (
-                        <ul class="space-y-3">
-                          {tier.includes.map((item) => (
-                            <li class="flex items-start gap-3">
-                              <svg class="mt-1 h-4 w-4 shrink-0 text-primary" {...iconAttrs}>
-                                <path d="M2.5 8.5l3.5 3.5 7.5-8" />
-                              </svg>
-                              <span class="min-w-0 max-w-[58ch] break-words text-sm text-text-dark [overflow-wrap:anywhere]" set:html={markdownify(item)} />
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-
-                      {tier.excludes.length > 0 && (
-                        <>
-                          <p class:list={["text-xs font-semibold uppercase tracking-[0.14em] text-text-light", { "mt-6": tier.includes.length > 0 }]}>
-                            {ui?.notIncludedLabel}
-                          </p>
-                          <ul class="mt-3 space-y-3">
-                            {tier.excludes.map((item) => (
-                              <li class="flex items-start gap-3">
-                                <svg class="mt-1 h-4 w-4 shrink-0 text-text-light" {...iconAttrs}>
-                                  <path d="M3 8h10" />
-                                </svg>
-                                <span class="min-w-0 max-w-[58ch] break-words text-sm text-text [overflow-wrap:anywhere]" set:html={markdownify(item)} />
-                              </li>
-                            ))}
-                          </ul>
-                        </>
-                      )}
-                    </div>
-                  )}
-
-                  {tier.collectEmail && tier.ctaLabel && (
-                    <form class="mt-auto w-full pt-8" data-waitlist-form action="/api/waitlist" method="post"
-                      data-ui-joining={ui?.joiningLabel}
-                      data-ui-joined={ui?.joinedLabel}
-                      data-ui-failed={ui?.joinFailedLabel}
-                    >
-                      <label class="mb-2 block text-sm font-semibold text-text-dark" for={`waitlist-email-${slugify(tier.name)}`}>
-                        {ui?.emailLabel}
-                      </label>
-                      <input
-                        id={`waitlist-email-${slugify(tier.name)}`}
-                        name="email"
-                        type="email"
-                        autocomplete="email"
-                        required
-                        class:list={[emailInputClass, "mb-3"]}
-                      />
-                      <button type="submit" class={ctaClass}>
-                        {tier.ctaLabel}
-                      </button>
-                      <p data-waitlist-status aria-live="polite" class="mt-3 text-sm font-semibold text-primary" hidden></p>
-                    </form>
-                  )}
-
-                  {!tier.collectEmail && tier.ctaLabel && tier.ctaHref && (
-                    <div class="mt-auto pt-8">
-                      <a href={tier.ctaHref} class={ctaClass}>
-                        {tier.ctaLabel}
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {variant === "table" && (
-          <dl class="mt-8 border-t border-border">
-            {shown.map((tier) => (
-              <div class="grid gap-6 border-b border-border py-6 sm:grid-cols-[12rem_1fr] sm:gap-8 sm:py-8">
-                <dt class="min-w-0">
-                  {recommendedLabel(tier) !== "" && (
-                    <p class={pillClass}>
-                      <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>
-                      {recommendedLabel(tier)}
-                    </p>
-                  )}
-                  <TierHeading class="min-w-0 break-words text-h6 font-bold text-text-dark [overflow-wrap:anywhere]">
-                    {tier.name}
-                  </TierHeading>
-                  {tier.priceRange && (
-                    <p class="mt-2 min-w-0 break-words text-sm font-bold tabular-nums text-text-dark [overflow-wrap:anywhere]">
-                      {tier.priceRange}
-                    </p>
-                  )}
-                </dt>
-                <dd class="min-w-0">
-                  {tier.description && (
-                    <p class="mb-4 max-w-[62ch] text-sm leading-relaxed text-text" set:html={markdownify(tier.description)} />
-                  )}
-                  <div class:list={["grid gap-8", { "sm:grid-cols-2": tier.excludes.length > 0 }]}>
-                    {tier.includes.length > 0 && (
-                      <div class="min-w-0">
-                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.includedLabel}</p>
-                        <ul class="mt-3 space-y-3 border-t border-border pt-3">
-                          {tier.includes.map((item) => (
-                            <li class="flex items-start gap-3">
-                              <svg class="mt-1 h-4 w-4 shrink-0 text-primary" {...iconAttrs}>
-                                <path d="M2.5 8.5l3.5 3.5 7.5-8" />
-                              </svg>
-                              <span class="min-w-0 max-w-[58ch] break-words text-sm text-text-dark [overflow-wrap:anywhere]" set:html={markdownify(item)} />
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {tier.excludes.length > 0 && (
-                      <div class="min-w-0">
-                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.notIncludedLabel}</p>
-                        <ul class="mt-3 space-y-3 border-t border-border pt-3">
-                          {tier.excludes.map((item) => (
-                            <li class="flex items-start gap-3">
-                              <svg class="mt-1 h-4 w-4 shrink-0 text-text-light" {...iconAttrs}>
-                                <path d="M3 8h10" />
-                              </svg>
-                              <span class="min-w-0 max-w-[58ch] break-words text-sm text-text [overflow-wrap:anywhere]" set:html={markdownify(item)} />
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                  {tier.ctaLabel && tier.ctaHref && (
-                    <a href={tier.ctaHref} class="btn btn-primary mt-6 inline-flex min-h-12 items-center justify-center px-6 py-3 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark">
-                      {tier.ctaLabel}
-                    </a>
-                  )}
-                </dd>
+    <section id={anchor} class:list={["sp-sec", `hp-${bg}`]} aria-labelledby={headingId}>
+      <div class="hp-in sp-stack">
+        <div class="sp-title">
+          {eyebrow && <p class="sp-eyebrow">{eyebrow}</p>}
+          <Heading id={headingId} class="sp-h2 sp-h2-lg">{title}</Heading>
+          {intro && <p class="sp-lead-p" set:html={markdownify(intro)} />}
+        </div>
+        <ul class="sp-tiers">
+          {shown.map((tier) => (
+            <li class="sp-tier">
+              <div class="sp-tier-a hp-gold">
+                {recommendedLabel(tier) !== "" && <p class="sp-strong">{recommendedLabel(tier)}</p>}
+                <TierHeading class="sp-h3">{tier.name}</TierHeading>
+                {tier.priceRange && <p class="sp-price">{tier.priceRange}</p>}
+                {tier.description && <p set:html={markdownify(tier.description)} />}
+                {tier.collectEmail && tier.ctaLabel && (
+                  <form data-waitlist-form action="/api/waitlist" method="post" data-ui-joining={ui?.joiningLabel} data-ui-joined={ui?.joinedLabel} data-ui-failed={ui?.joinFailedLabel}>
+                    <label for={`waitlist-email-${slugify(tier.name)}`}>{ui?.emailLabel}</label>
+                    <input id={`waitlist-email-${slugify(tier.name)}`} name="email" type="email" autocomplete="email" required />
+                    <button type="submit" class="hp-btn hp-btn-ink">{tier.ctaLabel}</button>
+                    <p data-waitlist-status aria-live="polite" hidden></p>
+                  </form>
+                )}
+                {!tier.collectEmail && tier.ctaLabel && tier.ctaHref && <a href={tier.ctaHref} class="hp-btn hp-btn-ink sp-btn">{tier.ctaLabel}</a>}
               </div>
-            ))}
-          </dl>
-        )}
-
-        {
-          disclaimer && (
-            <p class="mt-10 max-w-[62ch] text-sm leading-relaxed text-text-light" set:html={markdownify(disclaimer)} />
-          )
-        }
+              {tier.includes.length > 0 && <div class="sp-tier-b"><p class="sp-h3">{ui?.includedLabel}</p><ul class="sp-checks sp-checks-gold">{tier.includes.map((item) => <li class="on"><span set:html={markdownify(item)} /></li>)}</ul></div>}
+              {tier.excludes.length > 0 && <div class="sp-tier-b"><p class="sp-h3">{ui?.notIncludedLabel}</p><ul class="sp-checks">{tier.excludes.map((item) => <li><span set:html={markdownify(item)} /></li>)}</ul></div>}
+            </li>
+          ))}
+        </ul>
+        {disclaimer && <p class="sp-small" set:html={markdownify(disclaimer)} />}
       </div>
     </section>
   )

@@ -1,0 +1,7 @@
+---
+import ServiceCTA from "@/components/services/ServiceCTA.astro";
+import { getClosingCta } from "@/lib/sanity/queries";
+const cta = await getClosingCta();
+---
+
+{cta && <ServiceCTA title={cta.title} description={cta.description} buttonLabel={cta.primaryLabel} buttonLink={cta.primaryLink} />}

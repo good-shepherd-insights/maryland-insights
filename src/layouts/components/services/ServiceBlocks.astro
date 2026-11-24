@@ -19,6 +19,7 @@ import ServiceRichText from "@/components/services/ServiceRichText.astro";
 import ServiceTrust from "@/components/services/ServiceTrust.astro";
 import TableOfContents from "@/components/TableOfContents.astro";
 import ToolCallout from "@/components/ToolCallout.astro";
+import { planTones } from "@/lib/service/tones";
 import TrustSignals from "@/components/TrustSignals.astro";
 
 type Block = {
@@ -46,10 +47,12 @@ const comparisonRows = (block: Block) =>
       ]),
     ),
   }));
+
+const tones = planTones(blocks);
 ---
 
 {
-  blocks.map((block) => <SafeBlock name={block._type}>{() => {
+  blocks.map((block, index) =>  <SafeBlock name={block._type}>{() => {
     switch (block._type) {
       case "leadCapture":
         return (
@@ -73,8 +76,8 @@ const comparisonRows = (block: Block) =>
         );
       case "authorByline":
         return (
-          <section class="section-sm border-y border-border/70 bg-body">
-            <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+          <section class="sp-byline hp-gold">
+            <div class="hp-in">
               <AuthorByline
                 name={block.name}
                 role={block.role}
@@ -94,9 +97,9 @@ const comparisonRows = (block: Block) =>
         );
       case "tableOfContents":
         return (
-          <section class="section-sm border-y border-border/70 bg-light">
-            <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
-              <div class="w-full max-w-none">
+          <section class="sp-sec sp-sec-s hp-ink">
+            <div class="hp-in">
+              <div>
                 <TableOfContents headings={block.headings} variant={block.variant} title={block.title} sectionsWord={block.sectionsWord} />
               </div>
             </div>
@@ -104,7 +107,7 @@ const comparisonRows = (block: Block) =>
         );
       case "relatedArticles":
         return (
-          <RelatedArticles
+          <RelatedArticles bg={tones[index]}
             title={block.title}
             articles={block.articles}
             layout={block.layout}
@@ -114,7 +117,7 @@ const comparisonRows = (block: Block) =>
         );
       case "toolCallout":
         return (
-          <ToolCallout
+          <ToolCallout bg={tones[index]}
             eyebrow={block.eyebrow}
             title={block.title}
             intro={block.intro}
@@ -128,7 +131,7 @@ const comparisonRows = (block: Block) =>
         );
       case "aiSearchSection":
         return (
-          <AiSearchSection
+          <AiSearchSection bg={tones[index]}
             eyebrow={block.eyebrow}
             title={block.title}
             intro={block.intro}
@@ -143,7 +146,7 @@ const comparisonRows = (block: Block) =>
         );
       case "honestTakeCallout":
         return (
-          <HonestTakeCallout
+          <HonestTakeCallout bg={tones[index]}
             eyebrow={block.eyebrow}
             title={block.title}
             body={block.body}
@@ -156,7 +159,7 @@ const comparisonRows = (block: Block) =>
         );
       case "resourcesDirectory":
         return (
-          <ResourcesDirectory
+          <ResourcesDirectory bg={tones[index]}
             eyebrow={block.eyebrow}
             title={block.title}
             intro={block.intro}
@@ -169,7 +172,7 @@ const comparisonRows = (block: Block) =>
         );
       case "richText":
         return (
-          <ServiceRichText
+          <ServiceRichText bg={tones[index]}
             title={block.title}
             body={block.body}
             tone={block.tone}
@@ -178,12 +181,12 @@ const comparisonRows = (block: Block) =>
           />
         );
       case "featureGrid":
-        return <ServiceFeatureGrid title={block.title} items={block.items} />;
+        return <ServiceFeatureGrid bg={tones[index]} title={block.title} items={block.items} />;
       case "process":
-        return <ServiceProcess title={block.title} intro={block.intro} steps={block.steps} />;
+        return <ServiceProcess bg={tones[index]} title={block.title} intro={block.intro} steps={block.steps} />;
       case "proof":
         return (
-          <ServiceProof
+          <ServiceProof bg={tones[index]}
             title={block.title}
             metricLabel={block.metricLabel}
             before={block.before}
@@ -197,7 +200,7 @@ const comparisonRows = (block: Block) =>
         );
       case "localNap":
         return (
-          <LocalNap
+          <LocalNap bg={tones[index]}
             name={block.name}
             street={block.street}
             city={block.city}
@@ -220,7 +223,7 @@ const comparisonRows = (block: Block) =>
         );
       case "caseStudy":
         return (
-          <CaseStudy
+          <CaseStudy bg={tones[index]}
             eyebrow={block.eyebrow}
             title={block.title}
             client={block.client}
@@ -237,7 +240,7 @@ const comparisonRows = (block: Block) =>
         );
       case "comparisonTable":
         return (
-          <ComparisonTable
+          <ComparisonTable bg={tones[index]}
             eyebrow={block.eyebrow}
             title={block.title}
             intro={block.intro}
@@ -253,12 +256,12 @@ const comparisonRows = (block: Block) =>
           />
         );
       case "serviceArea":
-        return <ServiceArea title={block.title} intro={block.intro} counties={block.counties}
+        return <ServiceArea bg={tones[index]} title={block.title} intro={block.intro} counties={block.counties}
             ui={block.ui}
           />;
       case "trust":
         return (
-          <ServiceTrust
+          <ServiceTrust bg={tones[index]}
             title={block.title}
             intro={block.intro}
             backupPolicy={block.backupPolicy}
@@ -271,7 +274,7 @@ const comparisonRows = (block: Block) =>
         );
       case "pricingTiers":
         return (
-          <PricingTiers
+          <PricingTiers bg={tones[index]}
             eyebrow={block.eyebrow}
             title={block.title}
             intro={block.intro}

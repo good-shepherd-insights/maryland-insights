@@ -107,7 +107,7 @@ const auditPlatformIcons = platforms;---
 
 <section
   id={anchor}
-  class="bg-light bg-4col-grid overflow-x-clip border-b border-border/80"
+  class="sp-lead"
   aria-labelledby={headingId}
 >
   {
@@ -120,7 +120,7 @@ const auditPlatformIcons = platforms;---
       </script>
     )
   }
-  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
+  <div class="hp-in">
     {
       lookup && (
         <div class="lookup-loading" role="status" aria-live="polite">
@@ -142,24 +142,21 @@ const auditPlatformIcons = platforms;---
         </div>
       )
     }
-    <div class="lead-layout grid gap-14 pt-30 pb-16 lg:gap-16 lg:pt-40 lg:pb-24">
+    <div class="lead-layout">
       <div class="lead-desc-block">
         {
           eyebrow && (
-            <p class="mb-5 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-              <span class="h-px w-8 bg-primary" aria-hidden="true"></span>
-              {eyebrow}
-            </p>
+            <p class="sp-eyebrow">{eyebrow}</p>
           )
         }
 
         {
           headingLevel === "h1" ? (
-            <h1 id={headingId} {...(lookup?.titleTemplate ? { "data-lead-title": true } : {})} class="lead-heading max-w-[18ch] text-balance">
+            <h1 id={headingId} {...(lookup?.titleTemplate ? { "data-lead-title": true } : {})} class="lead-heading">
               {title}
             </h1>
           ) : (
-            <h2 id={headingId} {...(lookup?.titleTemplate ? { "data-lead-title": true } : {})} class="lead-heading max-w-[18ch] text-balance">
+            <h2 id={headingId} {...(lookup?.titleTemplate ? { "data-lead-title": true } : {})} class="lead-heading">
               {title}
             </h2>
           )
@@ -169,7 +166,7 @@ const auditPlatformIcons = platforms;---
         {
           description && (
             <p
-              class="lead-hook mt-6 max-w-[54ch] font-secondary text-xl font-medium leading-snug text-text-dark sm:text-2xl"
+              class="lead-hook"
               set:html={markdownify(description)}
             />
           )
@@ -178,14 +175,11 @@ const auditPlatformIcons = platforms;---
       </div>
 
       <div class="lead-form-column">
-        <div class="lead-form-surface border border-border border-t-dark bg-body p-6 pb-7 sm:p-8">
+        <div class="lead-form-surface">
           {
             leadMagnetLabel && (
               <div class="lead-magnet-row mb-7 flex flex-wrap items-center gap-3">
-                <p class="lead-magnet-label inline-flex items-center gap-3 border border-dark bg-secondary px-4 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-dark">
-                  <span class="h-px w-6 shrink-0 bg-dark" aria-hidden="true"></span>
-                  {leadMagnetLabel}
-                </p>
+                <p class="lead-magnet-label">{leadMagnetLabel}</p>
                 <button type="button" class="lead-page-share inline-flex h-10 w-10 shrink-0 items-center justify-center text-text transition hover:bg-light hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary" aria-label={ui?.shareLabel}>
                   <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 15V3" />
@@ -384,13 +378,8 @@ const auditPlatformIcons = platforms;---
       <div class="lead-rest">
         {
           points.length > 0 && (
-            <ul class="lead-outcomes max-w-[64ch] border-y border-dark">
-              {points.map((point) => (
-                <li class="grid grid-cols-[1.5rem_minmax(0,1fr)] items-start gap-3 border-b border-border py-4 last:border-b-0 sm:py-5">
-                  <span class="mt-[0.7em] h-px w-5 bg-primary" aria-hidden="true"></span>
-                  <span class="max-w-[58ch] leading-relaxed text-text" set:html={markdownify(point)} />
-                </li>
-              ))}
+            <ul class="lead-outcomes">
+              {points.map((point) => <li set:html={markdownify(point).replace(/<\/strong>:\s*/, "</strong> ")} />)}
             </ul>
           )
         }
@@ -1699,10 +1688,10 @@ const auditPlatformIcons = platforms;---
 
   @media (min-width: 1024px) {
     .lead-layout {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
       grid-template-areas:
-        "desc form"
-        "rest form";
+        "desc desc"
+        "form rest";
     }
     .lead-desc-block { grid-area: desc; }
     .lead-form-column { grid-area: form; }

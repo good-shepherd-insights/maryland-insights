@@ -1,43 +1,38 @@
 ---
+import ImageMod from "@/components/ImageMod.astro";
+import { getHomePage } from "@/lib/sanity/queries";
 import { markdownify, slugify } from "@/lib/utils/textConverter";
 
-type Feature = {
-  title: string;
-  slug: string;
-  subtitle?: string;
-};
-
-type Props = {
-  title?: string;
-  items: Feature[];
-};
-
+type Feature = { title: string; slug: string; subtitle?: string };
+type Props = { title?: string; items: Feature[] };
 const { title = "What this delivers for your clients", items } = Astro.props as Props;
 const headingId = `service-${slugify(title)}`;
+// Each feature's own drawing, from the homepage.
+const home = await getHomePage();
+const art = new Map<string, string>(((home?.features?.features ?? []) as any[]).map((f) => [String(f.button?.link ?? "").split("/").pop() ?? "", f.image]));
+const one = items.length === 1;
 ---
 
-<section class="section-sm border-y border-border/70 bg-light" aria-labelledby={headingId}>
-  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
-    <div class="mb-10 max-w-2xl">
-      <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
-    </div>
-
-    <div class="grid gap-x-8 gap-y-0 md:grid-cols-2 lg:grid-cols-3">
-      {
-        items.map((item) => (
-          <a
-            href={`/features/${item.slug}`}
-            class="group flex flex-col border-t border-border py-7 no-underline lg:py-8"
-          >
-            <h3 class="h5 mb-2 text-balance text-text-dark group-hover:text-primary">{item.title}</h3>
-            {item.subtitle && <p class="text-text-dark/75">{item.subtitle}</p>}
-            <span class="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-text-dark group-hover:text-primary">
-              See {item.title}
-              <span aria-hidden="true">→</span>
-            </span>
+<section class="sp-sec hp-ink" aria-labelledby={headingId}>
+  {one ? (
+    <div class="hp-in"><div class="sp-one">
+      {art.get(items[0].slug) && <div class="sp-one-art"><ImageMod src={art.get(items[0].slug)!} alt="" width={522} height={396} loading="lazy" /></div>}
+      <div class="sp-one-t hp-gold">
+        <h2 id={headingId} class="sp-h3" set:html={markdownify(title)} />
+        <a href={`/features/${items[0].slug}`} class="sp-rel-t"><h3>{items[0].title}</h3>{items[0].subtitle && <p>{items[0].subtitle}</p>}<span class="sp-link">See {items[0].title}</span></a>
+      </div>
+    </div></div>
+  ) : (
+    <div class="hp-in sp-side">
+      <h2 id={headingId} class="sp-h2" set:html={markdownify(title)} />
+      <div class="sp-rel">
+        {items.map((item) => (
+          <a href={`/features/${item.slug}`} class="sp-rel-a">
+            {art.get(item.slug) && <span class="sp-rel-art"><ImageMod src={art.get(item.slug)!} alt="" width={522} height={396} loading="lazy" /></span>}
+            <span class="sp-rel-t"><h3>{item.title}</h3>{item.subtitle && <p>{item.subtitle}</p>}<span class="sp-link">See {item.title}</span></span>
           </a>
-        ))
-      }
+        ))}
+      </div>
     </div>
-  </div>
+  )}
 </section>

@@ -19,6 +19,7 @@ function adaptBlock(block: any): any {
       url: a.slug ? `/blog/${a.slug}` : "",
       excerpt: a.description,
       date: a.datePublished,
+      image: a.image,
     }));
   }
 
