@@ -15,7 +15,7 @@ export function planTones(blocks: { _type: string; [key: string]: any }[]): Tone
   return blocks.map((block) => {
     const options: Tone[] = block._type === "richText" ? (block.tone === "dark" ? ["red", "ink"] : ["white", "cream"]) : (START[block._type] ?? ["white", "cream"]);
     const tone = options.find((option) => option !== prev) ?? options[0];
-    prev = block._type === "aiSearchSection" && !block.honestTake ? tone : (END[block._type] ?? tone);
+    prev = (block._type === "aiSearchSection" && !block.honestTake) || (block._type === "caseStudy" && !block.outcomes?.length) ? tone : (END[block._type] ?? tone);
     return tone;
   });
 }

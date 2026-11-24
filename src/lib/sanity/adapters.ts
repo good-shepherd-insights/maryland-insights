@@ -1,15 +1,21 @@
+import { realFigure, realOutcomes, TOC_LABEL } from "@/lib/service/figures";
+
 // Sanity (camelCase) -> legacy component shapes (what the markdown provided).
 // Keeps pages and components untouched; all translation lives here.
 
 // --- blocks (servicePage) -----------------------------------------------
 
-function adaptBlock(block: any): any {
+function adaptBlock(block: any, slug = ""): any {
   if (!block || typeof block !== "object") return block;
   const out: any = { ...block };
+
+  if (block._type === "proof") return realFigure(slug, out);
+  if (block._type === "caseStudy") out.outcomes = realOutcomes(block.outcomes);
 
   if (block._type === "tableOfContents") {
     // Component takes sectionsWord; Sanity stores ui.countTemplate ("{n} sections").
     const template: string | undefined = block.ui?.countTemplate;
+    out.headings = (block.headings ?? []).map((h: any) => (TOC_LABEL[h?.short] ? { ...h, short: TOC_LABEL[h.short], text: TOC_LABEL[h.short] } : h));
     out.sectionsWord = template ? template.replace("{n}", "").trim() : "";
   }
 
@@ -26,8 +32,8 @@ function adaptBlock(block: any): any {
   return out;
 }
 
-export function adaptBlocks(blocks: any[]): any[] {
-  return (blocks ?? []).map(adaptBlock);
+export function adaptBlocks(blocks: any[], slug = ""): any[] {
+  return (blocks ?? []).map((block) => adaptBlock(block, slug));
 }
 
 // --- servicePage ---------------------------------------------------------
@@ -39,7 +45,7 @@ export function adaptServicePage(doc: any): any {
   return {
     ...doc,
     faqs_list: doc.faqs ?? [],
-    blocks: adaptBlocks(doc.blocks),
+    blocks: adaptBlocks(doc.blocks, doc.slug?.current ?? ""),
     date_modified: doc.dateModified,
     faq_title_prefix: doc.faqSectionTitleTemplate,
     cta_title: cta.title,

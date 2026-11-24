@@ -75,9 +75,10 @@ const narrative: { label: string | undefined; body?: string }[] = [
         {meta.length > 0 && <dl class="sp-meta">{meta.map((entry) => <div><dt>{entry.label}</dt><dd>{entry.value}</dd></div>)}</dl>}
       </div>
       {narrative.length > 0 && <dl class="sp-cols" style="--n:3">{narrative.map((entry) => <div class="sp-rule sp-rule-3"><dt class="sp-label">{entry.label}</dt><dd set:html={markdownify(entry.body)} /></div>)}</dl>}
+      {outcomes.length === 0 && permissionLine && <p class="sp-small" set:html={`<strong>${ui?.publishingNoteLabel ?? ""}</strong> ${markdownify(permissionLine)}`} />}
     </div>
   </div>
-  {(outcomes.length > 0 || permissionLine) && (
+  {outcomes.length > 0 && (
     <div class="sp-sec sp-sec-s hp-ink">
       <div class="hp-in sp-outcome">
         <ul>

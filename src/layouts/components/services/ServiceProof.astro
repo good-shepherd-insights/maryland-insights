@@ -3,11 +3,11 @@ import { figures } from "@/lib/service/text";
 import { markdownify, slugify } from "@/lib/utils/textConverter";
 
 type Props = {
-  title: string; metricLabel: string; before: string; after: string; context: string; sourceLabel?: string; sourceUrl?: string; changes?: string; bg?: string;
+  title: string; anchorTitle?: string; metricLabel: string; before: string; after: string; context: string; sourceLabel?: string; sourceUrl?: string; changes?: string; bg?: string;
   ui?: { beforeLabel?: string; afterLabel?: string; contextLabel?: string; changesLabel?: string };
 };
-const { title, metricLabel, before, after, context, sourceLabel, sourceUrl, changes, ui, bg = "gold" } = Astro.props as Props;
-const headingId = `service-${slugify(title)}`;
+const { title, anchorTitle, metricLabel, before, after, context, sourceLabel, sourceUrl, changes, ui, bg = "gold" } = Astro.props as Props;
+const headingId = `service-${slugify(anchorTitle ?? title)}`;
 const rows = [{ label: ui?.beforeLabel, value: before, nums: figures(before), side: "before" }, { label: ui?.afterLabel, value: after, nums: figures(after), side: "after" }];
 // Bars only when both sides are numbers, always to the same scale. Words get equal panels.
 const measured = rows.every((r) => r.nums.length > 0 && r.nums.length <= 2);
