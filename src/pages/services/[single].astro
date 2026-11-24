@@ -2,7 +2,7 @@
 export const prerender = true;
 
 import Base from "@/layouts/Base.astro";
-import { getServicePageSlugs, getServicePage, getSiteSettings } from "@/lib/sanity/queries";
+import { getServicePageSlugs, getServicePage, getServiceFigure, getSiteSettings } from "@/lib/sanity/queries";
 import { adaptServicePage } from "@/lib/sanity/adapters";
 import PageHeader from "@/partials/PageHeader.astro";
 import ServiceFaq from "@/components/services/ServiceFaq.astro";
@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.props;
-const service = adaptServicePage(await getServicePage(slug));
+const service = adaptServicePage(await getServicePage(slug), await getServiceFigure(slug));
 if (!service) return Astro.redirect("/404");
 const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};

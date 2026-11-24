@@ -1,14 +1,6 @@
-// Draws the homepage hero map from src/lib/home/businesses.json:
-// business establishments per county, U.S. Census Bureau County Business Patterns 2023.
-// Run after changing the counts: node scripts/homeArt.mjs
-import { readFileSync, writeFileSync } from "node:fs";
+// Draws the homepage hero map from the business counts held in Sanity (homeRedesign.countyCounts).
+import { BLANK_MAP_INNER as geo } from "@/lib/features/geo/blankMap";
 
-const geo = readFileSync("src/lib/features/geo/blankMap.ts", "utf8").match(/INNER = (".*?");?\s*$/m)[1];
-const count = JSON.parse(readFileSync("src/lib/home/businesses.json", "utf8"));
-const most = Math.max(...Object.values(count));
-// Heights follow the square root of the counts, so small counties stay visible. The labels carry the numbers.
-const calls = Object.fromEntries(Object.entries(count).map(([k, v]) => [k, Math.sqrt(v / most) * 104]));
-const short = (n) => (n >= 9950 ? `${Math.round(n / 1000)}k` : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
 const INK = "#121212", GOLD = "#FFC20E";
 
 /** Ramer-Douglas-Peucker: fewer points, same shape at the sizes used here. */
@@ -24,7 +16,7 @@ function simplify(pts, tol) {
   return far > tol ? [...simplify(pts.slice(0, at + 1), tol).slice(0, -1), ...simplify(pts.slice(at), tol)] : [a, b];
 }
 const area = (r) => Math.abs(r.reduce((a, [x, y], i) => { const [p, q] = r[(i + 1) % r.length]; return a + x * q - p * y; }, 0)) / 2;
-const counties = [...JSON.parse(geo).matchAll(/<path d="([^"]+)"[^>]*><title>([^<]+)<\/title>/g)].map(([, d, name]) => {
+const counties = [...geo.matchAll(/<path d="([^"]+)"[^>]*><title>([^<]+)<\/title>/g)].map(([, d, name]) => {
   const rings = d.split("M").slice(1).map((s) => {
     const n = s.match(/-?\d+\.?\d*/g).map(Number);
     return Array.from({ length: n.length / 2 }, (_, i) => [n[2 * i], n[2 * i + 1]]);
@@ -35,8 +27,10 @@ const counties = [...JSON.parse(geo).matchAll(/<path d="([^"]+)"[^>]*><title>([^
     r.forEach(([x1, y1], i) => { const [x2, y2] = r[(i + 1) % r.length]; const k = x1 * y2 - x2 * y1; A += k; x += (x1 + x2) * k; y += (y1 + y2) * k; });
     if (Math.abs(A) > best[0]) best = [Math.abs(A), x / (3 * A), y / (3 * A)];
   }
-  return { name, rings: rings.map((r) => simplify(r, 0.9)).filter((r) => r.length > 2 && area(r) > 60), fine: rings.map((r) => simplify(r, 0.45)).filter((r) => r.length > 2), c: best.slice(1) };
+  return { name, rings: rings.map((r) => simplify(r, 0.9)).filter((r) => r.length > 2 && area(r) > 60), c: best.slice(1) };
 });
+const short = (n) => (n >= 9950 ? `${Math.round(n / 1000)}k` : n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
+let count = {}, calls = {};
 const path = (rings) => rings.map((r) => "M" + r.map(([x, y]) => `${+x.toFixed(1)} ${+y.toFixed(1)}`).join("L") + "Z").join("");
 const ramp = (v) => (v < 24 ? "#FFF0BF" : v < 40 ? "#FFDF82" : v < 75 ? GOLD : "#F0A900");
 
@@ -78,7 +72,6 @@ function place(shapes, fonts, pad) {
         if (!best || score > best.score) best = { score, x, y, l, r, t, b };
       }
       if (best) {
-        if (process.env.SHOW) console.log(s.name.padEnd(18), s.text.padEnd(5), font, "left/right", best.l, best.r, "top/bottom", best.t, best.b);
         return [{ name: s.name, calls: s.text, x: best.x + minX + .5, y: +(best.y + minY + .5 + font * .364).toFixed(1), size: font }];
       }
     }
@@ -106,9 +99,16 @@ function draw({ sx, sy, ox, ty, gy, lift, fonts, pad, box, ground, stroke }) {
   return { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box}">${out}</svg>`, labels: place(shapes, fonts, pad), box };
 }
 
-const wide = draw({ sx: .83, sy: .66, ox: 590, ty: 452, gy: 566, lift: .16, fonts: [16, 13], pad: 2, box: "580 370 850 545", ground: 7, stroke: 1.3 });
-const narrow = draw({ sx: .95, sy: .8, ox: 10, ty: 130, gy: 280, lift: .2, fonts: [31], pad: 3, box: "0 30 980 670", ground: 8, stroke: 1.6 });
-writeFileSync("public/images/home/hero-map.svg", wide.svg);
-writeFileSync("public/images/home/hero-map-mobile.svg", narrow.svg);
-writeFileSync("src/lib/home/heroMap.json", JSON.stringify({ wide: { box: wide.box, labels: wide.labels }, narrow: { box: narrow.box, labels: narrow.labels } }));
-writeFileSync("src/lib/home/land.json", JSON.stringify(Object.fromEntries(counties.map((c) => [c.name, path(c.fine)]))));
+let done;
+/** Both maps, drawn once per set of counts. */
+export function heroMaps(counts) {
+  const key = JSON.stringify(counts);
+  if (done?.key === key) return done;
+  count = counts;
+  const most = Math.max(...Object.values(counts));
+  // Heights follow the square root of the counts, so small counties stay visible. The labels carry the numbers.
+  calls = Object.fromEntries(Object.entries(counts).map(([k, v]) => [k, Math.sqrt(v / most) * 104]));
+  const wide = draw({ sx: .83, sy: .66, ox: 590, ty: 452, gy: 566, lift: .16, fonts: [16, 13], pad: 2, box: "580 370 850 545", ground: 7, stroke: 1.3 });
+  const narrow = draw({ sx: .95, sy: .8, ox: 10, ty: 130, gy: 280, lift: .2, fonts: [31], pad: 3, box: "0 30 980 670", ground: 8, stroke: 1.6 });
+  return (done = { key, wide, narrow });
+}

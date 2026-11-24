@@ -1,9 +1,9 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
-import { CLIENT_ORDER, type HomeCopy } from "@/lib/home/copy";
+import type { HomeCopy } from "@/lib/home/copy";
 
 const { features = {}, copy } = Astro.props as { features: any; copy: HomeCopy };
-const rank = (f: any) => { const i = CLIENT_ORDER.indexOf(String(f.button?.link ?? "").split("/").pop() ?? ""); return i < 0 ? 99 : i; };
+const rank = (f: any) => { const i = copy.clientOrder.indexOf(String(f.button?.link ?? "").split("/").pop() ?? ""); return i < 0 ? 99 : i; };
 const cards = (features?.features ?? []).filter((f: any) => f?.title).sort((a: any, b: any) => rank(a) - rank(b));
 ---
 

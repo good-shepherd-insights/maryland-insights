@@ -1,5 +1,5 @@
 ---
-import map from "@/lib/home/heroMap.json";
+import { heroMaps } from "@/lib/home/heroArt.mjs";
 import type { HomeCopy } from "@/lib/home/copy";
 
 const { hero = {}, copy } = Astro.props as { hero: any; copy: HomeCopy };
@@ -9,6 +9,7 @@ const claim = after.join(" ");
 const comma = claim.indexOf(",");
 const first = comma > 0 ? claim.slice(0, comma + 1) : claim;
 const second = comma > 0 ? claim.slice(comma + 1).trim() : "";
+const map = heroMaps(copy.counts);
 const buttons = [hero?.buttonSolid, hero?.buttonUnderline].filter((b: any) => b?.label && b?.link);
 const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
 ---

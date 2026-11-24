@@ -1,7 +1,7 @@
 ---
 import Logo from "@/components/Logo.astro";
 import NewsletterScript from "@/components/NewsletterScript.astro";
-import { getHomePage, getSiteSettings } from "@/lib/sanity/queries";
+import { getHomePage, getHomeRedesign, getSiteSettings } from "@/lib/sanity/queries";
 import { homeCopy } from "@/lib/home/copy";
 import { markdownify } from "@/lib/utils/textConverter";
 import FlagBand from "./FlagBand.astro";
@@ -9,7 +9,7 @@ import FlagBand from "./FlagBand.astro";
 const { newsletter } = Astro.props as { newsletter?: any };
 const settings = await getSiteSettings();
 const home = await getHomePage();
-const copy = homeCopy(home);
+const copy = homeCopy(await getHomeRedesign());
 type Link = { name: string; url: string };
 const ok = (l: Link) => l.name && l.url;
 const services: Link[] = (home?.serviceStack?.cards ?? []).map((c: any) => ({ name: c.label, url: c.button?.link })).filter(ok);

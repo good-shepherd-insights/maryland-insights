@@ -1,47 +1,47 @@
-// Approved wording for the redesigned homepage sections. Each value can be
-// replaced from Sanity: a "redesign" object on the home document wins, key by key.
-export const COPY = {
-  // Stands in for hero.title until that is changed in Sanity, which would change the live page now.
-  heroTitle: "More calls for Maryland businesses. Measured, not guessed.",
-  heroNote: "Business locations by county, U.S. Census Bureau, 2023.",
-  heroMeasured: "Measured",
-  heroGuessed: "Guessed",
-  partnersTitle: "Maryland government partners",
-  servicesTitle: "See the machinery behind every client site.",
-  servicesIncluded: "Learn more",
-  clientsTitle: "One customer, from first search to the next one.",
-  clientsLead: "Follow a single Maryland customer through everything your client gets.",
-  compareTitle: "{n} features. Only one platform has them all.",
-  compareButton: "Compare in detail",
-  compareHint: "Or pick any feature.",
-  compareModalTitle: "Count what your team is patching by hand.",
-  comparePartial: "Basic, plugin or varies",
-  toolsTitle: "Plug it all into one record.",
-  toolsRecordTitle: "One client record",
-  toolsRecordBody: "Calls, leads and bookings end up here, whichever tool they came through.",
-  stepsTitle: "From blank page to booked calls.",
-  faqTitle: "What agencies ask before they sign.",
-  faqSearch: "Search these questions",
-  ctaTitle: "Name the county that needs more calls.",
-  ctaLabel: "Partner with us",
-  footerTitle: "Every client's facts, current wherever Maryland looks.",
+// Wording for the redesigned homepage. All of it is the homeRedesign document in Sanity.
+const KEYS = [
+  "heroTitle",
+  "heroNote",
+  "heroMeasured",
+  "heroGuessed",
+  "partnersTitle",
+  "servicesTitle",
+  "servicesIncluded",
+  "clientsTitle",
+  "clientsLead",
+  "compareTitle",
+  "compareButton",
+  "compareHint",
+  "compareModalTitle",
+  "comparePartial",
+  "toolsTitle",
+  "toolsRecordTitle",
+  "toolsRecordBody",
+  "stepsTitle",
+  "faqTitle",
+  "faqSearch",
+  "ctaTitle",
+  "ctaLabel",
+  "footerTitle",
+] as const;
+export type HomeCopy = Record<(typeof KEYS)[number], string> & {
+  clientOrder: string[];
+  toolGroups: { title: string; tools: string[] }[];
+  counts: Record<string, number>;
 };
-export type HomeCopy = typeof COPY;
 
 const isText = (v: unknown): v is string => typeof v === "string" && v.trim() !== "";
-export function homeCopy(home: any): HomeCopy {
-  const own = home?.redesign ?? {};
-  return Object.fromEntries(Object.entries(COPY).map(([k, v]) => [k, isText(own[k]) ? own[k] : v])) as HomeCopy;
+
+/** Missing wording stops the build, so a gap is never published. */
+export function homeCopy(doc: any): HomeCopy {
+  const missing = KEYS.filter((k) => !isText(doc?.[k]));
+  if (missing.length) throw new Error(`homeRedesign in Sanity is missing: ${missing.join(", ")}`);
+  const counts = Object.fromEntries((doc.countyCounts ?? []).filter((c: any) => isText(c?.county) && c.count > 0).map((c: any) => [c.county, c.count]));
+  if (Object.keys(counts).length !== 24) throw new Error("homeRedesign.countyCounts in Sanity needs a count for each of the 24 counties.");
+  return {
+    ...(Object.fromEntries(KEYS.map((k) => [k, doc[k]])) as Record<(typeof KEYS)[number], string>),
+    clientOrder: (doc.clientOrder ?? []).filter(isText),
+    toolGroups: (doc.toolGroups ?? []).filter((g: any) => isText(g?.title)).map((g: any) => ({ title: g.title, tools: (g.tools ?? []).filter(isText) })),
+    counts,
+  };
 }
-
-/** Order the "what clients get" cards follow a customer through. Others come last. */
-export const CLIENT_ORDER = ["total-search-visibility", "24-7-sales-website", "capture-every-lead", "automatic-customer-nurturing", "5-star-review-system", "real-time-growth"];
-
-/** How tools are grouped on the trunk line. Tools not named here are shown under the last group. */
-export const TOOL_GROUPS: { title: string; tools: string[] }[] = [
-  { title: "Where customers find them", tools: ["Google Business Profile", "Google Search Console", "Google Analytics", "Meta Ads"] },
-  { title: "Where leads land", tools: ["GoHighLevel", "HubSpot", "Zapier"] },
-  { title: "How jobs get booked and paid", tools: ["Calendly", "Stripe", "Twilio"] },
-  { title: "How people stay in touch", tools: ["Mailchimp", "Slack"] },
-  { title: "What it is made with", tools: ["Canva", "Astro", "Logo.dev"] },
-];

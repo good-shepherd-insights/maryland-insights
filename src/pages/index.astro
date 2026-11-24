@@ -12,14 +12,14 @@ import Steps from "@/components/home/Steps.astro";
 import HomeFaq from "@/components/home/HomeFaq.astro";
 import Closing from "@/components/home/Closing.astro";
 import { homeCopy } from "@/lib/home/copy";
-import { getHomePage, getSiteSettings } from "@/lib/sanity/queries";
+import { getHomePage, getHomeRedesign, getSiteSettings } from "@/lib/sanity/queries";
 import "@/styles/home.css";
 
 const home = await getHomePage();
 const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const homeUi = home?.ui ?? {};
-const copy = homeCopy(home);
+const copy = homeCopy(await getHomeRedesign());
 
 const comparison = home?.comparison ?? {};
 const categories = (comparison.categories ?? []).map((c: any) => ({

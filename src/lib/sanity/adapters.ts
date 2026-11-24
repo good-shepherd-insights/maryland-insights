@@ -1,21 +1,24 @@
-import { realFigure, realOutcomes, TOC_LABEL } from "@/lib/service/figures";
+import { realOutcomes, withFigure } from "@/lib/service/figures";
+import { slugify } from "@/lib/utils/textConverter";
 
 // Sanity (camelCase) -> legacy component shapes (what the markdown provided).
 // Keeps pages and components untouched; all translation lives here.
 
 // --- blocks (servicePage) -----------------------------------------------
 
-function adaptBlock(block: any, slug = ""): any {
+function adaptBlock(block: any, figure?: any, proofTitle?: string): any {
   if (!block || typeof block !== "object") return block;
   const out: any = { ...block };
 
-  if (block._type === "proof") return realFigure(slug, out);
+  if (block._type === "proof") return withFigure(out, figure);
   if (block._type === "caseStudy") out.outcomes = realOutcomes(block.outcomes);
 
   if (block._type === "tableOfContents") {
     // Component takes sectionsWord; Sanity stores ui.countTemplate ("{n} sections").
     const template: string | undefined = block.ui?.countTemplate;
-    out.headings = (block.headings ?? []).map((h: any) => (TOC_LABEL[h?.short] ? { ...h, short: TOC_LABEL[h.short], text: TOC_LABEL[h.short] } : h));
+// The contents entry for a replaced figure takes the figure's own label.
+    const anchor = `service-${slugify(proofTitle)}`;
+    out.headings = (block.headings ?? []).map((h: any) => (figure?.contentsLabel && h?.id === anchor ? { ...h, short: figure.contentsLabel, text: figure.contentsLabel } : h));
     out.sectionsWord = template ? template.replace("{n}", "").trim() : "";
   }
 
@@ -32,20 +35,21 @@ function adaptBlock(block: any, slug = ""): any {
   return out;
 }
 
-export function adaptBlocks(blocks: any[], slug = ""): any[] {
-  return (blocks ?? []).map((block) => adaptBlock(block, slug));
+export function adaptBlocks(blocks: any[], figure?: any): any[] {
+  const proofTitle = (blocks ?? []).find((b) => b?._type === "proof")?.title;
+  return (blocks ?? []).map((block) => adaptBlock(block, figure, proofTitle));
 }
 
 // --- servicePage ---------------------------------------------------------
 
-export function adaptServicePage(doc: any): any {
+export function adaptServicePage(doc: any, figure?: any): any {
   if (!doc) return doc;
   const cta = doc.serviceCta ?? {};
   const faqUi = doc.faqUi ?? {};
   return {
     ...doc,
     faqs_list: doc.faqs ?? [],
-    blocks: adaptBlocks(doc.blocks, doc.slug?.current ?? ""),
+    blocks: adaptBlocks(doc.blocks, figure),
     date_modified: doc.dateModified,
     faq_title_prefix: doc.faqSectionTitleTemplate,
     cta_title: cta.title,

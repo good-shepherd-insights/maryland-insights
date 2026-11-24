@@ -1,6 +1,6 @@
 ---
 import { getIntegrations, getIntegrationsPage } from "@/lib/sanity/queries";
-import { TOOL_GROUPS, type HomeCopy } from "@/lib/home/copy";
+import type { HomeCopy } from "@/lib/home/copy";
 import ToolLogo from "./ToolLogo.astro";
 
 const { copy } = Astro.props as { copy: HomeCopy };
@@ -8,10 +8,10 @@ const page = await getIntegrationsPage();
 const curated = page?.grid?.integrations ?? [];
 const tools = (curated.length > 0 ? curated : await getIntegrations()).filter((t: any) => t?.title);
 const more = page?.grid?.showMoreCard;
-const named = new Set(TOOL_GROUPS.flatMap((g) => g.tools));
-const groups = TOOL_GROUPS.map((g, i) => ({
+const named = new Set(copy.toolGroups.flatMap((g) => g.tools));
+const groups = copy.toolGroups.map((g, i) => ({
   title: g.title,
-  tools: [...g.tools.map((n) => tools.find((t: any) => t.title === n)).filter(Boolean), ...(i === TOOL_GROUPS.length - 1 ? tools.filter((t: any) => !named.has(t.title)) : [])],
+  tools: [...g.tools.map((n) => tools.find((t: any) => t.title === n)).filter(Boolean), ...(i === copy.toolGroups.length - 1 ? tools.filter((t: any) => !named.has(t.title)) : [])],
 })).filter((g) => g.tools.length > 0);
 ---
 
