@@ -20,6 +20,7 @@ import ServiceTrust from "@/components/services/ServiceTrust.astro";
 import TableOfContents from "@/components/TableOfContents.astro";
 import ToolCallout from "@/components/ToolCallout.astro";
 import { planTones } from "@/lib/service/tones";
+import { serviceIcon } from "@/lib/home/serviceArt";
 import TrustSignals from "@/components/TrustSignals.astro";
 
 type Block = {
@@ -30,9 +31,11 @@ type Block = {
 type Props = {
   blocks?: Block[];
   locale?: string;
+  /** The service being shown, for its drawing in the hero. */
+  slug?: string;
 };
 
-const { locale } = Astro.props as Props;
+const { locale, slug } = Astro.props as Props;
 const blocks = (Array.isArray(Astro.props.blocks) ? Astro.props.blocks : []).filter((b: any) => b && typeof b === "object" && typeof b._type === "string") as Block[];
 
 // Sanity stores cells positionally against `columns`; ComparisonTable reads `values` keyed by column key.
@@ -69,6 +72,7 @@ const tones = planTones(blocks);
             disclaimer={block.disclaimer}
             anchor={block.anchor}
             headingLevel={block.headingLevel}
+            art={block.headingLevel === "h1" ? serviceIcon(`/images/services/${slug}.svg`, "white", "") : undefined}
             lookup={block.lookup}
             ui={block.ui}
             platforms={block.platforms}

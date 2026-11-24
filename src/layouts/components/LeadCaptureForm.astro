@@ -39,6 +39,8 @@ type Props = {
   service?: string;
   disclaimer?: string;
   anchor?: string;
+  /** The service's own drawing, as SVG. */
+  art?: string;
   headingLevel?: "h1" | "h2";
   lookup?: Lookup;
   ui?: {
@@ -93,6 +95,7 @@ const {
   disclaimer,
   anchor,
   headingLevel = "h2",
+  art,
   lookup,
   ui,
   platforms = [],
@@ -143,7 +146,7 @@ const auditPlatformIcons = platforms;---
       )
     }
     <div class="lead-layout">
-      <div class="lead-desc-block">
+      <div class:list={["lead-desc-block", { "sp-has-art": art }]}>
         {
           eyebrow && (
             <p class="sp-eyebrow">{eyebrow}</p>
@@ -162,6 +165,7 @@ const auditPlatformIcons = platforms;---
           )
         }
 
+        {art && <div class="sp-hero-art" aria-hidden="true" set:html={art} />}
         <div class="lookup-intro">
         {
           description && (

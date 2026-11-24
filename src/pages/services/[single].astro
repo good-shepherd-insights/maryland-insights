@@ -41,7 +41,7 @@ const ctaProps = {
   <div class="hp sp">
   {!hasLeadHero && <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />}
 
-  <ServiceBlocks blocks={blocks} locale={settings.locale} />
+  <ServiceBlocks blocks={blocks} slug={slug} locale={settings.locale} />
 
   {relatedFeatures.length > 0 && <ServiceRelatedFeatures title={service.relatedFeaturesTitle} items={relatedFeatures} />}
 
