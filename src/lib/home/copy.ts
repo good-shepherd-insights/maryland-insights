@@ -4,6 +4,8 @@ const KEYS = [
   "heroNote",
   "heroMeasured",
   "heroGuessed",
+  "heroPause",
+  "heroPlay",
   "partnersTitle",
   "servicesTitle",
   "servicesIncluded",
@@ -25,6 +27,7 @@ const KEYS = [
   "footerTitle",
 ] as const;
 export type HomeCopy = Record<(typeof KEYS)[number], string> & {
+  heroWords: string[];
   clientOrder: string[];
   toolGroups: { title: string; tools: string[] }[];
   counts: Record<string, number>;
@@ -40,6 +43,7 @@ export function homeCopy(doc: any): HomeCopy {
   if (Object.keys(counts).length !== 24) throw new Error("homeRedesign.countyCounts in Sanity needs a count for each of the 24 counties.");
   return {
     ...(Object.fromEntries(KEYS.map((k) => [k, doc[k]])) as Record<(typeof KEYS)[number], string>),
+    heroWords: (doc.heroWords ?? []).filter(isText).map((w: string) => w.trim()),
     clientOrder: (doc.clientOrder ?? []).filter(isText),
     toolGroups: (doc.toolGroups ?? []).filter((g: any) => isText(g?.title)).map((g: any) => ({ title: g.title, tools: (g.tools ?? []).filter(isText) })),
     counts,

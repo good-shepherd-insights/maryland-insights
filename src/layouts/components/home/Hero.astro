@@ -9,6 +9,12 @@ const claim = after.join(" ");
 const comma = claim.indexOf(",");
 const first = comma > 0 ? claim.slice(0, comma + 1) : claim;
 const second = comma > 0 ? claim.slice(comma + 1).trim() : "";
+// The first word is part of the title, so the heading reads as one real sentence.
+// The others take turns in its place, in a block as wide as the widest of them.
+const words = copy.heroWords;
+const at = words.length > 1 ? lead.indexOf(` ${words[0]} `) : -1;
+const before = lead.slice(0, at);
+const behind = lead.slice(at + (words[0]?.length ?? 0) + 2);
 const map = heroMaps(copy.counts);
 const buttons = [hero?.buttonSolid, hero?.buttonUnderline].filter((b: any) => b?.label && b?.link);
 const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
@@ -17,10 +23,17 @@ const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
 <section class="hp-hero" id="designs-banner">
   <div class="hp-hero-in">
     <h1 class="hp-hero-h">
-      <span class="hp-hero-lead">{lead}</span>{" "}
+      {at < 0 ? <span class="hp-hero-lead">{lead}</span> : (
+        <span class="hp-hero-lead hp-hero-swap"><span>{before}</span>{" "}<span class="hp-words" data-hero-words><span class="hp-word" data-on>{words[0]}</span>{words.slice(1).map((w) => <span class="hp-word" data-word={w} aria-hidden="true"></span>)}<span class="hp-words-edge" aria-hidden="true"></span></span>{" "}<span>{behind}</span></span>
+      )}{" "}
       {first && <span class="hp-hero-first">{first}</span>}{" "}
       {second && <span class="hp-hero-second">{second}</span>}
     </h1>
+    {at >= 0 && (
+      <button type="button" class="hp-words-btn" data-hero-words-btn data-pause={copy.heroPause} data-play={copy.heroPlay} aria-label={copy.heroPause}>
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor"><path class="hp-i-pause" d="M5 3h3.4v14H5zM11.6 3H15v14h-3.4z" /><path class="hp-i-play" d="M5 2.5L17 10L5 17.5Z" /></svg>
+      </button>
+    )}
     <div class="hp-hero-body">
       <p class="hp-hero-copy">{hero?.content}</p>
       <div class="hp-btns">
@@ -49,3 +62,55 @@ const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
     </dl>
   </div>
 </section>
+
+<script>
+  const HOLD = 5000;
+  const LOAD = 900;
+
+  const start = () => {
+    const box = document.querySelector<HTMLElement>("[data-hero-words]");
+    const button = document.querySelector<HTMLButtonElement>("[data-hero-words-btn]");
+    const edge = box?.querySelector<HTMLElement>(".hp-words-edge");
+    if (!box || !button || !edge || box.dataset.ready) return;
+    box.dataset.ready = "";
+    const items = [...box.querySelectorAll<HTMLElement>(".hp-word")];
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let now = 0;
+    let paused = false;
+    let seen = true;
+    let timer: number | undefined;
+
+    const next = () => {
+      const from = items[now];
+      now = (now + 1) % items.length;
+      const to = items[now];
+      items.forEach((item) => item.removeAttribute("data-under"));
+      from.removeAttribute("data-on");
+      from.setAttribute("data-under", "");
+      to.setAttribute("data-on", "");
+      const timing = { duration: LOAD, easing: "cubic-bezier(.45,0,.2,1)" };
+      to.animate([{ clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0)" }], timing).onfinish = () => from.removeAttribute("data-under");
+      edge.animate([{ transform: "none", visibility: "visible" }, { transform: "translateX(100%)", visibility: "visible" }], timing);
+    };
+
+    const sync = () => {
+      window.clearInterval(timer);
+      if (!paused && seen && !still.matches && !document.hidden) timer = window.setInterval(next, HOLD);
+    };
+
+    button.addEventListener("click", () => {
+      paused = !paused;
+      button.toggleAttribute("data-paused", paused);
+      button.setAttribute("aria-label", (paused ? button.dataset.play : button.dataset.pause) ?? "");
+      sync();
+    });
+    still.addEventListener("change", sync);
+    document.addEventListener("visibilitychange", sync);
+    new IntersectionObserver(([entry]) => { seen = entry.isIntersecting; sync(); }).observe(box);
+    button.setAttribute("data-ready", "");
+    sync();
+  };
+
+  start();
+  document.addEventListener("astro:page-load", start);
+</script>
