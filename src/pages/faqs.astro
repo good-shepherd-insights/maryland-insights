@@ -1,54 +1,39 @@
 ---
+import ClosingSection from "@/components/pages/Closing.astro";
+import Drawing from "@/components/pages/Drawing.astro";
+import PageHero from "@/components/pages/PageHero.astro";
+import Questions from "@/components/pages/Questions.astro";
 import Base from "@/layouts/Base.astro";
 import { getFaqsPage, getSiteSettings } from "@/lib/sanity/queries";
-import CallToAction from "@/partials/CallToAction.astro";
-import PageHeader from "@/partials/PageHeader.astro";
-import Testimonial from "@/partials/Testimonial.astro";
-import Faqs from "@/partials/Faqs.astro";
-import FaqSupport from "@/partials/FaqSupport.astro";
+import "@/styles/home.css";
+import "@/styles/service.css";
+import "@/styles/pages.css";
 
-const faqsPage = await getFaqsPage();
-const settings = await getSiteSettings();
-const settingsUi = settings?.ui ?? {};
-const header = faqsPage?.header ?? {};
-const title = header.title;
-const description = header.description;
-
-const list = faqsPage?.list ?? {};
-const faqs_section = {
-  faqs_list: (list.items ?? []).map((faq: any) => ({
-    question: faq.question,
-    answer: faq.answer,
-  })),
-  section_title: list.sectionTitle,
-};
-
-const support = faqsPage?.support ?? {};
-const supportProps = {
-  eyebrow: support.eyebrow,
-  title: support.title,
-  intro: support.description,
-  description: support.descriptionSecondary,
-  navAriaLabel: support.eyebrow,
-  cards: (support.topics ?? []).map((t: any, i: number) => ({
-    title: t.label,
-    description: t.description,
-    href: t.link,
-    highlight: i === 4,
-  })),
-};
-
+const page = await getFaqsPage();
+const settingsUi = (await getSiteSettings())?.ui ?? {};
+const header = page?.header ?? {};
+const questions = (page?.list?.items ?? []).filter((f: any) => f?.question && f?.answer);
+const support = page?.support ?? {};
+const topics = (support.topics ?? []).filter((t: any) => t?.label && t?.link);
 ---
 
-<Base {...faqsPage} ui={settingsUi} seoId={faqsPage._id}>
-  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
+<Base {...page} ui={settingsUi} seoId={page._id}>
+  <div class="hp sp pg">
+    <PageHero title={header.title} description={header.description}>
+      <div class="pg-ask" aria-hidden="true">{questions.slice(0, 7).map((f: any) => <span>{f.question}</span>)}</div>
+    </PageHero>
 
-  <FaqSupport {...supportProps} />
+    <section class="pg-sec hp-white">
+      <div class="hp-in">
+        <div class="pg-vision pg-vision-w">
+          <div class="pg-text"><h2 class="pg-h2">{support.title}</h2>{[support.description, support.descriptionSecondary].filter(Boolean).map((t: string) => <p>{t}</p>)}</div>
+          <Drawing name="under" labels={[["Your site", "#fff"], ["Headless CMS", "#FFC20E"], ["Cloud services", "#B8112B"], ["Edge delivery", "#121212"]]} />
+        </div>
+        <nav class="pg-topics" aria-label={support.eyebrow}>{topics.map((t: any) => <a href={t.link}><strong>{t.label}</strong><span>{t.description}</span></a>)}</nav>
+      </div>
+    </section>
 
-  {faqs_section.faqs_list.length > 0 && (
-    <Faqs data={faqs_section} ui={settingsUi.faqs} />
-  )}
-
-  <Testimonial />
-  <CallToAction />
+    <Questions />
+    <ClosingSection />
+  </div>
 </Base>

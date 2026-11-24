@@ -1,194 +1,111 @@
 ---
-import ImageMod from "@/components/ImageMod.astro";
-import DynamicIcon from "@/helpers/DynamicIcon";
+import ClosingSection from "@/components/pages/Closing.astro";
+import Drawing from "@/components/pages/Drawing.astro";
+import PageHero from "@/components/pages/PageHero.astro";
 import Base from "@/layouts/Base.astro";
+import { contactLinks, isAddress, mapLink } from "@/lib/pages/contact";
 import { getContactPage, getSiteSettings } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
-import CallToAction from "@/partials/CallToAction.astro";
-import Faqs from "@/partials/Faqs.astro";
-import PageHeader from "@/partials/PageHeader.astro";
-import ContactGuidance from "@/partials/ContactGuidance.astro";
+import "@/styles/home.css";
+import "@/styles/service.css";
+import "@/styles/pages.css";
 
-const _contact = await getContactPage();
+const page = await getContactPage();
 const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
-const title = _contact?.header?.title;
-const metaTitle = _contact?.metaTitle;
-const description = _contact?.header?.description;
-const section_title = _contact?.sectionTitle;
-const gallery_section = _contact?.offices;
-const contact_form = _contact?.form
-  ? {
-      enable: true,
-      form_action: _contact.form.formAction,
-      fields: _contact.form.fields,
-      submit_button_label: _contact.form.submitLabel,
-    }
-  : undefined;
-const contact_info = _contact?.info
-  ? { enable: true, informations: _contact.info.informations }
-  : undefined;
-
-const toContactHref = (rawValue: string) => {
-  const value = (rawValue ?? "").trim();
-  if (!value) return "#";
-  if (
-    value.startsWith("mailto:") ||
-    value.startsWith("tel:") ||
-    value.startsWith("http://") ||
-    value.startsWith("https://")
-  ) {
-    return value;
-  }
-  if (value.includes("@")) return `mailto:${value}`;
-  if (/^\+?[0-9()\-\s.]+$/.test(value))
-    return `tel:${value.replace(/\s+/g, "")}`;
-  if (value.startsWith("www.")) return `https://${value}`;
-  return value;
-};
-
+const header = page?.header ?? {};
+const g = page?.guidance ?? {};
+const form = page?.form;
+const links = contactLinks(page?.info?.informations);
+const email = links.find((l) => l.href.startsWith("mailto:"));
+const phone = links.find((l) => l.href.startsWith("tel:"));
+const offices = page?.offices?.locations ?? [];
+const STEPS = ["step-review", "step-map", "step-scope"];
 ---
 
-<Base title={title} metaTitle={metaTitle} description={description} ui={settingsUi} seoId={_contact._id}>
-  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
-  <ContactGuidance {..._contact?.guidance} />
-  <section class="section-sm bg-light">
-    <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
-      <h2
-       
-       
-        class="mb-12 text-center xl:w-[60%] mx-auto text-balance"
-        set:html={markdownify(section_title)}
-      />
+<Base title={header.title} metaTitle={page?.metaTitle} description={header.description} ui={settingsUi} seoId={page._id}>
+  <div class="hp sp pg">
+    <PageHero title={header.title} description={header.description} />
 
-      <div
-        class="flex flex-col gap-7.5 justify-center lg:flex-row lg:items-stretch"
-      >
-        {
-          contact_form?.enable && (
-            <div
-              class="lg:w-[65%]"
-            >
-              <form
-                action={contact_form.form_action}
-                method="POST"
-                class="bg-body p-7 rounded-3xl card-shadow w-full h-full"
-              >
-                {contact_form.fields?.map((field: any) => (
-                  <div class="mb-6">
-                    <label for={field.name} class="form-label">
-                      {field.label}
-                      {field.required && <span class="text-red-500">*</span>}
-                    </label>
-                    {field.type === "textarea" ? (
-                      <textarea
-                        id={field.name}
-                        name={field.name}
-                        class="form-input"
-                        placeholder={field.placeholder}
-                        rows={4}
-                        required={field.required}
-                      />
-                    ) : (
-                      <input
-                        id={field.name}
-                        name={field.name}
-                        class="form-input"
-                        placeholder={field.placeholder}
-                        type={field.type as any}
-                        required={field.required}
-                      />
-                    )}
-                  </div>
-                ))}
-
-                <button type="submit" class="btn btn-dark w-full rounded-full">
-                  {contact_form.submit_button_label}
-                </button>
-              </form>
-            </div>
-          )
-        }
-        <!-- Contact Information  -->
-        {
-          contact_info?.enable && (
-            <div class="lg:w-[35%]">
-              <div class="flex flex-wrap justify-center lg:flex-col gap-7.5 w-full">
-                {contact_info.informations?.map((info: any) => (
-                  <div
-                    class="bg-body p-10 rounded-3xl card-shadow flex-1 min-w-80"
-                  >
-                    <DynamicIcon
-                      icon={info.icon}
-                      className="text-text-dark text-3xl"
-                    />
-                    <h4 class="h4 mt-5 mb-3">{info.label}</h4>
-                    <a
-                      class="text-text-dark break-all text-xl font-semibold hover:text-primary transition-colors"
-                      href={toContactHref(info.value)}
-                    >
-                      {info.value}
-                    </a>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )
-        }
+    <section class="pg-sec hp-cream">
+      <div class="hp-in">
+        <h2 class="pg-h2 pg-h2-l pg-w">{g.title}</h2>
+        <div class="pg-intro">{[g.description, g.descriptionSecondary].filter(Boolean).map((t: string) => <p>{t}</p>)}{g.processIntro && <p><strong>{g.processIntro}</strong></p>}</div>
+        <ol class="pg-process">
+          {(g.steps ?? []).map((s: any, i: number) => <li>{STEPS[i] && <Drawing name={STEPS[i]} />}<div><h3 class="pg-h3">{s.title}</h3><p>{s.description}</p></div></li>)}
+        </ol>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Gallery Section  -->
-  {
-    gallery_section && (
-      <section
-        class="section section-divider bg-dark"
-        style="--section-divider-color: var(--color-dark)"
-      >
-        <div class="container">
-          <h2
-            set:html={markdownify(gallery_section.title)}
-            class="mb-12 text-white xl:w-[60%] mx-auto text-balance text-center"
-          />
+    <section class="pg-sec hp-white">
+      <div class="hp-in pg-split">
+        <div class="pg-text">
+          <h2 class="pg-h2">{g.contextTitle}</h2><p>{g.contextIntro}</p>
+          <div class="pg-note" aria-hidden="true">{email && <p>To {email.value}</p>}<ul>{(g.contextItems ?? []).map((c: any) => <li>{c.title}</li>)}</ul></div>
+        </div>
+        <dl class="pg-defs">{(g.contextItems ?? []).map((c: any) => <div><dt>{c.title}</dt><dd>{c.description}</dd></div>)}</dl>
+      </div>
+    </section>
 
-          {gallery_section.image && (
-            <div>
-              <ImageMod
-                src={gallery_section.image}
-                alt={section_title ?? ""}
-                width={1500}
-                height={600}
-                class="mx-auto rounded-3xl"
-              />
-            </div>
-          )}
-
-          <div class="flex flex-wrap justify-center gap-7.5 w-full mt-7.5">
-            {gallery_section.locations?.map((location: any) => (
-              <div
-                class="bg-body/5 p-7 rounded-2xl flex-1 min-w-62"
-              >
-                <DynamicIcon
-                  icon={location.icon}
-                  className="text-text-light text-4xl mb-6"
-                />
-                <h4 class="h5 mb-2 text-white">{location.name}</h4>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="hover:underline"
-                >
-                  {location.address}
-                </a>
-              </div>
+    {form && (
+      <section class="pg-sec hp-cream" id="contact-form">
+        <div class="hp-in">
+          <h2 class="pg-h2 pg-h2-l pg-w" set:html={markdownify(page?.sectionTitle || form.title)} />
+          <div class="pg-intro"><p>{form.description}</p></div>
+          <form class="pg-form" action="/api/contact" method="post" data-contact-form>
+            {(form.fields ?? []).map((f: any) => (
+              <label class:list={{ "pg-form-w": f.type === "textarea" }}>
+                <span>{f.label}{f.required && <b aria-hidden="true"> *</b>}</span>
+                {f.type === "textarea"
+                  ? <textarea name={f.name} rows="4" placeholder={f.placeholder} required={f.required} maxlength="5000" />
+                  : <input name={f.name} type={f.name === "phone" ? "tel" : f.type} placeholder={f.placeholder} required={f.required} maxlength="200" autocomplete={({ name: "name", email: "email", phone: "tel" } as any)[f.name]} />}
+              </label>
             ))}
-          </div>
+            <label class="pg-trap" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off" /></label>
+            <div class="pg-form-w"><button class="hp-btn hp-btn-ink" type="submit">{form.submitLabel}</button><p role="status" aria-live="polite" data-contact-status></p></div>
+          </form>
+          <div class="pg-ways">{links.map((l) => <a href={l.href}><span>{l.label}</span>{l.value}</a>)}</div>
         </div>
       </section>
-    )
-  }
-  <Faqs prefix="contact-faq" data={{ faqs_list: [] }} ui={settingsUi.faqs} />
-  <CallToAction />
+    )}
+
+    {offices.length > 0 && (
+      <section class="pg-office hp-white">
+        <div class="pg-office-t">
+          <h2 class="pg-h2">{page?.offices?.title}</h2>
+          {offices.filter((o: any) => isAddress(o.address)).map((o: any) => <div><h3 class="pg-h3">{o.name}</h3><a href={mapLink(o.address)} target="_blank" rel="noopener noreferrer">{o.address}</a></div>)}
+          <ul>{offices.filter((o: any) => !isAddress(o.address)).map((o: any) => <li><span>{o.name}</span><span>{o.address}</span></li>)}</ul>
+        </div>
+        <Drawing name="headquarters" />
+      </section>
+    )}
+
+    <ClosingSection />
+  </div>
 </Base>
+
+<script define:vars={{ phone: phone?.value ?? "", email: email?.value ?? "" }}>
+  const bind = () => {
+    const form = document.querySelector("[data-contact-form]");
+    if (!form || "ready" in form.dataset) return;
+    form.dataset.ready = "";
+    const status = form.querySelector("[data-contact-status]");
+    const button = form.querySelector("button[type=submit]");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      button.disabled = true;
+      status.textContent = "Sending…";
+      let ok = false;
+      try {
+        const response = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
+        ok = response.ok;
+      } catch {}
+      button.disabled = false;
+      // Never say a message arrived when it did not.
+      status.textContent = ok ? "Thank you. Your message was sent." : `Your message was not sent. Please call ${phone} or email ${email}.`;
+      if (ok) form.reset();
+    });
+  };
+  bind();
+  document.addEventListener("astro:page-load", bind);
+</script>

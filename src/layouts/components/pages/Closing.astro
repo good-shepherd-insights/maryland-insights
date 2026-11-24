@@ -1,0 +1,22 @@
+---
+import { getClosingCta, getContactPage, getPartnerCta } from "@/lib/sanity/queries";
+import { contactLinks } from "@/lib/pages/contact";
+const { title } = Astro.props as { title?: string };
+const cta = await getClosingCta();
+const partner = await getPartnerCta();
+const label = partner.label || cta?.primaryLabel, link = partner.link || cta?.primaryLink;
+const phone = contactLinks((await getContactPage())?.info?.informations).find((c) => c.href.startsWith("tel:"));
+---
+
+{cta && (
+  <section class="pg-close" aria-labelledby="pg-close-title">
+    <div class="pg-close-top">
+      <img src="/images/pages/map-ink.svg" alt="" width="1012" height="536" loading="lazy" decoding="async" />
+      <div class="hp-in"><h2 id="pg-close-title">{title ?? cta.title}</h2><p>{cta.description}</p></div>
+    </div>
+    <div class="pg-close-bar">
+      {link && <a class="pg-close-go" href={link}>{label}</a>}
+      {phone && <a class="pg-close-tel" href={phone.href}>{phone.value}</a>}
+    </div>
+  </section>
+)}

@@ -1,0 +1,22 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+import { getFaqsPage } from "@/lib/sanity/queries";
+const list = (await getFaqsPage())?.list ?? {};
+const items = (list.items ?? []).filter((f: any) => f?.question && f?.answer);
+---
+
+{items.length > 0 && (
+  <section class="pg-sec hp-cream" id="faq-list">
+    <div class="hp-in pg-split pg-split-s">
+      <h2 class="pg-h2" set:html={markdownify(list.sectionTitle ?? "")} />
+      <div class="pg-qs">
+        {items.map((f: any, i: number) => (
+          <details class="hp-q" open={i === 0}>
+            <summary><h3 set:html={markdownify(f.question)} /><svg width="22" height="22" viewBox="0 0 30 30" aria-hidden="true"><path d="M3 15H27" /><path class="hp-q-v" d="M15 3V27" /></svg></summary>
+            <p set:html={markdownify(f.answer)} />
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

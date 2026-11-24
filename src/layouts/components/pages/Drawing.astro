@@ -1,0 +1,13 @@
+---
+// An approved drawing, inlined so its lettering uses the site's own font.
+// On phones its labels become a list, because scaled-down lettering is too small to read.
+const drawings = import.meta.glob("/src/lib/pages/drawings/*.svg", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
+const { name, labels = [] } = Astro.props as { name: string; labels?: [string, string][] };
+const svg = drawings[`/src/lib/pages/drawings/${name}.svg`];
+if (!svg) throw new Error(`No drawing named ${name}.`);
+---
+
+<div class:list={["pg-art", { "pg-art-l": labels.length }]}>
+  <Fragment set:html={svg} />
+  {labels.length > 0 && <ul aria-hidden="true">{labels.map(([label, color]) => <li><i style={`background:${color}`}></i>{label}</li>)}</ul>}
+</div>

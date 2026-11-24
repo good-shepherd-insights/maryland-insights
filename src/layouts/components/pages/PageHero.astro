@@ -1,0 +1,14 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+const { title, description } = Astro.props as { title: string; description?: string };
+---
+
+<section class="pg-hero hp-white">
+  <div class:list={["pg-hero-in", { "pg-hero-art": Astro.slots.has("default") }]}>
+    <div class="pg-hero-t">
+      <h1>{title}</h1>
+      {description && <p set:html={markdownify(description)} />}
+    </div>
+    <slot />
+  </div>
+</section>
