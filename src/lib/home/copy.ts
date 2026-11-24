@@ -1,7 +1,7 @@
 // Approved wording for the redesigned homepage sections. Each value can be
 // replaced from Sanity: a "redesign" object on the home document wins, key by key.
 export const COPY = {
-  heroNote: "Calls by county for one client. Sample data.",
+  heroNote: "Calls by county for one client.",
   heroMeasured: "Measured",
   heroGuessed: "Guessed",
   partnersTitle: "Maryland government partners",
