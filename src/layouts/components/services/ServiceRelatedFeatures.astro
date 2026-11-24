@@ -5,7 +5,7 @@ import { markdownify, slugify } from "@/lib/utils/textConverter";
 
 type Feature = { title: string; slug: string; subtitle?: string };
 type Props = { title?: string; items: Feature[] };
-const { title = "What this delivers for your clients", items } = Astro.props as Props;
+const { title = "What this delivers for Maryland businesses", items } = Astro.props as Props;
 const headingId = `service-${slugify(title)}`;
 // Each feature's own drawing, from the homepage.
 const home = await getHomePage();
