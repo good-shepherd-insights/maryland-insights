@@ -49,6 +49,12 @@ export async function loadSeo(id: string, prerendered: boolean): Promise<Head> {
   }
 }
 
+/** Every page on the site, for the social cards. */
+export async function loadAllSeo(): Promise<{ route: string; head: Head }[]> {
+  const { byId } = await loadBuild();
+  return [...byId.values()].filter((p) => p.route).map((p) => ({ route: p.route, head: p.head }));
+}
+
 export async function loadNotFoundSeo(): Promise<Head> {
   const { site } = await loadBuild();
   const { notFoundTitle: title, notFoundDescription: description } = site.seo;
