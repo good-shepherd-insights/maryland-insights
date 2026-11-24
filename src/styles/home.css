@@ -145,7 +145,11 @@
 /* faq */
 .hp-faq { background:var(--cream); } .hp-faq > .hp-in { padding-block:56px 48px; } .hp-faq header { display:grid; gap:28px; padding-bottom:28px; }
 .hp-faq label { font-size:16px; display:grid; gap:8px; } .hp-faq input { font:inherit; min-height:54px; padding:0 15px; border:2px solid var(--ink); border-radius:0; background:#fff; width:100%; box-sizing:border-box; color:var(--ink); }
-.hp-q { border-top:2px solid var(--ink); padding:18px 0 30px; display:grid; gap:10px; break-inside:avoid; } .hp-q h3 { font-size:clamp(24px,2vw,26px); line-height:1.12; letter-spacing:-.02em; }
+.hp-q { border-top:2px solid var(--ink); } .hp-faq-list > div:last-child .hp-q:last-child { border-bottom:2px solid var(--ink); }
+.hp-q summary { list-style:none; cursor:pointer; min-height:64px; padding:16px 0; box-sizing:border-box; display:flex; justify-content:space-between; align-items:flex-start; gap:18px; }
+.hp-q h3 { font-size:clamp(22px,1.8vw,25px); line-height:1.15; letter-spacing:-.02em; }
+.hp-q svg { flex:none; margin-top:4px; stroke:currentColor; stroke-width:3.5; fill:none; } .hp-q[open] .hp-q-v { display:none; }
+.hp-q > p { padding-bottom:24px; }
 
 /* closing */
 .hp-closing { position:relative; background:var(--red); color:#fff; overflow:hidden; display:flex; flex-direction:column-reverse; } .hp-closing svg { display:block; width:calc(100% - 20px); margin:36px 0 40px 20px; box-sizing:border-box; }
@@ -201,7 +205,7 @@
   .hp-bar { grid-template-columns:200px 1fr 210px; gap:20px; padding:7px 0; } .hp-bar-track { grid-column:2; grid-row:1; } .hp-bar-track span { height:32px; } .hp-bar.hp-us .hp-bar-track span { height:46px; } .hp-bar p { font-size:16px; }
   .hp-tools > .hp-in { grid-template-columns:340px minmax(0,1fr); gap:64px; padding-block:84px; } .hp-tools .hp-h2 { font-size:72px; } .hp-record { padding:34px; } .hp-trunk { margin:0; border-left-width:6px; padding:0; } .hp-branch { padding:26px 0 26px 76px; } .hp-branch::before { width:56px; height:6px; top:45px; } .hp .hp-branch h3 { padding:8px 0; }
   .hp-steps { position:relative; padding-top:0; } .hp-steps .hp-in { position:absolute; inset:72px 0 auto; padding-bottom:0; } .hp-steps .hp-h2 { max-width:640px; } .hp-steps ol { display:flex; align-items:flex-end; padding-top:152px; } .hp-steps li { width:auto; flex:1; min-height:calc(300px + 90px * var(--i)); padding:32px; justify-content:space-between; } .hp-steps li p { font-size:18px; }
-  .hp-faq > .hp-in { padding-block:84px; } .hp-faq header { display:flex; justify-content:space-between; align-items:flex-end; gap:60px; padding-bottom:52px; } .hp-faq header .hp-h2 { max-width:860px; } .hp-faq label { width:360px; flex:none; } .hp-faq-list { columns:3; column-gap:48px; } .hp-q { padding-bottom:36px; }
+  .hp-faq > .hp-in { padding-block:84px; } .hp-faq header { display:flex; justify-content:space-between; align-items:flex-end; gap:60px; padding-bottom:52px; } .hp-faq header .hp-h2 { max-width:860px; } .hp-faq label { width:360px; flex:none; } .hp-faq-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:48px; align-items:start; } .hp-faq-list > div .hp-q:last-child { border-bottom:2px solid var(--ink); }
   .hp-closing { display:block; min-height:640px; } .hp-closing svg { position:absolute; margin:0; left:max(300px,calc(50vw - 420px)); top:60px; width:1180px; max-width:none; } .hp-closing .hp-in { position:relative; padding-block:80px; gap:30px; } .hp-closing .hp-h2 { max-width:820px; } .hp-closing p { font-size:22px; } .hp-closing .hp-btn { width:auto; }
   .hp-footer > .hp-in { padding-block:64px 40px; } .hp-footer-top { grid-template-columns:minmax(0,760px) 380px; justify-content:space-between; align-items:start; gap:60px; padding-bottom:56px; } .hp-footer-cols, .hp-footer-cols nav:last-child ul { grid-template-columns:1.4fr 1fr 1fr 1fr; gap:44px; } .hp-footer-cols nav:last-child { grid-column:auto; } .hp-footer-cols nav:last-child ul { display:block; } .hp-footer-logo { grid-column:auto; order:0; } .hp-footer-cols a { min-height:36px; } .hp-footer-end { display:flex; justify-content:space-between; align-items:center; margin-top:48px; padding-top:22px; }
 }
