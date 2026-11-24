@@ -2,7 +2,7 @@
 import type { HomeCopy } from "@/lib/home/copy";
 
 type Cell = "yes" | "no" | "part";
-const { categories = [], plans = [], ui = {}, copy } = Astro.props as { categories: any[]; plans: any[]; ui: any; copy: HomeCopy };
+const { categories = [], plans = [], ui = {}, partnerLink, copy } = Astro.props as { categories: any[]; plans: any[]; ui: any; partnerLink?: string; copy: HomeCopy };
 const yesLabel = ui.includedLabel ?? "Included", noLabel = ui.notIncludedLabel ?? "Not included";
 const state = (v: string): Cell => (v === "active" ? "yes" : v === "cross" || !v ? "no" : "part");
 const word = (v: string) => (state(v) === "yes" ? yesLabel : state(v) === "no" ? noLabel : v);
@@ -58,13 +58,14 @@ const title = (t: string) => t.replace("{n}", String(all.length));
           <div class:list={["hp-bar", { "hp-us": p.isUs }]}>
             <div class="hp-bar-name"><img src={logo(p)} alt="" width="30" height="30" loading="lazy" /><strong>{p.label}</strong></div>
             <div class="hp-bar-track" aria-hidden="true">{(["yes", "part", "no"] as Cell[]).map((s) => totals[i][s] > 0 && <span class={`hp-b-${s}`} style={`width:${(100 * totals[i][s]) / all.length}%`}></span>)}</div>
-            <p><strong>{totals[i].yes}</strong> {yesLabel.toLowerCase()}{totals[i].part > 0 && `, ${totals[i].part} partial`}</p>
+            <p><strong>{totals[i].yes}</strong>{` ${yesLabel.toLowerCase()}`}{totals[i].part > 0 && `, ${totals[i].part} partial`}</p>
           </div>
         ))}
       </div>
       <ul class="hp-key hp-key-bars">
         <li><i class="hp-b-yes"></i>{yesLabel}</li><li><i class="hp-b-part"></i>{copy.comparePartial}</li><li><i class="hp-b-no"></i>{noLabel}</li>
       </ul>
+      {partnerLink && <p class="hp-modal-cta"><a class="hp-btn hp-btn-ink" href={partnerLink}>{copy.ctaLabel}</a></p>}
       {groups.map((g) => (
         <details class="hp-cat" data-group={g.id} open={g.id === 0}>
           <summary><h3>{g.name}</h3><span>{g.rows.length} features</span></summary>
@@ -73,6 +74,7 @@ const title = (t: string) => t.replace("{n}", String(all.length));
               <summary><h4>{r.name}</h4></summary>
               <p>{r.description}</p>
               <dl>{r.values.map((v: string, i: number) => <div class:list={[{ "hp-us": plans[i].isUs }]}><dt>{plans[i].label}</dt><dd>{word(v)}</dd></div>)}</dl>
+              {partnerLink && <p class="hp-modal-cta"><a class="hp-btn hp-btn-ink" href={partnerLink} aria-label={`${copy.ctaLabel}: ${r.name}`}>{copy.ctaLabel}</a></p>}
             </details>
           ))}
         </details>

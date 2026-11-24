@@ -43,7 +43,7 @@ const partners = (home?.trustStrip?.logos ?? []).map((l: any) => ({ name: l.name
     <Partners partners={partners} title={copy.partnersTitle} label={homeUi.trustStrip?.partnersAriaLabel} />
     <Services stack={home.serviceStack} copy={copy} />
     <Clients features={home.features} copy={copy} />
-    <Compare categories={categories} plans={plans} ui={homeUi.replacesTable} copy={copy} />
+    <Compare categories={categories} plans={plans} ui={homeUi.replacesTable} partnerLink={home.hero?.buttonSolid?.link} copy={copy} />
     <Tools copy={copy} />
     <Steps facts={home.facts?.facts} copy={copy} />
     <HomeFaq items={home.faq?.items} ui={home.faq?.ui} copy={copy} />
