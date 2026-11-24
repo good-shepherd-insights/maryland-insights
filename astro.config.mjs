@@ -45,6 +45,8 @@ export default defineConfig({
   adapter: vercel(),
   image: { service: sharp() },
   vite: {
+    // Social cards are drawn at build, so their addresses change at build and not between.
+    define: { __CARD_BUILD__: JSON.stringify(Date.now().toString(36)) },
     plugins: [tailwindcss()],
     server: {
       allowedHosts: [

@@ -1,9 +1,6 @@
-import { createHash } from "node:crypto";
+declare const __CARD_BUILD__: string;
 
-// Raise when the card design changes.
-const DESIGN = 1;
-
-export type CardText = { ogTitle?: string; ogDescription?: string; graph?: any[] };
+type CardText = { graph?: any[] };
 
 /** The picture a blog post's card shows. */
 export const cardPicture = (seo: CardText): string | undefined => {
@@ -11,9 +8,12 @@ export const cardPicture = (seo: CardText): string | undefined => {
   return Array.isArray(image) ? image[0] : image;
 };
 
-/** A card's address changes whenever what it shows changes, so no one keeps an old copy. */
-export const getOpenGraphImagePath = (pathname: string, seo: CardText) => {
+/**
+ * Every build draws new cards and gives them new addresses, so no one keeps an old one.
+ * The address comes from the build, not the page's text: a page rendered after an edit
+ * must not point a new address at a card that has not been redrawn yet.
+ */
+export const getOpenGraphImagePath = (pathname: string) => {
   const route = pathname.split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, "");
-  const key = createHash("sha256").update(JSON.stringify([DESIGN, seo.ogTitle, seo.ogDescription, cardPicture(seo)])).digest("hex").slice(0, 10);
-  return `/open-graph/${route || "home"}.png?v=${key}`;
+  return `/open-graph/${route || "home"}.png?v=${__CARD_BUILD__}`;
 };

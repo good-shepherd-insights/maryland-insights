@@ -108,7 +108,7 @@ const baseUrl = siteSettings.seoUrl ?? "";
 const canonical = seo.canonical ?? canonicalUrl(baseUrl, Astro.url.pathname);
 const shareTitle = seo.ogTitle ?? seo.title;
 const shareDescription = seo.ogDescription ?? seo.description;
-const shareImage = seo.ogImage ?? `${baseUrl}${getOpenGraphImagePath(notFound ? "/404" : Astro.url.pathname, seo)}`;
+const shareImage = seo.ogImage ?? `${baseUrl}${getOpenGraphImagePath(notFound ? "/404" : Astro.url.pathname)}`;
 const documentLocale = siteSettings.locale?.replace("_", "-");
 
 ---

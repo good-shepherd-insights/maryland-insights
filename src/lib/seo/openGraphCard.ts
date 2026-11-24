@@ -156,7 +156,16 @@ export async function drawCard(card: Card, mapSvg: string): Promise<Buffer> {
   return png;
 }
 
-const load = async (url: string) => {
+const load = async (url: string, tries = 3): Promise<Buffer> => {
+  try {
+    return await loadOnce(url);
+  } catch (error) {
+    if (tries <= 1) throw error;
+    await new Promise((done) => setTimeout(done, 1000));
+    return load(url, tries - 1);
+  }
+};
+const loadOnce = async (url: string) => {
   const response = await fetch(url, { signal: AbortSignal.timeout(15000) });
   if (!response.ok) throw new Error(`${url} answered ${response.status}`);
   return Buffer.from(await response.arrayBuffer());
