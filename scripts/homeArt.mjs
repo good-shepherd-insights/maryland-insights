@@ -23,6 +23,7 @@ function simplify(pts, tol) {
   }
   return far > tol ? [...simplify(pts.slice(0, at + 1), tol).slice(0, -1), ...simplify(pts.slice(at), tol)] : [a, b];
 }
+const area = (r) => Math.abs(r.reduce((a, [x, y], i) => { const [p, q] = r[(i + 1) % r.length]; return a + x * q - p * y; }, 0)) / 2;
 const counties = [...JSON.parse(geo).matchAll(/<path d="([^"]+)"[^>]*><title>([^<]+)<\/title>/g)].map(([, d, name]) => {
   const rings = d.split("M").slice(1).map((s) => {
     const n = s.match(/-?\d+\.?\d*/g).map(Number);
@@ -34,45 +35,78 @@ const counties = [...JSON.parse(geo).matchAll(/<path d="([^"]+)"[^>]*><title>([^
     r.forEach(([x1, y1], i) => { const [x2, y2] = r[(i + 1) % r.length]; const k = x1 * y2 - x2 * y1; A += k; x += (x1 + x2) * k; y += (y1 + y2) * k; });
     if (Math.abs(A) > best[0]) best = [Math.abs(A), x / (3 * A), y / (3 * A)];
   }
-  return { name, rings: rings.map((r) => simplify(r, 0.45)).filter((r) => r.length > 2), c: best.slice(1) };
+  return { name, rings: rings.map((r) => simplify(r, 0.9)).filter((r) => r.length > 2 && area(r) > 60), fine: rings.map((r) => simplify(r, 0.45)).filter((r) => r.length > 2), c: best.slice(1) };
 });
 const path = (rings) => rings.map((r) => "M" + r.map(([x, y]) => `${+x.toFixed(1)} ${+y.toFixed(1)}`).join("L") + "Z").join("");
 const ramp = (v) => (v < 24 ? "#FFF0BF" : v < 40 ? "#FFDF82" : v < 75 ? GOLD : "#F0A900");
 
-function draw({ sx, sy, ox, ty, gy, lift, only, font, small, offset, box, ground, stroke, dot, line }) {
+/** Is a point inside a set of rings? */
+const inside = (rings, x, y) => rings.reduce((odd, r) => {
+  let hit = odd;
+  for (let i = 0, k = r.length - 1; i < r.length; k = i++) if ((r[i][1] > y) !== (r[k][1] > y) && x < ((r[k][0] - r[i][0]) * (y - r[i][1])) / (r[k][1] - r[i][1]) + r[i][0]) hit = !hit;
+  return hit;
+}, false);
+
+/** Centers each label in the visible part of its county, as large as fits. Counties too small for a label get none. */
+function place(shapes, fonts, pad) {
+  const step = 1, minX = Math.floor(Math.min(...shapes.flatMap((s) => s.top.flat().map((p) => p[0])))), minY = Math.floor(Math.min(...shapes.flatMap((s) => s.top.flat().map((p) => p[1]))));
+  const w = Math.ceil(Math.max(...shapes.flatMap((s) => s.top.flat().map((p) => p[0]))) - minX) + 2, h = Math.ceil(Math.max(...shapes.flatMap((s) => s.top.flat().map((p) => p[1]))) - minY + 60);
+  const grid = new Int16Array(w * h).fill(-1);
+  const fill = (rings, id) => {
+    const xs = rings.flat().map((p) => p[0]), ys = rings.flat().map((p) => p[1]);
+    for (let y = Math.max(0, Math.floor(Math.min(...ys) - minY)); y <= Math.min(h - 1, Math.ceil(Math.max(...ys) - minY)); y += step)
+      for (let x = Math.max(0, Math.floor(Math.min(...xs) - minX)); x <= Math.min(w - 1, Math.ceil(Math.max(...xs) - minX)); x += step)
+        if (inside(rings, x + minX + .5, y + minY + .5)) grid[y * w + x] = id;
+  };
+  shapes.forEach((s, id) => { for (let k = s.h; k > 0; k -= 2) fill(s.top.map((r) => r.map(([x, y]) => [x, y + k])), 999); fill(s.top, id); });
+  return shapes.flatMap((s, id) => {
+    const cells = new Uint32Array((w + 1) * (h + 1));
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) cells[(y + 1) * (w + 1) + x + 1] = (grid[y * w + x] === id ? 1 : 0) + cells[y * (w + 1) + x + 1] + cells[(y + 1) * (w + 1) + x] - cells[y * (w + 1) + x];
+    const all = (x0, y0, x1, y1) => x0 >= 0 && y0 >= 0 && x1 < w && y1 < h && cells[y1 * (w + 1) + x1] - cells[y0 * (w + 1) + x1] - cells[y1 * (w + 1) + x0] + cells[y0 * (w + 1) + x0] === (x1 - x0) * (y1 - y0);
+    for (const font of fonts) {
+      const tw = s.text.length * font * .64, th = font * .74;
+      let best = null;
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        if (grid[y * w + x] !== id) continue;
+        let m = pad;
+        if (!all(Math.round(x - tw / 2 - m), Math.round(y - th / 2 - m), Math.round(x + tw / 2 + m), Math.round(y + th / 2 + m))) continue;
+        while (m < 60 && all(Math.round(x - tw / 2 - m - 1), Math.round(y - th / 2 - m - 1), Math.round(x + tw / 2 + m + 1), Math.round(y + th / 2 + m + 1))) m++;
+        if (!best || m > best.m) best = { m, pts: [[x, y]] }; else if (m === best.m) best.pts.push([x, y]);
+      }
+      if (best) {
+        // The middle of every equally roomy spot, snapped to one of them.
+        const cx = best.pts.reduce((a, q) => a + q[0], 0) / best.pts.length, cy = best.pts.reduce((a, q) => a + q[1], 0) / best.pts.length;
+        const [x, y] = best.pts.reduce((a, q) => (Math.hypot(q[0] - cx, q[1] - cy) < Math.hypot(a[0] - cx, a[1] - cy) ? q : a));
+        return [{ name: s.name, calls: s.text, x: x + minX, y: Math.round(y + minY + font * .365), size: font }];
+      }
+    }
+    return [];
+  });
+}
+
+function draw({ sx, sy, ox, ty, gy, lift, fonts, pad, box, ground, stroke }) {
   const at = ([x, y], o) => [x * sx + ox, y * sy + o];
   let out = `<g transform="translate(${ox} ${gy}) scale(${sx} ${sy})">` +
     counties.map((c) => `<path d="${path(c.rings)}" fill="#BDB7AC" stroke="#BDB7AC" stroke-width="${ground}" stroke-linejoin="round"/>`).join("") +
     counties.map((c) => `<path d="${path(c.rings)}" fill="#F3F1ED" stroke="#F3F1ED" stroke-width="1.6"/>`).join("") + "</g>";
-  for (const c of counties) {
-    const [x, y1] = at(c.c, ty), [, y2] = at(c.c, gy);
-    out += `<path d="M${x.toFixed(0)} ${y1.toFixed(0)}V${y2.toFixed(0)}" stroke="#8F887C" stroke-width="${line}"/><circle cx="${x.toFixed(0)}" cy="${y2.toFixed(0)}" r="${dot}" fill="#8F887C"/>`;
-  }
-  const order = [...counties].sort((a, b) => a.c[1] + (a.name === "Baltimore City" ? 30 : 0) - b.c[1] - (b.name === "Baltimore City" ? 30 : 0));
-  for (const c of order) {
-    const h = calls[c.name] * lift + 5;
-    for (const ring of c.rings) {
-      const p = ring.map((q) => at(q, ty));
-      let walls = "";
-      p.forEach((a, i) => {
-        const b = p[(i + 1) % p.length], [l, r] = a[0] < b[0] ? [a, b] : [b, a];
-        walls += `M${l[0].toFixed(1)} ${l[1].toFixed(1)}L${r[0].toFixed(1)} ${r[1].toFixed(1)}v${-h.toFixed(1)}L${l[0].toFixed(1)} ${(l[1] - h).toFixed(1)}Z`;
-      });
-      out += `<path d="${walls}" fill="#2A2620" stroke="#2A2620" stroke-width=".8"/><path d="${path([p.map(([x, y]) => [x, y - h])])}" fill="${ramp(calls[c.name])}" stroke="${INK}" stroke-width="${stroke}" stroke-linejoin="round"/>`;
-    }
-  }
-  const labels = counties.filter((c) => !only || only.includes(c.name)).map((c) => {
-    const [dx, dy] = offset[c.name] ?? [0, 0], [x, y] = at([c.c[0] + dx, c.c[1] + dy], ty);
-    return { name: c.name, calls: short(count[c.name]), x: Math.round(x), y: Math.round(y - calls[c.name] * lift - 5 + font / 3), size: small.includes(c.name) ? font - 3 : font };
+  const shapes = [...counties].sort((a, b) => a.c[1] + (a.name === "Baltimore City" ? 30 : 0) - b.c[1] - (b.name === "Baltimore City" ? 30 : 0)).map((c) => {
+    const h = calls[c.name] * lift + 6;
+    return { name: c.name, h, text: short(count[c.name]), top: c.rings.map((r) => r.map((q) => { const [x, y] = at(q, ty); return [x, y - h]; })) };
   });
-  return { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box}">${out}</svg>`, labels, box };
+  for (const s of shapes) {
+    let walls = "";
+    for (const p of s.top) p.forEach((a, i) => {
+      const b = p[(i + 1) % p.length], [l, r] = a[0] < b[0] ? [a, b] : [b, a];
+      walls += `M${l[0].toFixed(1)} ${l[1].toFixed(1)}L${r[0].toFixed(1)} ${r[1].toFixed(1)}v${s.h.toFixed(1)}L${l[0].toFixed(1)} ${(l[1] + s.h).toFixed(1)}Z`;
+    });
+    out += `<path d="${walls}" fill="#2A2620" stroke="#2A2620" stroke-width="1"/><path d="${path(s.top)}" fill="${ramp(calls[s.name])}" stroke="${INK}" stroke-width="${stroke}" stroke-linejoin="round"/>`;
+  }
+  return { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box}">${out}</svg>`, labels: place(shapes, fonts, pad), box };
 }
 
-const wide = draw({ sx: .83, sy: .555, ox: 590, ty: 474, gy: 612, lift: .8, font: 15, small: ["Calvert", "Baltimore City", "Kent", "Talbot", "Howard", "Caroline", "Harford"], box: "580 370 850 545", ground: 7, stroke: 1.2, dot: 3.2, line: 1.4,
-  offset: { Garrett: [-6, -10], Allegany: [22, -8], Kent: [14, -17], Cecil: [12, -14], Wicomico: [8, 0], "Baltimore City": [0, 3], Harford: [20, -8], Howard: [31, 8], Caroline: [7, 0], Calvert: [-3, 0], Carroll: [6, -14], Frederick: [-4, -25] } });
-const narrow = draw({ sx: .95, sy: .74, ox: 10, ty: 130, gy: 300, lift: .95, font: 31, small: [], only: ["Garrett", "Frederick", "Montgomery", "Prince George's", "Anne Arundel", "Baltimore County", "Charles", "Worcester"], box: "0 30 980 670", ground: 8, stroke: 1.2, dot: 5, line: 2,
-  offset: { Garrett: [-6, -10], Frederick: [-6, -22], "Baltimore County": [0, -26], Montgomery: [-2, 0], Worcester: [-4, 0], "Prince George's": [10, 8], "Anne Arundel": [2, -6] } });
+const wide = draw({ sx: .83, sy: .6, ox: 590, ty: 470, gy: 596, lift: .2, fonts: [17, 15, 13, 12], pad: 1, box: "580 370 850 545", ground: 7, stroke: 1.3 });
+const narrow = draw({ sx: .95, sy: .8, ox: 10, ty: 130, gy: 280, lift: .24, fonts: [33, 31], pad: 2, box: "0 30 980 670", ground: 8, stroke: 1.6 });
 writeFileSync("public/images/home/hero-map.svg", wide.svg);
 writeFileSync("public/images/home/hero-map-mobile.svg", narrow.svg);
 writeFileSync("src/lib/home/heroMap.json", JSON.stringify({ wide: { box: wide.box, labels: wide.labels }, narrow: { box: narrow.box, labels: narrow.labels } }));
-writeFileSync("src/lib/home/land.json", JSON.stringify(Object.fromEntries(counties.map((c) => [c.name, path(c.rings)]))));
+writeFileSync("src/lib/home/land.json", JSON.stringify(Object.fromEntries(counties.map((c) => [c.name, path(c.fine)]))));

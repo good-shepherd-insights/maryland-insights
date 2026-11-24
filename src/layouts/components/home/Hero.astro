@@ -34,7 +34,7 @@ const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
       <svg class="hp-wide" viewBox={map.wide.box} aria-hidden="true">
         {map.wide.labels.map((l) => <text x={l.x} y={l.y} text-anchor="middle" font-size={l.size} font-weight="800">{l.calls}</text>)}
         <text class="hp-hero-tag" x="1298" y="554" font-size="24">{copy.heroMeasured}</text>
-        <text class="hp-hero-tag" x="766" y="600" font-size="24" fill="#706A62">{copy.heroGuessed}</text>
+        <text class="hp-hero-tag" x="590" y="716" font-size="24" fill="#706A62">{copy.heroGuessed}</text>
       </svg>
       <svg class="hp-narrow" viewBox={map.narrow.box} aria-hidden="true">
         {map.narrow.labels.map((l) => <text x={l.x} y={l.y} text-anchor="middle" font-size={l.size} font-weight="800">{l.calls}</text>)}
