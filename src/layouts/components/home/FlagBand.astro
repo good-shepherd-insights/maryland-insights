@@ -1,0 +1,16 @@
+---
+// The black and gold quarter of the Maryland flag, repeated as a band.
+const { height = 48 } = Astro.props as { height?: number };
+const unit = height * 4, bar = unit / 6;
+const shapes: { p: string; c: string }[] = [];
+for (let u = 0; u <= Math.ceil(2600 / unit); u++)
+  for (let k = 0; k < 6; k++) {
+    const x = u * unit + k * bar, y1 = (height * k) / 6, y2 = (height * (k + 1)) / 6;
+    const [top, low] = k % 2 === 0 ? ["#121212", "#FFC20E"] : ["#FFC20E", "#121212"];
+    shapes.push({ p: `${x},0 ${x + bar},0 ${x + bar},${y2} ${x},${y1}`, c: top }, { p: `${x},${y1} ${x + bar},${y2} ${x + bar},${height} ${x},${height}`, c: low });
+  }
+---
+
+<div class="hp-flag" style={`height:${height}px`} aria-hidden="true">
+  <svg width="2600" height={height} viewBox={`0 0 2600 ${height}`}>{shapes.map((s) => <polygon points={s.p} fill={s.c} />)}</svg>
+</div>

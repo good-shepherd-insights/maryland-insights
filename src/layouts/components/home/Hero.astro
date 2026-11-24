@@ -1,0 +1,50 @@
+---
+import map from "@/lib/home/heroMap.json";
+import type { HomeCopy } from "@/lib/home/copy";
+
+const { hero = {}, copy } = Astro.props as { hero: any; copy: HomeCopy };
+// "More calls for your Maryland clients. Measured, not guessed."
+const [lead = "", ...after] = String(hero?.title ?? "").split(/(?<=\.)\s+/);
+const claim = after.join(" ");
+const comma = claim.indexOf(",");
+const first = comma > 0 ? claim.slice(0, comma + 1) : claim;
+const second = comma > 0 ? claim.slice(comma + 1).trim() : "";
+const buttons = [hero?.buttonSolid, hero?.buttonUnderline].filter((b: any) => b?.label && b?.link);
+const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
+---
+
+<section class="hp-hero" id="designs-banner">
+  <div class="hp-hero-in">
+    <h1 class="hp-hero-h">
+      <span class="hp-hero-lead">{lead}</span>{" "}
+      {first && <span class="hp-hero-first">{first}</span>}{" "}
+      {second && <span class="hp-hero-second">{second}</span>}
+    </h1>
+    <div class="hp-hero-body">
+      <p class="hp-hero-copy">{hero?.content}</p>
+      <div class="hp-btns">
+        {buttons.map((b: any, i: number) => <a href={b.link} class:list={["hp-btn", i === 0 ? "hp-btn-ink" : "hp-btn-line"]}>{b.label}</a>)}
+      </div>
+    </div>
+    <div class="hp-hero-map">
+      <picture>
+        <source media="(min-width: 1024px)" srcset="/images/home/hero-map.svg" width="850" height="545" />
+        <img src="/images/home/hero-map-mobile.svg" width="980" height="670" alt="Maryland raised by calls per county above the same map left blank, sample data" fetchpriority="high" />
+      </picture>
+      <svg class="hp-wide" viewBox={map.wide.box} aria-hidden="true">
+        {map.wide.labels.map((l) => <text x={l.x} y={l.y} text-anchor="middle" font-size={l.size} font-weight="800">{l.calls}</text>)}
+        <text class="hp-hero-tag" x="1298" y="554" font-size="24">{copy.heroMeasured}</text>
+        <text class="hp-hero-tag" x="766" y="600" font-size="24" fill="#706A62">{copy.heroGuessed}</text>
+      </svg>
+      <svg class="hp-narrow" viewBox={map.narrow.box} aria-hidden="true">
+        {map.narrow.labels.map((l) => <text x={l.x} y={l.y} text-anchor="middle" font-size={l.size} font-weight="800">{l.calls}</text>)}
+        <text class="hp-hero-tag" x="10" y="94" font-size="40">{copy.heroMeasured}</text>
+        <text class="hp-hero-tag" x="10" y="496" font-size="40" fill="#6E685F">{copy.heroGuessed}</text>
+      </svg>
+    </div>
+    <p class="hp-hero-note">{copy.heroNote}</p>
+    <dl class="hp-stats">
+      {stats.map((s: any) => <div><dt>{s.label}</dt><dd>{s.value}</dd></div>)}
+    </dl>
+  </div>
+</section>

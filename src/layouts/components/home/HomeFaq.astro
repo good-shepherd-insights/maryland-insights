@@ -1,0 +1,37 @@
+---
+import type { HomeCopy } from "@/lib/home/copy";
+const { items = [], ui = {}, copy } = Astro.props as { items: any[]; ui: any; copy: HomeCopy };
+const faqs = items.filter((f) => f?.question && f?.answer);
+---
+
+{faqs.length > 0 && (
+<section class="hp-faq" id="faq-list">
+  <div class="hp-in">
+    <header>
+      <h2 class="hp-h2 hp-xl">{copy.faqTitle}</h2>
+      <label>{copy.faqSearch}<input type="search" data-home-faq-search autocomplete="off" /></label>
+    </header>
+    <div class="hp-faq-list">
+      {faqs.map((f) => <div class="hp-q" data-home-faq><h3>{f.question}</h3><p>{f.answer}</p></div>)}
+    </div>
+    <p class="hp-faq-none" data-home-faq-none role="status" aria-live="polite" data-text={ui?.noResultsHeading ?? "No matching questions found"}></p>
+  </div>
+</section>
+)}
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const input = document.querySelector<HTMLInputElement>("[data-home-faq-search]");
+    const none = document.querySelector<HTMLElement>("[data-home-faq-none]");
+    input?.addEventListener("input", () => {
+      const q = input.value.trim().toLowerCase();
+      let shown = 0;
+      document.querySelectorAll<HTMLElement>("[data-home-faq]").forEach((el) => {
+        const hit = !q || el.textContent!.toLowerCase().includes(q);
+        el.style.display = hit ? "" : "none";
+        if (hit) shown++;
+      });
+      if (none) none.textContent = shown ? "" : none.dataset.text ?? "";
+    });
+  });
+</script>

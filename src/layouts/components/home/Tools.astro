@@ -1,0 +1,37 @@
+---
+import { getIntegrations, getIntegrationsPage } from "@/lib/sanity/queries";
+import { TOOL_GROUPS, type HomeCopy } from "@/lib/home/copy";
+import ToolLogo from "./ToolLogo.astro";
+
+const { copy } = Astro.props as { copy: HomeCopy };
+const page = await getIntegrationsPage();
+const curated = page?.grid?.integrations ?? [];
+const tools = (curated.length > 0 ? curated : await getIntegrations()).filter((t: any) => t?.title);
+const more = page?.grid?.showMoreCard;
+const named = new Set(TOOL_GROUPS.flatMap((g) => g.tools));
+const groups = TOOL_GROUPS.map((g, i) => ({
+  title: g.title,
+  tools: [...g.tools.map((n) => tools.find((t: any) => t.title === n)).filter(Boolean), ...(i === TOOL_GROUPS.length - 1 ? tools.filter((t: any) => !named.has(t.title)) : [])],
+})).filter((g) => g.tools.length > 0);
+---
+
+<section class="hp-tools">
+  <div class="hp-in">
+    <div class="hp-tools-side">
+      <h2 class="hp-h2 hp-lg">{copy.toolsTitle}</h2>
+      <div class="hp-record">
+        <p class="hp-record-h">{copy.toolsRecordTitle}</p>
+        <p>{copy.toolsRecordBody}</p>
+        {more?.link && <a href={more.link}>{more.body ?? more.title}</a>}
+      </div>
+    </div>
+    <div class="hp-trunk">
+      {groups.map((g) => (
+        <div class="hp-branch">
+          <h3>{g.title}</h3>
+          <ul>{g.tools.map((t: any) => <li><ToolLogo tool={t} /><div><h4>{t.title}</h4><p>{t.description}</p></div></li>)}</ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
