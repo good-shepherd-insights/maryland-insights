@@ -1,62 +1,124 @@
 ---
 export const prerender = true;
+import ClosingSection from "@/components/pages/Closing.astro";
+import Drawing from "@/components/pages/Drawing.astro";
+import PageHero from "@/components/pages/PageHero.astro";
+import ToolLogo from "@/components/home/ToolLogo.astro";
 import Base from "@/layouts/Base.astro";
-import { getAboutPage, getSiteSettings } from "@/lib/sanity/queries";
-import AboutNarrative from "@/partials/AboutNarrative.astro";
-import CallToAction from "@/partials/CallToAction.astro";
-import ChooseSwiper from "@/layouts/partials/ChooseSwiper.astro";
-import Facts from "@/partials/Facts.astro";
-import Faqs from "@/partials/Faqs.astro";
-import PageHeader from "@/partials/PageHeader.astro";
-import Testimonial from "@/partials/Testimonial.astro";
-import TrustedBrands from "@/partials/TrustedBrands.astro";
+import counties from "@/lib/pages/counties.json";
+import { plainify } from "@/lib/utils/plainify.mjs";
+import { getAboutPage, getIntegrations, getPartnerCta, getSiteSettings } from "@/lib/sanity/queries";
+import { markdownify } from "@/lib/utils/textConverter";
+import "@/styles/home.css";
+import "@/styles/service.css";
+import "@/styles/pages.css";
 
-const aboutPage = await getAboutPage();
-const settings = await getSiteSettings();
-const settingsUi = settings?.ui ?? {};
-const header = aboutPage?.header ?? {};
-const title = header.title;
-const description = header.description;
-
-const narrative = aboutPage?.narrative ?? {};
-const narrativeUi = aboutPage?.ui?.aboutNarrative ?? {};
-const company_narrative = {
-  title: narrative.title,
-  image: narrative.image,
-  sections: narrative.sections ?? [],
-  ui: narrativeUi,
-};
-
-const facts = aboutPage?.facts ?? {};
-const facts_section = { enable: true, facts: facts.facts ?? [] };
-
-const story = aboutPage?.story ?? {};
-const story_section = {
-  enable: !!story.title,
-  title: story.title,
-  agents: (story.agents ?? []).map((a: any) => ({
-    label: a.label,
-    description: a.description,
-    icon: a.icon,
-    button: a.button ? { enable: true, label: a.button.label, link: a.button.link } : undefined,
-  })),
-};
-
+const page = await getAboutPage();
+const settingsUi = (await getSiteSettings())?.ui ?? {};
+const header = page?.header ?? {};
+const narrative = page?.narrative ?? {};
+const sections = narrative.sections ?? [];
+const part = (id: string) => sections.find((s: any) => s.id === id);
+const [since, who, mission, vision] = ["since-2015", "who-we-are", "mission", "vision"].map(part);
+// Sections added later in Sanity still show, after the designed ones.
+const others = sections.filter((s: any) => ![since, who, mission, vision].includes(s));
+const story = page?.story ?? {};
+const agents = story.agents ?? [];
+const facts = (page?.facts?.facts ?? []).map((f: any) => ({ label: plainify(f.label ?? ""), description: f.description }));
+const tools = ((await getIntegrations()) ?? []).filter((t: any) => ["HubSpot", "Google Analytics", "Twilio", "Slack"].includes(t.title));
+const partner = await getPartnerCta();
+const paras = (text?: string) => (text ?? "").split(/\n+/).filter((t) => t.trim());
+const COUNTY = ["#121212", "#FFC20E", "#B8112B"];
+const STAND: { name: string; labels: [string, string][] }[] = [
+  { name: "pipeline", labels: [["Content", "#fff"], ["Build", "#FFC20E"], ["Container", "#B8112B"], ["Live page", "#121212"]] },
+  { name: "foundation", labels: [["The organic foundation", "#FFC20E"], ["Your agency runs the marketing", "#fff"], ["Ads, left out", "transparent"]] },
+  { name: "route", labels: [["Conversation", "#FFC20E"], ["Agreement", "#fff"], ["Migration", "#fff"], ["Partnership", "#B8112B"]] },
+];
+// The closing line is the first sentence of "How", in the page's own words.
+const opening = paras(agents.at(-1)?.description)[0]?.match(/^[^.]+\./)?.[0];
 ---
 
-<Base {...aboutPage} title={header.title} metaTitle={header.metaTitle} description={header.description} ui={settingsUi} seoId={aboutPage._id}>
-  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
+<Base {...page} title={header.title} metaTitle={header.metaTitle} description={header.description} ui={settingsUi} seoId={page._id}>
+  <div class="hp sp pg">
+    <PageHero title={header.title} description={header.description}>
+      <img class="pg-hero-img" src="/images/pages/flag-map.svg" alt="Maryland filled with the black and gold bars of its flag" width="1012" height="536" />
+    </PageHero>
 
-  <AboutNarrative {...company_narrative} />
+    {since && (
+      <Fragment>
+        <section class="pg-sec hp-cream" id={since.id}>
+          <div class="hp-in">
+            <h2 class="pg-h2 pg-h2-l pg-w">{narrative.title}</h2>
+            <div class="pg-since"><h3 class="pg-h3">{since.title}</h3><div class="pg-cols">{since.paragraphs.map((t: string) => <p set:html={markdownify(t)} />)}</div></div>
+          </div>
+        </section>
+        <section class="pg-sec-s hp-white" aria-label="Maryland's 24 jurisdictions">
+          <ul class="hp-in pg-counties">
+            {counties.map((c, i) => <li><svg viewBox={c.box} aria-hidden="true"><path d={c.d} fill={COUNTY[(i + Math.floor(i / 6)) % 3]} /></svg>{c.name}</li>)}
+          </ul>
+        </section>
+      </Fragment>
+    )}
 
-  <ChooseSwiper data={story_section} />
+    {who && (
+      <section class="pg-sec hp-ink" id={who.id}>
+        <div class="hp-in">
+          <h2 class="pg-h3">{who.title}</h2>
+          <div class="pg-who"><p class="pg-state" set:html={markdownify(who.paragraphs[0])} /><Drawing name="stack" labels={[["Agents on clean data", "#B8112B"], ["Campaign management", "#FFC20E"], ["Content and local schema", "#FAF7F2"], ["Hosting, builds, deployments", "#fff"]]} /></div>
+          <div class="pg-cols">{who.paragraphs.slice(1).map((t: string) => <p set:html={markdownify(t)} />)}</div>
+        </div>
+      </section>
+    )}
 
-  <div class="border-t border-border">
-    <TrustedBrands />
+    {mission && (
+      <Fragment>
+        <section class="pg-sec hp-white" id={mission.id}>
+          <div class="hp-in pg-split pg-split-s"><h2 class="pg-h2 pg-h2-l">{mission.title}</h2><div class="pg-text">{mission.paragraphs.map((t: string) => <p set:html={markdownify(t)} />)}</div></div>
+        </section>
+        <div class="pg-fill"><picture><source media="(max-width: 47.9rem)" srcset="/images/pages/county-fill-narrow.svg" width="3360" height="4960" /><img src="/images/pages/county-fill.svg" alt="Twenty-four maps of Maryland, each with one more county filled in" width="8960" height="1860" loading="lazy" decoding="async" /></picture></div>
+      </Fragment>
+    )}
+    {vision && (
+      <section class="pg-sec hp-ink" id={vision.id}>
+        <div class="hp-in pg-vision"><div class="pg-text"><h2 class="pg-h2 pg-h2-l">{vision.title}</h2>{vision.paragraphs.map((t: string) => <p set:html={markdownify(t)} />)}</div><Drawing name="cities" /></div>
+      </section>
+    )}
+    {others.map((s: any) => (
+      <section class="pg-sec hp-white" id={s.id}><div class="hp-in pg-split pg-split-s"><h2 class="pg-h2">{s.title}</h2><div class="pg-text">{(s.paragraphs ?? []).map((t: string) => <p set:html={markdownify(t)} />)}</div></div></section>
+    ))}
+
+    {agents.length > 0 && (
+      <section class="pg-sec hp-white">
+        <div class="hp-in">
+          <h2 class="pg-h2 pg-h2-l">{story.title}</h2>
+          <div class="pg-stand">
+            {agents.map((a: any, i: number) => (
+              <div class="pg-stand-r">
+                {STAND[i] && <Drawing {...STAND[i]} />}
+                <div class="pg-text pg-text-e"><h3 class="pg-h3 pg-h3-l">{a.label}</h3>{paras(a.description).map((t) => <p set:html={markdownify(t)} />)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {facts.length > 0 && (
+      <section class="pg-sec hp-ink" aria-label={facts.map((f: any) => f.label).join(", ")}>
+        <div class="hp-in pg-grow">
+          {facts.map((f: any, i: number) => (
+            <div class="pg-grow-r">
+              <div><h3 class="pg-word">{f.label}</h3><p>{f.description}</p></div>
+              {i === 0 && <Drawing name="build" labels={[["Live in 48 hours", "#B8112B"], ["Configured per business", "#FFC20E"], ["The enterprise stack", "#fff"]]} />}
+              {i === 1 && <Drawing name="optimize" />}
+              {i === 2 && <Drawing name="rank" />}
+              {i === 3 && <div class="pg-join" aria-hidden="true"><div>{tools.map((t: any) => <span><ToolLogo tool={t} /></span>)}</div><img src="/images/pages/map-gold.svg" alt="" width="1012" height="536" loading="lazy" /></div>}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <ClosingSection title={opening} />
   </div>
-  <Facts data={facts_section} />
-
-  <Testimonial />
-  <Faqs prefix="about-faq" data={{ faqs_list: [] }} ui={settingsUi.faqs} />
-  <CallToAction />
 </Base>

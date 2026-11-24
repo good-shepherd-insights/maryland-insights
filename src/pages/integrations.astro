@@ -1,52 +1,91 @@
 ---
+import ClosingSection from "@/components/pages/Closing.astro";
+import Drawing from "@/components/pages/Drawing.astro";
+import PageHero from "@/components/pages/PageHero.astro";
+import Questions from "@/components/pages/Questions.astro";
+import ToolLogo from "@/components/home/ToolLogo.astro";
 import Base from "@/layouts/Base.astro";
-import { getIntegrationsPage, getIntegrationsGuidance, getSiteSettings } from "@/lib/sanity/queries";
-import CallToAction from "@/partials/CallToAction.astro";
-import Faqs from "@/partials/Faqs.astro";
-import PageHeader from "@/partials/PageHeader.astro";
-import IntegrationsGuidance from "@/partials/IntegrationsGuidance.astro";
-import Integrations from "@/partials/Integrations.astro";
+import { getIntegrations, getIntegrationsGuidance, getIntegrationsPage, getSiteSettings } from "@/lib/sanity/queries";
+import "@/styles/home.css";
+import "@/styles/service.css";
+import "@/styles/pages.css";
 
-const integrationsPage = await getIntegrationsPage();
-const settings = await getSiteSettings();
-const settingsUi = settings?.ui ?? {};
-const header = integrationsPage?.header ?? {};
-const title = header.title;
-const description = header.description;
-
-const guidance = await getIntegrationsGuidance();
-const guidanceProps = {
-  eyebrow: guidance?.eyebrow,
-  title: guidance?.title,
-  intro: guidance?.description,
-  description: guidance?.archIntro,
-  pillars: guidance?.pillars,
-  standardsHeading: guidance?.standardsTitle,
-  standardsIntro: guidance?.standardsIntro,
-  standards: guidance?.standards,
-};
-
+const page = await getIntegrationsPage();
+const settingsUi = (await getSiteSettings())?.ui ?? {};
+const header = page?.header ?? {};
+const g = (await getIntegrationsGuidance()) ?? {};
+const curated = (page?.grid?.integrations ?? []).filter((t: any) => t?.title);
+const tools = curated.length > 0 ? curated : ((await getIntegrations()) ?? []);
+const find = (...names: string[]) => names.map((n) => tools.find((t: any) => t.title === n)).filter(Boolean);
+const intro = [g.description, ...[g.archIntro].flat()].filter(Boolean);
+const STANDARDS = ["retries", "export", "schema", "access"];
+const linked = (link?: string) => link && /^(https?:|\/(?!integrations$))/.test(link);
 ---
 
-<Base
-  {...integrationsPage}
-  title={title}
-  meta_title={header.metaTitle}
-  description={description}
-  ui={settingsUi}
-  seoId={integrationsPage._id}
->
-  <PageHeader
-    title={title}
-    description={description}
-    locale={settings.locale}
-    ui={settingsUi.pageHeader}
-  />
+<Base {...page} title={header.title} meta_title={header.metaTitle} description={header.description} ui={settingsUi} seoId={page._id}>
+  <div class="hp sp pg">
+    <PageHero title={header.title} description={header.description}>
+      <div class="pg-wall" aria-hidden="true">{tools.slice(0, 15).map((t: any) => <span><ToolLogo tool={t} /></span>)}</div>
+    </PageHero>
 
-  <IntegrationsGuidance {...guidanceProps} />
+    <section class="pg-sec hp-cream">
+      <div class="hp-in">
+        <h2 class="pg-h2 pg-h2-l pg-w">{g.title}</h2>
+        <div class="pg-intro">{intro.map((t: string) => <p>{t}</p>)}</div>
+        <div class="pg-flows">
+          {(g.pillars ?? []).map((p: any, i: number) => (
+            <div class="pg-flow">
+              <div><h3 class="pg-h3">{p.title}</h3><p>{p.description}</p></div>
+              {i === 0 && (
+                <div class="pg-steps" aria-hidden="true">
+                  <div class="pg-col"><span class="pg-box">Form fill</span><span class="pg-box">Inbound call</span></div>
+                  <div class="pg-box pg-box-t">{find("GoHighLevel", "HubSpot").map((t: any) => <span><ToolLogo tool={t} />{t.title}</span>)}</div>
+                  <span class="pg-box pg-box-g">SMS alert<small>in 60 seconds</small></span>
+                </div>
+              )}
+              {i === 1 && (
+                <div class="pg-steps pg-steps-2" aria-hidden="true">
+                  <div class="pg-col">{find("Google Business Profile", "Google Search Console", "Google Analytics").map((t: any) => <span class="pg-box pg-box-t"><span><ToolLogo tool={t} />{t.title.replace(/^Google /, "")}</span></span>)}</div>
+                  <img src="/images/pages/map-gold.svg" alt="" width="1012" height="536" loading="lazy" />
+                </div>
+              )}
+              {i === 2 && (
+                <div class="pg-steps" aria-hidden="true">
+                  <span class="pg-box pg-box-t">{find("Calendly").map((t: any) => <span><ToolLogo tool={t} />Booking</span>)}</span>
+                  <span class="pg-box pg-box-t">{find("Stripe").map((t: any) => <span><ToolLogo tool={t} />Deposit</span>)}</span>
+                  <span class="pg-box pg-box-g">Review request</span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
 
-  <Integrations ui={integrationsPage?.ui?.integrations} logoAltTemplate={settingsUi.companyLogo?.altTemplate} />
+    <section class="pg-sec hp-ink">
+      <div class="hp-in">
+        <h2 class="pg-h2 pg-h2-l pg-w">{g.standardsTitle}</h2>
+        <div class="pg-intro"><p>{g.standardsIntro}</p></div>
+        <div class="pg-two">
+          {(g.standards ?? []).map((s: any, i: number) => (
+            <div class="pg-std">{STANDARDS[i] && <Drawing name={STANDARDS[i]} />}<h3 class="pg-h3">{s.title}</h3><p>{s.description}</p></div>
+          ))}
+        </div>
+      </div>
+    </section>
 
-  <Faqs prefix="integrations-faq" ui={settingsUi.faqs} />
-  <CallToAction />
+    <section class="pg-sec hp-cream">
+      <div class="hp-in pg-split pg-split-s">
+        <h2 class="pg-h2">{page?.grid?.title}</h2>
+        <ul class="pg-dir">
+          {tools.map((t: any) => (
+            <li><ToolLogo tool={t} /><h3>{linked(t.link) ? <a href={t.link}>{t.title}</a> : t.title}</h3><p>{t.description}</p></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <Questions />
+    <ClosingSection />
+  </div>
 </Base>

@@ -1,39 +1,20 @@
 ---
 export const prerender = true;
+import Drawing from "@/components/pages/Drawing.astro";
 import Base from "@/layouts/Base.astro";
 import { getSiteSettings } from "@/lib/sanity/queries";
+import "@/styles/home.css";
+import "@/styles/service.css";
+import "@/styles/pages.css";
 
-const settings = await getSiteSettings();
-const settingsUi = settings?.ui ?? {};
+const settingsUi = (await getSiteSettings())?.ui ?? {};
 const nf = settingsUi.notFound ?? {};
 ---
 
 <Base title={nf.title} ui={settingsUi} notFound>
-  <section
-    class="section bg-light pt-30 lg:pt-43 bg-4col-grid overflow-x-hidden border-b border-border"
-  >
-    <div
-      class="container sm:w-[90%] md:w-[70%] lg:w-[50%] mx-auto"
-    >
-      <div class="text-center">
-        <span
-          class="text-[9rem] block font-bold text-text-dark"
-        >
-          404
-        </span>
-        <h1 class="h2 mb-4">
-          {nf.heading}
-        </h1>
-        <div class="content">
-          <p class="text-balance">
-            {nf.description}
-          </p>
-        </div>
-        <a
-          href={nf.homeLinkUrl}
-          class="btn btn-dark rounded-full mt-8">{nf.homeLinkText}</a
-        >
-      </div>
-    </div>
-  </section>
+  <div class="hp sp pg">
+    <section class="pg-404 hp-white">
+      <div class="hp-in"><Drawing name="404" /><div class="pg-404-t"><h1>{nf.heading}</h1><div><p>{nf.description}</p><a class="hp-btn hp-btn-ink" href={nf.homeLinkUrl}>{nf.homeLinkText}</a></div></div></div>
+    </section>
+  </div>
 </Base>

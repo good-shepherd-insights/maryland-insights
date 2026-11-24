@@ -42,13 +42,13 @@
     "search_url": "/search?q={search_term_string}"
   },
   "business": {
-    "street_address": "7375 Executive Pl. Suite 400",
-    "address_locality": "Lanham",
+    "street_address": "555 Quince Orchard Rd",
+    "address_locality": "Gaithersburg",
     "address_region": "MD",
-    "postal_code": "20706",
+    "postal_code": "20878",
     "address_country": "US",
-    "latitude": 38.98,
-    "longitude": -76.85,
+    "latitude": 39.1438,
+    "longitude": -77.2204,
     "telephone": "+1-240-441-5259",
     "area_served": "Maryland",
     "breadcrumb_home_label": "Home",

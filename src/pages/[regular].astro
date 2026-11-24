@@ -1,45 +1,43 @@
 ---
 export const prerender = true;
 
+import ClosingSection from "@/components/pages/Closing.astro";
 import Base from "@/layouts/Base.astro";
-import { getLegalPageSlugs, getLegalPage, getSiteSettings } from "@/lib/sanity/queries";
-import { renderPortableText } from "@/lib/sanity/portableText";
-import CallToAction from "@/partials/CallToAction.astro";
-import Faqs from "@/partials/Faqs.astro";
-import PageHeader from "@/partials/PageHeader.astro";
+import { renderPortableText, slugifyHeading } from "@/lib/sanity/portableText";
+import { getLegalPage, getLegalPageSlugs, getSiteSettings } from "@/lib/sanity/queries";
+import "@/styles/home.css";
+import "@/styles/service.css";
+import "@/styles/pages.css";
 
-// get static paths for all legal pages
 export async function getStaticPaths() {
   const slugs = await getLegalPageSlugs();
-  return slugs.map((slug) => ({
-    params: { regular: slug },
-    props: { slug },
-  }));
+  return slugs.map((slug) => ({ params: { regular: slug }, props: { slug } }));
 }
 
 const { slug } = Astro.props;
 const page = await getLegalPage(slug);
 if (!page) return Astro.redirect("/404");
-const settings = await getSiteSettings();
-const settingsUi = settings?.ui ?? {};
-const { title, description } = page;
-const bodyHtml = renderPortableText(page?.body);
-
+const settingsUi = (await getSiteSettings())?.ui ?? {};
+// Whatever level the headings were typed at, they are this page's second level.
+const headings: { id: string; text: string }[] = [];
+const body = renderPortableText(page.body).replace(/<h([2-4])[^>]*>([\s\S]*?)<\/h\1>/g, (_, level, inner) => {
+  const text = inner.replace(/<[^>]+>/g, "");
+  const base = slugifyHeading(text.replace(/&\w+;/g, " "));
+  const id = headings.some((h) => h.id === base) ? `${base}-${headings.length}` : base;
+  headings.push({ id, text });
+  return `<h2 id="${id}">${inner}</h2>`;
+});
 ---
 
 <Base {...page} ui={settingsUi} seoId={page._id}>
-  <PageHeader title={title} description={description} locale={settings.locale} ui={settingsUi.pageHeader} />
-
-  <section class="section-sm bg-light">
-    <div class="container">
-      <article
-        class="w-full lg:w-7/12 bg-body rounded-2xl p-6 lg:p-8 mx-auto"
-      >
-        <div class="content" set:html={bodyHtml} />
-      </article>
-    </div>
-  </section>
-
-  <Faqs prefix="regular-faq" data={{ faqs_list: [] }} ui={settingsUi.faqs} />
-  <CallToAction />
+  <div class="hp sp pg">
+    <section class="pg-legal-top hp-cream"><div class="hp-in"><h1>{page.title}</h1>{page.description && <p>{page.description}</p>}</div></section>
+    <section class="pg-sec-s hp-white">
+      <div class="hp-in pg-legal">
+        {headings.length > 1 && <nav aria-label={page.title}><ul>{headings.map((h) => <li><a href={`#${h.id}`} set:html={h.text} /></li>)}</ul></nav>}
+        <div class="pg-legal-body" set:html={body} />
+      </div>
+    </section>
+    <ClosingSection />
+  </div>
 </Base>

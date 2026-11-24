@@ -1,78 +1,56 @@
 ---
+import ClosingSection from "@/components/pages/Closing.astro";
+import PageHero from "@/components/pages/PageHero.astro";
+import Questions from "@/components/pages/Questions.astro";
 import Base from "@/layouts/Base.astro";
-import { getToolsPage, getSiteSettings } from "@/lib/sanity/queries";
+import { getSiteSettings, getToolsPage } from "@/lib/sanity/queries";
 import { markdownify } from "@/lib/utils/textConverter";
-import CallToAction from "@/partials/CallToAction.astro";
-import Faqs from "@/partials/Faqs.astro";
-import PageHeader from "@/partials/PageHeader.astro";
-import IntegrationCard from "../components/IntegrationCard.astro";
+import "@/styles/home.css";
+import "@/styles/service.css";
+import "@/styles/pages.css";
 
-const toolsPage = await getToolsPage();
-const settings = await getSiteSettings();
-const settingsUi = settings?.ui ?? {};
-const header = toolsPage?.header ?? {};
-const grid = toolsPage?.grid ?? {};
-// toolsGrid.ui.cardAriaLabelTemplate — the labels live on the grid document, not on toolsPage.
-const gridUi = grid.ui ?? {};
-
-const title = header.title;
-const description = header.description;
-const eyebrow = grid.eyebrow ?? header.eyebrow;
-const section_title = grid.title;
-// `integration` schema: title, description, logo, logoName, link, kind, featured.
-// Cards prefer the logoName (Logo.dev) mark; a CMS-uploaded Sanity logo is used when
-// the doc has no logoName, which is the only case that changes what renders.
-const tools_list = (grid.tools ?? []).map((t: any) => ({
-  title: t.title,
-  description: t.description,
-  logo_name: t.logoName,
-  logo_url: t.logoUrl,
-  logo_alt: t.logoAlt,
-  link: t.link,
-}));
-
+const page = await getToolsPage();
+const settingsUi = (await getSiteSettings())?.ui ?? {};
+const header = page?.header ?? {};
+const grid = page?.grid ?? {};
+const tools = (grid.tools ?? []).filter((t: any) => t?.title);
+// What Maryland Business Online offers, from its own menus.
+const isDirectory = (t: any) => /^https:\/\/marylandbusiness\.online/.test(t?.link ?? "");
+const CATEGORIES = ["Active Life", "Automotive", "Beauty & Spas", "Education & Childcare", "Event Services", "Fitness", "Food & Drink", "Health & Medical", "Home Services", "Hotels & Travel", "Moving & Storage", "Nightlife", "Pets", "Professional Services", "Real Estate", "Restaurant", "Shopping"];
+const hasDirectory = tools.some(isDirectory);
 ---
 
-<Base
-  {...toolsPage}
-  title={title}
-  meta_title={header.metaTitle}
-  description={description}
-  ui={settingsUi}
-  seoId={toolsPage._id}
->
-  <PageHeader
-    title={title}
-    description={description}
-    locale={settings.locale}
-    ui={settingsUi.pageHeader}
-  />
+<Base {...page} title={header.title} meta_title={header.metaTitle} description={header.description} ui={settingsUi} seoId={page._id}>
+  <div class="hp sp pg">
+    <PageHero title={header.title} description={header.description}>
+      {hasDirectory && <div class="pg-shot"><p aria-hidden="true">marylandbusiness.online</p><img src="/images/tools/maryland-business-online.jpg" alt="The Maryland Business Online home page" width="1424" height="772" /></div>}
+    </PageHero>
 
-  <section class="section-sm">
-    <div class="container lg:w-[80%] xl:w-[70%] mx-auto">
-      {eyebrow && (
-        <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-          {eyebrow}
-        </p>
-      )}
-      {section_title && (
-        <h2 class="mb-12 text-center text-balance" set:html={markdownify(section_title)} />
-      )}
+    <section class="pg-sec hp-cream">
+      <div class="hp-in">
+        {grid.eyebrow && <p>{grid.eyebrow}</p>}
+        <h2 class="pg-h2 pg-h2-s" set:html={markdownify(grid.title ?? "")} />
+        {tools.length === 0 && <p>{grid.emptyState}</p>}
+        {tools.map((t: any) => (
+          <div class="pg-tool">
+            <h3>{t.title}</h3><p>{t.description}</p>
+            {t.link && <a class="hp-btn hp-btn-ink" href={t.link} target="_blank" rel="noopener noreferrer">Visit {t.title}</a>}
+            {isDirectory(t) && <div class="pg-shot"><p aria-hidden="true">marylandbusiness.online</p><img src="/images/tools/maryland-business-online.jpg" alt="" width="1424" height="772" loading="lazy" /></div>}
+          </div>
+        ))}
+      </div>
+    </section>
 
-      {tools_list && tools_list.length > 0 ? (
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {tools_list.map((tool: any) => (
-            <IntegrationCard integration={tool} ui={{ ariaLabelTemplate: gridUi.cardAriaLabelTemplate }} logoAltTemplate={settingsUi.companyLogo?.altTemplate} />
-          ))}
+    {hasDirectory && (
+      <section class="pg-sec hp-white">
+        <div class="hp-in pg-two">
+          <div><h3 class="pg-h2">24 county hubs</h3><img class="pg-map" src="/images/pages/map-mixed.svg" alt="" width="1012" height="536" loading="lazy" /></div>
+          <div><h3 class="pg-h2">{CATEGORIES.length} business categories</h3><ul class="pg-cats">{CATEGORIES.map((c) => <li>{c}</li>)}</ul></div>
         </div>
-      ) : (
-        <div class="text-center text-text-dark/70 max-w-md mx-auto">
-          <p>{grid.emptyState}</p>
-        </div>
-      )}
-    </div>
-  </section>
+      </section>
+    )}
 
-  <Faqs prefix="tools-faq" ui={settingsUi.faqs} />
-  <CallToAction />
+    <Questions />
+    <ClosingSection />
+  </div>
 </Base>
