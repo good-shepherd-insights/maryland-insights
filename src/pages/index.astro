@@ -36,7 +36,7 @@ const plans = (comparison.plans ?? []).map((p: any) => ({ label: p.label, isUs: 
 const partners = (home?.trustStrip?.logos ?? []).map((l: any) => ({ name: l.name, file: l.logoUrl, url: l.url }));
 ---
 
-<Base {...home} ui={settingsUi} seoId={home._id} homeFooter>
+<Base {...home} ui={settingsUi} seoId={home._id}>
   <MarylandDefs />
   <div class="hp">
     <Hero hero={home.hero} copy={copy} />
