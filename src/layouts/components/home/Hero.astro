@@ -24,7 +24,7 @@ const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
   <div class="hp-hero-in">
     <h1 class="hp-hero-h">
       {at < 0 ? <span class="hp-hero-lead">{lead}</span> : (
-        <span class="hp-hero-lead hp-hero-swap"><span>{before}</span>{" "}<span class="hp-words" data-hero-words><span class="hp-word" data-on>{words[0]}</span>{words.slice(1).map((w) => <span class="hp-word" data-word={w} aria-hidden="true"></span>)}<span class="hp-words-edge" aria-hidden="true"></span></span>{" "}<span>{behind}</span></span>
+        <span class="hp-hero-lead hp-hero-swap"><span>{before}</span>{" "}<span class="hp-words" data-hero-words><span class="hp-word hp-word-first" data-on><span>{words[0]}</span></span>{words.slice(1).map((w) => <span class="hp-word" aria-hidden="true"><span data-word={w}></span></span>)}<span class="hp-words-edge" aria-hidden="true"></span></span>{" "}<span>{behind}</span></span>
       )}{" "}
       {first && <span class="hp-hero-first">{first}</span>}{" "}
       {second && <span class="hp-hero-second">{second}</span>}
@@ -71,7 +71,7 @@ const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
     const box = document.querySelector<HTMLElement>("[data-hero-words]");
     const button = document.querySelector<HTMLButtonElement>("[data-hero-words-btn]");
     const edge = box?.querySelector<HTMLElement>(".hp-words-edge");
-    if (!box || !button || !edge || box.dataset.ready) return;
+    if (!box || !button || !edge || "ready" in box.dataset) return;
     box.dataset.ready = "";
     const items = [...box.querySelectorAll<HTMLElement>(".hp-word")];
     const still = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -88,9 +88,23 @@ const stats = (hero?.stats ?? []).filter((s: any) => s?.value && s?.label);
       from.removeAttribute("data-on");
       from.setAttribute("data-under", "");
       to.setAttribute("data-on", "");
-      const timing = { duration: LOAD, easing: "cubic-bezier(.45,0,.2,1)" };
-      to.animate([{ clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0)" }], timing).onfinish = () => from.removeAttribute("data-under");
-      edge.animate([{ transform: "none", visibility: "visible" }, { transform: "translateX(100%)", visibility: "visible" }], timing);
+      // Only transforms change, so nothing is repainted: the block slides in while its text
+      // slides back by the same amount and stays put. One clock moves all three parts.
+      const text = to.firstElementChild as HTMLElement;
+      const place = (x: number) => {
+        to.style.transform = `translateX(${x - 100}%)`;
+        text.style.transform = `translateX(${100 - x}%)`;
+        edge.style.transform = `translateX(${x}%)`;
+      };
+      let began = 0;
+      const frame = (time: number) => {
+        began ||= time;
+        const t = Math.min(1, (time - began) / LOAD);
+        place(100 * (t < 0.5 ? 4 * t ** 3 : 1 - (2 - 2 * t) ** 3 / 2));
+        if (t < 1) requestAnimationFrame(frame);
+      };
+      place(0);
+      requestAnimationFrame(frame);
     };
 
     const sync = () => {
