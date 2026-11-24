@@ -7,7 +7,7 @@ import ServiceFaq from "@/components/services/ServiceFaq.astro";
 import UpdatedDateBadge from "@/components/UpdatedDateBadge.astro";
 import Share from "@/components/Share.astro";
 import Base from "@/layouts/Base.astro";
-import { getBlogPosts, getBlogPost, getSiteSettings } from "@/lib/sanity/queries";
+import { getBlogPosts, getBlogPost, getPartnerCta, getSiteSettings } from "@/lib/sanity/queries";
 import { renderPortableText, extractHeadings } from "@/lib/sanity/portableText";
 import dateFormat from "@/lib/utils/dateFormat";
 import similarItems from "@/lib/utils/similarItems";
@@ -29,7 +29,7 @@ export async function getStaticPaths() {
 const { slug } = Astro.props;
 const doc = await getBlogPost(slug);
 const settings = await getSiteSettings();
-const primaryCta = settings.blogChrome?.inlineCtaPrimary ?? settings.navigationButton;
+const partner = await getPartnerCta();
 const settingsUi = settings?.ui ?? {};
 const ui = doc?.ui?.blogSingle ?? {};
 const shareUi = doc?.ui?.share;
@@ -122,8 +122,7 @@ const asText = (value: unknown) => (value instanceof Date ? value.toISOString() 
               <div class="content bp-body" set:html={part.text} />
               {n === sections.length - 1 && (
                 <div class="bp-ctas">
-                  {primaryCta?.link && (ui.ctaButtonLabel || primaryCta.label) && <a href={primaryCta.link} class="hp-btn hp-btn-ink">{ui.ctaButtonLabel || primaryCta.label}</a>}
-                  <a href={settings.consultUrl ?? ""} class="hp-btn hp-btn-line">{ui.consultButtonLabel}</a>
+                  {partner.link && partner.label && <a href={partner.link} class="hp-btn hp-btn-ink">{partner.label}</a>}
                 </div>
               )}
             </div>

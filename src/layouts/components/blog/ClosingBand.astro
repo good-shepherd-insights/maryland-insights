@@ -1,7 +1,8 @@
 ---
 import ServiceCTA from "@/components/services/ServiceCTA.astro";
-import { getClosingCta } from "@/lib/sanity/queries";
+import { getClosingCta, getPartnerCta } from "@/lib/sanity/queries";
 const cta = await getClosingCta();
+const partner = await getPartnerCta();
 ---
 
-{cta && <ServiceCTA title={cta.title} description={cta.description} buttonLabel={cta.primaryLabel} buttonLink={cta.primaryLink} />}
+{cta && <ServiceCTA title={cta.title} description={cta.description} buttonLabel={partner.label || cta.primaryLabel} buttonLink={partner.link || cta.primaryLink} />}

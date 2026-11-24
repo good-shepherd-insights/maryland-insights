@@ -221,6 +221,12 @@ export async function getLegalPage(slug: string) {
   );
 }
 
+/** The site's one main call to action: the homepage hero button. */
+export async function getPartnerCta(): Promise<{ label?: string; link?: string }> {
+  const button = (await getHomePage())?.hero?.buttonSolid;
+  return { label: button?.label, link: button?.link };
+}
+
 export async function getClosingCta() {
   return sanityClient.fetch(`*[_type == "closingCta"][0]`);
 }

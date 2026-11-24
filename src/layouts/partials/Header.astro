@@ -1,6 +1,6 @@
 ---
 import Logo from "@/layouts/components/Logo.astro";
-import { getSiteSettings } from "@/lib/sanity/queries";
+import { getSiteSettings, getPartnerCta } from "@/lib/sanity/queries";
 
 export interface ChildNavigationLink {
   name: string;
@@ -28,11 +28,12 @@ const main: NavigationLink[] = (siteSettings?.navLinks ?? []).map(
     })),
   })
 );
+const partner = await getPartnerCta();
 const navigation_button = siteSettings?.navigationButton
   ? {
       enable: true,
-      label: siteSettings.navigationButton.label,
-      link: siteSettings.navigationButton.link,
+      label: partner.label || siteSettings.navigationButton.label,
+      link: partner.link || siteSettings.navigationButton.link,
     }
   : { enable: false, label: "", link: "" };
 const { pathname } = Astro.url;
@@ -169,7 +170,7 @@ const { ui } = Astro.props as Props;
         navigation_button.enable && (
           <li class="mt-4 inline-block lg:hidden ml-4">
             <a
-              class="btn btn-outline btn-sm rounded-none bg-body text-text-dark border border-[#A8A198]"
+              class="btn btn-outline btn-sm normal-case rounded-none bg-body text-text-dark border border-[#A8A198]"
               href={navigation_button.link}
             >
               {navigation_button.label}
@@ -182,7 +183,7 @@ const { ui } = Astro.props as Props;
       {
         navigation_button.enable && (
           <a
-            class="btn btn-sm btn-outline rounded-none bg-body text-text-dark hidden lg:inline-block border-[#A8A198]"
+            class="btn btn-sm btn-outline normal-case whitespace-nowrap rounded-none bg-body text-text-dark hidden lg:inline-block border-[#A8A198]"
             href={navigation_button.link}
             target={
               navigation_button.link.startsWith("http") ? "_blank" : "_self"
