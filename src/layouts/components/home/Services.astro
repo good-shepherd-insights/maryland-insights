@@ -54,8 +54,8 @@ const cards = (stack?.cards ?? []).filter((c: any) => c?.label).map((c: any, i: 
           {c.slug === "marketing-automation" && <p class="hp-sixty">60 seconds</p>}
           {c.note && <p class="hp-band-note">{c.note}</p>}
         </div>
-        <details class="hp-points" open>
-          <summary>{copy.servicesIncluded}<svg width="20" height="20" viewBox="0 0 30 30" aria-hidden="true"><path d="M3 15H27M15 3V27" stroke="currentColor" stroke-width="3.5" /></svg></summary>
+        <details class="hp-points">
+          <summary aria-label={`${copy.servicesIncluded}: ${c.label}`}>{copy.servicesIncluded}<svg width="20" height="20" viewBox="0 0 30 30" aria-hidden="true"><path d="M3 15H27M15 3V27" stroke="currentColor" stroke-width="3.5" /></svg></summary>
           <ul>{c.points.map((p: any) => <li>{p.label && <strong>{p.label}:</strong>} {p.text}</li>)}</ul>
         </details>
       </div>
@@ -67,7 +67,7 @@ const cards = (stack?.cards ?? []).filter((c: any) => c?.label).map((c: any, i: 
   // Bullets are always open on wide screens and a toggle on phones.
   const wide = window.matchMedia("(min-width: 1024px)");
   const sync = () => {
-    document.querySelectorAll<HTMLDetailsElement>(".hp-points").forEach((d, i) => { d.open = wide.matches || i === 0; });
+    document.querySelectorAll<HTMLDetailsElement>(".hp-points").forEach((d) => { d.open = wide.matches; });
   };
   document.addEventListener("astro:page-load", sync);
   wide.addEventListener("change", sync);

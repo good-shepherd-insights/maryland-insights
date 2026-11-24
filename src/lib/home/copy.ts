@@ -8,7 +8,7 @@ export const COPY = {
   heroGuessed: "Guessed",
   partnersTitle: "Maryland government partners",
   servicesTitle: "See the machinery behind every client site.",
-  servicesIncluded: "What's included",
+  servicesIncluded: "Learn more",
   clientsTitle: "One customer, from first search to the next one.",
   clientsLead: "Follow a single Maryland customer through everything your client gets.",
   compareTitle: "{n} features. Only one platform has them all.",
