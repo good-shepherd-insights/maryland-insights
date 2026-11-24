@@ -9,7 +9,7 @@ export const COPY = {
   servicesIncluded: "What's included",
   clientsTitle: "One customer, from first search to the next one.",
   clientsLead: "Follow a single Maryland customer through everything your client gets.",
-  compareTitle: "Look down the first column of all {n}.",
+  compareTitle: "{n} features. Only one platform has them all.",
   compareButton: "Compare in detail",
   compareHint: "Or pick any feature.",
   compareModalTitle: "Count what your team is patching by hand.",
