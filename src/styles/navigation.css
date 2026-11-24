@@ -22,7 +22,7 @@
   background: #fff;
   border: 0 solid #121212;
   border-bottom-width: 3px;
-  padding-left: 20px;
+  padding-left: 12px;
   transition: height 0.3s, background-color 0.3s;
 }
 .header[data-scrolled] .navbar {
@@ -55,7 +55,11 @@
 .nav-logo img {
   /* Logo.astro sets its size inline from Sanity. */
   width: auto !important;
-  height: 44px !important;
+  height: 56px !important;
+  transition: height 0.3s;
+}
+.header[data-scrolled] .nav-logo img {
+  height: 46px !important;
 }
 .nav-cta {
   display: flex;
@@ -150,13 +154,13 @@
     inset: 16px 32px auto;
   }
   .header[data-scrolled] .nav-logo img {
-    height: clamp(40px, 3.4vw, 48px) !important;
+    height: clamp(48px, 4.2vw, 62px) !important;
   }
   .navbar {
-    padding-left: clamp(20px, 3.9vw, 56px);
+    padding-left: clamp(12px, 1.25vw, 18px);
   }
   .nav-logo img {
-    height: clamp(44px, 4vw, 58px) !important;
+    height: clamp(54px, 5.4vw, 80px) !important;
   }
   .nav-toggle-label {
     display: none;
@@ -246,6 +250,25 @@
   .nav-dropdown-list[data-wide] .nav-tile {
     padding-inline: 36px;
     font-size: 54px;
+  }
+}
+
+/* Small laptops: room for every link and the whole button, attached or detached. */
+@media (min-width: 64rem) and (max-width: 74.9375rem) {
+  .nav-link {
+    padding-inline: 6px;
+    font-size: 14px;
+    gap: 5px;
+  }
+  .nav-link > span {
+    gap: 5px;
+  }
+  .nav-bar-cta {
+    padding-inline: 16px;
+    font-size: 17px;
+  }
+  .header[data-scrolled] {
+    inset-inline: 16px;
   }
 }
 
@@ -398,6 +421,7 @@
 @media (prefers-reduced-motion: reduce) {
   .header,
   .navbar,
+  .nav-logo img,
   .nav-tile img {
     transition: none;
   }
