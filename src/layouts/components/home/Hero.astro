@@ -3,8 +3,8 @@ import map from "@/lib/home/heroMap.json";
 import type { HomeCopy } from "@/lib/home/copy";
 
 const { hero = {}, copy } = Astro.props as { hero: any; copy: HomeCopy };
-// "More calls for your Maryland clients. Measured, not guessed."
-const [lead = "", ...after] = String(hero?.title ?? "").split(/(?<=\.)\s+/);
+// "More calls for Maryland businesses. Measured, not guessed."
+const [lead = "", ...after] = copy.heroTitle.split(/(?<=\.)\s+/);
 const claim = after.join(" ");
 const comma = claim.indexOf(",");
 const first = comma > 0 ? claim.slice(0, comma + 1) : claim;

@@ -1,6 +1,8 @@
 // Approved wording for the redesigned homepage sections. Each value can be
 // replaced from Sanity: a "redesign" object on the home document wins, key by key.
 export const COPY = {
+  // Stands in for hero.title until that is changed in Sanity, which would change the live page now.
+  heroTitle: "More calls for Maryland businesses. Measured, not guessed.",
   heroNote: "Calls by county for one client.",
   heroMeasured: "Measured",
   heroGuessed: "Guessed",
