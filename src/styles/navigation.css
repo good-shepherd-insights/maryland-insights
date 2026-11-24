@@ -93,3 +93,20 @@
 .nav-dropdown-link.active {
   @apply bg-light;
 }
+
+/* Desktop dropdowns: open on hover whatever the device reports about hover
+   support, and stay inside the screen (Features has six long names). */
+@media (min-width: 64rem) {
+  .nav-dropdown > .nav-dropdown-list {
+    left: 0;
+    right: auto;
+    translate: none;
+    grid-template-columns: repeat(2, max-content);
+  }
+  .nav-dropdown:hover > .nav-dropdown-list,
+  .nav-dropdown:focus-within > .nav-dropdown-list {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+}
