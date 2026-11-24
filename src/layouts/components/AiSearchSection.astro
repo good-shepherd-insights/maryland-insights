@@ -69,6 +69,6 @@ const shownEngines = engines;
     </div>
   </div>
   {honestTake && (
-    <aside class="sp-sec sp-sec-s hp-red"><div class="hp-in sp-head"><p class="sp-h2 sp-h2-s">{honestTake.title}</p><div class="content sp-prose" set:html={markdownify(honestTake.body, true) as string} /></div></aside>
+    <div class="sp-sec sp-sec-s hp-red"><div class="hp-in sp-head"><p class="sp-h2 sp-h2-s">{honestTake.title}</p><div class="content sp-prose" set:html={markdownify(honestTake.body, true) as string} /></div></div>
   )}
 </section>

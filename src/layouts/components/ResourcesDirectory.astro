@@ -85,7 +85,7 @@ const hostOf = (url: string): string => {
 
 {
   count > 0 && (
-    <section id={anchor} class:list={["sp-sec", `hp-${bg}`]} aria-labelledby={headingId}>
+    <section id={anchor === headingId ? undefined : anchor} class:list={["sp-sec", `hp-${bg}`]} aria-labelledby={headingId}>
       <div class="hp-in sp-stack">
         <div class="sp-title">
           {eyebrow && <p class="sp-eyebrow">{eyebrow}</p>}

@@ -29,10 +29,13 @@ const {
 const titleSlug = slugify(title);
 const headingId = titleSlug === "honest-take" ? "honest-take" : `honest-take-${titleSlug}`;
 const Heading = headingLevel;
+// Contents lists link to the title itself, without the doubled prefix.
+const linkId = titleSlug.startsWith("honest-take") ? titleSlug : headingId;
 
 const { html, parts } = bodyParts(body);
 ---
 
+{!anchor && headingId !== linkId && <span id={linkId} class="sp-anchor"></span>}
 <section id={anchor} class:list={["sp-sec sp-sec-s", `hp-${bg}`]} aria-labelledby={headingId}>
   <div class="hp-in">
     <div class="sp-box sp-stack">

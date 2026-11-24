@@ -39,8 +39,11 @@ const headingId = `tool-${slugify(title)}`;
 const label = eyebrow ?? (tone === "aligned-with" ? ui?.alignedWithLabel : ui?.namedOnPageLabel);
 const shownItems = items;
 const Heading = headingLevel;
+// Contents lists link to the title without its leading "The".
+const linkId = headingId.replace(/^tool-the-/, "tool-");
 ---
 
+{!anchor && headingId !== linkId && <span id={linkId} class="sp-anchor"></span>}
 <section id={anchor} class:list={["sp-sec", `hp-${bg}`]} aria-labelledby={headingId}>
   <div class="hp-in sp-stack">
     <div class="sp-head sp-head-end">
