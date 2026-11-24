@@ -1,6 +1,6 @@
 import { buildHead } from "./graph.mjs";
 import { pickPages } from "./pages.mjs";
-import { JSON_LD_ITEMS, LISTS, PAGE_FIELDS, ROUTES, overrideId, routeOf } from "./contract.mjs";
+import { JSON_LD_ITEMS, LISTS, PAGE_FIELDS, ROUTES, overrideId, routeOf, TITLE_LIMIT, DESCRIPTION_RANGE } from "./contract.mjs";
 import { imageAddress, parseImage } from "../images.mjs";
 import { PLACEHOLDER, checkField, checkItems, filled, isDate, isObject, norm, now, validateSite } from "./validate.mjs";
 
@@ -87,6 +87,8 @@ export function resolvePage(doc, override, site, { faqDocs = [], paths, fileExis
   const rawDescription = own.description ?? usable(fill(defaults.description, values));
   const description = rawDescription && (own.description ?? clip(rawDescription));
   if (!title) report("", "has no usable title", "Give the page a title, or an override.");
+  if (title && title.length > TITLE_LIMIT) report(".title", `is ${title.length} characters ("${title}"); keep it to ${TITLE_LIMIT}`, PAGE_FIELDS.title.description);
+  if (description && (description.length < DESCRIPTION_RANGE[0] || description.length > DESCRIPTION_RANGE[1])) report(".description", `is ${description.length} characters; aim for ${DESCRIPTION_RANGE.join(" to ")}`, PAGE_FIELDS.description.description);
   if (!description) report("", "has no usable description", "Give the page a description, or an override.");
 
   if (own.canonical) {

@@ -1,0 +1,50 @@
+---
+import type { HomeCopy } from "@/lib/home/copy";
+const { items = [], ui = {}, copy } = Astro.props as { items: any[]; ui: any; copy: HomeCopy };
+const faqs = items.filter((f) => f?.question && f?.answer);
+// Fixed columns, so opening one answer never moves questions to another column.
+const per = Math.ceil(faqs.length / 3);
+const columns = [0, 1, 2].map((i) => faqs.slice(i * per, (i + 1) * per)).filter((c) => c.length > 0);
+---
+
+{faqs.length > 0 && (
+<section class="hp-faq" id="faq-list">
+  <div class="hp-in">
+    <header>
+      <h2 class="hp-h2 hp-xl">{copy.faqTitle}</h2>
+      <label>{copy.faqSearch}<input type="search" data-home-faq-search autocomplete="off" /></label>
+    </header>
+    <div class="hp-faq-list">
+      {columns.map((col) => (
+        <div>
+          {col.map((f) => (
+            <details class="hp-q" data-home-faq>
+              <summary><h3>{f.question}</h3><svg width="20" height="20" viewBox="0 0 30 30" aria-hidden="true"><path d="M3 15H27" /><path class="hp-q-v" d="M15 3V27" /></svg></summary>
+              <p>{f.answer}</p>
+            </details>
+          ))}
+        </div>
+      ))}
+    </div>
+    <p class="hp-faq-none" data-home-faq-none role="status" aria-live="polite" data-text={ui?.noResultsHeading ?? "No matching questions found"}></p>
+  </div>
+</section>
+)}
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const input = document.querySelector<HTMLInputElement>("[data-home-faq-search]");
+    const none = document.querySelector<HTMLElement>("[data-home-faq-none]");
+    input?.addEventListener("input", () => {
+      const q = input.value.trim().toLowerCase();
+      let shown = 0;
+      document.querySelectorAll<HTMLDetailsElement>("[data-home-faq]").forEach((el) => {
+        const hit = !q || el.textContent!.toLowerCase().includes(q);
+        el.style.display = hit ? "" : "none";
+        el.open = !!q && hit; // a match may be in the answer, so show it
+        if (hit) shown++;
+      });
+      if (none) none.textContent = shown ? "" : none.dataset.text ?? "";
+    });
+  });
+</script>

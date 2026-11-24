@@ -145,6 +145,7 @@ export async function getServicePage(slug: string) {
             _id,
             title,
             description,
+            image,
             "slug": slug.current,
             "datePublished": coalesce(date, datePublished)
           }
@@ -218,6 +219,22 @@ export async function getLegalPage(slug: string) {
     `*[_type == "legalPage" && _id == $id][0]`,
     { id: (await idOf("legalPage", slug)) ?? "" },
   );
+}
+
+/** Redesigned homepage wording and map counts. */
+export async function getHomeRedesign() {
+  return sanityClient.fetch(`*[_id == "homeRedesign"][0]`);
+}
+
+/** The published figure for one service page, if it has one. */
+export async function getServiceFigure(slug: string) {
+  return sanityClient.fetch(`*[_id == "serviceFigures"][0].figures[slug == $slug][0]`, { slug });
+}
+
+/** The site's one main call to action: the homepage hero button. */
+export async function getPartnerCta(): Promise<{ label?: string; link?: string }> {
+  const button = (await getHomePage())?.hero?.buttonSolid;
+  return { label: button?.label, link: button?.link };
 }
 
 export async function getClosingCta() {

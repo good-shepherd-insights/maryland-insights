@@ -1,7 +1,9 @@
 ---
-import { markdownify, slugify } from "@/lib/utils/textConverter";
+import { bodyParts } from "@/lib/service/text";
+import { slugify } from "@/lib/utils/textConverter";
 
 type Props = {
+  bg?: string;
   /** Micro-label above the heading; keeps the label editable from markdown. */
   eyebrow?: string;
   title?: string;
@@ -19,80 +21,31 @@ const {
   eyebrow,
   title,
   body,
-  tone = "neutral",
-  variant = "callout",
   anchor,
   headingLevel = "h2",
-  ui,
+  bg = "white",
 } = Astro.props as Props;
 
 const titleSlug = slugify(title);
 const headingId = titleSlug === "honest-take" ? "honest-take" : `honest-take-${titleSlug}`;
 const Heading = headingLevel;
+// Contents lists link to the title itself, without the doubled prefix.
+const linkId = titleSlug.startsWith("honest-take") ? titleSlug : headingId;
 
-const stripeClass =
-  tone === "critical" ? "border-l-dark" : tone === "supportive" ? "border-l-secondary" : "border-l-primary";
-const chipClass =
-  tone === "critical" ? "bg-secondary/25" : tone === "supportive" ? "bg-primary/10" : "bg-light";
+const { html, parts } = bodyParts(body);
 ---
 
-<section
-  id={anchor}
-  class:list={[
-    variant === "card" ? "section" : "section-sm",
-    "border-y border-border/70 overflow-x-hidden",
-    variant === "aside" ? "bg-body" : "bg-light",
-  ]}
-  aria-labelledby={headingId}
->
-  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
-    <div
-      class:list={[
-        variant === "aside" ? "mx-auto max-w-2xl" : "mx-auto max-w-3xl",
-        variant === "card"
-          ? "rounded-xl border border-border bg-body p-6 pb-8 shadow-[0_1px_2px_rgba(18,18,18,0.04),0_16px_40px_-16px_rgba(18,18,18,0.14)] sm:p-9 sm:pb-10"
-          : variant === "aside"
-            ? `rounded-r-xl border border-l-4 ${stripeClass} border-border bg-light p-5 sm:p-6`
-            : `rounded-xl border border-l-4 ${stripeClass} border-border bg-body p-6 sm:p-7`,
-      ]}
-    >
-      {
-        eyebrow && (
-          <p class="mb-4 inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">
-            <span class="h-px w-8 bg-border" aria-hidden="true"></span>
-            {eyebrow}
-          </p>
-        )
-      }
-
-      <Heading id={headingId} class:list={["flex items-start gap-2.5 min-w-0", variant === "card" ? "max-w-[24ch] text-balance" : "font-secondary text-h6 font-bold text-text-dark"]}>
-        <svg
-          class:list={["mt-1 shrink-0 text-primary", variant === "card" ? "h-5 w-5" : "h-4 w-4"]}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-        <span class="min-w-0 break-words">{title}</span>
-      </Heading>
-
-      {
-        variant === "card" && tone !== "neutral" ? (
-          <p class:list={["mt-5 inline-flex items-center rounded-full px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-text-dark", chipClass]}>
-            {tone === "critical" ? ui?.criticalLabel : ui?.supportiveLabel}
-          </p>
-        ) : null
-      }
-
-      <div
-        class:list={["content mt-3 max-w-[62ch] leading-relaxed text-text", variant === "aside" ? "text-sm" : "text-base"]}
-        set:html={markdownify(body, true)}
-      />
+{!anchor && headingId !== linkId && <span id={linkId} class="sp-anchor"></span>}
+<section id={anchor} class:list={["sp-sec sp-sec-s", `hp-${bg}`]} aria-labelledby={headingId}>
+  <div class="hp-in">
+    <div class="sp-box sp-stack">
+      <div class="sp-title">
+        {eyebrow && <p class="sp-eyebrow">{eyebrow}</p>}
+        <Heading id={headingId} class="sp-h2">{title}</Heading>
+      </div>
+      {parts && parts.every((p) => p.kind === "p")
+        ? <div class="sp-cols" style={`--n:${Math.min(3, parts.length)}`}>{parts.map((p) => <p class="sp-box-p" set:html={p.html} />)}</div>
+        : <div class="content sp-prose" set:html={html} />}
     </div>
   </div>
 </section>

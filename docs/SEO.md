@@ -78,7 +78,7 @@ Every list item needs a unique `_key`; JSON-LD items also need a `_type`. `metaT
 
 | Field | Type | Rules | What it is |
 |---|---|---|---|
-| `title` | string | optional; 10 to 80 characters | The full browser-tab and search-result title, used exactly as written. Must be unique. Search engines may shorten titles over about 60 characters. Leave empty to use the page type's template. Example: `Local SEO for Maryland Businesses | Maryland Insights` |
+| `title` | string | optional; 10 to 80 characters | The full browser-tab and search-result title, used exactly as written. Must be unique. Keep it to 60 characters: longer titles are reported, because search engines cut them. Leave empty to use the page type's template. Example: `Local SEO for Maryland Businesses | Maryland Insights` |
 | `description` | text | optional; 50 to 160 characters | The search-result summary, in one or two plain sentences. Must be unique. This is not the visible intro. Leave empty to use the start of the page's own description. |
 | `canonical` | url | optional | Leave empty. Fill only when this page duplicates another page here that should rank instead. |
 | `noindex` | boolean | optional | On keeps the page out of search engines and the sitemap. Leave empty for normal pages. |

@@ -1,0 +1,12 @@
+---
+import { plainify } from "@/lib/utils/textConverter";
+import type { HomeCopy } from "@/lib/home/copy";
+const { facts = [], copy } = Astro.props as { facts: any[]; copy: HomeCopy };
+const steps = facts.filter((f) => f?.label);
+const TONES = ["sand", "gold", "red", "ink"];
+---
+
+<section class="hp-steps">
+  <div class="hp-in"><h2 class="hp-h2 hp-lg">{copy.stepsTitle}</h2></div>
+  <ol>{steps.map((s, i) => <li class={`hp-${TONES[i % 4]}`} style={`--i:${i};--n:${steps.length}`}><h3>{plainify(s.label)}</h3><p>{s.description}</p></li>)}</ol>
+</section>

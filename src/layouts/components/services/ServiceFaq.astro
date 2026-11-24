@@ -1,0 +1,56 @@
+---
+import { markdownify } from "@/lib/utils/textConverter";
+
+// FAQs as plain <details>, so every answer is in the page. The first one starts open.
+type Props = { items?: { question?: string; answer?: string }[]; title?: string; ui?: { searchPlaceholder?: string; noResultsText?: string; clearFilterLabel?: string } };
+const { items = [], title, ui } = Astro.props as Props;
+const faqs = items.filter((f) => f?.question && f?.answer);
+---
+
+{faqs.length > 0 && (
+  <section id="faq-list" class="sp-sec sp-faq hp-gold" data-sp-faq>
+    <div class="hp-in sp-side">
+      <div class="sp-title">
+        {title && <h2 class="sp-h2" set:html={markdownify(title)} />}
+        <input type="search" data-sp-faq-search placeholder={ui?.searchPlaceholder} aria-label={ui?.searchPlaceholder} autocomplete="off" />
+        <div class="sp-faq-none" data-sp-faq-none role="status" hidden><p>{ui?.noResultsText}</p><button type="button" data-sp-faq-reset>{ui?.clearFilterLabel}</button></div>
+      </div>
+      <div class="sp-faq-list">
+        {faqs.map((faq, i) => (
+          <details class="hp-q" open={i === 0}>
+            <summary><h3 set:html={markdownify(faq.question)} /><svg width="20" height="20" viewBox="0 0 30 30" aria-hidden="true"><path d="M3 15H27" /><path class="hp-q-v" d="M15 3V27" /></svg></summary>
+            <p set:html={markdownify(faq.answer)} />
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLElement>("[data-sp-faq]").forEach((root) => {
+      const input = root.querySelector<HTMLInputElement>("[data-sp-faq-search]");
+      const none = root.querySelector<HTMLElement>("[data-sp-faq-none]");
+      const list = Array.from(root.querySelectorAll<HTMLDetailsElement>("details"));
+      const filter = () => {
+        const q = input?.value.trim().toLowerCase() ?? "";
+        let shown = 0;
+        list.forEach((el, i) => {
+          const hit = !q || (el.textContent ?? "").toLowerCase().includes(q);
+          el.hidden = !hit;
+          el.open = q ? hit : i === 0; // a match may be in the answer, so show it
+          if (hit) shown++;
+        });
+        if (none) none.hidden = shown > 0;
+      };
+      input?.addEventListener("input", filter);
+      root.querySelector("[data-sp-faq-reset]")?.addEventListener("click", () => {
+        if (!input) return;
+        input.value = "";
+        filter();
+        input.focus();
+      });
+    });
+  });
+</script>

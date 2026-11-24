@@ -1,63 +1,38 @@
 ---
+import { LAND } from "@/lib/home/land";
+import { mapName } from "@/lib/service/text";
 import { markdownify, slugify } from "@/lib/utils/textConverter";
 
 type County = { name: string; edoUrl?: string };
-
-type Props = {
-  title: string;
-  intro: string;
-  counties: (string | County)[];
-  ui?: { namedAreasLabel?: string; newTabNote?: string; countyLinksNote?: string };
-};
-
-const { title, intro, counties, ui } = Astro.props as Props;
+type Props = { title: string; intro: string; counties: (string | County)[]; bg?: string; ui?: { namedAreasLabel?: string; newTabNote?: string; countyLinksNote?: string } };
+const { title, intro, counties, ui, bg = "ink" } = Astro.props as Props;
 const headingId = `service-${slugify(title)}`;
-const items = counties.map((c) => (typeof c === "string" ? { name: c } : c));
+const items = counties.map((c) => (typeof c === "string" ? { name: c } : c)) as County[];
 const hasLinks = items.some((c) => c.edoUrl);
+const named = new Set(items.map((c) => mapName(c.name)));
 ---
 
-<section class="section-sm border-y border-border/70 bg-body" aria-labelledby={headingId}>
-  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
-    <div class="grid items-start gap-10 lg:grid-cols-12 lg:gap-20">
-      <div class="lg:col-span-5">
-        <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
-        <p class="mt-5 max-w-xl text-text-dark/75" set:html={markdownify(intro)} />
-      </div>
-
-      <div class="lg:col-span-7">
-        <p class="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.namedAreasLabel}</p>
-        <ul class="grid border-t border-border sm:grid-cols-2">
-          {
-            items.map((county, index) => (
-              <li class="flex items-baseline gap-4 border-b border-border py-5 sm:pr-6">
-                <span class="text-xs font-semibold tracking-[0.12em] text-primary">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                {county.edoUrl ? (
-                  <a
-                    href={county.edoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="group inline-flex items-center gap-1.5 text-lg text-text-dark underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary"
-                  >
-                    {county.name}
-                    <svg class="h-3.5 w-3.5 shrink-0 text-text-light transition-colors group-hover:text-primary" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                      <path d="M3.5 2.5h6v6M9 3 3 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <span class="sr-only">{ui?.newTabNote}</span>
-                  </a>
-                ) : (
-                  <span class="text-lg text-text-dark">{county.name}</span>
-                )}
-              </li>
-            ))
-          }
+<section class:list={["sp-sec", "sp-area", `hp-${bg}`]} aria-labelledby={headingId}>
+  <div class="hp-in sp-side">
+    <div class="sp-title">
+      <h2 id={headingId} class="sp-h2" set:html={markdownify(title)} />
+      <p class="sp-mut" set:html={markdownify(intro)} />
+    </div>
+    <div class="sp-title">
+      <svg class="sp-map" viewBox="-4 -4 1008 532" aria-hidden="true">{Object.entries(LAND).map(([name, d]) => <path class:list={[{ on: named.has(name) }]} d={d} />)}</svg>
+      <div>
+        <p class="sp-area-l">{ui?.namedAreasLabel}</p>
+        <ul class="sp-counties">
+          {items.map((county, index) => (
+            <li>
+              <span class="sp-n">{String(index + 1).padStart(2, "0")}</span>
+              {county.edoUrl
+                ? <a href={county.edoUrl} target="_blank" rel="noopener noreferrer">{county.name}<span class="sr-only"> {ui?.newTabNote}</span></a>
+                : <span>{county.name}</span>}
+            </li>
+          ))}
         </ul>
-        {hasLinks && (
-          <p class="mt-4 text-sm text-text-light">
-            {ui?.countyLinksNote}
-          </p>
-        )}
+        {hasLinks && <p class="sp-small sp-mut">{ui?.countyLinksNote}</p>}
       </div>
     </div>
   </div>

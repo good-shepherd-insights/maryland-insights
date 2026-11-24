@@ -1,54 +1,27 @@
 ---
 export const prerender = true;
 import Base from "@/layouts/Base.astro";
-import ReplacesTable from "@/components/ReplacesTable.astro";
-import { getHomePage, getSiteSettings } from "@/lib/sanity/queries";
-import { markdownify } from "@/lib/utils/textConverter";
-import CallToAction from "@/partials/CallToAction.astro";
-import ChooseSwiper from "@/partials/ChooseSwiper.astro";
-import Facts from "@/partials/Facts.astro";
-import Features from "@/partials/Features.astro";
-import DesignsHeroV2 from "@/layouts/partials/DesignsHeroV2.astro";
-import TrustStrip from "@/layouts/partials/TrustStrip.astro";
-import Integrations from "@/partials/Integrations.astro";
-import TrustedBrands from "@/partials/TrustedBrands.astro";
-import Faqs from "@/partials/Faqs.astro";
+import MarylandDefs from "@/components/home/MarylandDefs.astro";
+import Hero from "@/components/home/Hero.astro";
+import Partners from "@/components/home/Partners.astro";
+import Services from "@/components/home/Services.astro";
+import Clients from "@/components/home/Clients.astro";
+import Compare from "@/components/home/Compare.astro";
+import Tools from "@/components/home/Tools.astro";
+import Steps from "@/components/home/Steps.astro";
+import HomeFaq from "@/components/home/HomeFaq.astro";
+import Closing from "@/components/home/Closing.astro";
+import { homeCopy } from "@/lib/home/copy";
+import { getHomePage, getHomeRedesign, getSiteSettings } from "@/lib/sanity/queries";
+import "@/styles/home.css";
 
 const home = await getHomePage();
 const settings = await getSiteSettings();
 const settingsUi = settings?.ui ?? {};
 const homeUi = home?.ui ?? {};
-
-const stack = home?.serviceStack ?? {};
-const agents_swiper = {
-  enable: true,
-  title: stack.title,
-  agents: (stack.cards ?? []).map((c: any) => ({
-    label: c.label,
-    description: c.description,
-    icon: c.icon,
-    image: c.image,
-    points: c.points ?? [],
-    button: c.button ? { ...c.button, enable: true } : undefined,
-  })),
-};
-
-const faq = home?.faq ?? {};
-const faqs_section = {
-  faqs_list: (faq.items ?? []).map((f: any) => ({ question: f.question, answer: f.answer })),
-  section_title: faq.sectionTitle,
-};
+const copy = homeCopy(await getHomeRedesign());
 
 const comparison = home?.comparison ?? {};
-const comparison_section = {
-  enable: true,
-  title: comparison.title,
-};
-const planNames = (comparison.plans ?? []).map((p: any) => ({
-  label: p.label,
-  isUs: p.isUs,
-  logo: p.logo,
-}));
 const categories = (comparison.categories ?? []).map((c: any) => ({
   category: c.category,
   rows: (c.rows ?? []).map((r: any) => ({
@@ -59,49 +32,21 @@ const categories = (comparison.categories ?? []).map((c: any) => ({
     ),
   })),
 }));
-
-const facts = home?.facts ?? {};
-const facts_section = { enable: true, facts: facts.facts ?? [] };
-
-const trust = home?.trustStrip ?? {};
-const trustStripUi = homeUi.trustStrip ?? {};
-const partners = (trust.logos ?? []).map((l: any) => ({
-  name: l.name,
-  file: l.logoUrl,
-  h: l.height,
-  url: l.url,
-}));
-
+const plans = (comparison.plans ?? []).map((p: any) => ({ label: p.label, isUs: p.isUs, logo: p.logo }));
+const partners = (home?.trustStrip?.logos ?? []).map((l: any) => ({ name: l.name, file: l.logoUrl, url: l.url }));
 ---
 
-<Base {...home} ui={settingsUi} seoId={home._id}>
-  <DesignsHeroV2 />
-  <TrustStrip partners={partners} ui={trustStripUi} />
-  <TrustedBrands />
-  <ChooseSwiper data={agents_swiper} ui={homeUi.chooseSwiper} />
-  <Features />
-  {
-    comparison_section.enable && (
-      <section class="section">
-        <div class="container mx-auto">
-          <h2
-            class="mb-12 text-center text-balance"
-            set:html={markdownify(comparison_section.title)}
-          />
-
-          <ReplacesTable
-            categories={categories}
-            planNames={planNames}
-            ui={homeUi.replacesTable}
-          />
-        </div>
-      </section>
-    )
-  }
-  <Integrations logoAltTemplate={settingsUi.companyLogo?.altTemplate} />
-  <Facts data={facts_section} enableAnimation={false} />
-  {faqs_section.faqs_list.length > 0 && (
-    <Faqs data={faqs_section} prefix="home-faq" ui={settingsUi.faqs} />
-  )}
-  <CallToAction />
+<Base {...home} ui={settingsUi} seoId={home._id} homeFooter>
+  <MarylandDefs />
+  <div class="hp">
+    <Hero hero={home.hero} copy={copy} />
+    <Partners partners={partners} title={copy.partnersTitle} label={homeUi.trustStrip?.partnersAriaLabel} />
+    <Services stack={home.serviceStack} partnerLink={home.hero?.buttonSolid?.link} copy={copy} />
+    <Clients features={home.features} copy={copy} />
+    <Compare categories={categories} plans={plans} ui={homeUi.replacesTable} partnerLink={home.hero?.buttonSolid?.link} copy={copy} />
+    <Tools copy={copy} />
+    <Steps facts={home.facts?.facts} copy={copy} />
+    <HomeFaq items={home.faq?.items} ui={home.faq?.ui} copy={copy} />
+    <Closing cta={home.cta} partnerLink={home.hero?.buttonSolid?.link} copy={copy} />
+  </div>
 </Base>

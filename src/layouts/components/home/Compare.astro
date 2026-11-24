@@ -1,0 +1,118 @@
+---
+import type { HomeCopy } from "@/lib/home/copy";
+
+type Cell = "yes" | "no" | "part";
+const { categories = [], plans = [], ui = {}, partnerLink, copy } = Astro.props as { categories: any[]; plans: any[]; ui: any; partnerLink?: string; copy: HomeCopy };
+const yesLabel = ui.includedLabel ?? "Included", noLabel = ui.notIncludedLabel ?? "Not included";
+const state = (v: string): Cell => (v === "active" ? "yes" : v === "cross" || !v ? "no" : "part");
+const word = (v: string) => (state(v) === "yes" ? yesLabel : state(v) === "no" ? noLabel : v);
+// One line per answer instead of one box per platform: who has it, who half has it, who does not.
+const safe = (t: string) => t.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]!);
+function answers(values: string[]) {
+  const by = new Map<string, { state: Cell; word: string; list: string[] }>();
+  values.forEach((v, i) => {
+    const w = word(v), row = by.get(w) ?? { state: state(v), word: w, list: [] };
+    row.list.push(plans[i].isUs ? `<strong>${safe(plans[i].label)}</strong>` : safe(plans[i].label));
+    by.set(w, row);
+  });
+  const order: Cell[] = ["yes", "part", "no"];
+  return [...by.values()].sort((a, b) => order.indexOf(a.state) - order.indexOf(b.state)).map((a) => ({ ...a, names: a.list.join(", ") }));
+}
+const logo = (p: any) => (p.isUs ? "/images/logo.svg" : p.logo);
+let n = 0;
+const groups = categories.filter((c) => c?.category && c.rows?.length).map((c, gi) => ({ name: c.category, id: gi, rows: c.rows.filter((r: any) => r?.name).map((r: any) => ({ ...r, id: n++, values: plans.map((_, i) => r.values?.[i] ?? "cross") })) }));
+const all = groups.flatMap((g) => g.rows);
+const totals = plans.map((_, i) => all.reduce((t, r) => { t[state(r.values[i])]++; return t; }, { yes: 0, no: 0, part: 0 }));
+const title = (t: string) => t.replace("{n}", String(all.length));
+---
+
+{all.length > 0 && (
+<section class="hp-compare" data-compare>
+  <div class="hp-in">
+    <header>
+      <h2 class="hp-h2 hp-xl">{title(copy.compareTitle)}</h2>
+      <ul class="hp-key">
+        <li><i class="hp-c hp-yes"></i>{yesLabel}</li>
+        <li><i class="hp-c hp-part"></i>{copy.comparePartial}</li>
+        <li><i class="hp-c hp-no"></i>{noLabel}</li>
+      </ul>
+    </header>
+    <ul class="hp-plans hp-narrow-flex">
+      {plans.map((p) => <li><span><img src={logo(p)} alt="" width="23" height="23" loading="lazy" /></span>{p.label}</li>)}
+    </ul>
+    <div class="hp-grid">
+      {groups.map((g) => (
+        <div class="hp-group">
+          <div class="hp-row hp-row-head"><h3>{g.name}</h3>{plans.map((p) => <span class="hp-plan"><img src={logo(p)} alt={p.label} loading="lazy" /></span>)}</div>
+          {g.rows.map((r: any) => (
+            <button type="button" class="hp-row" aria-haspopup="dialog" data-open-feature={r.id} data-open-group={g.id}>
+              <span>{r.name}</span>
+              {r.values.map((v: string, i: number) => <span class="hp-cell"><i class:list={["hp-c", `hp-${state(v)}`, { "hp-us": plans[i].isUs }]} role="img" aria-label={`${plans[i].label}: ${word(v)}`}></i></span>)}
+            </button>
+          ))}
+        </div>
+      ))}
+    </div>
+    <div class="hp-compare-foot">
+      <button type="button" class="hp-btn hp-btn-gold" aria-haspopup="dialog" data-open-compare>{copy.compareButton}</button>
+      <p>{copy.compareHint}</p>
+    </div>
+  </div>
+
+  <dialog class="hp-modal" aria-labelledby="hp-modal-title" data-lenis-prevent>
+    <div class="hp-modal-head">
+      <h2 id="hp-modal-title">{copy.compareModalTitle}</h2>
+      <button type="button" data-close-compare aria-label="Close comparison"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M2 2 L20 20 M20 2 L2 20" stroke="#fff" stroke-width="3" /></svg></button>
+    </div>
+    <div class="hp-modal-body">
+      <div class="hp-bars">
+        {plans.map((p, i) => (
+          <div class:list={["hp-bar", { "hp-us": p.isUs }]}>
+            <div class="hp-bar-name"><img src={logo(p)} alt="" width="30" height="30" loading="lazy" /><strong>{p.label}</strong></div>
+            <div class="hp-bar-track" aria-hidden="true">{(["yes", "part", "no"] as Cell[]).map((s) => totals[i][s] > 0 && <span class={`hp-b-${s}`} style={`width:${(100 * totals[i][s]) / all.length}%`}></span>)}</div>
+            <p><strong>{totals[i].yes}</strong>{` ${yesLabel.toLowerCase()}`}{totals[i].part > 0 && `, ${totals[i].part} partial`}</p>
+          </div>
+        ))}
+      </div>
+      <ul class="hp-key hp-key-bars">
+        <li><i class="hp-b-yes"></i>{yesLabel}</li><li><i class="hp-b-part"></i>{copy.comparePartial}</li><li><i class="hp-b-no"></i>{noLabel}</li>
+      </ul>
+      {partnerLink && <p class="hp-modal-cta"><a class="hp-btn hp-btn-ink" href={partnerLink}>{copy.ctaLabel}</a></p>}
+      {groups.map((g) => (
+        <details class="hp-cat" data-group={g.id} open={g.id === 0}>
+          <summary><h3>{g.name}</h3><span>{g.rows.length} features</span></summary>
+          {g.rows.map((r: any) => (
+            <details class="hp-feat" data-feature={r.id}>
+              <summary><h4>{r.name}</h4></summary>
+              <p>{r.description}</p>
+              <dl>{answers(r.values).map((a) => <div><dt><i class:list={["hp-c", `hp-${a.state}`]} aria-hidden="true"></i>{a.word}</dt><dd set:html={a.names} /></div>)}</dl>
+              {partnerLink && <p class="hp-modal-cta"><a class="hp-btn hp-btn-ink" href={partnerLink} aria-label={`${copy.ctaLabel}: ${r.name}`}>{copy.ctaLabel}</a></p>}
+            </details>
+          ))}
+        </details>
+      ))}
+    </div>
+  </dialog>
+</section>
+)}
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const root = document.querySelector<HTMLElement>("[data-compare]");
+    const modal = root?.querySelector<HTMLDialogElement>("dialog");
+    if (!root || !modal) return;
+    const open = (group: string, feature?: string) => {
+      modal.querySelectorAll<HTMLDetailsElement>(".hp-cat").forEach((d) => { d.open = d.dataset.group === group; });
+      modal.querySelectorAll<HTMLDetailsElement>(".hp-feat").forEach((d) => { d.open = d.dataset.feature === feature; });
+      modal.showModal();
+      document.documentElement.style.overflow = "hidden";
+      const target = feature && modal.querySelector<HTMLElement>(`.hp-feat[data-feature="${feature}"]`);
+      modal.scrollTop = target ? Math.max(0, target.getBoundingClientRect().top - modal.getBoundingClientRect().top + modal.scrollTop - 140) : 0;
+    };
+    root.querySelectorAll<HTMLElement>("[data-open-feature]").forEach((b) => b.addEventListener("click", () => open(b.dataset.openGroup!, b.dataset.openFeature)));
+    root.querySelector("[data-open-compare]")?.addEventListener("click", () => open("0"));
+    modal.querySelector("[data-close-compare]")?.addEventListener("click", () => modal.close());
+    modal.addEventListener("click", (e) => { if (e.target === modal) modal.close(); });
+    modal.addEventListener("close", () => { document.documentElement.style.overflow = ""; });
+  });
+</script>

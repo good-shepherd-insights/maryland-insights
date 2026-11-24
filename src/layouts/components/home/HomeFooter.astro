@@ -1,0 +1,62 @@
+---
+import Logo from "@/components/Logo.astro";
+import NewsletterScript from "@/components/NewsletterScript.astro";
+import { getHomePage, getHomeRedesign, getSiteSettings } from "@/lib/sanity/queries";
+import { homeCopy } from "@/lib/home/copy";
+import { markdownify } from "@/lib/utils/textConverter";
+import FlagBand from "./FlagBand.astro";
+
+const { newsletter } = Astro.props as { newsletter?: any };
+const settings = await getSiteSettings();
+const home = await getHomePage();
+const copy = homeCopy(await getHomeRedesign());
+type Link = { name: string; url: string };
+const ok = (l: Link) => l.name && l.url;
+const services: Link[] = (home?.serviceStack?.cards ?? []).map((c: any) => ({ name: c.label, url: c.button?.link })).filter(ok);
+const features: Link[] = (home?.features?.features ?? []).map((f: any) => ({ name: f.title, url: f.button?.link })).filter(ok);
+const footerLinks: Link[] = (settings?.footerColumns ?? []).flatMap((c: any) => (c.links ?? []).map((l: any) => ({ name: l.label, url: l.href }))).filter(ok);
+const extra: Link[] = (settings?.navLinks ?? []).filter((l: any) => l.href === "/integrations").map((l: any) => ({ name: l.label, url: l.href }));
+const company = [...footerLinks, ...extra.filter((l) => !footerLinks.some((f) => f.url === l.url))];
+const columns = [["Services", services], ["Features", features], ["Company", company]] as [string, Link[]][];
+const names: Record<string, string> = { instagram: "Instagram", x: "X", linkedin: "LinkedIn" };
+const year = (t: string) => t.replace("{year}", String(new Date().getFullYear()));
+---
+
+<footer class="hp-footer">
+  <FlagBand height={96} />
+  <div class="hp-in">
+    <div class="hp-footer-top">
+      <h2 class="hp-h2">{copy.footerTitle}</h2>
+      {newsletter && (
+        <form data-newsletter-form action="/api/newsletter" method="post" data-ui-accepting={newsletter.acceptingHint} data-ui-subscribing={newsletter.subscribingHint} data-ui-subscribed={newsletter.subscribedHint} data-ui-failed={newsletter.failedHint}>
+          <p class="hp-footer-h">{newsletter.heading}</p>
+          <label for="newsletter-email">Email</label>
+          <div class="hp-news">
+            <input id="newsletter-email" type="email" name="email" required placeholder={newsletter.placeholder} />
+            <button type="submit" title={newsletter.submitTitle} aria-label={newsletter.submitTitle}>
+              <svg data-newsletter-submit-icon width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M1 9h14M9 3l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" /></svg>
+              <span data-newsletter-success-icon class="hidden" aria-hidden="true">✓</span>
+            </button>
+          </div>
+          <p data-newsletter-hint role="status" aria-live="polite">{newsletter.consentHint}</p>
+          <label class="hp-consent" for="newsletter-consent">
+            <input type="checkbox" name="checkbox" id="newsletter-consent" data-newsletter-consent required />
+            <span>{newsletter.consentLabel} <a href={newsletter.privacyUrl}>{newsletter.consentLinkText}</a></span>
+          </label>
+        </form>
+      )}
+    </div>
+    <div class="hp-footer-cols">
+      <div class="hp-footer-logo"><Logo /></div>
+      {columns.filter(([, links]) => links.length > 0).map(([title, links]) => (
+        <nav aria-label={title}><p class="hp-footer-h">{title}</p><ul>{links.map((l) => <li><a href={l.url}>{l.name}</a></li>)}</ul></nav>
+      ))}
+    </div>
+    <div class="hp-footer-end">
+      <ul>{(settings?.socialLinks ?? []).map((s: any) => <li><a href={s.url} target="_blank" rel="noopener noreferrer">{names[s.platform] ?? s.platform}</a></li>)}</ul>
+      <p set:html={markdownify(year(settings?.copyright ?? ""))} />
+      <p>{newsletter?.logoAttribution} <a href={newsletter?.logoAttributionUrl} target="_blank" rel="noopener noreferrer">{newsletter?.logoAttributionLink}</a></p>
+    </div>
+  </div>
+  <NewsletterScript />
+</footer>

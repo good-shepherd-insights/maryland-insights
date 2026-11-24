@@ -1,76 +1,46 @@
 ---
+import { figures } from "@/lib/service/text";
 import { markdownify, slugify } from "@/lib/utils/textConverter";
 
 type Props = {
-  title: string;
-  metricLabel: string;
-  before: string;
-  after: string;
-  context: string;
-  sourceLabel?: string;
-  sourceUrl?: string;
-  changes?: string;
-  ui?: {
-    beforeLabel?: string;
-    afterLabel?: string;
-    contextLabel?: string;
-    changesLabel?: string;
-  };
+  title: string; anchorTitle?: string; metricLabel: string; before: string; after: string; context: string; sourceLabel?: string; sourceUrl?: string; changes?: string; bg?: string;
+  ui?: { beforeLabel?: string; afterLabel?: string; contextLabel?: string; changesLabel?: string };
 };
-
-const { title, metricLabel, before, after, context, sourceLabel, sourceUrl, changes, ui } = Astro.props as Props;
-const headingId = `service-${slugify(title)}`;
+const { title, anchorTitle, metricLabel, before, after, context, sourceLabel, sourceUrl, changes, ui, bg = "gold" } = Astro.props as Props;
+const headingId = `service-${slugify(anchorTitle ?? title)}`;
+const rows = [{ label: ui?.beforeLabel, value: before, nums: figures(before), side: "before" }, { label: ui?.afterLabel, value: after, nums: figures(after), side: "after" }];
+// Bars only when both sides are numbers, always to the same scale. Words get equal panels.
+const measured = rows.every((r) => r.nums.length > 0 && r.nums.length <= 2);
+const max = Math.max(...rows.flatMap((r) => r.nums), 1);
+const share = (n: number) => ((n / max) * 100).toFixed(2);
 ---
 
-<section class="section-sm border-y border-border/70 bg-body" aria-labelledby={headingId}>
-  <div class="container mx-auto lg:w-[88%] xl:w-[80%]">
-    <figure>
-      <div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div class="max-w-2xl">
-          <h2 id={headingId} class="text-balance" set:html={markdownify(title)} />
-        </div>
-        <p class="text-sm text-text-dark/70">{metricLabel}</p>
-      </div>
-
-      <div class="service-proof-reading grid border-y border-border sm:grid-cols-[1fr_auto_1fr]">
-        <div class="py-8 sm:pr-8 lg:py-10">
-          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.beforeLabel}</p>
-          <p class="font-secondary text-5xl font-normal tracking-[-0.06em] text-text-dark sm:text-6xl">{before}</p>
-        </div>
-        <div class="hidden items-center border-x border-border px-6 text-2xl text-primary sm:flex" aria-hidden="true">→</div>
-        <div class="border-t border-border py-8 sm:border-t-0 sm:pl-8 lg:py-10">
-          <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-text-light">{ui?.afterLabel}</p>
-          <p class="font-secondary text-5xl font-normal tracking-[-0.06em] text-text-dark sm:text-6xl">{after}</p>
-        </div>
-      </div>
-
-      <figcaption class="mt-6 grid gap-6 text-sm text-text-dark/75 lg:grid-cols-2 lg:gap-12">
-        <div>
-          <p class="mb-2 font-semibold text-text-dark">{ui?.contextLabel}</p>
-          <p set:html={markdownify(context)} />
-        </div>
-        {
-          changes && (
-            <div>
-              <p class="mb-2 font-semibold text-text-dark">{ui?.changesLabel}</p>
-              <div class="content text-sm" set:html={markdownify(changes, true) as string} />
+<section class:list={["sp-sec", `hp-${bg}`]} aria-labelledby={headingId}>
+  <div class="hp-in"><figure class="sp-stack">
+    <div class="sp-head sp-head-end">
+      <h2 id={headingId} class="sp-h2 sp-h2-lg" set:html={markdownify(title)} />
+      <p class="sp-metric">{metricLabel}</p>
+    </div>
+    <div class="sp-proof">
+      {rows.map((row) => (
+        <div class="sp-proof-row">
+          <p class="sp-proof-l">{row.label}</p>
+          {measured ? (
+            <div class={`sp-bar sp-bar-${row.side}`}>
+              <span aria-hidden="true" style={`--w:${share(row.nums[0])}`}></span>
+              {row.nums.length > 1 && <span aria-hidden="true" class="sp-bar-range" style={`--w:${share(row.nums[1] - row.nums[0])}`}></span>}
+              <p class="sp-bar-v">{row.value}</p>
             </div>
-          )
-        }
-      </figcaption>
-
-      {
-        sourceLabel && sourceUrl && (
-          <a
-            href={sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-6 inline-flex text-sm font-semibold text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary"
-          >
-            Source: {sourceLabel}
-          </a>
-        )
-      }
-    </figure>
-  </div>
+          ) : (
+            <p class={`sp-word sp-word-${row.side}`}>{row.value}</p>
+          )}
+        </div>
+      ))}
+    </div>
+    <figcaption class="sp-two">
+      <div class="sp-rule"><p class="sp-strong">{ui?.contextLabel}</p><p set:html={markdownify(context)} /></div>
+      {changes && <div class="sp-rule"><p class="sp-strong">{ui?.changesLabel}</p><div class="content sp-prose" set:html={markdownify(changes, true) as string} /></div>}
+    </figcaption>
+    {sourceLabel && sourceUrl && <a class="sp-link" href={sourceUrl} target="_blank" rel="noopener noreferrer">Source: {sourceLabel}</a>}
+  </figure></div>
 </section>

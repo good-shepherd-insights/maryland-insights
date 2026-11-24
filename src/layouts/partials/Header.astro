@@ -1,6 +1,7 @@
 ---
 import Logo from "@/layouts/components/Logo.astro";
-import { getSiteSettings } from "@/lib/sanity/queries";
+import { navTile } from "@/lib/navTiles";
+import { getSiteSettings, getPartnerCta } from "@/lib/sanity/queries";
 
 export interface ChildNavigationLink {
   name: string;
@@ -28,14 +29,18 @@ const main: NavigationLink[] = (siteSettings?.navLinks ?? []).map(
     })),
   })
 );
+const partner = await getPartnerCta();
 const navigation_button = siteSettings?.navigationButton
   ? {
       enable: true,
-      label: siteSettings.navigationButton.label,
-      link: siteSettings.navigationButton.link,
+      label: partner.label || siteSettings.navigationButton.label,
+      link: partner.link || siteSettings.navigationButton.link,
     }
   : { enable: false, label: "", link: "" };
 const { pathname } = Astro.url;
+const isHere = (url?: string) => !!url && (pathname === url || pathname === `${url}/`);
+const isInside = (url?: string) => !!url && (isHere(url) || pathname.startsWith(`${url}/`));
+const isExternal = (url?: string) => !!url && url.startsWith("http");
 
 type Props = {
   ui?: {
@@ -48,222 +53,183 @@ type Props = {
 const { ui } = Astro.props as Props;
 ---
 
-<header class={`header z-30 non_sticky`}>
+<header class="header">
   <nav class="navbar">
-    {/* logo */}
-    <div class="order-0 flex items-center">
-      <Logo />
-    </div>
-    {/* navbar toggler */}
+    <div class="nav-logo"><Logo /></div>
+
     <input id="nav-toggle" type="checkbox" class="hidden" />
     <label
       for="nav-toggle"
       id="nav-toggle-label"
+      class="nav-toggle-label"
       role="button"
       tabindex="0"
       aria-label={ui?.toggleLabel}
+      aria-controls="nav-menu"
       aria-expanded="false"
-      class="order-3 cursor-pointer flex items-center lg:hidden text-text-dark lg:order-1"
     >
-      <svg id="show-button" class="h-6 fill-current block" viewBox="0 0 20 20">
+      <svg id="show-button" class="block" width="28" height="28" viewBox="0 0 28 28">
         <title>{ui?.menuOpenTitle}</title>
-        <path d="M0 3h20v2H0V3z m0 6h20v2H0V9z m0 6h20v2H0V0z"></path>
+        <path d="M2 7h24M2 14h24M2 21h24" stroke="currentColor" stroke-width="3"></path>
       </svg>
-      <svg id="hide-button" class="h-6 fill-current hidden" viewBox="0 0 20 20">
+      <svg id="hide-button" class="hidden" width="28" height="28" viewBox="0 0 28 28">
         <title>{ui?.menuCloseTitle}</title>
-        <polygon
-          points="11 9 22 9 22 11 11 11 11 22 9 22 9 11 -2 11 -2 9 9 9 9 -2 11 -2"
-          transform="rotate(45 10 10)"></polygon>
+        <path d="M4 4l20 20M24 4L4 24" stroke="currentColor" stroke-width="3"></path>
       </svg>
     </label>
-    {/* /navbar toggler */}
 
-    <ul
-      data-lenis-prevent
-      id="nav-menu"
-      class="navbar-nav order-3 hidden w-full pb-6 lg:order-1 lg:flex lg:w-auto lg:space-x-2 lg:pb-0 xl:space-x-5"
-    >
+    <ul data-lenis-prevent id="nav-menu" class="navbar-nav">
       {
-        main.map((menu, index) => (
-          <>
-            {menu.hasChildren ? (
-              <li
-                data-lenis-prevent
-                class="nav-item nav-dropdown group relative"
-              >
-                {menu.url ? (
-                  <a
-                    href={menu.url}
-                    aria-controls={`nav-dropdown-${index}`}
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    class={`nav-link bg-transparent! inline-flex items-center ${
-                      menu.children?.some(
-                        ({ url }) => pathname === url || pathname === `${url}/` || pathname.startsWith(`${url}/`)
-                      )
-                        ? "active"
-                        : ""
-                    }`}
-                  >
-                    {menu.name}
-                    <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </a>
-                ) : (
-                  <span
-                    class={`nav-link bg-transparent! inline-flex items-center cursor-pointer ${
-                      menu.children?.some(
-                        ({ url }) => pathname === url || pathname === `${url}/` || pathname.startsWith(`${url}/`)
-                      )
-                        ? "active"
-                        : ""
-                    }`}
-                    role="button"
-                    tabindex="0"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    {menu.name}
-                    <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
-                  </span>
-                )}
-                <ul id={`nav-dropdown-${index}`} class="nav-dropdown-list">
-                  {menu.children?.map((child) => (
-                    <li class="nav-dropdown-item">
-                      <a
-                        href={child.url}
-                        aria-label={child.name}
-                        class={`nav-dropdown-link block ${
-                          (pathname === `${child.url}/` ||
-                            pathname === child.url) &&
-                          "active"
-                        }`}
-                      >
-                        {child.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ) : (
+        main.map((menu, index) => {
+          if (!menu.hasChildren)
+            return (
               <li class="nav-item">
-                <a
-                  data-lenis-prevent
-                  href={menu.url}
-                  class={`nav-link block ${
-                    (pathname === `${menu.url}/` || pathname === menu.url) &&
-                    "active"
-                  }`}
-                >
-                  {menu.name}
+                <a href={menu.url} class:list={["nav-link", { active: isHere(menu.url) }]} aria-current={isHere(menu.url) ? "page" : undefined}>
+                  <span>{menu.name}</span>
                 </a>
               </li>
-            )}
-          </>
-        ))
+            );
+          const children = menu.children ?? [];
+          const wide = children.length < 4;
+          const Trigger = menu.url ? "a" : "span";
+          return (
+            <li class="nav-item nav-dropdown">
+              <Trigger
+                {...(menu.url ? { href: menu.url } : { role: "button", tabindex: "0" })}
+                aria-controls={`nav-dropdown-${index}`}
+                aria-haspopup="true"
+                aria-expanded="false"
+                class:list={["nav-link", { active: isHere(menu.url) || children.some(({ url }) => isInside(url)) }]}
+              >
+                <span>
+                  {menu.name}
+                  <svg class="nav-arrow" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4">
+                    <path class="chev" style="transform-origin: 7px 7px" d="M2 4.5l5 5 5-5" />
+                    <path class="plus" d="M0.5 7h13" />
+                    <path class="plus plus-v" d="M7 0.5v13" />
+                  </svg>
+                </span>
+              </Trigger>
+              <ul id={`nav-dropdown-${index}`} class="nav-dropdown-list" data-wide={wide ? "" : undefined} style={`--tiles: ${wide ? children.length : children.length % 3 === 0 ? Math.min(children.length, 6) : 4}`}>
+                {menu.url && (
+                  <li class="nav-all">
+                    <a href={menu.url}>All {menu.name.toLowerCase()}</a>
+                  </li>
+                )}
+                {children.map((child, i) => {
+                  const tile = navTile(child.url, i);
+                  return (
+                    <li>
+                      <a href={child.url} class="nav-tile" data-tone={tile.tone} aria-current={isHere(child.url) ? "page" : undefined}>
+                        {tile.image && <img src={tile.image} alt="" width="118" height="96" loading="lazy" decoding="async" />}
+                        <span>{child.name}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </li>
+          );
+        })
       }
       {
         navigation_button.enable && (
-          <li class="mt-4 inline-block lg:hidden ml-4">
-            <a
-              class="btn btn-outline btn-sm rounded-none bg-body text-text-dark border border-[#A8A198]"
-              href={navigation_button.link}
-            >
+          <li class="nav-menu-cta">
+            <a class="nav-cta" href={navigation_button.link} target={isExternal(navigation_button.link) ? "_blank" : undefined}>
               {navigation_button.label}
             </a>
           </li>
         )
       }
     </ul>
-    <div class="order-1 ml-auto flex items-center md:order-2 lg:ml-0">
-      {
-        navigation_button.enable && (
-          <a
-            class="btn btn-sm btn-outline rounded-none bg-body text-text-dark hidden lg:inline-block border-[#A8A198]"
-            href={navigation_button.link}
-            target={
-              navigation_button.link.startsWith("http") ? "_blank" : "_self"
-            }
-          >
-            {navigation_button.label}
-          </a>
-        )
-      }
-    </div>
+    {
+      navigation_button.enable && (
+        <a class="nav-cta nav-bar-cta" href={navigation_button.link} target={isExternal(navigation_button.link) ? "_blank" : undefined}>
+          {navigation_button.label}
+        </a>
+      )
+    }
   </nav>
 </header>
 
 <script>
-  // Handle header animation based on scroll
-  const initHeaderScroll = () => {
-    const header = document.querySelector(".header") as HTMLElement;
-
-    if (!header) return;
-
-    const scrollHandler = () => {
-      const currentScroll = window.scrollY;
-
-      if (currentScroll > 50) {
-        // downscroll
-        header.classList.add("sticky_top");
-        header.classList.remove("non_sticky");
-      } else {
-        // upscroll
-        header.classList.remove("sticky_top");
-        header.classList.add("non_sticky");
-      }
-    };
-
-    window.addEventListener("scroll", scrollHandler);
-
-    return () => {
-      window.removeEventListener("scroll", scrollHandler);
-    };
-  };
+  // Past the top of the page the bar lifts off the edges, shrinks and turns see-through.
+  const syncScroll = () => document.querySelector(".header")?.toggleAttribute("data-scrolled", window.scrollY > 50);
+  window.addEventListener("scroll", syncScroll, { passive: true });
+  syncScroll();
+  document.addEventListener("astro:after-swap", syncScroll);
 
   // Handle dropdown menus
   const initDropdownMenus = () => {
-    const navDropdowns = document.querySelectorAll(".nav-dropdown");
+    const navDropdowns = document.querySelectorAll<HTMLElement>(".nav-dropdown");
+    const wide = window.matchMedia("(min-width: 64rem)");
+
+    const setExpanded = (dropdown: HTMLElement, open: boolean) => {
+      dropdown.toggleAttribute("data-open", open);
+      dropdown.querySelector(".nav-link")?.setAttribute("aria-expanded", String(open));
+    };
+    const closeOthers = (keep?: HTMLElement) =>
+      navDropdowns.forEach((d) => d !== keep && setExpanded(d, false));
 
     navDropdowns.forEach((dropdown) => {
-      const trigger = dropdown.querySelector(".nav-link");
-      const chevron = dropdown.querySelector("button.nav-link");
-      const menu = dropdown.querySelector(".nav-dropdown-list");
+      const trigger = dropdown.querySelector<HTMLElement>(".nav-link");
+      if (!trigger) return;
 
-      if (!trigger || !menu) return;
-
-      const setExpanded = (open: boolean) => {
-        menu.classList.toggle("grid", open);
-        trigger.setAttribute("aria-expanded", String(open));
+      const activate = (event: Event, pointer: string) => {
+        const href = trigger.getAttribute("href");
+        const leaves = href && new URL(href, window.location.href).pathname !== window.location.pathname;
+        const isOpen = dropdown.hasAttribute("data-open");
+        const onArrow = !wide.matches || (event.target instanceof Element && !!event.target.closest("svg"));
+        // With a mouse or keyboard on a wide screen the menu is already showing.
+        const alreadyShowing = wide.matches && (pointer === "mouse" || pointer === "keyboard");
+        if (leaves && (alreadyShowing || (isOpen && !onArrow))) return;
+        event.preventDefault();
+        // Hovering already shows the menu; a click must not pin it open.
+        if (wide.matches && pointer === "mouse") return;
+        closeOthers(dropdown);
+        setExpanded(dropdown, !isOpen);
+        // A tap also counts as hovering, so closing has to outrank that.
+        dropdown.toggleAttribute("data-dismissed", wide.matches && isOpen);
       };
 
       trigger.addEventListener("click", (event) => {
-        const href = trigger.getAttribute("href");
-        if (
-          href &&
-          new URL(href, window.location.href).pathname !==
-            window.location.pathname
-        ) {
-          setExpanded(false);
-          return;
-        }
-        event.preventDefault();
-        setExpanded(!menu.classList.contains("grid"));
+        const coarse = window.matchMedia("(pointer: coarse)").matches;
+        const type = (event as PointerEvent).pointerType;
+        activate(event, event.detail === 0 ? "keyboard" : type || (coarse ? "touch" : "mouse"));
       });
+      if (!trigger.hasAttribute("href")) {
+        trigger.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") activate(event, "keyboard");
+        });
+      }
 
-      dropdown.addEventListener("focusin", () => {
-        trigger.setAttribute("aria-expanded", "true");
-      });
-
+      dropdown.addEventListener("focusin", () => trigger.setAttribute("aria-expanded", "true"));
       dropdown.addEventListener("focusout", (event) => {
-        const next = (event as FocusEvent).relatedTarget;
-        if (!(next instanceof Node) || !dropdown.contains(next)) {
-          setExpanded(false);
-        }
+        // Phones report no next element while a link inside is being tapped, so only
+        // close when focus has clearly moved somewhere else.
+        const next = event.relatedTarget;
+        // Closing on phones would move the list under the finger mid-tap.
+        if (wide.matches && next instanceof Node && !dropdown.contains(next)) setExpanded(dropdown, false);
       });
+    });
+
+    // Escape puts a menu away even while the mouse or focus is still on it.
+    navDropdowns.forEach((dropdown) => {
+      dropdown.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        dropdown.querySelector<HTMLElement>(".nav-link")?.focus();
+        setExpanded(dropdown, false);
+        dropdown.setAttribute("data-dismissed", "");
+      });
+      const restore = () => dropdown.removeAttribute("data-dismissed");
+      dropdown.addEventListener("pointerenter", restore);
+      dropdown.addEventListener("focusout", (event) => {
+        if (!(event.relatedTarget instanceof Node && dropdown.contains(event.relatedTarget))) restore();
+      });
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (wide.matches && event.target instanceof Element && !event.target.closest(".nav-dropdown")) closeOthers();
     });
   };
 
@@ -283,10 +249,18 @@ const { ui } = Astro.props as Props;
 
     navToggle.addEventListener("change", syncAria);
 
+    navToggleLabel?.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      navToggle.checked = !navToggle.checked;
+      syncAria();
+    });
+
     const navLinks = navMenu.querySelectorAll("a");
 
-    const handleClick = () => {
-      if (navToggle.checked) {
+    const handleClick = (event: Event) => {
+      // Opening a submenu is not leaving the page, so the menu stays.
+      if (!event.defaultPrevented && navToggle.checked) {
         navToggle.checked = false;
         syncAria();
       }
@@ -297,7 +271,6 @@ const { ui } = Astro.props as Props;
 
   // Initialize all header functionality
   const initHeader = () => {
-    initHeaderScroll();
     initDropdownMenus();
     initMobileMenuClose();
   };

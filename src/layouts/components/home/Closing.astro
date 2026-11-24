@@ -1,0 +1,14 @@
+---
+import type { HomeCopy } from "@/lib/home/copy";
+const { cta = {}, partnerLink, copy } = Astro.props as { cta: any; partnerLink?: string; copy: HomeCopy };
+const link = partnerLink ?? cta?.primaryLink;
+---
+
+<section class="hp-closing">
+  <svg viewBox="-6 -6 1012 536" aria-hidden="true"><use href="#md-land" fill="#8A0B1F" stroke="#B8112B" stroke-width="2" /></svg>
+  <div class="hp-in">
+    <h2 class="hp-h2">{copy.ctaTitle}</h2>
+    <p>{cta?.description}</p>
+    {link && <a class="hp-btn hp-btn-gold" href={link}>{copy.ctaLabel}</a>}
+  </div>
+</section>

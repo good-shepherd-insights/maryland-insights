@@ -1,0 +1,31 @@
+---
+import ImageMod from "@/components/ImageMod.astro";
+import type { HomeCopy } from "@/lib/home/copy";
+
+const { features = {}, copy } = Astro.props as { features: any; copy: HomeCopy };
+const rank = (f: any) => { const i = copy.clientOrder.indexOf(String(f.button?.link ?? "").split("/").pop() ?? ""); return i < 0 ? 99 : i; };
+const cards = (features?.features ?? []).filter((f: any) => f?.title).sort((a: any, b: any) => rank(a) - rank(b));
+---
+
+<section class="hp-clients">
+  <div class="hp-in">
+    <header>
+      <h2 class="hp-h2 hp-xl">{copy.clientsTitle}</h2>
+      <p>{copy.clientsLead}</p>
+    </header>
+    <ol>
+      {cards.map((f: any) => (
+        <li>
+          <div class="hp-stop-art">{f.image && <ImageMod src={f.image} alt="" width={522} height={396} loading="lazy" />}</div>
+          <span class="hp-stop-line" aria-hidden="true"></span>
+          <div class="hp-stop-text">
+            <h3>{f.title}</h3>
+            <p>{f.subtitle}</p>
+            <div class="hp-logos">{(f.logos ?? []).map((l: string) => <img src={l} alt="" width="28" height="28" loading="lazy" />)}</div>
+            {f.button?.link && <a href={f.button.link}>See {f.title}</a>}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

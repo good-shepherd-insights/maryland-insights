@@ -37,6 +37,9 @@ export const ROUTES = {
   blogPost: "/blog/{slug}",
   legalPage: "/{slug}",
 };
+/** Lengths search results show in full. Anything outside is reported for every page, template or override. */
+export const TITLE_LIMIT = 60;
+export const DESCRIPTION_RANGE = [70, 160];
 export const isRepeatable = (type) => ROUTES[type].includes("{slug}");
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/i;
 const SLUG_MAX = 150;
@@ -117,7 +120,7 @@ export const JSON_LD_ITEMS = {
 export const PAGE_FIELDS = {
   title: {
     type: "string", min: 10, max: 80,
-    description: "The full browser-tab and search-result title, used exactly as written. Must be unique. Search engines may shorten titles over about 60 characters. Leave empty to use the page type's template.",
+    description: "The full browser-tab and search-result title, used exactly as written. Must be unique. Keep it to 60 characters: longer titles are reported, because search engines cut them. Leave empty to use the page type's template.",
     example: "Local SEO for Maryland Businesses | Maryland Insights",
   },
   description: {

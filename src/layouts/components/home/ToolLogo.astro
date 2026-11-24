@@ -1,0 +1,9 @@
+---
+import CompanyLogo from "../../../components/CompanyLogo.astro";
+import ImageMod from "@/components/ImageMod.astro";
+const { tool } = Astro.props as { tool: any };
+---
+
+<span class="hp-tool-logo">
+  {tool.logoName ? <CompanyLogo name={tool.logoName} size={64} /> : tool.image ? <ImageMod src={tool.image} alt="" width={44} height={44} /> : null}
+</span>
