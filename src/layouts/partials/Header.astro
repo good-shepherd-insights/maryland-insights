@@ -226,44 +226,57 @@ const { ui } = Astro.props as Props;
 
   // Handle dropdown menus
   const initDropdownMenus = () => {
-    const navDropdowns = document.querySelectorAll(".nav-dropdown");
+    const navDropdowns = document.querySelectorAll<HTMLElement>(".nav-dropdown");
+    const wide = window.matchMedia("(min-width: 64rem)");
+
+    const setExpanded = (dropdown: HTMLElement, open: boolean) => {
+      dropdown.toggleAttribute("data-open", open);
+      dropdown.querySelector(".nav-dropdown-list")?.classList.toggle("grid", open);
+      dropdown.querySelector(".nav-link")?.setAttribute("aria-expanded", String(open));
+    };
+    const closeOthers = (keep?: HTMLElement) =>
+      navDropdowns.forEach((d) => d !== keep && setExpanded(d, false));
 
     navDropdowns.forEach((dropdown) => {
-      const trigger = dropdown.querySelector(".nav-link");
-      const chevron = dropdown.querySelector("button.nav-link");
-      const menu = dropdown.querySelector(".nav-dropdown-list");
+      const trigger = dropdown.querySelector<HTMLElement>(".nav-link");
+      if (!trigger) return;
 
-      if (!trigger || !menu) return;
-
-      const setExpanded = (open: boolean) => {
-        menu.classList.toggle("grid", open);
-        trigger.setAttribute("aria-expanded", String(open));
+      const activate = (event: Event, pointer: string) => {
+        const href = trigger.getAttribute("href");
+        const leaves = href && new URL(href, window.location.href).pathname !== window.location.pathname;
+        const isOpen = dropdown.hasAttribute("data-open");
+        const onArrow = event.target instanceof Element && !!event.target.closest("svg");
+        // With a mouse or keyboard on a wide screen the menu is already showing.
+        const alreadyShowing = wide.matches && (pointer === "mouse" || pointer === "keyboard");
+        if (leaves && (alreadyShowing || (isOpen && !onArrow))) return;
+        event.preventDefault();
+        closeOthers(dropdown);
+        setExpanded(dropdown, !isOpen);
       };
 
       trigger.addEventListener("click", (event) => {
-        const href = trigger.getAttribute("href");
-        if (
-          href &&
-          new URL(href, window.location.href).pathname !==
-            window.location.pathname
-        ) {
-          setExpanded(false);
-          return;
-        }
-        event.preventDefault();
-        setExpanded(!menu.classList.contains("grid"));
+        const coarse = window.matchMedia("(pointer: coarse)").matches;
+        const type = (event as PointerEvent).pointerType;
+        activate(event, event.detail === 0 ? "keyboard" : type || (coarse ? "touch" : "mouse"));
       });
+      if (!trigger.hasAttribute("href")) {
+        trigger.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") activate(event, "keyboard");
+        });
+      }
 
-      dropdown.addEventListener("focusin", () => {
-        trigger.setAttribute("aria-expanded", "true");
-      });
-
+      dropdown.addEventListener("focusin", () => trigger.setAttribute("aria-expanded", "true"));
       dropdown.addEventListener("focusout", (event) => {
-        const next = (event as FocusEvent).relatedTarget;
-        if (!(next instanceof Node) || !dropdown.contains(next)) {
-          setExpanded(false);
-        }
+        // Phones report no next element while a link inside is being tapped, so only
+        // close when focus has clearly moved somewhere else.
+        const next = event.relatedTarget;
+        // Closing on phones would move the list under the finger mid-tap.
+        if (wide.matches && next instanceof Node && !dropdown.contains(next)) setExpanded(dropdown, false);
       });
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (wide.matches && event.target instanceof Element && !event.target.closest(".nav-dropdown")) closeOthers();
     });
   };
 
@@ -285,8 +298,9 @@ const { ui } = Astro.props as Props;
 
     const navLinks = navMenu.querySelectorAll("a");
 
-    const handleClick = () => {
-      if (navToggle.checked) {
+    const handleClick = (event: Event) => {
+      // Opening a submenu is not leaving the page, so the menu stays.
+      if (!event.defaultPrevented && navToggle.checked) {
         navToggle.checked = false;
         syncAria();
       }
