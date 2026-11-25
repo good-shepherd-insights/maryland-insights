@@ -3,7 +3,7 @@ import { homepage } from "./schemaCheck";
 /** What a check shows in the hero. Text is ready to display. */
 export type CheckResult = { name: string; logo: string | null; notes: string[]; rows: { label: string; value: string; found: boolean }[] };
 
-const SCRAPE_URL = "https://api.context.dev/v1/web/scrape";
+export const SCRAPE_URL = "https://api.context.dev/v1/web/scrape";
 const MAX_BYTES = 8_000_000;
 const WINDOW_MS = 10 * 60 * 1000;
 const LIMIT = 10;
@@ -38,11 +38,11 @@ export async function readPage(url: URL, key: string, mode: "raw" | "rendered", 
   return Buffer.from(file.base64, "base64").toString("utf8");
 }
 
-const json = (status: number, payload: unknown) => new Response(JSON.stringify(payload), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
+export const json = (status: number, payload: unknown) => new Response(JSON.stringify(payload), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
 
 // Shared by every check and kept per warm instance, so it is a brake on cost, not a security boundary.
 const seen = new Map<string, { at: number; count: number }>();
-function allowed(ip: string): boolean {
+export function allowed(ip: string): boolean {
   const now = Date.now();
   for (const [k, v] of seen) if (now - v.at > WINDOW_MS) seen.delete(k);
   const entry = seen.get(ip) ?? { at: now, count: 0 };

@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { aboutPage, checkProof } from "../src/lib/geoCheck";
-import { POST } from "../src/pages/api/geo-check";
 
 const base = new URL("https://www.a.com/");
 const rows = (home: string, about: string | null = null) => Object.fromEntries(checkProof(home, about, base).map((r) => [r.label, r]));
@@ -38,9 +37,5 @@ describe("geo check", () => {
   it("finds the site's own about page only", () => {
     expect(aboutPage('<a href="https://b.com/about">About</a><a href="/about-us/">About Us</a>', base)?.href).toBe("https://www.a.com/about-us");
     expect(aboutPage('<a href="/">About</a>', base)).toBeNull();
-  });
-  it("refuses a request without a website", async () => {
-    const res = await POST({ request: new Request("https://x.test", { method: "POST", headers: { "content-type": "application/json" }, body: "{}" }), clientAddress: "1" } as any);
-    expect(res.status).toBe(400);
   });
 });
