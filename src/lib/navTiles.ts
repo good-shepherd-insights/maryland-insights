@@ -16,6 +16,8 @@ const TILES: Record<string, NavTone> = {
   "analytics-reporting": "red",
   "marketing-automation": "sand",
   "website-hosting": "ink",
+  "recommended-by-ai": "gold",
+  "geo-optimization": "gold",
   tools: "cream",
   blog: "gold",
   faqs: "red",
