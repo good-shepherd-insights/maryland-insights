@@ -121,6 +121,7 @@ const { label, missing } = Astro.props as { label: string; missing: string };
       async function send() {
         const label = button!.textContent ?? "";
         button!.disabled = true;
+        if (change) change.disabled = true;
         button!.textContent = form.dataset.uiSending ?? label;
         status!.hidden = true;
         try {
@@ -142,6 +143,7 @@ const { label, missing } = Astro.props as { label: string; missing: string };
           status!.hidden = false;
           button!.textContent = label;
           button!.disabled = false;
+          if (change) change.disabled = false;
         }
       }
 
