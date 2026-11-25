@@ -1,3 +1,5 @@
+import { attr, dropComments, scan } from "./htmlScan";
+
 /** Reads a page's JSON-LD and reports the business facts in it, the way a machine would find them. */
 export type CheckStatus = "found" | "blank" | "missing" | "generic";
 export type CheckRow = { label: string; value: string; status: CheckStatus };
@@ -105,9 +107,10 @@ export function checkSchema(html: string, domain: string): SchemaCheck {
     // Only the page's own subject: a reviewer's or supplier's details are not this business.
     for (const key of ["@graph", "mainEntity", "about", "publisher", "mainEntityOfPage"]) collect(v[key], depth + 1);
   };
-  const live = html.replace(/<!--[\s\S]*?-->/g, "");
-  for (const m of live.matchAll(/<script\b[^>]*\btype\s*=\s*["']?application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)) {
-    const body = m[1].replace(/^\s*(?:\/\/)?\s*<!\[CDATA\[|(?:\/\/)?\s*\]\]>\s*$/g, "").trim();
+  const live = dropComments(html);
+  for (const { tag } of scan(html, true).pieces) {
+    if (tag?.name !== "script" || !tag.body || !/^application\/ld\+json/i.test(attr(tag, "type"))) continue;
+    const body = tag.body.trim().replace(/^(?:\/\/)?\s{0,20}<!\[CDATA\[/, "").replace(/(?:\/\/)?\s{0,20}\]\]>$/, "").trim();
     if (!body) continue;
     // Line breaks inside a value are a common slip that readers get past.
     try { collect(JSON.parse(body.replace(/[\u0000-\u001f]+/g, " "))); hasSchema = true; } catch { invalidBlocks++; }
