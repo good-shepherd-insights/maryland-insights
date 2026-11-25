@@ -26,8 +26,7 @@ const { label, missing, shareLabel, copiedLabel } = Astro.props as { label: stri
   const SAY: Record<string, string> = {
     "bad-address": "Enter a website address, such as yourbusiness.com.",
     "no-place": "We could not tell what this business does or where in Maryland it works from its homepage.",
-    "no-answer": "ChatGPT did not answer this time. Please try again.",
-    expired: "That took too long. Please try again.",
+    "no-answer": "No answer came back this time. Please try again.",
     "rate-limited": "Too many checks. Please try again in a few minutes.",
   };
   const NS = "http://www.w3.org/2000/svg";
@@ -212,21 +211,8 @@ const { label, missing, shareLabel, copiedLabel } = Astro.props as { label: stri
         button.textContent = "Reading the website…";
         status.hidden = true;
         try {
-          const ask = async (body: object) => {
-            const response = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-            return { response, data: await response.json().catch(() => ({})) };
-          };
-          let { response, data } = await ask(Object.fromEntries(new FormData(form)));
-          // Some answers take a minute or two to come back.
-          for (let n = 0; response.status === 202 && n < 75; n++) {
-            button.textContent = "Waiting for the answer…";
-            status.textContent = "The answer can take two or three minutes. Keep this page open.";
-            status.hidden = false;
-            await new Promise((done) => setTimeout(done, 4000));
-            ({ response, data } = await ask({ pending: data.pending }));
-          }
-          if (response.status === 202) throw new Error("expired");
-          status.hidden = true;
+          const response = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
+          const data = await response.json().catch(() => ({}));
           button.textContent = label;
           if (response.ok) show(data as Result);
           else throw new Error(data.error);
