@@ -104,14 +104,14 @@ const {
 
 // One step below the section's own heading.
 const Received = headingLevel === "h1" ? "h2" : "h3";
-// These services answer on the page by reading a website, so they ask for nothing but the address.
+// These services read a website, show what they found, then ask for the email.
 const checks: Record<string, { action: string; label: string; missing: string }> = {
   "aeo-optimization": { action: "/api/schema-check", label: "Website schema", missing: "missing" },
   "marketing-automation": { action: "/api/follow-up-check", label: "Website follow-up", missing: "not detected" },
   "geo-optimization": { action: "/api/geo-check", label: "Website proof", missing: "not found" },
 };
 const check = headingLevel === "h1" && service && Object.hasOwn(checks, service) ? checks[service] : undefined;
-const fields = check ? allFields.filter((f) => f.name === "business") : allFields;
+const fields = check ? allFields.filter((f) => f.name === "business" || f.type === "email") : allFields;
 const headingId = `lead-${slugify(title)}`;
 const fieldId = (name: string) => `lead-field-${slugify(name)}`;
 const lookupBusinessName = lookup?.businessField;
@@ -216,6 +216,8 @@ const auditPlatformIcons = platforms;---
             method="post"
             action={check ? check.action : formAction}
             data-check={check ? true : undefined}
+            data-lead-action={check ? formAction : undefined}
+            data-lead-service={check ? service : undefined}
             data-lookup-endpoint={lookup ? (lookup.endpoint ?? "/api/business-lookup") : undefined}
             data-lookup-field={lookupBusinessName}
             data-lookup-min={lookup?.minChars}
@@ -239,6 +241,13 @@ const auditPlatformIcons = platforms;---
             data-ui-review-plural={ui?.reviewPluralLabel}
           >
             {
+              check && (
+                <button type="button" data-check-change hidden class="mb-5 border-b border-border pb-0.5 text-sm font-semibold text-text-dark transition-colors hover:border-primary hover:text-primary">
+                  {ui?.changeBusinessLabel}
+                </button>
+              )
+            }
+            {
               lookup && (
                 <button
                   type="button"
@@ -260,7 +269,9 @@ const auditPlatformIcons = platforms;---
                     class:list={["min-w-0", { "lookup-dependent": isLookupDependent }]}
                     data-lookup-dependent={isLookupDependent ? true : undefined}
                     data-lookup-business-group={isLookupInput ? true : undefined}
-                    hidden={isLookupDependent || undefined}
+                    data-check-site={check && field.name === "business" ? true : undefined}
+                    data-check-email={check && field.type === "email" ? true : undefined}
+                    hidden={isLookupDependent || (check && field.type === "email") || undefined}
                   >
                     <label class="mb-2 block text-sm font-semibold text-text-dark" for={fieldId(field.name)}>
                       {field.label}
@@ -321,7 +332,7 @@ const auditPlatformIcons = platforms;---
                         type={field.type}
                         placeholder={field.placeholder}
                         required={field.required}
-                        disabled={isLookupDependent || undefined}
+                        disabled={isLookupDependent || (check && field.type === "email") || undefined}
                         autocomplete={field.type === "email" ? "email" : field.type === "tel" ? "tel" : "on"}
                         class:list={[
                           "w-full min-w-0 rounded-none border border-border px-4 py-3.5 text-base text-text-dark placeholder:text-text-light transition-colors hover:border-text-light focus:border-primary focus:ring-1 focus:ring-primary/20",

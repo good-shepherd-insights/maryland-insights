@@ -53,6 +53,13 @@ const { label, missing } = Astro.props as { label: string; missing: string };
       const input = form.querySelector<HTMLInputElement>("input[name=business]");
       const heading = section?.querySelector<HTMLElement>(".lead-heading");
       if (!section || !panel || !status || !button || !input || !heading) return;
+      const siteGroup = form.querySelector<HTMLElement>("[data-check-site]");
+      const emailGroup = form.querySelector<HTMLElement>("[data-check-email]");
+      const email = emailGroup?.querySelector<HTMLInputElement>("input");
+      const change = form.querySelector<HTMLButtonElement>("[data-check-change]");
+      const success = form.parentElement?.querySelector<HTMLElement>(".lead-capture-success");
+      let found: string | null = null;
+      const title = [...heading.childNodes].map((n) => n.cloneNode(true));
       const prefix = (heading.textContent ?? "").trim().match(/^(.*?\bfor)\s/i)?.[1];
       const first = button.textContent ?? "";
       const part = (name: string) => panel.querySelector<HTMLElement>(`[data-check-${name}]`)!;
@@ -82,14 +89,65 @@ const { label, missing } = Astro.props as { label: string; missing: string };
         }
         panel!.hidden = false;
         section!.setAttribute("data-check-done", "");
-        button!.textContent = "Check another website";
-        input!.value = "";
+        found = result.name;
+        if (siteGroup && emailGroup && email) {
+          siteGroup.hidden = true;
+          emailGroup.hidden = false;
+          email.disabled = false;
+          if (change) change.hidden = false;
+          button!.textContent = `Audit ${result.name}`;
+        }
         panel!.focus({ preventScroll: true });
         heading!.scrollIntoView({ block: "center" });
       }
 
+      // Back to the website field, as it was before the check.
+      change?.addEventListener("click", () => {
+        found = null;
+        panel.hidden = true;
+        section.removeAttribute("data-check-done");
+        heading.replaceChildren(...title.map((n) => n.cloneNode(true)));
+        heading.removeAttribute("data-long");
+        siteGroup!.hidden = false;
+        emailGroup!.hidden = true;
+        email!.disabled = true;
+        change.hidden = true;
+        status.hidden = true;
+        button.textContent = first;
+        input.value = "";
+        input.focus();
+      });
+
+      async function send() {
+        const label = button!.textContent ?? "";
+        button!.disabled = true;
+        button!.textContent = form.dataset.uiSending ?? label;
+        status!.hidden = true;
+        try {
+          const response = await fetch(form.dataset.leadAction!, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...Object.fromEntries(new FormData(form)), business: found, businessName: found, service: form.dataset.leadService, page: document.title, source: location.pathname }),
+          });
+          if (!response.ok) throw new Error(String(response.status));
+          form.hidden = true;
+          if (success) {
+            success.hidden = false;
+            success.querySelector<HTMLElement>(".lead-received")?.focus();
+          }
+          const to = form.dataset.uiSuccessRedirect ? new URL(form.dataset.uiSuccessRedirect, location.origin) : null;
+          if (to && /^https?:$/.test(to.protocol)) location.assign(to.href);
+        } catch {
+          status!.textContent = form.dataset.uiError ?? "";
+          status!.hidden = false;
+          button!.textContent = label;
+          button!.disabled = false;
+        }
+      }
+
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
+        if (found !== null && email && !email.disabled) return send();
         const label = button.textContent ?? first;
         button.disabled = true;
         button.textContent = "Reading the website…";
