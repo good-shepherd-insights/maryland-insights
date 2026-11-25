@@ -3,25 +3,30 @@ export type Tag = { name: string; close: boolean; attrs: string; start: number; 
 export type Piece = { tag: Tag; text?: undefined } | { tag?: undefined; text: string };
 
 const MAX_HTML = 2_000_000;
-const MAX_TAG = 2_000;
+const MAX_TAG = 300_000;
+const MAX_ATTRS = 8_000;
 const MAX_PIECES = 60_000;
 const SKIP = new Set(["script", "style", "noscript", "svg", "template"]);
 
 /** Where the tag that starts at `from` ends: past its ">", or where it plainly stopped being a tag. */
-function tagEnd(html: string, from: number): number {
-  const limit = Math.min(html.length, from + MAX_TAG);
+function tagEnd(html: string, from: number, max: number): number {
+  const limit = Math.min(html.length, from + max);
   let quote = "";
   for (let i = from + 1; i < limit; i++) {
     const c = html[i];
     if (quote) {
       if (c === quote) quote = "";
     } else if (c === '"' || c === "'") {
-      if (html[i - 1] === "=" || /\s/.test(html[i - 1])) quote = c;
+      const before = html[i - 1];
+      if (before === "=" || before === " " || before === "\n" || before === "\t" || before === "\r") quote = c;
     } else if (c === ">") return i + 1;
     else if (c === "<") return i;
   }
   return limit;
 }
+
+/** Only A to Z change, so every position still lines up with the page. */
+const lowered = (s: string) => s.replace(/[A-Z]+/g, (c) => c.toLowerCase());
 
 /** The page as it was, without its comments. */
 export function dropComments(page: string): string {
@@ -39,7 +44,8 @@ export function dropComments(page: string): string {
 /** Comments are always dropped. Scripts, styles and drawings are dropped unless the caller needs them. */
 export function scan(page: string, keepScripts = false): { html: string; pieces: Piece[] } {
   const html = page.slice(0, MAX_HTML);
-  const lower = html.toLowerCase();
+  const lower = lowered(html);
+  // Every step moves past what it read, so long tags cannot be read twice.
   const pieces: Piece[] = [];
   let i = 0;
   while (i < html.length && pieces.length < MAX_PIECES) {
@@ -60,8 +66,8 @@ export function scan(page: string, keepScripts = false): { html: string; pieces:
       i = at + 1;
       continue;
     }
-    const end = tagEnd(html, at), name = m[2], close = m[1] === "/";
-    const tag: Tag = { name, close, attrs: html.slice(at + m[0].length, html[end - 1] === ">" ? end - 1 : end), start: at, end };
+    const end = tagEnd(html, at, MAX_TAG), name = m[2], close = m[1] === "/";
+    const tag: Tag = { name, close, attrs: html.slice(at + m[0].length, Math.min(html[end - 1] === ">" ? end - 1 : end, at + MAX_ATTRS)), start: at, end };
     i = end;
     if (!close && SKIP.has(name) && !/\/\s*$/.test(tag.attrs)) {
       const done = lower.indexOf(`</${name}`, end);
@@ -81,10 +87,40 @@ const ENTITY: Record<string, string> = { amp: "&", nbsp: " ", quot: '"', apos: "
 export const decode = (s: string) => s.replace(/&(#?\w{1,8});/g, (_, c: string) => ENTITY[c.toLowerCase()] ?? " ");
 const squash = (s: string) => decode(s).replace(/\s+/g, " ").trim();
 
-/** One attribute of a tag. */
+const parsed = new WeakMap<Tag, Map<string, string>>();
+/** One attribute of a tag. Each tag is read once, and the first of a repeated name counts. */
 export function attr(tag: Tag, name: string): string {
-  for (const m of tag.attrs.matchAll(/([\w:-]{1,40})\s{0,5}=\s{0,5}(?:"([^"]*)"|'([^']*)'|([^\s"'>]{1,500}))/g)) if (m[1].toLowerCase() === name) return decode(m[2] ?? m[3] ?? m[4] ?? "");
-  return "";
+  let all = parsed.get(tag);
+  if (!all) {
+    all = new Map();
+    const a = tag.attrs;
+    for (let i = 0; i < a.length && all.size < 60; ) {
+      const eq = a.indexOf("=", i);
+      if (eq < 0) break;
+      let end = eq;
+      while (end > i && a.charCodeAt(end - 1) <= 32) end--;
+      let start = end;
+      while (start > i && end - start < 60 && /[\w:-]/.test(a[start - 1])) start--;
+      const key = a.slice(start, end).toLowerCase();
+      let v = eq + 1;
+      while (v < a.length && a.charCodeAt(v) <= 32) v++;
+      const q = a[v];
+      let stop: number;
+      if (q === '"' || q === "'") {
+        stop = a.indexOf(q, v + 1);
+        if (stop < 0) stop = a.length;
+        if (key && !all.has(key)) all.set(key, decode(a.slice(v + 1, stop)));
+        i = stop + 1;
+      } else {
+        stop = v;
+        while (stop < a.length && a.charCodeAt(stop) > 32) stop++;
+        if (key && !all.has(key)) all.set(key, decode(a.slice(v, stop)));
+        i = Math.max(stop, eq + 1);
+      }
+    }
+    parsed.set(tag, all);
+  }
+  return all.get(name) ?? "";
 }
 
 export function textOf(pieces: Piece[], max = 400_000): string {

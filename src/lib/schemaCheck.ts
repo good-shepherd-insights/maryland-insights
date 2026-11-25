@@ -48,12 +48,20 @@ function days(v: unknown): string {
 }
 const time = (v: unknown) => text(v, 20).replace(/^0(\d)/, "$1").replace(/^(\d{1,2}:\d{2}):\d{2}.*$/, "$1");
 
+/** A copy with its size held down, since a page can nest or repeat as much as it likes. */
+function trim(v: unknown, left: { n: number }, depth = 0): unknown {
+  if (left.n-- <= 0 || depth > 12) return undefined;
+  if (typeof v === "string") return v.slice(0, 3000);
+  if (Array.isArray(v)) return v.slice(0, 200).map((x) => trim(x, left, depth + 1)).filter((x) => x !== undefined);
+  if (isNode(v)) return Object.fromEntries(Object.entries(v).slice(0, 80).map(([k, x]) => [k.slice(0, 100), trim(x, left, depth + 1)]).filter(([, x]) => x !== undefined));
+  return v;
+}
 function hours(n: Node): string {
   // Days that share the same times read as one line.
   const groups = new Map<string, unknown[]>();
-  for (const s of list(n.openingHoursSpecification).filter(isNode)) {
+  for (const s of list(n.openingHoursSpecification).slice(0, 60).filter(isNode)) {
     const opens = time(s.opens), closes = time(s.closes);
-    if (opens && closes) groups.set(`${opens} to ${closes}`, [...(groups.get(`${opens} to ${closes}`) ?? []), ...list(s.dayOfWeek)]);
+    if (opens && closes) groups.set(`${opens} to ${closes}`, [...(groups.get(`${opens} to ${closes}`) ?? []), ...list(s.dayOfWeek).slice(0, 10)].slice(0, 60));
   }
   const lines = [...groups].map(([t, d]) => [days(d), t].filter(Boolean).join(", "));
   return (lines.length ? lines : list(n.openingHours).map((x) => text(x)).filter(Boolean)).join("; ").slice(0, 160);
@@ -108,12 +116,14 @@ export function checkSchema(html: string, domain: string): SchemaCheck {
     for (const key of ["@graph", "mainEntity", "about", "publisher", "mainEntityOfPage"]) collect(v[key], depth + 1);
   };
   const live = dropComments(html);
+  const left = { n: 20_000 };
   for (const { tag } of scan(html, true).pieces) {
+    if (left.n <= 0) break;
     if (tag?.name !== "script" || !tag.body || !/^application\/ld\+json/i.test(attr(tag, "type"))) continue;
     const body = tag.body.trim().replace(/^(?:\/\/)?\s{0,20}<!\[CDATA\[/, "").replace(/(?:\/\/)?\s{0,20}\]\]>$/, "").trim();
     if (!body) continue;
     // Line breaks inside a value are a common slip that readers get past.
-    try { collect(JSON.parse(body.replace(/[\u0000-\u001f]+/g, " "))); hasSchema = true; } catch { invalidBlocks++; }
+    try { collect(trim(JSON.parse(body.slice(0, 1_000_000).replace(/[\u0000-\u001f]+/g, " ")), left)); hasSchema = true; } catch { invalidBlocks++; }
   }
   const byId = new Map<string, Node>();
   for (const n of nodes) { const id = text(n["@id"], 300); if (id && Object.keys(n).length > 1) byId.set(id, { ...byId.get(id), ...n }); }
@@ -126,7 +136,7 @@ export function checkSchema(html: string, domain: string): SchemaCheck {
   // One business is often described twice, so the same name counts as the same business.
   const key = (n: Node) => first(n.name).toLowerCase().replace(/[^a-z0-9]/g, "");
   const id = main && text(main["@id"], 300);
-  const same = main ? businesses.filter((n) => n === main || (id && text(n["@id"], 300) === id) || (key(main) && key(n) === key(main))) : [];
+  const same = main ? businesses.filter((n) => n === main || (id && text(n["@id"], 300) === id) || (key(main) && key(n) === key(main))).slice(0, 20) : [];
 
   const row = (label: string, fields: string[], read: (n: Node) => string): CheckRow => {
     for (const n of same) {
