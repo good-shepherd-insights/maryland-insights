@@ -33,7 +33,7 @@ export function checkHosting(raw: string, rendered: string, base: URL): ProofRow
   }
   const images = of("img"), lazy = images.filter((t) => /^lazy$/i.test(attr(t, "loading")) || attr(t, "data-src")).length;
   const modern = of("img", "source").filter((t) => /\.(?:webp|avif)(?:[?\s,&]|$)|image\/(?:webp|avif)|(?:f_auto|format=(?:webp|avif|auto))/i.test(`${attr(t, "src")} ${attr(t, "srcset")} ${attr(t, "data-src")} ${attr(t, "type")}`)).length;
-  const viewport = sent.pieces.some((p) => p.tag?.name === "meta" && /^viewport$/i.test(attr(p.tag, "name")) && /width\s*=\s*device-width/i.test(attr(p.tag, "content")));
+  const viewport = sent.pieces.some((p) => p.tag?.name === "meta" && /^viewport$/i.test(attr(p.tag, "name")) && /width\s*=\s*device-width|initial-scale\s*=\s*1/i.test(attr(p.tag, "content")));
   return [
     row("Built with", platforms.slice(0, 2).join(", "), platforms.length > 0, "Not identified"),
     row("Sent as a page", after < 30 ? "" : share >= 70 ? "Readable before scripts run" : `${share}% readable before scripts run`, share >= 70),

@@ -22,7 +22,8 @@ export function checkContent(html: string, base: URL): ProofRow[] {
   const meta = (name: RegExp) => tags.find((t) => t.name === "meta" && name.test(attr(t, "name") || attr(t, "property")));
   const named = [meta(/^author$/i) ? attr(meta(/^author$/i)!, "content") : "", ...data.map(jsonAuthor), ...blocks(pieces, ["a", "span", "p", "div"], 60).filter((b) => /(?:^|[\s_-])(?:author|byline)(?:[\s_-]|$)/i.test(attr(b.tag, "class")) || /^author$/i.test(attr(b.tag, "rel"))).map((b) => b.text.replace(/^(?:written )?by:? /i, ""))];
   const author = named.map((n) => n.trim()).find((n) => NAME.test(n) && !GENERIC.test(n)) ?? "";
-  const stamp = data.map((d) => /"date(?:Modified|Published)"\s{0,4}:\s{0,4}"(\d{4}-\d{2}-\d{2})/.exec(d)?.[1]).find(Boolean) ?? (meta(/^article:(?:modified|published)_time$/i) ? /^\d{4}-\d{2}-\d{2}/.exec(attr(meta(/^article:(?:modified|published)_time$/i)!, "content"))?.[0] : undefined) ?? tags.filter((t) => t.name === "time").map((t) => /^\d{4}-\d{2}-\d{2}/.exec(attr(t, "datetime"))?.[0]).find(Boolean);
+  const when = (name: string) => data.map((d) => new RegExp(`"${name}"\\s{0,4}:\\s{0,4}"(\\d{4}-\\d{2}-\\d{2})`).exec(d)?.[1]).find(Boolean);
+  const stamp = when("dateModified") ?? when("datePublished") ?? (meta(/^article:(?:modified|published)_time$/i) ? /^\d{4}-\d{2}-\d{2}/.exec(attr(meta(/^article:(?:modified|published)_time$/i)!, "content"))?.[0] : undefined) ?? tags.filter((t) => t.name === "time").map((t) => /^\d{4}-\d{2}-\d{2}/.exec(attr(t, "datetime"))?.[0]).find(Boolean);
   const day = stamp ? new Date(`${stamp}T12:00:00Z`) : null;
   const date = day && !Number.isNaN(day.getTime()) ? day.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }) : "";
 
