@@ -249,7 +249,7 @@
   }
   .nav-dropdown-list[data-seven] .nav-tile {
     padding-inline: clamp(10px, 1.39vw, 20px);
-    font-size: clamp(16px, 1.67vw, 25px);
+    font-size: clamp(15px, 1.5vw, 24px);
   }
   .nav-dropdown-list[data-wide] .nav-tile {
     padding-inline: 36px;
