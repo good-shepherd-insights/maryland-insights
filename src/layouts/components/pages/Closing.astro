@@ -1,11 +1,12 @@
 ---
-import { getClosingCta, getContactPage, getPartnerCta } from "@/lib/sanity/queries";
-import { contactLinks } from "@/lib/pages/contact";
+import { getClosingCta, getPartnerCta } from "@/lib/sanity/queries";
 const { title } = Astro.props as { title?: string };
 const cta = await getClosingCta();
 const partner = await getPartnerCta();
 const label = partner.label || cta?.primaryLabel, link = partner.link || cta?.primaryLink;
-const phone = contactLinks((await getContactPage())?.info?.informations).find((c) => c.href.startsWith("tel:"));
+const email = "sales@marylandinsights.com";
+// Keeps Cloudflare from swapping the address for a placeholder that breaks after in-page navigation.
+const mail = `<!--email_off--><a class="pg-close-mail" href="mailto:${email}">${email}</a><!--/email_off-->`;
 ---
 
 {cta && (
@@ -16,7 +17,7 @@ const phone = contactLinks((await getContactPage())?.info?.informations).find((c
     </div>
     <div class="pg-close-bar">
       {link && <a class="pg-close-go" href={link}>{label}</a>}
-      {phone && <a class="pg-close-tel" href={phone.href}>{phone.value}</a>}
+      <Fragment set:html={mail} />
     </div>
   </section>
 )}
