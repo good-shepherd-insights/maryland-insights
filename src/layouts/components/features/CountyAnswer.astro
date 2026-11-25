@@ -1,0 +1,16 @@
+---
+// Counties a business serves, lit on the map (canvas: gf-05-b).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+import { countyMap } from "@/lib/features/countyMap";
+const { heading, lead, counties = [], mapDescription, cta } = Astro.props;
+const map = countyMap("#E9E1D2", "#fff", counties, "#FFC20E");
+---
+<section class="gf gf-white gf-sec">
+  <GeoHead heading={heading} lead={lead} />
+  <div class="gf-map">
+    <svg role="img" aria-label={mapDescription} viewBox={map.viewBox} set:html={map.inner} />
+    <ul class="gf-list">{counties.map((c: string) => <li>{c.startsWith("Baltimore") ? c : `${c} County`}</li>)}</ul>
+  </div>
+  <div class="gf-btns"><GeoCta cta={cta} /></div>
+</section>

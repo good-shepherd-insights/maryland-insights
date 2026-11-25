@@ -1,0 +1,11 @@
+---
+// Questions and answers in two columns (canvas: gf-08-a).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+import { markdownify } from "@/lib/utils/textConverter";
+const { heading, items = [] } = Astro.props;
+---
+<section class="gf gf-cream gf-sec" id="faq">
+  <GeoHead heading={heading} />
+  <div class="gf-faq">{items.map((f: { question: string; answer: string }) => <div><h3>{f.question}</h3><div set:html={markdownify(f.answer, true)} /></div>)}</div>
+</section>

@@ -1,0 +1,13 @@
+---
+// Closing call beside the state (canvas: gf-10-b).
+import GeoCta from "./GeoCta.astro";
+import { countyMap } from "@/lib/features/countyMap";
+const { heading, body, cta } = Astro.props;
+const map = countyMap("#D0445A", "#B8112B");
+---
+<section class="gf gf-red gf-sec">
+  <div class="gf-map gf-close">
+    <div><h2>{heading}</h2><p class="gf-lead">{body}</p><div class="gf-btns"><GeoCta cta={cta} tone="gold" /></div></div>
+    <svg aria-hidden="true" viewBox={map.viewBox} set:html={map.inner} />
+  </div>
+</section>

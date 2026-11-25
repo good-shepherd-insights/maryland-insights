@@ -1,0 +1,17 @@
+---
+// Two shares as squares of a hundred (canvas: gf-03-b).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+const { heading, lead, stats = [], note, cta } = Astro.props;
+---
+<section class="gf gf-ink gf-sec">
+  <GeoHead heading={heading} lead={lead} />
+  <div class="gf-pair">{stats.map((s: { value: string; percent: number; label: string }) => (
+    <div>
+      <div class="gf-waffle" aria-hidden="true">{Array.from({ length: 100 }, (_, i) => <i class:list={{ on: i < Math.round(s.percent) }}></i>)}</div>
+      <p class="gf-big">{s.value}</p><p class="gf-lead">{s.label}</p>
+    </div>
+  ))}</div>
+  {note && <p class="gf-note">{note}</p>}
+  {cta && <div class="gf-btns"><GeoCta cta={cta} tone="gold" /></div>}
+</section>

@@ -1,0 +1,17 @@
+---
+// Gains and losses from a zero line (canvas: gf-03-a).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+const signed = (n: number) => `${n < 0 ? "\u2212" : "+"}${Math.abs(n)}%`;
+const { heading, lead, rows = [], note, cta } = Astro.props;
+const most = Math.max(1, ...rows.map((r: any) => Math.abs(r.change)));
+const bar = (n: number) => { const w = (Math.abs(n) / most) * 80; return n < 0 ? `width:${Math.min(w, 20)}%;margin-left:${20 - Math.min(w, 20)}%;background:#B8112B` : `width:${w}%;margin-left:20%;background:#FFC20E`; };
+---
+<section class="gf gf-cream gf-sec">
+  <GeoHead heading={heading} lead={lead} />
+  <ul class="gf-bars gf-bars-zero">{rows.map((r: { label: string; change: number }) => (
+    <li><p class="gf-bar-t"><span>{r.label}</span><b>{signed(r.change)}</b></p><span class="gf-track" aria-hidden="true"><i style={bar(r.change)}></i></span></li>
+  ))}</ul>
+  {note && <p class="gf-note">{note}</p>}
+  {cta && <div class="gf-btns"><GeoCta cta={cta} /></div>}
+</section>

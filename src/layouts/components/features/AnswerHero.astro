@@ -1,0 +1,20 @@
+---
+// Hero: an answer and the sources it was written from (canvas: gf-01-a).
+import GeoCta from "./GeoCta.astro";
+const { eyebrow, heading, lead, cta, secondaryCta, question, answerBefore, answerName, answerAfter, sources = [] } = Astro.props;
+---
+<section class="gf gf-white gf-hero">
+  <div class="gf-hero-in">
+    <div class="gf-hero-t">
+      {eyebrow && <p class="gf-kicker">{eyebrow}</p>}
+      <h1 class="gf-slab">{heading}</h1>
+      <p class="gf-lead">{lead}</p>
+      <div class="gf-btns"><GeoCta cta={cta} /><GeoCta cta={secondaryCta} tone="line" /></div>
+    </div>
+    <div class="gf-answer">
+      <p class="gf-q">{question}</p>
+      <p class="gf-a">{answerBefore} <b>{answerName}</b> {answerAfter}</p>
+      <ol>{sources.map((s: string, i: number) => <li><span class={`gf-n gf-n${i % 3}`} aria-hidden="true">{i + 1}</span>{s}</li>)}</ol>
+    </div>
+  </div>
+</section>

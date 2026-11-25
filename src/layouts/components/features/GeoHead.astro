@@ -1,0 +1,5 @@
+---
+// Heading with an optional line beside it.
+const { heading, lead } = Astro.props;
+---
+<div class:list={["gf-head", lead && "gf-head-split"]}><h2>{heading}</h2>{lead && <p class="gf-lead">{lead}</p>}</div>
