@@ -1,6 +1,6 @@
 ---
 // The result that takes the place of the hero's art, text and points once a website has been read.
-const { label, missing } = Astro.props as { label: string; missing: string };
+const { label, missing, shareLabel, copiedLabel } = Astro.props as { label: string; missing: string; shareLabel?: string; copiedLabel?: string };
 ---
 
 <div class="sc-result" data-check-result data-missing={missing} tabindex="-1" hidden>
@@ -8,6 +8,11 @@ const { label, missing } = Astro.props as { label: string; missing: string };
     <img data-check-logo alt="" width="52" height="52" referrerpolicy="no-referrer" hidden />
     <div><p>{label}</p><h2 data-check-name></h2></div>
     <p class="sc-count" data-check-count></p>
+    <button type="button" class="sc-share" data-check-share aria-label={shareLabel}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8.25 6.75 12 3l3.75 3.75M8 10.5H6.75A1.75 1.75 0 0 0 5 12.25v7A1.75 1.75 0 0 0 6.75 21h10.5A1.75 1.75 0 0 0 19 19.25v-7a1.75 1.75 0 0 0-1.75-1.75H16" /></svg>
+    </button>
+    <span class="sc-copied" role="status" data-check-copied hidden>{copiedLabel}</span>
+    <input class="sc-url" type="text" readonly aria-label={shareLabel} data-check-url hidden />
   </div>
   <p class="sc-note" data-check-note hidden></p>
   <ul data-check-rows></ul>
@@ -59,6 +64,27 @@ const { label, missing } = Astro.props as { label: string; missing: string };
       const change = form.querySelector<HTMLButtonElement>("[data-check-change]");
       const success = form.parentElement?.querySelector<HTMLElement>(".lead-capture-success");
       let found: string | null = null;
+      const copied = panel?.querySelector<HTMLElement>("[data-check-copied]");
+      const urlField = panel?.querySelector<HTMLInputElement>("[data-check-url]");
+      const loaded = () => section?.removeAttribute("data-query-loading");
+      /** The website as entered, or its page for a check that reads one. */
+      const entered = (raw: string) => {
+        const bare = raw.trim().replace(/^https?:\/\//i, "").split(/[?#]/)[0];
+        return (form.hasAttribute("data-check-page") ? bare.replace(/^([^/]+)\/$/, "$1") : bare.split("/")[0]).slice(0, 300);
+      };
+      /** Each result has its own address, so it can be reopened and shared. */
+      const setLink = (value: string | null) => {
+        const url = new URL(location.href);
+        if (value) url.searchParams.set("q", value);
+        else if (url.searchParams.has("q")) url.searchParams.delete("q");
+        else return;
+        url.search = url.search.replace(/%2F/gi, "/");
+        history.replaceState(history.state, "", url);
+      };
+      const unshare = () => {
+        if (copied) copied.hidden = true;
+        if (urlField) urlField.hidden = true;
+      };
       const title = [...heading.childNodes].map((n) => n.cloneNode(true));
       const prefix = (heading.textContent ?? "").trim().match(/^(.*?\bfor)\s/i)?.[1];
       const first = button.textContent ?? "";
@@ -80,6 +106,8 @@ const { label, missing } = Astro.props as { label: string; missing: string };
         part("rows").replaceChildren(...result.rows.map(rowFor));
         part("note").textContent = result.notes.join(" ");
         part("note").hidden = result.notes.length === 0;
+        setLink(entered(input!.value));
+        unshare();
         const logo = part("logo") as HTMLImageElement;
         logo.hidden = true;
         logo.removeAttribute("src");
@@ -106,6 +134,7 @@ const { label, missing } = Astro.props as { label: string; missing: string };
       // Back to the website field, as it was before the check.
       change?.addEventListener("click", () => {
         found = null;
+        setLink(null);
         panel.hidden = true;
         section.removeAttribute("data-check-done");
         heading.replaceChildren(...title.map((n) => n.cloneNode(true)));
@@ -118,6 +147,29 @@ const { label, missing } = Astro.props as { label: string; missing: string };
         button.textContent = first;
         input.value = "";
         input.focus();
+      });
+
+      panel.querySelector("[data-check-share]")?.addEventListener("click", async () => {
+        const url = location.href;
+        unshare();
+        if (typeof navigator.canShare === "function" && navigator.canShare({ url })) {
+          try {
+            await navigator.share({ url });
+            return;
+          } catch (error) {
+            if (error instanceof DOMException && error.name === "AbortError") return;
+          }
+        }
+        try {
+          await navigator.clipboard.writeText(url);
+          if (copied) copied.hidden = false;
+        } catch {
+          if (!urlField) return;
+          urlField.value = url;
+          urlField.hidden = false;
+          urlField.focus();
+          urlField.select();
+        }
       });
 
       async function send() {
@@ -168,7 +220,15 @@ const { label, missing } = Astro.props as { label: string; missing: string };
           status.hidden = false;
         }
         button.disabled = false;
+        loaded();
       });
+
+      // Opening a result's link runs its check.
+      const asked = new URLSearchParams(location.search).get("q")?.trim().slice(0, 300) ?? "";
+      if (asked.includes(".")) {
+        input.value = asked;
+        form.requestSubmit();
+      } else loaded();
     });
   }
   bind();

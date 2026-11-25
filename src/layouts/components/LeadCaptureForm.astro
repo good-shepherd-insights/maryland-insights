@@ -105,13 +105,13 @@ const {
 // One step below the section's own heading.
 const Received = headingLevel === "h1" ? "h2" : "h3";
 // These services read a website, show what they found, then ask for the email.
-const checks: Record<string, { action: string; label: string; missing: string }> = {
+const checks: Record<string, { action: string; label: string; missing: string; page?: boolean }> = {
   "aeo-optimization": { action: "/api/schema-check", label: "Website schema", missing: "missing" },
   "marketing-automation": { action: "/api/follow-up-check", label: "Website follow-up", missing: "not detected" },
   "geo-optimization": { action: "/api/geo-check", label: "Website proof", missing: "not found" },
   "website-hosting": { action: "/api/hosting-check", label: "Website build", missing: "to look at" },
   "analytics-reporting": { action: "/api/tracking-check", label: "Website tracking", missing: "not detected" },
-  "ai-powered-content": { action: "/api/content-check", label: "Page content", missing: "not found" },
+  "ai-powered-content": { action: "/api/content-check", label: "Page content", missing: "not found", page: true },
 };
 const check = headingLevel === "h1" && service && Object.hasOwn(checks, service) ? checks[service] : undefined;
 const fields = check ? allFields.filter((f) => f.name === "business" || f.type === "email") : allFields;
@@ -137,9 +137,16 @@ const auditPlatformIcons = platforms;---
       </script>
     )
   }
+  {
+    check && (
+      <script is:inline>
+        if ((new URLSearchParams(window.location.search).get("q")?.trim() ?? "").includes(".")) document.currentScript?.closest("section")?.setAttribute("data-query-loading", "");
+      </script>
+    )
+  }
   <div class="hp-in">
     {
-      lookup && (
+      (lookup || check) && (
         <div class="lookup-loading" role="status" aria-live="polite">
           <div class="lookup-loading-inner">
             <div class="lookup-loading-progress" aria-hidden="true"><span></span></div>
@@ -149,12 +156,12 @@ const auditPlatformIcons = platforms;---
             <p class="lookup-loading-copy text-text">
               {ui?.loadingBody}
             </p>
-            <div class="lookup-loading-record" aria-hidden="true">
+            {lookup && <div class="lookup-loading-record" aria-hidden="true">
               <div class="lookup-loading-record-heading">{ui?.gbpCardLabel}</div>
               <div class="lookup-loading-record-row"><span>{ui?.businessLabel}</span><i class="lookup-loading-bar lookup-loading-bar-name"></i></div>
               <div class="lookup-loading-record-row"><span>{ui?.locationLabel}</span><i class="lookup-loading-bar lookup-loading-bar-location"></i></div>
               <div class="lookup-loading-record-row"><span>{ui?.categoryLabel}</span><i class="lookup-loading-bar lookup-loading-bar-category"></i></div>
-            </div>
+            </div>}
           </div>
         </div>
       )
@@ -192,7 +199,7 @@ const auditPlatformIcons = platforms;---
         </div>
       </div>
 
-      {check && <SiteCheckResult label={check.label} missing={check.missing} />}
+      {check && <SiteCheckResult label={check.label} missing={check.missing} shareLabel={ui?.shareLabel} copiedLabel={ui?.linkCopiedLabel} />}
 
       <div class="lead-form-column">
         <div class="lead-form-surface">
@@ -219,6 +226,7 @@ const auditPlatformIcons = platforms;---
             method="post"
             action={check ? check.action : formAction}
             data-check={check ? true : undefined}
+            data-check-page={check?.page ? true : undefined}
             data-lead-action={check ? formAction : undefined}
             data-lead-service={check ? service : undefined}
             data-lookup-endpoint={lookup ? (lookup.endpoint ?? "/api/business-lookup") : undefined}
