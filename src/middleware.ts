@@ -1,5 +1,6 @@
 import { defineMiddleware } from "astro:middleware";
 import { isDataError, reportBroken, reportOk } from "@/lib/broken";
+import { warmChrome } from "@/lib/sanity/queries";
 import { ROUTES, isRepeatable } from "@/lib/seo/contract.mjs";
 import { keepVisibleFaqs } from "@/lib/seo/visible.mjs";
 
@@ -7,6 +8,7 @@ const repeatable = new Set(Object.keys(ROUTES).filter(isRepeatable).map((t) => R
 const isContentPage = (pattern: string) => /\/\[\w+\]$/.test(pattern) && repeatable.has(pattern.replace(/\[\w+\]$/, ""));
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  if (!context.isPrerendered && !/^\/(?:api|_image|_server-islands)(?:\/|$)/.test(context.url.pathname)) warmChrome();
   let response: Response, html: string;
   try {
     response = await next();

@@ -11,8 +11,7 @@ import "@/styles/home.css";
 import "@/styles/service.css";
 import "@/styles/blog.css";
 
-const blogPage = await getBlogPage();
-const settings = await getSiteSettings();
+const [blogPage, settings, allPosts, faqsPage] = await Promise.all([getBlogPage(), getSiteSettings(), getBlogPosts(), getFaqsPage()]);
 const settingsUi = settings?.ui ?? {};
 const cardUi = settingsUi.cardPrimary;
 const header = blogPage?.header ?? {};
@@ -43,12 +42,11 @@ const toCardPost = (p: any) => ({
   },
 });
 
-const posts = (await getBlogPosts()).map(toCardPost);
+const posts = allPosts.map(toCardPost);
 const featuredFive = ((blogPage?.featuredPosts ?? []) as any[])
   .filter((p: any) => !p.draft)
   .map(toCardPost)
   .slice(0, 5);
-const faqsPage = await getFaqsPage();
 const categories: string[] = [...new Set((posts as any[]).flatMap((p: any) => p.data.categories as string[]))];
 const categoryLabelsBySlug = new Map(categories.map((category: string) => [slugify(category).toLocaleLowerCase(), category]));
 const categoryGroups = [...categoryLabelsBySlug.keys()];
