@@ -1,20 +1,21 @@
 ---
 // The result that takes the place of the hero's art, text and points once a website has been read.
+const { label, missing } = Astro.props as { label: string; missing: string };
 ---
 
-<div class="sc-result" data-schema-result tabindex="-1" hidden>
+<div class="sc-result" data-check-result data-missing={missing} tabindex="-1" hidden>
   <div class="sc-top">
-    <img data-schema-logo alt="" width="52" height="52" referrerpolicy="no-referrer" hidden />
-    <div><p>Website schema</p><h2 data-schema-name></h2></div>
-    <p class="sc-count" data-schema-count></p>
+    <img data-check-logo alt="" width="52" height="52" referrerpolicy="no-referrer" hidden />
+    <div><p>{label}</p><h2 data-check-name></h2></div>
+    <p class="sc-count" data-check-count></p>
   </div>
-  <p class="sc-note" data-schema-note hidden></p>
-  <ul data-schema-rows></ul>
+  <p class="sc-note" data-check-note hidden></p>
+  <ul data-check-rows></ul>
 </div>
 
 <script>
-  type Row = { label: string; value: string; status: "found" | "blank" | "missing" | "generic" };
-  type Result = { name: string; logo: string | null; hasSchema: boolean; invalidBlocks: number; hasMicrodata: boolean; rows: Row[] };
+  type Row = { label: string; value: string; found: boolean };
+  type Result = { name: string; logo: string | null; notes: string[]; rows: Row[] };
 
   const ICON = { yes: "M4 12l5 5L20 6", no: "M6 6l12 12M18 6L6 18" };
   const SAY: Record<string, string> = {
@@ -24,7 +25,7 @@
   const NS = "http://www.w3.org/2000/svg";
 
   function rowFor(row: Row): HTMLLIElement {
-    const ok = row.status === "found";
+    const ok = row.found;
     const li = document.createElement("li");
     if (!ok) li.className = "sc-no";
     const svg = document.createElementNS(NS, "svg");
@@ -36,17 +37,17 @@
     const label = document.createElement("strong");
     label.textContent = row.label;
     const value = document.createElement("span");
-    value.textContent = row.status === "generic" ? `${row.value}, not a local business` : ok ? row.value : row.status === "blank" ? "Left blank" : "Missing";
+    value.textContent = row.value;
     li.append(svg, label, value);
     return li;
   }
 
   function bind() {
-    document.querySelectorAll<HTMLFormElement>("form[data-schema-check]").forEach((form) => {
+    document.querySelectorAll<HTMLFormElement>("form[data-check]").forEach((form) => {
       if ("ready" in form.dataset) return;
       form.dataset.ready = "";
       const section = form.closest("section");
-      const panel = section?.querySelector<HTMLElement>("[data-schema-result]");
+      const panel = section?.querySelector<HTMLElement>("[data-check-result]");
       const status = form.querySelector<HTMLElement>(".lead-capture-status");
       const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
       const input = form.querySelector<HTMLInputElement>("input[name=business]");
@@ -54,28 +55,23 @@
       if (!section || !panel || !status || !button || !input || !heading) return;
       const prefix = (heading.textContent ?? "").trim().match(/^(.*?\bfor)\s/i)?.[1];
       const first = button.textContent ?? "";
-      const part = (name: string) => panel.querySelector<HTMLElement>(`[data-schema-${name}]`)!;
+      const part = (name: string) => panel.querySelector<HTMLElement>(`[data-check-${name}]`)!;
 
       function show(result: Result) {
-        const good = result.rows.filter((r) => r.status === "found").length;
+        const good = result.rows.filter((r) => r.found).length;
         if (prefix) {
-          const words = prefix.split(" "), half = Math.ceil(words.length / 2);
+          const words = prefix.split(" "), half = Math.floor(words.length / 2);
           const br = () => document.createElement("br");
           heading!.replaceChildren(words.slice(0, half).join(" "), br(), words.slice(half).join(" "), br(), result.name);
           heading!.toggleAttribute("data-long", result.name.split(/\s/).some((w) => w.length > 15));
         }
         part("name").textContent = result.name;
         const bad = document.createElement("span");
-        bad.textContent = `${result.rows.length - good} missing`;
+        bad.textContent = `${result.rows.length - good} ${panel!.dataset.missing}`;
         part("count").replaceChildren(`${good} found, `, bad);
         part("rows").replaceChildren(...result.rows.map(rowFor));
-        const notes = [
-          !result.hasSchema && !result.invalidBlocks && "No JSON-LD schema on this homepage. It may be on another page of the site.",
-          result.invalidBlocks > 0 && `${result.invalidBlocks} schema ${result.invalidBlocks === 1 ? "block has" : "blocks have"} an error and could not be read.`,
-          result.hasMicrodata && "This homepage also has microdata, which this check does not read.",
-        ].filter(Boolean) as string[];
-        part("note").textContent = notes.join(" ");
-        part("note").hidden = notes.length === 0;
+        part("note").textContent = result.notes.join(" ");
+        part("note").hidden = result.notes.length === 0;
         const logo = part("logo") as HTMLImageElement;
         logo.hidden = true;
         logo.removeAttribute("src");
@@ -84,7 +80,7 @@
           logo.src = result.logo;
         }
         panel!.hidden = false;
-        section!.setAttribute("data-schema-done", "");
+        section!.setAttribute("data-check-done", "");
         button!.textContent = "Check another website";
         input!.value = "";
         panel!.focus({ preventScroll: true });
@@ -98,7 +94,7 @@
         button.textContent = "Reading the website…";
         status.hidden = true;
         try {
-          const response = await fetch("/api/schema-check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
+          const response = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
           const data = await response.json().catch(() => ({}));
           button.textContent = label;
           if (response.ok) show(data as Result);
