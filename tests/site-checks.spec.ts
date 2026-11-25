@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { checkContent } from "../src/lib/contentCheck";
 import { checkHosting } from "../src/lib/hostingCheck";
-import { checkTracking } from "../src/lib/trackingCheck";
+import { checkTracking, containers } from "../src/lib/trackingCheck";
 import { POST as content } from "../src/pages/api/content-check";
 import { POST as hosting } from "../src/pages/api/hosting-check";
 import { POST as tracking } from "../src/pages/api/tracking-check";
@@ -28,12 +28,16 @@ describe("hosting check", () => {
 });
 
 describe("tracking check", () => {
-  it("finds tools by what loads", () => {
-    const r = by(checkTracking('<script src="https://www.googletagmanager.com/gtag/js?id=G-AB12CD34EF"></script><script>gtm("GTM-ABC123")</script><script src="//cdn.callrail.com/x.js"></script><script src="https://www.clarity.ms/tag/x"></script>', null));
-    expect([r["Google Analytics"].value, r["Tag manager"].value, r["Call tracking"].value, r["Session recording"].value]).toEqual(["G-AB12CD34EF", "GTM-ABC123", "CallRail", "Microsoft Clarity"]);
-    expect(by(checkTracking("<p>We use CallRail and Google Analytics</p>", null))["Call tracking"].found).toBe(false);
-    expect(by(checkTracking('<script>ga("create","UA-12345-1")</script>', null))["Google Analytics"]).toMatchObject({ found: false, value: "Only the retired version" });
-    expect(by(checkTracking("<!-- GTM-ABC123 -->", null))["Tag manager"].found).toBe(false);
+  it("finds trackers on the page and in the Tag Manager", () => {
+    const r = by(checkTracking('<script>gtm("GTM-ABC123")</script><script src="//cdn.callrail.com/x.js"></script>', ['{"vtp_tagId":"G-AB12CD34EF"},"AW-11003667490","https://www.clarity.ms/tag/","https://connect.facebook.net/en_US/fbevents.js","analytics.tiktok.com"']));
+    expect(Object.fromEntries(Object.entries(r).map(([k, v]) => [k, v.value]))).toEqual({ "Google Analytics": "G-AB12CD34EF", "Tag Manager": "GTM-ABC123", "Google Ads": "AW-11003667490", "Meta Pixel": "Installed", "Microsoft Ads": "Not detected", "Call tracking": "CallRail", "Session recording": "Microsoft Clarity", "Other trackers": "TikTok" });
+  });
+  it("is not fooled by words, comments or look-alikes", () => {
+    expect(checkTracking("<p>We use CallRail, Clarity and Google Analytics.</p><!-- GTM-ABC123 G-AB12CD34EF --><p>MY-G-AB12CD34EF G-ABCDEFGHIJ</p>").every((x) => !x.found)).toBe(true);
+    expect(by(checkTracking('<script>ga("create","UA-12345-1")</script>'))["Google Analytics"]).toMatchObject({ found: false, value: "Only the retired version" });
+  });
+  it("reads no more than three containers, each a real ID", () => {
+    expect(containers("GTM-AAAA1 GTM-BBBB2 GTM-CCCC3 GTM-DDDD4 GTM-AAAA1 GTM-../../x")).toEqual(["GTM-AAAA1", "GTM-BBBB2", "GTM-CCCC3"]);
   });
 });
 
