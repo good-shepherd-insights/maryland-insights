@@ -7,7 +7,7 @@ const COUNTIES = ["Allegany", "Anne Arundel", "Baltimore", "Calvert", "Caroline"
 // Towns whose names are not also everyday words or the names of people.
 const TOWNS = ["Annapolis", "Baltimore", "Bel Air", "Bethesda", "Bowie", "Cambridge", "Catonsville", "Chevy Chase", "Clarksburg", "College Park", "Columbia", "Crofton", "Cumberland", "Dundalk", "Easton", "Edgewater", "Eldersburg", "Elkridge", "Elkton", "Ellicott City", "Essex", "Fort Washington", "Frederick", "Gaithersburg", "Germantown", "Glen Burnie", "Greenbelt", "Hagerstown", "Havre de Grace", "Hyattsville", "Kensington", "La Plata", "Laurel", "Leonardtown", "Lexington Park", "Middletown", "Mount Airy", "Ocean City", "Odenton", "Olney", "Owings Mills", "Parkville", "Pasadena", "Pikesville", "Potomac", "Prince Frederick", "Reisterstown", "Rockville", "Salisbury", "Severn", "Severna Park", "Silver Spring", "Stevensville", "Sykesville", "Takoma Park", "Thurmont", "Timonium", "Towson", "Upper Marlboro", "Urbana", "Waldorf", "Westminster", "Wheaton"];
 
-function places(text: string): string {
+export function places(text: string): string {
   const found: string[] = [];
   for (const c of COUNTIES) {
     const m = new RegExp(`\\b${c} Count(?:y|ies)\\b`).exec(text);
@@ -25,9 +25,9 @@ function places(text: string): string {
   return found.length === 2 ? found.join(" and ") : `${found.slice(0, 2).join(", ")} and ${found.length - 2} more`;
 }
 
-type Link = { text: string; path: string; at: number };
+export type Link = { text: string; path: string; at: number };
 const MAX_LINKS = 3000;
-function links(pieces: Piece[], base: URL): Link[] {
+export function links(pieces: Piece[], base: URL): Link[] {
   const bare = (h: string) => h.replace(/^www\./, "");
   const out: Link[] = [];
   for (const a of blocks(pieces, ["a"])) {
@@ -87,9 +87,9 @@ const WORK = /^(?:our |recent |past |view |see |photo |project )*(?:work|project
 const PRAISE = /^(?:(?:our|read|see|view|all|more|customer|client|patient|google|the|&|and|reviews?|testimonials?) )*(?:reviews?|testimonials?|success stories)(?: page)?$/i;
 const PRAISE_BLOCK = /(?:^|[\s_-])(?:testimonials?|reviews?)(?:[\s_-]|$)/i;
 const WIDGETS = /(?:birdeye\.com|podium\.com\/reviews|elfsight\.com|trustindex\.io|reviewsonmywebsite\.com|widget\.trustpilot\.com|embedsocial\.com|nicejob\.(?:co|com)|grade\.us)/i;
-const QUESTIONS = /\b(?:faqs?|frequently asked questions)\b/i;
+export const QUESTIONS = /\b(?:faqs?|frequently asked questions)\b/i;
 
-function price(text: string): string {
+export function price(text: string): string {
   for (const m of text.matchAll(/\$\s?\d[\d,]{0,12}(?:\.\d{2})?/g)) {
     const near = text.slice(Math.max(0, m.index! - 24), m.index! + m[0].length + 24);
     if (!/\boff\b|\bsav(?:e|ings)\b|discount|coupon|rebate|credit|gift|donat|raised|million|billion|\$\s?0\b|insured|insurance|financ|bonus|win\b/i.test(near) && !/^\s?(?:k|m|b)\b/i.test(text.slice(m.index! + m[0].length))) return m[0].replace(/\s/, "");

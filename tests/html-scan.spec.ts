@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { checkFollowUp, contactPage, identity } from "../src/lib/followUpCheck";
+import { checkContent } from "../src/lib/contentCheck";
 import { aboutPage, checkProof } from "../src/lib/geoCheck";
+import { checkHosting } from "../src/lib/hostingCheck";
+import { checkTracking } from "../src/lib/trackingCheck";
 import { attr, blocks, scan, textOf } from "../src/lib/htmlScan";
 import { checkSchema } from "../src/lib/schemaCheck";
 

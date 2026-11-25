@@ -68,7 +68,7 @@ describe("lead API", () => {
     expect(options.signal).toBeInstanceOf(AbortSignal);
   });
 
-  it.each(["aeo-optimization", "marketing-automation", "geo-optimization"])("accepts a lead for %s", async (service) => {
+  it.each(["aeo-optimization", "marketing-automation", "geo-optimization", "website-hosting", "analytics-reporting", "ai-powered-content"])("accepts a lead for %s", async (service) => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 201 }));
     vi.stubGlobal("fetch", fetchMock);
 

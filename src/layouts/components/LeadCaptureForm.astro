@@ -109,6 +109,9 @@ const checks: Record<string, { action: string; label: string; missing: string }>
   "aeo-optimization": { action: "/api/schema-check", label: "Website schema", missing: "missing" },
   "marketing-automation": { action: "/api/follow-up-check", label: "Website follow-up", missing: "not detected" },
   "geo-optimization": { action: "/api/geo-check", label: "Website proof", missing: "not found" },
+  "website-hosting": { action: "/api/hosting-check", label: "Website build", missing: "to look at" },
+  "analytics-reporting": { action: "/api/tracking-check", label: "Website tracking", missing: "not detected" },
+  "ai-powered-content": { action: "/api/content-check", label: "Page content", missing: "not found" },
 };
 const check = headingLevel === "h1" && service && Object.hasOwn(checks, service) ? checks[service] : undefined;
 const fields = check ? allFields.filter((f) => f.name === "business" || f.type === "email") : allFields;

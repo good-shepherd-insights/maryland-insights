@@ -51,8 +51,20 @@ function allowed(ip: string): boolean {
   return true;
 }
 
+/** The address given, down to its page. The site itself has to pass the same test as a homepage. */
+function pageAddress(value: unknown): URL | null {
+  const site = homepage(value);
+  if (!site || typeof value !== "string") return null;
+  try {
+    const path = new URL(/^https?:\/\//i.test(value.trim()) ? value.trim() : `https://${value.trim()}`).pathname;
+    return path.length > 300 ? null : new URL(path, site.origin);
+  } catch {
+    return null;
+  }
+}
+
 /** An endpoint that takes a website address, reads the site and answers on the page. Nothing is stored. */
-export function siteCheck(run: (url: URL, key: string) => Promise<CheckResult>) {
+export function siteCheck(run: (url: URL, key: string) => Promise<CheckResult>, onePage = false) {
   const cache = new Map<string, { at: number; result: CheckResult }>();
   return async ({ request, clientAddress }: { request: Request; clientAddress: string }): Promise<Response> => {
     if (!(request.headers.get("content-type") ?? "").includes("application/json")) return json(400, { error: "bad-request" });
@@ -61,7 +73,7 @@ export function siteCheck(run: (url: URL, key: string) => Promise<CheckResult>) 
     const { business, website } = body as Record<string, unknown>;
     // "website" is the hidden field only bots fill in.
     if (typeof website === "string" && website !== "") return json(400, { error: "bad-request" });
-    const url = homepage(business);
+    const url = onePage ? pageAddress(business) : homepage(business);
     if (!url) return json(400, { error: "bad-address" });
 
     // Read when a request arrives, so the key never goes into the built files.
