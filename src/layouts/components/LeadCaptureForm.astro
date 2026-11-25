@@ -101,6 +101,8 @@ const {
   platforms = [],
 } = Astro.props as Props;
 
+// One step below the section's own heading.
+const Received = headingLevel === "h1" ? "h2" : "h3";
 const headingId = `lead-${slugify(title)}`;
 const fieldId = (name: string) => `lead-field-${slugify(name)}`;
 const lookupBusinessName = lookup?.businessField;
@@ -369,9 +371,9 @@ const auditPlatformIcons = platforms;---
               <circle cx="20" cy="20" r="18" class="opacity-30"></circle>
               <path d="M12 20.5l5.5 5.5L28 15" />
             </svg>
-            <h3 class="text-h5 font-secondary font-bold text-text-dark" tabindex="-1">
+            <Received class="lead-received text-h5 font-secondary font-bold text-text-dark" tabindex="-1">
               {leadMagnetLabel} {ui?.receivedSuffix}
-            </h3>
+            </Received>
             <p class="mt-3 leading-relaxed text-text">
               {ui?.successBody}
             </p>
@@ -560,7 +562,7 @@ const auditPlatformIcons = platforms;---
         if (query !== "") updateAuditQuery(query);
         form.hidden = true;
         success.hidden = false;
-        success.querySelector<HTMLElement>("h3")?.focus();
+        success.querySelector<HTMLElement>(".lead-received")?.focus();
         const redirect = safeRedirect(form.dataset.uiSuccessRedirect);
         if (redirect) window.location.assign(redirect);
       } catch {

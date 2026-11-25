@@ -241,6 +241,11 @@ export async function getClosingCta() {
   return sanityClient.fetch(`*[_type == "closingCta"][0]`);
 }
 
+/** Starts the reads every page makes, together, so a visitor waits for the slowest and not for the sum. */
+export function warmChrome(): void {
+  for (const read of [getSiteSettings, getHomePage, getHomeRedesign, getClosingCta]) read().catch(() => {});
+}
+
 export async function getIntegrations() {
   return sanityClient.fetch(`*[_type == "integration"] | order(title asc) {
     _id, title, description, logoName, image, link
