@@ -1,0 +1,114 @@
+---
+// The result that takes the place of the hero's art, text and points once a website has been read.
+const { label, missing } = Astro.props as { label: string; missing: string };
+---
+
+<div class="sc-result" data-check-result data-missing={missing} tabindex="-1" hidden>
+  <div class="sc-top">
+    <img data-check-logo alt="" width="52" height="52" referrerpolicy="no-referrer" hidden />
+    <div><p>{label}</p><h2 data-check-name></h2></div>
+    <p class="sc-count" data-check-count></p>
+  </div>
+  <p class="sc-note" data-check-note hidden></p>
+  <ul data-check-rows></ul>
+</div>
+
+<script>
+  type Row = { label: string; value: string; found: boolean };
+  type Result = { name: string; logo: string | null; notes: string[]; rows: Row[] };
+
+  const ICON = { yes: "M4 12l5 5L20 6", no: "M6 6l12 12M18 6L6 18" };
+  const SAY: Record<string, string> = {
+    "bad-address": "Enter a website address, such as yourbusiness.com.",
+    "rate-limited": "Too many checks. Please try again in a few minutes.",
+  };
+  const NS = "http://www.w3.org/2000/svg";
+
+  function rowFor(row: Row): HTMLLIElement {
+    const ok = row.found;
+    const li = document.createElement("li");
+    if (!ok) li.className = "sc-no";
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    const path = document.createElementNS(NS, "path");
+    path.setAttribute("d", ok ? ICON.yes : ICON.no);
+    svg.append(path);
+    const label = document.createElement("strong");
+    label.textContent = row.label;
+    const value = document.createElement("span");
+    value.textContent = row.value;
+    li.append(svg, label, value);
+    return li;
+  }
+
+  function bind() {
+    document.querySelectorAll<HTMLFormElement>("form[data-check]").forEach((form) => {
+      if ("ready" in form.dataset) return;
+      form.dataset.ready = "";
+      const section = form.closest("section");
+      const panel = section?.querySelector<HTMLElement>("[data-check-result]");
+      const status = form.querySelector<HTMLElement>(".lead-capture-status");
+      const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
+      const input = form.querySelector<HTMLInputElement>("input[name=business]");
+      const heading = section?.querySelector<HTMLElement>(".lead-heading");
+      if (!section || !panel || !status || !button || !input || !heading) return;
+      const prefix = (heading.textContent ?? "").trim().match(/^(.*?\bfor)\s/i)?.[1];
+      const first = button.textContent ?? "";
+      const part = (name: string) => panel.querySelector<HTMLElement>(`[data-check-${name}]`)!;
+
+      function show(result: Result) {
+        const good = result.rows.filter((r) => r.found).length;
+        if (prefix) {
+          const words = prefix.split(" "), half = Math.floor(words.length / 2);
+          const br = () => document.createElement("br");
+          const lead = words.length > 3 ? [words.slice(0, half).join(" "), br(), words.slice(half).join(" ")] : [prefix];
+          heading!.replaceChildren(...lead, br(), result.name);
+          heading!.toggleAttribute("data-long", result.name.split(/\s/).some((w) => w.length > 15));
+        }
+        part("name").textContent = result.name;
+        const bad = document.createElement("span");
+        bad.textContent = `${result.rows.length - good} ${panel!.dataset.missing}`;
+        part("count").replaceChildren(`${good} found, `, bad);
+        part("rows").replaceChildren(...result.rows.map(rowFor));
+        part("note").textContent = result.notes.join(" ");
+        part("note").hidden = result.notes.length === 0;
+        const logo = part("logo") as HTMLImageElement;
+        logo.hidden = true;
+        logo.removeAttribute("src");
+        if (result.logo) {
+          logo.onload = () => { logo.hidden = false; };
+          logo.src = result.logo;
+        }
+        panel!.hidden = false;
+        section!.setAttribute("data-check-done", "");
+        button!.textContent = "Check another website";
+        input!.value = "";
+        panel!.focus({ preventScroll: true });
+        heading!.scrollIntoView({ block: "center" });
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const label = button.textContent ?? first;
+        button.disabled = true;
+        button.textContent = "Reading the website…";
+        status.hidden = true;
+        try {
+          const response = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
+          const data = await response.json().catch(() => ({}));
+          button.textContent = label;
+          if (response.ok) show(data as Result);
+          else throw new Error(data.error);
+        } catch (error) {
+          button.textContent = label;
+          status.textContent = SAY[error instanceof Error ? error.message : ""] ?? "We could not read that website. Check the address and try again.";
+          status.hidden = false;
+        }
+        button.disabled = false;
+      });
+    });
+  }
+  bind();
+  document.addEventListener("astro:page-load", bind);
+</script>

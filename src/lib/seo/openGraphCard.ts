@@ -95,7 +95,6 @@ export async function drawCard(card: Card, mapSvg: string): Promise<Buffer> {
   const panel = post ? 600 : card.route === "/" ? 560 : 420;
   const px = W - panel, ph = H - STRIP;
   const tile = navTile(card.route, 0);
-  const tones = Object.values(TONE);
   if (post) {
     rect(px, 0, panel, ph, TONE.ink);
     await picture(cover!, px + 36, 36, panel - 72, ph - 72);

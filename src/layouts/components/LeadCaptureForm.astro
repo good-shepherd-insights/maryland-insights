@@ -1,4 +1,5 @@
 ---
+import SiteCheckResult from "@/components/services/SiteCheckResult.astro";
 import { markdownify, slugify } from "@/lib/utils/textConverter";
 
 type Field = {
@@ -88,7 +89,7 @@ const {
   description,
   leadMagnetLabel,
   points = [],
-  fields,
+  fields: allFields,
   submitLabel,
   formAction,
   service,
@@ -103,6 +104,14 @@ const {
 
 // One step below the section's own heading.
 const Received = headingLevel === "h1" ? "h2" : "h3";
+// These services answer on the page by reading a website, so they ask for nothing but the address.
+const checks: Record<string, { action: string; label: string; missing: string }> = {
+  "aeo-optimization": { action: "/api/schema-check", label: "Website schema", missing: "missing" },
+  "marketing-automation": { action: "/api/follow-up-check", label: "Website follow-up", missing: "not detected" },
+  "geo-optimization": { action: "/api/geo-check", label: "Website proof", missing: "not found" },
+};
+const check = headingLevel === "h1" && service && Object.hasOwn(checks, service) ? checks[service] : undefined;
+const fields = check ? allFields.filter((f) => f.name === "business") : allFields;
 const headingId = `lead-${slugify(title)}`;
 const fieldId = (name: string) => `lead-field-${slugify(name)}`;
 const lookupBusinessName = lookup?.businessField;
@@ -180,6 +189,8 @@ const auditPlatformIcons = platforms;---
         </div>
       </div>
 
+      {check && <SiteCheckResult label={check.label} missing={check.missing} />}
+
       <div class="lead-form-column">
         <div class="lead-form-surface">
           {
@@ -203,7 +214,8 @@ const auditPlatformIcons = platforms;---
             class="lead-capture-form"
             id={anchor ? `${anchor}-form` : undefined}
             method="post"
-            action={formAction}
+            action={check ? check.action : formAction}
+            data-check={check ? true : undefined}
             data-lookup-endpoint={lookup ? (lookup.endpoint ?? "/api/business-lookup") : undefined}
             data-lookup-field={lookupBusinessName}
             data-lookup-min={lookup?.minChars}
@@ -331,7 +343,7 @@ const auditPlatformIcons = platforms;---
             </div>
 
             {lookup && <input type="hidden" name="googlePlaceId" class="lookup-placeid" />}
-            {service ? <input type="hidden" name="service" value={service} /> : null}
+            {service && !check ? <input type="hidden" name="service" value={service} /> : null}
 
             <button
               type="submit"
@@ -519,7 +531,7 @@ const auditPlatformIcons = platforms;---
     }
   }
 
-  document.querySelectorAll<HTMLFormElement>(".lead-capture-form").forEach((form) => {
+  document.querySelectorAll<HTMLFormElement>(".lead-capture-form:not([data-check])").forEach((form) => {
     const card = form.parentElement;
     const status = form.querySelector<HTMLElement>(".lead-capture-status");
     const success = card?.querySelector<HTMLElement>(".lead-capture-success");
