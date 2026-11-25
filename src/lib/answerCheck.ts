@@ -13,7 +13,7 @@ const plain = (v: unknown, max: number) => (typeof v === "string" ? v.normalize(
 export function facts(data: unknown): Facts | null {
   if (!data || typeof data !== "object") return null;
   const d = data as Record<string, unknown>;
-  const name = plain(d.business_name, 80), phrase = plain(d.search_phrase, 48).toLowerCase(), town = plain(d.town, 40), county = plain(d.county, 40);
+  const name = plain(d.business_name, 80), phrase = plain(d.search_phrase, 48).toLowerCase().replace(/\b(?:best|maryland|md)\b/g, " ").replace(/\s+/g, " ").trim(), town = plain(d.town, 40), county = plain(d.county, 40);
   if (!phrase || phrase.split(" ").length > 6 || !(town || county)) return null;
   const place = town || (/county$/i.test(county) ? county : `${county} County`);
   return { name, phrase, place: place.replace(/\s*\b(?:MD|Maryland)$/i, "") };
