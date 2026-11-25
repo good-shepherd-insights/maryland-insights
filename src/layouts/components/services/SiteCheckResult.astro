@@ -95,7 +95,9 @@ const { label, missing } = Astro.props as { label: string; missing: string };
           emailGroup.hidden = false;
           email.disabled = false;
           if (change) change.hidden = false;
-          button!.textContent = `Audit ${result.name}`;
+          // The website as it was entered, without the parts nobody says.
+          const site = input!.value.trim().replace(/^https?:\/\//i, "").replace(/^www\./i, "").split(/[/?#]/)[0];
+          button!.textContent = `Audit ${site}`;
         }
         panel!.focus({ preventScroll: true });
         heading!.scrollIntoView({ block: "center" });
