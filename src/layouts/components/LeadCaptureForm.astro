@@ -111,7 +111,7 @@ const checks: Record<string, { action: string; label: string; missing: string; p
   "geo-optimization": { action: "/api/geo-check", label: "ChatGPT answer", missing: "missing" },
   "website-hosting": { action: "/api/hosting-check", label: "Website build", missing: "to look at" },
   "analytics-reporting": { action: "/api/tracking-check", label: "Website tracking", missing: "not detected" },
-  "ai-powered-content": { action: "/api/content-check", label: "Page content", missing: "not found", page: true },
+  "ai-powered-content": { action: "/api/content-check", label: "Website content", missing: "not found" },
 };
 const check = headingLevel === "h1" && service && Object.hasOwn(checks, service) ? checks[service] : undefined;
 const fields = check ? allFields.filter((f) => f.name === "business" || f.type === "email") : allFields;

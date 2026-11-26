@@ -5,10 +5,10 @@ import { readPage, siteCheck } from "../../lib/siteReader";
 
 export const prerender = false;
 
-/** Reads one page for what could only have been written about this business. */
+/** Reads the homepage for what could only have been written about this business. */
 export const POST = siteCheck(async (url, key) => {
   const home = await readPage(url, key, "rendered", 25_000);
-  const notes = [`This covers ${url.pathname === "/" ? "the homepage" : url.pathname}.`], rows = checkContent(home, url);
+  const notes = ["This covers the homepage."], rows = checkContent(home, url);
   const domain = url.hostname.replace(/^www\./, "");
   const schema = checkSchema(home, domain), own = identity(home);
   return {
@@ -17,4 +17,4 @@ export const POST = siteCheck(async (url, key) => {
     notes,
     rows,
   };
-}, true);
+});
