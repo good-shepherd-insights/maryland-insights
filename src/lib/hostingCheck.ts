@@ -13,7 +13,7 @@ const ICON: Record<string, string> = {
   WordPress: "wordpress", Wix: "wix", Squarespace: "squarespace", Shopify: "shopify", Webflow: "webflow", "GoDaddy Website Builder": "godaddy", Joomla: "joomla", Drupal: "drupal", "HubSpot CMS": "hubspot",
   "Next.js": "nextjs", Astro: "astro", Nuxt: "nuxt", Gatsby: "gatsby",
   Vercel: "vercel", Netlify: "netlify", Cloudflare: "cloudflare", Fastly: "fastly", Akamai: "akamai", "Amazon Web Services": "aws", "Amazon CloudFront": "aws", "Amazon Route 53": "aws", "Google Cloud": "google-cloud",
-  "WP Engine": "wp-engine", Kinsta: "kinsta", Hostinger: "hostinger", DigitalOcean: "digitalocean", "GitHub Pages": "github-pages", Render: "render", Pantheon: "pantheon", Namecheap: "namecheap", IONOS: "ionos", GoDaddy: "godaddy", nginx: "nginx", Apache: "apache",
+  "WP Engine": "wp-engine", Hostinger: "hostinger", DigitalOcean: "digitalocean", Render: "render", Pantheon: "pantheon", Namecheap: "namecheap", GoDaddy: "godaddy", nginx: "nginx", Apache: "apache",
 };
 export const iconFor = (name: string) => (ICON[name] ? `/images/hosting/${ICON[name]}.svg` : undefined);
 
