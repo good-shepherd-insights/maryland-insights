@@ -108,7 +108,7 @@ const Received = headingLevel === "h1" ? "h2" : "h3";
 const checks: Record<string, { action: string; label: string; missing: string; page?: boolean }> = {
   "aeo-optimization": { action: "/api/schema-check", label: "Website schema", missing: "missing" },
   "marketing-automation": { action: "/api/follow-up-check", label: "Website follow-up", missing: "not detected" },
-  "geo-optimization": { action: "/api/geo-check", label: "AI answer", missing: "missing" },
+  "geo-optimization": { action: "/api/geo-check", label: "ChatGPT answer", missing: "missing" },
   "website-hosting": { action: "/api/hosting-check", label: "Website build", missing: "to look at" },
   "analytics-reporting": { action: "/api/tracking-check", label: "Website tracking", missing: "not detected" },
   "ai-powered-content": { action: "/api/content-check", label: "Page content", missing: "not found", page: true },

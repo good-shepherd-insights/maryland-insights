@@ -26,7 +26,8 @@ const { label, missing, shareLabel, copiedLabel } = Astro.props as { label: stri
   const SAY: Record<string, string> = {
     "bad-address": "Enter a website address, such as yourbusiness.com.",
     "no-place": "We could not tell what this business does or where in Maryland it works from its homepage.",
-    "no-answer": "No answer came back this time. Please try again.",
+    "no-answer": "ChatGPT did not answer this time. Please try again.",
+    expired: "That took too long. Please try again.",
     "rate-limited": "Too many checks. Please try again in a few minutes.",
   };
   const NS = "http://www.w3.org/2000/svg";
@@ -211,8 +212,21 @@ const { label, missing, shareLabel, copiedLabel } = Astro.props as { label: stri
         button.textContent = "Reading the website…";
         status.hidden = true;
         try {
-          const response = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.fromEntries(new FormData(form))) });
-          const data = await response.json().catch(() => ({}));
+          const ask = async (body: object) => {
+            const response = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+            return { response, data: await response.json().catch(() => ({})) };
+          };
+          let { response, data } = await ask(Object.fromEntries(new FormData(form)));
+          // A ChatGPT answer takes up to about a minute to come back.
+          for (let n = 0; response.status === 202 && n < 60; n++) {
+            button.textContent = "Waiting for ChatGPT…";
+            status.textContent = "ChatGPT can take up to about a minute to answer. Keep this page open.";
+            status.hidden = false;
+            await new Promise((done) => setTimeout(done, 3000));
+            ({ response, data } = await ask({ pending: data.pending }));
+          }
+          if (response.status === 202) throw new Error("expired");
+          status.hidden = true;
           button.textContent = label;
           if (response.ok) show(data as Result);
           else throw new Error(data.error);
