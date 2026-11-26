@@ -10,8 +10,9 @@ const BOX: Record<string, [number, number, number, number]> = {
   "analytics-reporting": [78, 231, 867, 548],
   "marketing-automation": [0, 259, 1018, 506],
   "ai-powered-content": [53, 78, 928, 876],
+  "geo-optimization": [4, 4, 114, 88],
 };
-const HEIGHT: Record<string, number> = { "website-hosting": 88, "aeo-optimization": 88, "local-seo": 96, "analytics-reporting": 82, "marketing-automation": 74, "ai-powered-content": 96 };
+const HEIGHT: Record<string, number> = { "website-hosting": 88, "aeo-optimization": 88, "local-seo": 96, "analytics-reporting": 82, "marketing-automation": 74, "ai-powered-content": 96, "geo-optimization": 90 };
 const INK = "#121212";
 
 export function serviceIcon(image: unknown, tone: string, label: string): string | undefined {

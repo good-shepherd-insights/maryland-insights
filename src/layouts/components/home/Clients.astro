@@ -7,7 +7,7 @@ const rank = (f: any) => { const i = copy.clientOrder.indexOf(String(f.button?.l
 const cards = (features?.features ?? []).filter((f: any) => f?.title).sort((a: any, b: any) => rank(a) - rank(b));
 ---
 
-<section class="hp-clients">
+<section class:list={["hp-clients", { "hp-clients-4": cards.length > 6 }]}>
   <div class="hp-in">
     <header>
       <h2 class="hp-h2 hp-xl">{copy.clientsTitle}</h2>

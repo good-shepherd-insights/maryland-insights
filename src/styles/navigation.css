@@ -247,6 +247,10 @@
   .nav-tile img {
     height: 96px;
   }
+  .nav-dropdown-list[data-seven] .nav-tile {
+    padding-inline: clamp(10px, 1.39vw, 20px);
+    font-size: clamp(15px, 1.5vw, 24px);
+  }
   .nav-dropdown-list[data-wide] .nav-tile {
     padding-inline: 36px;
     font-size: 54px;
@@ -386,6 +390,9 @@
   }
   .nav-tile img {
     height: 75px;
+  }
+  .nav-odd {
+    grid-column: 1 / -1;
   }
   .nav-dropdown-list[data-wide] .nav-tile {
     flex-direction: row;

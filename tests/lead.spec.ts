@@ -68,6 +68,14 @@ describe("lead API", () => {
     expect(options.signal).toBeInstanceOf(AbortSignal);
   });
 
+  it.each(["aeo-optimization", "marketing-automation", "geo-optimization", "website-hosting", "analytics-reporting", "ai-powered-content"])("accepts a lead for %s", async (service) => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 201 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    expect((await POST({ request: request({ email: "owner@example.com", service, business: "Tehrani Law, LLC" }) })).status).toBe(200);
+    expect(JSON.parse((fetchMock.mock.calls[0] as [string, RequestInit])[1].body as string)).toEqual({ email: ["owner@example.com"], service, businessName: "Tehrani Law, LLC" });
+  });
+
   it("returns 502 when the CRM rejects or cannot complete the request", async () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(new Response(null, { status: 503 })).mockRejectedValueOnce(new Error("offline"));
     vi.stubGlobal("fetch", fetchMock);

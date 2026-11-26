@@ -5,9 +5,11 @@ import type { HomeCopy } from "@/lib/home/copy";
 
 const { stack = {}, partnerLink, copy } = Astro.props as { stack: any; partnerLink?: string; copy: HomeCopy };
 const TONES = ["ink", "gold", "cream", "red", "sand", "white"];
+const OWN_TONE: Record<string, string> = { "geo-optimization": "gold" };
 const NOTES: Record<string, string> = {
   "website-hosting": "The page exists before anyone asks for it. Nothing is assembled on the tap.",
   "local-seo": "Same line everywhere.",
+  "geo-optimization": "A red line is an answer that names the business. We count them.",
   "analytics-reporting": "Page A wins. That is how pages are ranked here. One dot is 10 visits.",
 };
 const LISTINGS = [["Google", "google_business_profile"], ["Google Maps", "google_maps"], ["Yelp", "yelp"], ["Facebook", "facebook/facebook"], ["Apple", "apple"]];
@@ -16,7 +18,7 @@ const rows = LISTINGS.map(([, file], k) =>
   `<rect x=".75" y="${138.75 + k * 48}" width="316.5" height="42.5" fill="#fff" stroke="#121212" stroke-width="1.5"></rect><image href="/images/icons/${file}.svg" x="12" y="${147 + k * 48}" width="26" height="26"></image><text x="50" y="${166 + k * 48}" font-size="16" font-weight="600" fill="#121212">${LISTING}</text>`).join("");
 const cards = (stack?.cards ?? []).filter((c: any) => c?.label).map((c: any, i: number) => {
   const slug = String(c.button?.link ?? "").split("/").pop() ?? "";
-  const tone = TONES[i % TONES.length];
+  const tone = OWN_TONE[slug] ?? TONES[i % TONES.length];
   const wide = drawing(slug, "wide");
   return {
     ...c, slug, tone,

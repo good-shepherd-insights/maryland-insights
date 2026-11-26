@@ -1,0 +1,17 @@
+---
+// Change by rank, either side of zero (canvas: gf-06-b).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+const { heading, lead, rows = [], note, cta } = Astro.props;
+const low = Math.max(0, ...rows.map((r: any) => -r.change)), high = Math.max(1, ...rows.map((r: any) => r.change));
+const zero = (low / (low + high)) * 100;
+const bar = (n: number) => { const w = (Math.abs(n) / (low + high)) * 100; return n < 0 ? `left:${zero - w}%;width:${w}%;background:#B8112B` : `left:${zero}%;width:${w}%;background:#FFC20E`; };
+---
+<section class="gf gf-ink gf-sec">
+  <GeoHead heading={heading} lead={lead} />
+  <ul class="gf-shift">{rows.map((r: { label: string; change: number }) => (
+    <li><span>{r.label}</span><span class="gf-shift-w" style={`--z:${zero}%`} aria-hidden="true"><i style={bar(r.change)}></i></span><b>{r.change < 0 ? "\u2212" : "+"}{Math.abs(r.change)}%</b></li>
+  ))}</ul>
+  {note && <p class="gf-note">{note}</p>}
+  <div class="gf-btns"><GeoCta cta={cta} tone="gold" /></div>
+</section>

@@ -1,0 +1,14 @@
+---
+// Two years as bars (canvas: gf-02-b).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+const { heading, lead, rows = [], note, cta } = Astro.props;
+---
+<section class="gf gf-gold gf-sec">
+  <GeoHead heading={heading} lead={lead} />
+  <ul class="gf-bars gf-bars-big">{rows.map((r: { label: string; value: string; percent: number }, i: number) => (
+    <li><p class="gf-bar-t"><span>{r.label}</span><b>{r.value}</b></p><span class="gf-track" aria-hidden="true"><i style={`width:${r.percent}%;background:${i === rows.length - 1 ? "#121212" : "#B8112B"}`}></i></span></li>
+  ))}</ul>
+  {note && <p class="gf-note">{note}</p>}
+  {cta && <div class="gf-btns"><GeoCta cta={cta} /></div>}
+</section>

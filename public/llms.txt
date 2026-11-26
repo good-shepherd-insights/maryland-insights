@@ -7,6 +7,7 @@ Maryland Insights is a managed platform, not a marketing agency or a website bui
 ## Services
 * [Local SEO](https://marylandinsights.com/services/local-seo)
 * [AEO Optimization](https://marylandinsights.com/services/aeo-optimization)
+* [GEO Optimization](https://marylandinsights.com/services/geo-optimization)
 * [AI-Powered Content](https://marylandinsights.com/services/ai-powered-content)
 * [Analytics and Reporting](https://marylandinsights.com/services/analytics-reporting)
 * [Marketing Automation](https://marylandinsights.com/services/marketing-automation)
@@ -19,6 +20,7 @@ Maryland Insights is a managed platform, not a marketing agency or a website bui
 * [Real-Time Growth](https://marylandinsights.com/features/real-time-growth)
 * [Automatic Customer Nurturing](https://marylandinsights.com/features/automatic-customer-nurturing)
 * [5-Star Review System](https://marylandinsights.com/features/5-star-review-system)
+* [Recommended By AI](https://marylandinsights.com/features/recommended-by-ai)
 
 ## Resources
 * [Services](https://marylandinsights.com/services)

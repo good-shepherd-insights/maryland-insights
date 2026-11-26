@@ -1,0 +1,12 @@
+---
+// Numbered signals with scores (canvas: gf-05-a).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+const { heading, lead, rows = [], note, cta } = Astro.props;
+---
+<section class="gf gf-gold gf-sec">
+  <GeoHead heading={heading} lead={lead} />
+  <ol class="gf-ranks">{rows.map((r: { title: string; detail: string }, i: number) => <li><span class="gf-rank" aria-hidden="true">{i + 1}</span><h3>{r.title}</h3><p>{r.detail}</p></li>)}</ol>
+  {note && <p class="gf-note">{note}</p>}
+  {cta && <div class="gf-btns"><GeoCta cta={cta} /></div>}
+</section>

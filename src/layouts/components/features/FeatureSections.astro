@@ -77,6 +77,20 @@ import LeadTable from "./LeadTable.astro";
 import Funnel from "./Funnel.astro";
 import FaqStats from "./FaqStats.astro";
 import ClosingLead from "./ClosingLead.astro";
+import AnswerHero from "./AnswerHero.astro";
+import YearCompare from "./YearCompare.astro";
+import SourceMix from "./SourceMix.astro";
+import LiftBars from "./LiftBars.astro";
+import RepeatWaffles from "./RepeatWaffles.astro";
+import QuestionGrid from "./QuestionGrid.astro";
+import SignalRanks from "./SignalRanks.astro";
+import CountyAnswer from "./CountyAnswer.astro";
+import RankShift from "./RankShift.astro";
+import RunsList from "./RunsList.astro";
+import WhoDoes from "./WhoDoes.astro";
+import StageLine from "./StageLine.astro";
+import QuestionColumns from "./QuestionColumns.astro";
+import ClosingMapRed from "./ClosingMapRed.astro";
 
 const COMPONENTS: Record<string, any> = {
   featureHeroMap: HeroMap,
@@ -155,6 +169,20 @@ const COMPONENTS: Record<string, any> = {
   featureFunnel: Funnel,
   featureFaqStats: FaqStats,
   featureClosingLead: ClosingLead,
+  featureAnswerHero: AnswerHero,
+  featureYearCompare: YearCompare,
+  featureSourceMix: SourceMix,
+  featureLiftBars: LiftBars,
+  featureRepeatWaffles: RepeatWaffles,
+  featureQuestionGrid: QuestionGrid,
+  featureSignalRanks: SignalRanks,
+  featureCountyAnswer: CountyAnswer,
+  featureRankShift: RankShift,
+  featureRunsList: RunsList,
+  featureWhoDoes: WhoDoes,
+  featureStageLine: StageLine,
+  featureQuestionColumns: QuestionColumns,
+  featureClosingMapRed: ClosingMapRed,
 };
 
 const sections = (Array.isArray(Astro.props.sections) ? Astro.props.sections : []).filter((s: any) => s && typeof s === "object");

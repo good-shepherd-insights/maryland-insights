@@ -1,0 +1,11 @@
+---
+// Stages along a line (canvas: gf-07-b).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+const { heading, items = [], cta } = Astro.props;
+---
+<section class="gf gf-cream gf-sec">
+  <GeoHead heading={heading} />
+  <ol class="gf-line">{items.map((t: { title: string; detail: string }) => <li><h3>{t.title}</h3><p>{t.detail}</p></li>)}</ol>
+  <div class="gf-btns"><GeoCta cta={cta} /></div>
+</section>

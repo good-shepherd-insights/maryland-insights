@@ -1,0 +1,17 @@
+---
+// Questions asked in each assistant (canvas: gf-04-b).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+import { ASSISTANTS } from "@/lib/features/assistants";
+const { heading, lead, assistants = [], questions = [], note, cta } = Astro.props;
+const list = assistants.map((k: string) => ASSISTANTS[k]).filter(Boolean) as { name: string; logo: string }[];
+---
+<section class="gf gf-sand gf-sec">
+  <GeoHead heading={heading} lead={lead} />
+  <table class="gf-grid">
+    <thead><tr><th scope="col"><span class="sr-only">Question</span></th>{list.map((a) => <th scope="col"><img src={a.logo} alt={a.name} width="34" height="34" loading="lazy" /></th>)}</tr></thead>
+    <tbody>{questions.map((q: string) => <tr><th scope="row">{q}</th>{list.map(() => <td><i></i><span class="sr-only">Asked</span></td>)}</tr>)}</tbody>
+  </table>
+  {note && <p class="gf-note">{note}</p>}
+  <div class="gf-btns"><GeoCta cta={cta} /></div>
+</section>

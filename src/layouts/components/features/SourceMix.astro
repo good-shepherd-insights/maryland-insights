@@ -1,0 +1,25 @@
+---
+// Where each assistant gets its sources (canvas: gf-02-a).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+import { ASSISTANTS } from "@/lib/features/assistants";
+const COLORS = ["#FFC20E", "#B8112B", "#8F887C", "#FAF7F2"];
+const { heading, lead, mixes = [], note, cta } = Astro.props;
+---
+<section class="gf gf-ink gf-sec">
+  <GeoHead heading={heading} lead={lead} />
+  <div class="gf-mixes">{mixes.map((m: any) => {
+    const a = ASSISTANTS[m.assistant];
+    const parts: { label: string; percent: number }[] = m.parts ?? [];
+    const color = (i: number) => (i === parts.length - 1 ? "#4A4742" : COLORS[i % COLORS.length]);
+    return (
+      <div>
+        <h3 class="gf-mix-n">{a && <span class="gf-tile"><img src={a.logo} alt="" width="32" height="32" loading="lazy" /></span>}{a?.name ?? m.assistant}</h3>
+        <div class="gf-mix" aria-hidden="true">{parts.map((p, i) => <i style={`width:${p.percent}%;background:${color(i)}`}></i>)}</div>
+        <ul class="gf-key">{parts.map((p, i) => <li><i style={`background:${color(i)}`} aria-hidden="true"></i><b>{p.percent.toFixed(1)}%</b>{p.label}</li>)}</ul>
+      </div>
+    );
+  })}</div>
+  {note && <p class="gf-note">{note}</p>}
+  <div class="gf-btns"><GeoCta cta={cta} tone="gold" /></div>
+</section>

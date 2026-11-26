@@ -95,7 +95,6 @@ export async function drawCard(card: Card, mapSvg: string): Promise<Buffer> {
   const panel = post ? 600 : card.route === "/" ? 560 : 420;
   const px = W - panel, ph = H - STRIP;
   const tile = navTile(card.route, 0);
-  const tones = Object.values(TONE);
   if (post) {
     rect(px, 0, panel, ph, TONE.ink);
     await picture(cover!, px + 36, 36, panel - 72, ph - 72);
@@ -103,11 +102,12 @@ export async function drawCard(card: Card, mapSvg: string): Promise<Buffer> {
     rect(px, 0, panel, ph, TONE[tile.tone]);
     await picture(file("public", tile.image), px + 60, 60, panel - 120, ph - 120);
   } else if (card.route === "/services") {
-    const names = ["local-seo", "aeo-optimization", "ai-powered-content", "analytics-reporting", "marketing-automation", "website-hosting"];
+    const names = ["local-seo", "aeo-optimization", "ai-powered-content", "analytics-reporting", "marketing-automation", "website-hosting", "geo-optimization"];
     for (const [i, name] of names.entries()) {
-      const w = panel / 2, h = ph / 3, x = px + (i % 2) * w, y = Math.floor(i / 2) * h;
-      rect(x, y, w, h, tones[i]);
-      await picture(art(name), x + 36, y + 36, w - 72, h - 72);
+      const h = ph / Math.ceil(names.length / 2), x = px + (i % 2) * (panel / 2), y = Math.floor(i / 2) * h;
+      const w = i === names.length - 1 && i % 2 === 0 ? panel : panel / 2;
+      rect(x, y, w, h, TONE[navTile(`/services/${name}`, i).tone]);
+      await picture(art(name), x + 36, y + 24, w - 72, h - 48);
     }
   } else if (card.route === "/") {
     rect(px, 0, panel, ph, TONE.cream);

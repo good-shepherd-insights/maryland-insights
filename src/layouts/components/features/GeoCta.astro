@@ -1,0 +1,6 @@
+---
+// Square button used by the answer sections.
+interface Props { cta?: { label?: string; link?: string } | null; tone?: "ink" | "gold" | "line" }
+const { cta, tone = "ink" } = Astro.props;
+---
+{cta?.label && cta?.link && <a class={`gf-btn gf-btn-${tone}`} href={cta.link}>{cta.label}</a>}

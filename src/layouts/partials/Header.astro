@@ -110,7 +110,7 @@ const { ui } = Astro.props as Props;
                   </svg>
                 </span>
               </Trigger>
-              <ul id={`nav-dropdown-${index}`} class="nav-dropdown-list" data-wide={wide ? "" : undefined} style={`--tiles: ${wide ? children.length : children.length % 3 === 0 ? Math.min(children.length, 6) : 4}`}>
+              <ul id={`nav-dropdown-${index}`} class="nav-dropdown-list" data-wide={wide ? "" : undefined} data-seven={children.length === 7 ? "" : undefined} style={`--tiles: ${wide || children.length === 7 ? children.length : children.length % 3 === 0 ? Math.min(children.length, 6) : 4}`}>
                 {menu.url && (
                   <li class="nav-all">
                     <a href={menu.url}>All {menu.name.toLowerCase()}</a>
@@ -119,7 +119,7 @@ const { ui } = Astro.props as Props;
                 {children.map((child, i) => {
                   const tile = navTile(child.url, i);
                   return (
-                    <li>
+                    <li class={!wide && i === children.length - 1 && i % 2 === 0 ? "nav-odd" : undefined}>
                       <a href={child.url} class="nav-tile" data-tone={tile.tone} aria-current={isHere(child.url) ? "page" : undefined}>
                         {tile.image && <img src={tile.image} alt="" width="118" height="96" loading="lazy" decoding="async" />}
                         <span>{child.name}</span>

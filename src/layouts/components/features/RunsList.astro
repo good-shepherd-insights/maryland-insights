@@ -1,0 +1,11 @@
+---
+// What runs, as ruled rows (canvas: gf-06-a).
+import GeoCta from "./GeoCta.astro";
+import GeoHead from "./GeoHead.astro";
+const { heading, items = [], cta } = Astro.props;
+---
+<section class="gf gf-white gf-sec">
+  <GeoHead heading={heading} />
+  <ul class="gf-rows">{items.map((t: { title: string; detail: string }) => <li><h3>{t.title}</h3><p>{t.detail}</p></li>)}</ul>
+  <div class="gf-btns"><GeoCta cta={cta} /></div>
+</section>

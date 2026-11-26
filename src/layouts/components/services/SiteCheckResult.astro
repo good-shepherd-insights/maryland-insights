@@ -1,0 +1,259 @@
+---
+// The result that takes the place of the hero's art, text and points once a website has been read.
+const { label, missing, shareLabel, copiedLabel } = Astro.props as { label: string; missing: string; shareLabel?: string; copiedLabel?: string };
+---
+
+<div class="sc-result" data-check-result data-missing={missing} tabindex="-1" hidden>
+  <div class="sc-top">
+    <img data-check-logo alt="" width="52" height="52" referrerpolicy="no-referrer" hidden />
+    <div><p>{label}</p><h2 data-check-name></h2></div>
+    <p class="sc-count" data-check-count></p>
+    <button type="button" class="sc-share" data-check-share aria-label={shareLabel}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8.25 6.75 12 3l3.75 3.75M8 10.5H6.75A1.75 1.75 0 0 0 5 12.25v7A1.75 1.75 0 0 0 6.75 21h10.5A1.75 1.75 0 0 0 19 19.25v-7a1.75 1.75 0 0 0-1.75-1.75H16" /></svg>
+    </button>
+    <span class="sc-copied" role="status" data-check-copied hidden>{copiedLabel}</span>
+    <input class="sc-url" type="text" readonly aria-label={shareLabel} data-check-url hidden />
+  </div>
+  <p class="sc-note" data-check-note hidden></p>
+  <ul data-check-rows></ul>
+</div>
+
+<script>
+  type Row = { label: string; value: string; found: boolean; icon?: string };
+  type Result = { name: string; logo: string | null; notes: string[]; rows: Row[] };
+
+  const ICON = { yes: "M4 12l5 5L20 6", no: "M6 6l12 12M18 6L6 18" };
+  const SAY: Record<string, string> = {
+    "bad-address": "Enter a website address, such as yourbusiness.com.",
+    "no-place": "We could not tell what this business does or where in Maryland it works from its homepage.",
+    "no-answer": "ChatGPT did not answer this time. Please try again.",
+    expired: "That took too long. Please try again.",
+    "rate-limited": "Too many checks. Please try again in a few minutes.",
+  };
+  const NS = "http://www.w3.org/2000/svg";
+
+  function rowFor(row: Row): HTMLLIElement {
+    const ok = row.found;
+    const li = document.createElement("li");
+    if (!ok) li.className = "sc-no";
+    const svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    const path = document.createElementNS(NS, "path");
+    path.setAttribute("d", ok ? ICON.yes : ICON.no);
+    svg.append(path);
+    const label = document.createElement("strong");
+    label.textContent = row.label;
+    const value = document.createElement("span");
+    if (row.icon && /^\/images\/hosting\/[a-z0-9-]+\.svg$/.test(row.icon)) {
+      const icon = document.createElement("img");
+      icon.src = row.icon;
+      icon.alt = "";
+      icon.width = icon.height = 20;
+      value.append(icon);
+    }
+    value.append(row.value);
+    li.append(svg, label, value);
+    return li;
+  }
+
+  function bind() {
+    document.querySelectorAll<HTMLFormElement>("form[data-check]").forEach((form) => {
+      if ("ready" in form.dataset) return;
+      form.dataset.ready = "";
+      const section = form.closest("section");
+      const panel = section?.querySelector<HTMLElement>("[data-check-result]");
+      const status = form.querySelector<HTMLElement>(".lead-capture-status");
+      const button = form.querySelector<HTMLButtonElement>("button[type=submit]");
+      const input = form.querySelector<HTMLInputElement>("input[name=business]");
+      const heading = section?.querySelector<HTMLElement>(".lead-heading");
+      if (!section || !panel || !status || !button || !input || !heading) return;
+      const siteGroup = form.querySelector<HTMLElement>("[data-check-site]");
+      const emailGroup = form.querySelector<HTMLElement>("[data-check-email]");
+      const email = emailGroup?.querySelector<HTMLInputElement>("input");
+      const change = form.querySelector<HTMLButtonElement>("[data-check-change]");
+      const success = form.parentElement?.querySelector<HTMLElement>(".lead-capture-success");
+      let found: string | null = null;
+      const copied = panel?.querySelector<HTMLElement>("[data-check-copied]");
+      const urlField = panel?.querySelector<HTMLInputElement>("[data-check-url]");
+      const loaded = () => section?.removeAttribute("data-query-loading");
+      /** The website as entered, or its page for a check that reads one. */
+      const entered = (raw: string) => {
+        const bare = raw.trim().replace(/^https?:\/\//i, "").split(/[?#]/)[0];
+        return (form.hasAttribute("data-check-page") ? bare.replace(/^([^/]+)\/$/, "$1") : bare.split("/")[0]).slice(0, 300);
+      };
+      /** Each result has its own address, so it can be reopened and shared. */
+      const setLink = (value: string | null) => {
+        const url = new URL(location.href);
+        if (value) url.searchParams.set("q", value);
+        else if (url.searchParams.has("q")) url.searchParams.delete("q");
+        else return;
+        url.search = url.search.replace(/%2F/gi, "/");
+        history.replaceState(history.state, "", url);
+      };
+      const unshare = () => {
+        if (copied) copied.hidden = true;
+        if (urlField) urlField.hidden = true;
+      };
+      const title = [...heading.childNodes].map((n) => n.cloneNode(true));
+      const prefix = (heading.textContent ?? "").trim().match(/^(.*?\bfor)\s/i)?.[1];
+      const first = button.textContent ?? "";
+      const part = (name: string) => panel.querySelector<HTMLElement>(`[data-check-${name}]`)!;
+
+      function show(result: Result) {
+        const good = result.rows.filter((r) => r.found).length;
+        if (prefix) {
+          const words = prefix.split(" "), half = Math.floor(words.length / 2);
+          const br = () => document.createElement("br");
+          const lead = words.length > 3 ? [words.slice(0, half).join(" "), br(), words.slice(half).join(" ")] : [prefix];
+          heading!.replaceChildren(...lead, br(), result.name);
+          heading!.toggleAttribute("data-long", result.name.split(/\s/).some((w) => w.length > 15));
+        }
+        part("name").textContent = result.name;
+        const bad = document.createElement("span");
+        bad.textContent = `${result.rows.length - good} ${panel!.dataset.missing}`;
+        part("count").replaceChildren(`${good} found, `, bad);
+        part("rows").replaceChildren(...result.rows.map(rowFor));
+        part("note").textContent = result.notes.join(" ");
+        part("note").hidden = result.notes.length === 0;
+        setLink(entered(input!.value));
+        unshare();
+        const logo = part("logo") as HTMLImageElement;
+        logo.hidden = true;
+        logo.removeAttribute("src");
+        if (result.logo) {
+          logo.onload = () => { logo.hidden = false; };
+          logo.src = result.logo;
+        }
+        panel!.hidden = false;
+        section!.setAttribute("data-check-done", "");
+        found = result.name;
+        if (siteGroup && emailGroup && email) {
+          siteGroup.hidden = true;
+          emailGroup.hidden = false;
+          email.disabled = false;
+          if (change) change.hidden = false;
+          // The website as it was entered, without the parts nobody says.
+          const site = input!.value.trim().replace(/^https?:\/\//i, "").replace(/^www\./i, "").split(/[/?#]/)[0];
+          button!.textContent = `Audit ${site}`;
+        }
+        panel!.focus({ preventScroll: true });
+        heading!.scrollIntoView({ block: "center" });
+      }
+
+      // Back to the website field, as it was before the check.
+      change?.addEventListener("click", () => {
+        found = null;
+        setLink(null);
+        panel.hidden = true;
+        section.removeAttribute("data-check-done");
+        heading.replaceChildren(...title.map((n) => n.cloneNode(true)));
+        heading.removeAttribute("data-long");
+        siteGroup!.hidden = false;
+        emailGroup!.hidden = true;
+        email!.disabled = true;
+        change.hidden = true;
+        status.hidden = true;
+        button.textContent = first;
+        input.value = "";
+        input.focus();
+      });
+
+      panel.querySelector("[data-check-share]")?.addEventListener("click", async () => {
+        const url = location.href;
+        unshare();
+        if (typeof navigator.canShare === "function" && navigator.canShare({ url })) {
+          try {
+            await navigator.share({ url });
+            return;
+          } catch (error) {
+            if (error instanceof DOMException && error.name === "AbortError") return;
+          }
+        }
+        try {
+          await navigator.clipboard.writeText(url);
+          if (copied) copied.hidden = false;
+        } catch {
+          if (!urlField) return;
+          urlField.value = url;
+          urlField.hidden = false;
+          urlField.focus();
+          urlField.select();
+        }
+      });
+
+      async function send() {
+        const label = button!.textContent ?? "";
+        button!.disabled = true;
+        if (change) change.disabled = true;
+        button!.textContent = form.dataset.uiSending ?? label;
+        status!.hidden = true;
+        try {
+          const response = await fetch(form.dataset.leadAction!, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...Object.fromEntries(new FormData(form)), business: found, businessName: found, service: form.dataset.leadService, page: document.title, source: location.pathname }),
+          });
+          if (!response.ok) throw new Error(String(response.status));
+          form.hidden = true;
+          if (success) {
+            success.hidden = false;
+            success.querySelector<HTMLElement>(".lead-received")?.focus();
+          }
+          const to = form.dataset.uiSuccessRedirect ? new URL(form.dataset.uiSuccessRedirect, location.origin) : null;
+          if (to && /^https?:$/.test(to.protocol)) location.assign(to.href);
+        } catch {
+          status!.textContent = form.dataset.uiError ?? "";
+          status!.hidden = false;
+          button!.textContent = label;
+          button!.disabled = false;
+          if (change) change.disabled = false;
+        }
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (found !== null && email && !email.disabled) return send();
+        const label = button.textContent ?? first;
+        button.disabled = true;
+        button.textContent = "Reading the website…";
+        status.hidden = true;
+        try {
+          const ask = async (body: object) => {
+            const response = await fetch(form.action, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+            return { response, data: await response.json().catch(() => ({})) };
+          };
+          let { response, data } = await ask(Object.fromEntries(new FormData(form)));
+          // A ChatGPT answer takes up to about a minute to come back.
+          for (let n = 0; response.status === 202 && n < 60; n++) {
+            button.textContent = "Waiting for ChatGPT…";
+            status.textContent = "ChatGPT can take up to about a minute to answer. Keep this page open.";
+            status.hidden = false;
+            await new Promise((done) => setTimeout(done, 3000));
+            ({ response, data } = await ask({ pending: data.pending }));
+          }
+          if (response.status === 202) throw new Error("expired");
+          status.hidden = true;
+          button.textContent = label;
+          if (response.ok) show(data as Result);
+          else throw new Error(data.error);
+        } catch (error) {
+          button.textContent = label;
+          status.textContent = SAY[error instanceof Error ? error.message : ""] ?? "We could not read that website. Check the address and try again.";
+          status.hidden = false;
+        }
+        button.disabled = false;
+        loaded();
+      });
+
+      // Opening a result's link runs its check.
+      const asked = new URLSearchParams(location.search).get("q")?.trim().slice(0, 300) ?? "";
+      if (asked.includes(".")) {
+        input.value = asked;
+        form.requestSubmit();
+      } else loaded();
+    });
+  }
+  bind();
+  document.addEventListener("astro:page-load", bind);
+</script>

@@ -1,0 +1,9 @@
+---
+// Two halves, who does what (canvas: gf-07-a).
+import GeoCta from "./GeoCta.astro";
+const { leftTitle, leftItems = [], rightTitle, rightItems = [] } = Astro.props;
+---
+<section class="gf gf-halves">
+  <div class="gf-sand"><h2>{leftTitle}</h2><ul>{leftItems.map((t: string) => <li>{t}</li>)}</ul></div>
+  <div class="gf-red"><h2>{rightTitle}</h2><ul>{rightItems.map((t: string) => <li>{t}</li>)}</ul></div>
+</section>
