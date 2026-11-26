@@ -4,6 +4,9 @@ import { attr, blocks, scan, textOf } from "./htmlScan";
 /** Reads one page for what could only have been written about this business, in its area. */
 const SOCIAL = /(?:^|\.)(?:facebook|instagram|twitter|x|linkedin|youtube|pinterest|tiktok|google|goo|yelp|nextdoor|apple|bbb|angi|houzz|wa|whatsapp|wordpress|wixstatic|squarespace|shopify|calendly|jotform|typeform)\.\w{2,4}$/i;
 const CODE = /\b(?:(?:building |county |city )?permits?|permit inspections?|building code|zoning|licensing|MHIC|county code|ordinances?|historic district)\b/i;
+// Permits and licensing only matter to trades that work on homes and buildings.
+const TRADE_TYPE = /"@type"\s{0,4}:\s{0,4}(?:\[[^\]]{0,300})?"(?:RoofingContractor|GeneralContractor|HomeAndConstructionBusiness|Plumber|Electrician|HVACBusiness|HousePainter)"/;
+const TRADE = /\b(?:roof(?:ing|ers?|s)?|contractors?|remodel(?:ing|ers?)?|renovations?|construction|builders?|home improvement|hvac|heating and (?:air|cooling)|plumb(?:ing|ers?)|electric(?:al|ians?)|siding|gutters?|decks?|fenc(?:e|es|ing)|paving|masonry|concrete|excavation|landscap(?:e|ing|ers?)|hardscap(?:e|ing)|waterproofing|windows and doors|kitchen and bath|painting contractors?|additions)\b/i;
 const NAME = /^[A-Z][\w.'’-]{1,20}(?: [A-Z][\w.'’-]{0,20}){1,3}$/;
 const GENERIC = /^(?:admin|administrator|editor|staff|team|webmaster|author|marketing|guest|info)\b/i;
 
@@ -38,11 +41,14 @@ export function checkContent(html: string, base: URL): ProofRow[] {
   const official = [...outside].filter((h) => /\.gov$|\.md\.us$|(?:^|\.)maryland\.gov$/i.test(h));
   const asked = blocks(pieces, ["h2", "h3", "h4", "summary", "button"]).filter((h) => h.text.length > 9 && h.text.endsWith("?")).length;
   const rule = CODE.exec(text)?.[0] ?? "";
+  // Judged from what the business says it is, not from the body text, which can mention anything.
+  const says = [blocks(pieces, ["title", "h1"]).slice(0, 4).map((b) => b.text).join(" "), meta(/^(?:description|og:description|og:site_name)$/i) ? attr(meta(/^(?:description|og:description|og:site_name)$/i)!, "content") : ""].join(" ");
+  const trade = data.some((d) => TRADE_TYPE.test(d)) || TRADE.test(says);
   return [
     row("Named author", author),
     row("Dated", date),
     row("Places named", places(text)),
-    row("Local rules", rule ? `Mentions ${rule === "MHIC" ? rule : rule.toLowerCase()}` : ""),
+    ...(trade ? [row("Local rules", rule ? `Mentions ${rule === "MHIC" ? rule : rule.toLowerCase()}` : "")] : []),
     row("Official sources", official.slice(0, 2).join(", ")),
     row("Other sources", outside.size > official.length ? `${outside.size - official.length} linked` : ""),
     row("Prices", price(text)),

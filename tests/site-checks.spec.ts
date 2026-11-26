@@ -66,10 +66,15 @@ describe("tracking check", () => {
 
 describe("content check", () => {
   it("reads author, date, places, rules and sources", () => {
-    const r = by(checkContent('<meta name="author" content="Jane Smith"><meta property="article:published_time" content="2026-03-02T10:00"><p>Roof permits in Frederick County cost $95.</p><a href="https://frederickcountymd.gov/x">c</a><a href="https://facebook.com/a">f</a><a href="https://b.org">b</a><h2>Do I need a permit?</h2>', base));
+    const r = by(checkContent('<title>Smith Roofing</title><meta name="author" content="Jane Smith"><meta property="article:published_time" content="2026-03-02T10:00"><p>Roof permits in Frederick County cost $95.</p><a href="https://frederickcountymd.gov/x">c</a><a href="https://facebook.com/a">f</a><a href="https://b.org">b</a><h2>Do I need a permit?</h2>', base));
     expect([r["Named author"].value, r.Dated.value, r["Places named"].value, r["Local rules"].value, r["Official sources"].value, r["Other sources"].value, r.Prices.value, r["Questions answered"].value]).toEqual(["Jane Smith", "March 2, 2026", "Frederick County", "Mentions permits", "frederickcountymd.gov", "1 linked", "$95", "1 on the page"]);
     expect(by(checkContent('<meta name="author" content="admin">', base))["Named author"].found).toBe(false);
     expect(checkContent("<p>Quality you can trust.</p>", base).every((x) => !x.found)).toBe(true);
+  });
+  it("asks about permits and licensing only for trades that need them", () => {
+    const rules = (html: string) => checkContent(html, base).some((x) => x.label === "Local rules");
+    expect([rules("<title>Smith Roofing | Frederick</title>"), rules('<script type="application/ld+json">{"@type":"Plumber"}</script>'), rules('<meta name="description" content="Kitchen and bath remodeling in Bel Air">')]).toEqual([true, true, true]);
+    expect([rules("<title>Zeke's Coffee</title><p>We fixed the deck chairs and got our permit.</p>"), rules('<title>Linganore Winecellars</title><script type="application/ld+json">{"@type":"Winery"}</script>'), rules("<p>Quality you can trust.</p>")]).toEqual([false, false, false]);
   });
 });
 
