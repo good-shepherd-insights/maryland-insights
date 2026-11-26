@@ -1,7 +1,7 @@
 /** Reads a website's pages for what an AI answer could repeat about the business. */
 import { attr, blocks, scan, textOf, type Piece } from "./htmlScan";
 
-export type ProofRow = { label: string; value: string; found: boolean };
+export type ProofRow = { label: string; value: string; found: boolean; icon?: string };
 
 const COUNTIES = ["Allegany", "Anne Arundel", "Baltimore", "Calvert", "Caroline", "Carroll", "Cecil", "Charles", "Dorchester", "Frederick", "Garrett", "Harford", "Howard", "Kent", "Montgomery", "Prince George['’]?s", "Queen Anne['’]?s", "St\\.? Mary['’]?s", "Somerset", "Talbot", "Washington", "Wicomico", "Worcester"];
 // Towns whose names are not also everyday words or the names of people.

@@ -1,20 +1,22 @@
 import { describe, expect, it } from "vitest";
 import { checkContent } from "../src/lib/contentCheck";
-import { checkHosting } from "../src/lib/hostingCheck";
+import { checkHosting, dnsOf, hostOf, networkOf } from "../src/lib/hostingCheck";
+import { isPrivate } from "../src/lib/serverFacts";
 import { checkTracking, containers } from "../src/lib/trackingCheck";
 import { POST as content } from "../src/pages/api/content-check";
 import { POST as hosting } from "../src/pages/api/hosting-check";
 import { POST as tracking } from "../src/pages/api/tracking-check";
 
 const base = new URL("https://www.a.com/");
-const by = (rows: { label: string; value: string; found: boolean }[]) => Object.fromEntries(rows.map((r) => [r.label, r]));
+const by = (rows: { label: string; value: string; found: boolean; icon?: string }[]) => Object.fromEntries(rows.map((r) => [r.label, r]));
 const long = "word ".repeat(60);
 
 describe("hosting check", () => {
   const run = (raw: string, shown = raw) => by(checkHosting(raw, shown, base));
   it("names the platform by its files and counts plugins once", () => {
     const r = run('<link rel="stylesheet" href="/wp-content/plugins/a/x.css"><script src="/wp-content/plugins/a/y.js"></script><script src="/wp-content/plugins/b/z.js"></script>');
-    expect([r["Built with"].value, r["Plugins seen"].value]).toEqual(["WordPress", "2 on the homepage"]);
+    expect([r["Built with"].value, r["Built with"].icon, r["Plugins seen"].value]).toEqual(["WordPress", "/images/hosting/wordpress.svg", "2: a, b"]);
+    expect(run('<meta name="generator" content="WordPress 6.4.2">')["Built with"].value).toBe("WordPress 6.4");
     expect(run("<p>We build WordPress sites</p>")["Built with"].found).toBe(false);
   });
   it("tells a page that needs scripts from one that does not", () => {
@@ -23,7 +25,28 @@ describe("hosting check", () => {
   });
   it("reads layout, encryption, images and outside scripts", () => {
     const r = run('<meta name="viewport" content="width=device-width"><img src="/a.webp" loading="lazy"><img src="http://b.com/c.jpg"><script src="https://b.com/x.js"></script><script src="https://cdn.a.com/y.js"></script><a href="http://c.com">c</a>');
-    expect([r["Mobile layout"].found, r["Secure files"].value, r["Modern images"].value, r["Delayed images"].value, r["Outside scripts"].value]).toEqual([true, "1 loaded without encryption", "1 of 2", "1 of 2", "From 1 company’s server"]);
+    expect([r["Mobile layout"].found, r["Secure files"].value, r["Modern images"].value, r["Delayed images"].value, r["Outside scripts"].value]).toEqual([true, "1 loaded without encryption", "1 of 2", "1 of 2", "1: b.com"]);
+  });
+});
+
+describe("hosting server facts", () => {
+  it("names the host, network and name servers from what the server says", () => {
+    expect([hostOf({ "x-vercel-id": "iad1::x" }), hostOf({ "wpe-backend": "apache" }), hostOf({ "host-header": "6b7412fb82ca5edfd0917e3957f05d89" }), hostOf({ server: "Squarespace" }), hostOf({ server: "nginx" })]).toEqual(["Vercel", "WP Engine", "SiteGround", "Squarespace", ""]);
+    expect([networkOf({ "cf-ray": "8a-IAD", server: "cloudflare" }), networkOf({ "x-amz-cf-id": "x" }), networkOf({ server: "Apache" })]).toEqual(["Cloudflare", "Amazon CloudFront", ""]);
+    expect([dnsOf(["ada.ns.cloudflare.com"]), dnsOf(["ns51.domaincontrol.com."]), dnsOf(["ns-1.awsdns-01.org"]), dnsOf(["ns1.example.net"])]).toEqual(["Cloudflare", "GoDaddy", "Amazon Route 53", ""]);
+  });
+  it("shows them in the result, with a logo only where there is one", () => {
+    const r = by(checkHosting("<p>x</p>", "<p>x</p>", base, { headers: { server: "nginx", "cf-ray": "1" }, ns: ["ns1.example.net."], secureRedirect: false, ms: 1450 }));
+    expect([r["Hosted by"], r["Delivery network"].icon, r["Domain name servers"], r["Server response"], r["Plain http"]]).toEqual([
+      { label: "Hosted by", value: "nginx server, company not shown", found: true, icon: "/images/hosting/nginx.svg" }, "/images/hosting/cloudflare.svg",
+      { label: "Domain name servers", value: "ns1.example.net", found: true }, { label: "Server response", value: "1.4 seconds", found: false }, { label: "Plain http", value: "Left unencrypted", found: false },
+    ]);
+    expect(by(checkHosting("<p>x</p>", "<p>x</p>", base))["Hosted by"]).toEqual({ label: "Hosted by", value: "Not identified", found: false });
+    expect(by(checkHosting("<p>x</p>", "<p>x</p>", base, { headers: { server: "Squarespace" }, ns: [], secureRedirect: true, ms: 50 }))["Delivery network"]).toEqual({ label: "Delivery network", value: "Squarespace's own", found: true, icon: "/images/hosting/squarespace.svg" });
+  });
+  it("never lets the server be pointed at a private address", () => {
+    expect(["10.0.0.1", "127.0.0.1", "169.254.169.254", "172.20.1.1", "192.168.1.1", "100.64.0.1", "::1", "fd00::1", "fe80::1", "::ffff:10.0.0.1", "nonsense"].every(isPrivate)).toBe(true);
+    expect(["8.8.8.8", "172.32.0.1", "2606:4700::1111"].some(isPrivate)).toBe(false);
   });
 });
 

@@ -1,7 +1,7 @@
 import { homepage } from "./schemaCheck";
 
 /** What a check shows in the hero. Text is ready to display. */
-export type CheckResult = { name: string; logo: string | null; notes: string[]; rows: { label: string; value: string; found: boolean }[] };
+export type CheckResult = { name: string; logo: string | null; notes: string[]; rows: { label: string; value: string; found: boolean; icon?: string }[] };
 
 export const SCRAPE_URL = "https://api.context.dev/v1/web/scrape";
 const MAX_BYTES = 8_000_000;
