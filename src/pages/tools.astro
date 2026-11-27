@@ -18,6 +18,12 @@ const tools = (grid.tools ?? []).filter((t: any) => t?.title);
 const isDirectory = (t: any) => /^https:\/\/marylandbusiness\.online/.test(t?.link ?? "");
 const CATEGORIES = ["Active Life", "Automotive", "Beauty & Spas", "Education & Childcare", "Event Services", "Fitness", "Food & Drink", "Health & Medical", "Home Services", "Hotels & Travel", "Moving & Storage", "Nightlife", "Pets", "Professional Services", "Real Estate", "Restaurant", "Shopping"];
 const hasDirectory = tools.some(isDirectory);
+// Home page screenshots for tool cards, keyed by the tool's host.
+const SHOTS: Record<string, string> = {
+  "marylandbusiness.online": "/images/tools/maryland-business-online.jpg",
+  "seo-fundamentals.marylandinsights.com": "/images/tools/seo-fundamentals.jpg",
+};
+const hostOf = (t: any) => { try { return new URL(t?.link ?? "").host; } catch { return ""; } };
 ---
 
 <Base {...page} title={header.title} meta_title={header.metaTitle} description={header.description} ui={settingsUi} seoId={page._id}>
@@ -35,7 +41,7 @@ const hasDirectory = tools.some(isDirectory);
           <div class="pg-tool">
             <h3>{t.title}</h3><p>{t.description}</p>
             {t.link && <a class="hp-btn hp-btn-ink" href={t.link} target="_blank" rel="noopener noreferrer">Visit {t.title}</a>}
-            {isDirectory(t) && <div class="pg-shot"><p aria-hidden="true">marylandbusiness.online</p><img src="/images/tools/maryland-business-online.jpg" alt="" width="1424" height="772" loading="lazy" /></div>}
+            {SHOTS[hostOf(t)] && <div class="pg-shot"><p aria-hidden="true">{hostOf(t)}</p><img src={SHOTS[hostOf(t)]} alt="" width="1424" height="772" loading="lazy" /></div>}
           </div>
         ))}
       </div>
